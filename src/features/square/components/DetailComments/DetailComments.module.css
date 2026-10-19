@@ -1,0 +1,290 @@
+/* ===== 评论区（CSS Modules：私有类 camelCase） ===== */
+.commentsSection {
+  max-width: 860px;
+  margin: 64px auto 0;
+  padding: 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.commentsHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--mist-050);
+}
+
+.commentsTitle {
+  font-size: clamp(26px, 3vw, 36px);
+  font-weight: 900;
+  color: var(--navy-950);
+  letter-spacing: -1px;
+  margin: 0;
+}
+
+.commentsCount {
+  font-size: 13px;
+  color: var(--ink-400);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 评论输入 */
+.commentInputWrap {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 48px;
+}
+
+.commentInputArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.commentTextarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--mist-050);
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-800);
+  background: var(--brand-primary-wash);
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+  transition: border-color 0.25s ease, background 0.25s ease;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.commentTextarea:focus {
+  border-color: var(--brand-primary);
+  background: white;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 8%, transparent);
+}
+
+.commentTextarea::placeholder {
+  color: var(--ink-400);
+}
+
+.commentSubmitBtn {
+  align-self: flex-end;
+  padding: 10px 24px;
+  background: var(--brand-primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
+}
+
+.commentSubmitBtn:hover:not(:disabled) {
+  background: var(--brand-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 20%, transparent);
+}
+
+.commentSubmitBtn:disabled {
+  background: var(--brand-primary-soft);
+  cursor: not-allowed;
+}
+
+/* 评论列表 */
+.commentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.commentItem {
+  display: flex;
+  gap: 14px;
+}
+
+.commentBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.commentMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.commentAuthor {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.commentTime {
+  font-size: 12px;
+  color: var(--ink-400);
+  letter-spacing: 0.5px;
+}
+
+.commentContent {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-600);
+  margin: 0 0 10px;
+}
+
+.commentLikeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid var(--mist-050);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--ink-500);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.commentLikeBtn:hover {
+  border-color: var(--brand-primary-soft);
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+}
+
+.commentLikeBtn.liked {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+}
+
+/* 原 .comment-like-btn .el-icon → antd 图标类名等价选择器 */
+.commentLikeBtn :global(.anticon) {
+  font-size: 12px;
+}
+
+.commentsEmpty {
+  text-align: center;
+  padding: 48px 0;
+  color: var(--ink-400);
+  font-size: 14px;
+}
+
+@media (width <= 768px) {
+  .commentsSection {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .commentInputWrap {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移：square-detail-page 页面作用域
+   规则，均为本组件独占类；页面根类 square-detail-page 由 pages 层
+   css 定义，作用域选择器整体置于 :global 内）
+   ============================================================ */
+:global(html.dark .square-detail-page) .commentsHeader {
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .square-detail-page) .commentsTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .square-detail-page) .commentsCount {
+  color: #64748b !important;
+}
+
+:global(html.dark .square-detail-page) .commentInputWrap {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .square-detail-page) .commentTextarea {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .square-detail-page) .commentTextarea:focus {
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark .square-detail-page) .commentTextarea::placeholder {
+  color: #64748b !important;
+}
+
+:global(html.dark .square-detail-page) .commentSubmitBtn {
+  background: #0052d9 !important;
+  color: #fff !important;
+}
+
+:global(html.dark .square-detail-page) .commentSubmitBtn:hover:not(:disabled) {
+  background: #0042ad !important;
+}
+
+:global(html.dark .square-detail-page) .commentSubmitBtn:disabled {
+  background: #1e293b !important;
+  color: #64748b !important;
+}
+
+:global(html.dark .square-detail-page) .commentItem {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .square-detail-page) .commentAuthor {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .square-detail-page) .commentTime {
+  color: #64748b !important;
+}
+
+:global(html.dark .square-detail-page) .commentContent {
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark .square-detail-page) .commentLikeBtn {
+  color: #64748b !important;
+}
+
+:global(html.dark .square-detail-page) .commentLikeBtn:hover,
+:global(html.dark .square-detail-page) .commentLikeBtn.liked {
+  color: #f87171 !important;
+}
+
+:global(html.dark .square-detail-page) .commentsEmpty {
+  color: #64748b !important;
+}
+
+/* ============================================================
+   暗色主题 · 三期「卡片融入背景」覆盖段（自 dark-mode.css 迁移，
+   位于主段之后，保持原级联顺序：同特异性后写胜出）
+   ============================================================ */
+:global(html.dark .square-detail-page) .commentItem,
+:global(html.dark .square-detail-page) .commentInputWrap,
+:global(html.dark .square-detail-page) .commentTextarea {
+  background: transparent !important;
+  border-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+:global(html.dark .square-detail-page) .commentInputArea {
+  background: rgb(255, 255, 255, 0.03) !important;
+  border-color: rgb(255, 255, 255, 0.08) !important;
+}

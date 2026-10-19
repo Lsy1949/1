@@ -1,0 +1,216 @@
+/* 设置页报头 · 编辑式 masthead + 目录索引（CSS Modules：私有类 camelCase） */
+
+.masthead {
+  display: grid;
+  grid-template-columns: 200px 1fr 220px;
+  border-top: 4px solid var(--ink-900);
+  border-bottom: 1px solid var(--ink-900);
+  margin-top: 32px;
+  margin-bottom: 56px;
+}
+
+.mastheadCol {
+  padding: 28px 24px;
+  border-right: 1px solid var(--ink-200);
+}
+
+.mastheadCol:last-child {
+  border-right: none;
+}
+
+.mastheadMark {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.volMark {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--brand-primary);
+}
+
+.volText {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--ink-900);
+}
+
+.volSub {
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+.mastheadTitleBlock {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mastheadEyebrow {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+}
+
+.mastheadTitle {
+  margin: 0 0 14px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -1.5px;
+  color: var(--ink-900);
+}
+
+.mastheadTitle em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--brand-primary), var(--color-info));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mastheadDeck {
+  margin: 0;
+  max-width: 540px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-600);
+}
+
+.mastheadToc {
+  display: flex;
+  flex-direction: column;
+}
+
+.tocLabel {
+  margin: 0 0 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+.tocList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tocLink {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 7px 0;
+  text-decoration: none;
+  color: var(--ink-700);
+  font-size: 13px;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s;
+}
+
+.tocLink:hover {
+  color: var(--brand-primary);
+}
+
+.tocLink.active {
+  color: var(--brand-primary);
+}
+
+.tocLink.active .tocNum {
+  color: var(--brand-primary);
+}
+
+.tocNum {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-400);
+  min-width: 22px;
+}
+
+.tocText {
+  flex: 1;
+}
+
+@media (width <= 1024px) {
+  .masthead {
+    grid-template-columns: 1fr;
+    margin-top: 24px;
+    margin-bottom: 32px;
+  }
+
+  .mastheadCol {
+    border-right: none;
+    border-bottom: 1px solid var(--ink-200);
+    padding: 20px 0;
+  }
+  .mastheadCol:last-child { border-bottom: none; }
+  .mastheadToc { display: none; }
+  .mastheadTitle { font-size: 40px; }
+}
+
+@media (width <= 768px) {
+  .mastheadTitle { font-size: 32px; }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移的本组件有效值，原全局规则
+   「html.dark 加 settings-page 前缀的 toc 与 masthead 系列」待主控
+   统一删除；本组件类为其独占，等价迁移，!important 保留）
+   ============================================================ */
+:global(html.dark .settings-page) .masthead {
+  border-bottom-color: #1e293b !important;
+}
+
+:global(html.dark .settings-page) .volMark,
+:global(html.dark .settings-page) .mastheadEyebrow {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .settings-page) .volText,
+:global(html.dark .settings-page) .mastheadTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .settings-page) .volSub,
+:global(html.dark .settings-page) .mastheadDeck {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark .settings-page) .tocLabel {
+  color: #64748b !important;
+}
+
+:global(html.dark .settings-page) .tocLink {
+  color: #94a3b8 !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .settings-page) .tocLink:hover,
+:global(html.dark .settings-page) .tocLink.active {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark .settings-page) .tocNum {
+  color: #64748b !important;
+}

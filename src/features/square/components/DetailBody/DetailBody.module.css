@@ -1,0 +1,184 @@
+/* ===== 正文（CSS Modules：私有类 camelCase） ===== */
+.richContent {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.contentText {
+  font-size: 17px;
+  line-height: 1.9;
+  color: var(--ink-800);
+  margin: 0;
+  letter-spacing: 0.1px;
+  position: relative;
+  padding-left: 20px;
+}
+
+.contentText::before {
+  content: '"';
+  position: absolute;
+  left: -8px;
+  top: -16px;
+  font-size: 64px;
+  font-family: Georgia, 'Times New Roman', serif;
+  color: color-mix(in srgb, var(--brand-primary) 15%, transparent);
+  line-height: 1;
+  font-weight: 900;
+  pointer-events: none;
+}
+
+.contentText::first-letter {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--brand-primary);
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height: 1;
+  margin-right: 2px;
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 32px 0;
+}
+
+.contentPhoto {
+  width: 100%;
+  height: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+/* ===== 底部互动栏 ===== */
+.detailFooter {
+  max-width: 860px;
+  margin: 64px auto 0;
+  padding: 0 40px;
+}
+
+.footerLine {
+  height: 1px;
+  background: var(--mist-050);
+  margin-bottom: 28px;
+}
+
+.footerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.footerMark {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--ink-400);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.footerActions {
+  display: flex;
+  gap: 12px;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: transparent;
+  border: 1px solid var(--mist-100);
+  color: var(--ink-800);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border-radius: 12px;
+  font-family: inherit;
+}
+
+.actionBtn:hover {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary);
+  color: white;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 20%, transparent);
+  transform: translateY(-2px);
+}
+
+.actionBtn.active {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary);
+  color: white;
+}
+
+/* 原 .action-btn .el-icon → antd 图标类名等价选择器 */
+.actionBtn :global(.anticon) { font-size: 13px; }
+
+@media (width <= 768px) {
+  .richContent {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .detailFooter {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .footerRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .photoGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移：square-detail-page 页面作用域
+   规则，均为本组件独占类；页面根类 square-detail-page 由 pages 层
+   css 定义，作用域选择器整体置于 :global 内）
+   ============================================================ */
+:global(html.dark .square-detail-page) .richContent,
+:global(html.dark .square-detail-page) .contentText {
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark .square-detail-page) .photoGrid {
+  gap: 12px;
+}
+
+:global(html.dark .square-detail-page) .contentPhoto {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .square-detail-page) .footerLine,
+:global(html.dark .square-detail-page) .footerMark {
+  color: #64748b !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .square-detail-page) .actionBtn {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+:global(html.dark .square-detail-page) .actionBtn:hover,
+:global(html.dark .square-detail-page) .actionBtn.active {
+  background: #1a2a4a !important;
+  border-color: #4d9aff !important;
+  color: #4d9aff !important;
+}

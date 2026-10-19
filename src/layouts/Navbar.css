@@ -1,0 +1,781 @@
+.nav-header {
+  height: var(--navbar-h, 80px);
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: white;
+  box-shadow: 0 2px 10px color-mix(in srgb, black 5%, transparent);
+}
+
+.nav-header.is-transparent {
+  background: transparent !important;
+  border-bottom: 1px solid color-mix(in srgb, white 10%, transparent);
+  box-shadow: none !important;
+}
+
+/* 顶部透明时，仅当悬停在菜单区域时取消透明 */
+.nav-header.is-transparent:has(.nav-center:hover) {
+  background-color: color-mix(in srgb, white 98%, transparent) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid color-mix(in srgb, black 5%, transparent);
+  box-shadow: 0 4px 20px color-mix(in srgb, black 8%, transparent) !important;
+}
+
+.nav-header.is-scrolled {
+  height: 64px;
+  background-color: color-mix(in srgb, white 80%, transparent) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid color-mix(in srgb, black 5%, transparent);
+  box-shadow: 0 4px 20px color-mix(in srgb, black 5%, transparent) !important;
+}
+
+.nav-header.is-transparent .logo-text {
+  background: white;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-header.is-transparent:has(.nav-center:hover) .logo-text {
+  background: linear-gradient(90deg, var(--brand-primary), var(--color-info));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-header.is-transparent .menu-item {
+  color: color-mix(in srgb, white 90%, transparent);
+}
+
+.nav-header.is-transparent:has(.nav-center:hover) .menu-item {
+  color: var(--ink-700);
+}
+
+.nav-header.is-transparent .menu-item:hover {
+  background: color-mix(in srgb, white 15%, transparent);
+  color: white;
+}
+
+.nav-header.is-transparent:has(.nav-center:hover) .menu-item:hover {
+  background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+  color: var(--brand-primary);
+}
+
+.nav-header.is-transparent .icon-btn {
+  color: white;
+}
+
+.nav-header.is-transparent:has(.nav-center:hover) .icon-btn {
+  color: var(--slate-500);
+}
+
+.nav-header.is-transparent .lang-btn {
+  border-color: color-mix(in srgb, white 40%, transparent);
+  color: white;
+}
+
+.nav-header.is-transparent:has(.nav-center:hover) .lang-btn {
+  border-color: var(--slate-200);
+  color: var(--slate-500);
+}
+
+.nav-header.is-transparent .username {
+  color: white;
+}
+
+.nav-header.is-transparent:has(.nav-center:hover) .username {
+  color: var(--slate-800);
+}
+
+.nav-header.is-transparent .mobile-menu-btn {
+  color: white;
+}
+
+.nav-header.is-transparent:has(.nav-center:hover) .mobile-menu-btn {
+  color: var(--slate-800);
+}
+
+.nav-header.is-transparent .cmd-trigger {
+  background: transparent;
+  border-color: color-mix(in srgb, white 40%, transparent);
+  color: white;
+}
+
+.nav-header.is-transparent:has(.nav-center:hover) .cmd-trigger {
+  background: var(--slate-50);
+  border-color: var(--mist-050);
+  color: var(--ink-500);
+}
+
+.nav-header.is-transparent .cmd-trigger:hover {
+  background: color-mix(in srgb, white 15%, transparent);
+  border-color: color-mix(in srgb, white 60%, transparent);
+  color: white;
+}
+
+.nav-header.is-transparent:has(.nav-center:hover) .cmd-trigger:hover {
+  background: var(--brand-primary-faint);
+  border-color: var(--brand-primary-soft);
+  color: var(--brand-primary);
+}
+
+.nav-container {
+  max-width: 1200px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo Section */
+.nav-left {
+  flex-shrink: 0;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.nav-logo:hover {
+  transform: scale(1.02);
+}
+
+.logo-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-img {
+  width: 2em;
+  height: 2em;
+ }
+
+.logo-text {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, var(--brand-primary), var(--color-info));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all 0.3s ease;
+}
+
+/* Desktop Menu Section */
+.nav-center {
+  display: flex;
+  height: 100%;
+  margin: 0 40px;
+}
+
+.menu-item-group {
+  position: relative;
+  height: 100%;
+}
+
+.menu-item {
+  height: 100%;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--neutral-800);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.arrow-icon {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+}
+
+.menu-item:hover {
+  color: var(--brand-primary);
+  background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+}
+
+.menu-item-group:hover .arrow-icon {
+  transform: rotate(180deg);
+}
+
+/* Mega Menu Styles */
+.mega-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  transform: translateX(-20px);
+  width: auto;
+  min-width: 500px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px color-mix(in srgb, black 12%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  padding: 8px;
+  border: 1px solid color-mix(in srgb, black 5%, transparent);
+  pointer-events: none;
+}
+
+.menu-item-group:hover .mega-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.mega-menu-inner {
+  display: flex;
+  gap: 32px;
+  padding: 24px;
+}
+
+.mega-column {
+  flex: 1;
+  min-width: 180px;
+}
+
+.mega-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #8c8c8c; /* stylelint-disable-line color-no-hex, function-allowed-list */
+  margin-bottom: 16px;
+  padding-left: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.mega-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mega-item {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #444; /* stylelint-disable-line color-no-hex, function-allowed-list */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mega-item:hover {
+  background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+  color: var(--brand-primary);
+  transform: translateX(6px);
+}
+
+/* Action Section */
+.nav-right {
+  flex-shrink: 0;
+}
+
+.action-items {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--neutral-600);
+  transition: all 0.3s ease;
+}
+
+.icon-btn:hover {
+  background: color-mix(in srgb, black 5%, transparent);
+  color: var(--brand-primary);
+}
+
+.cmd-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 12px;
+  background: var(--slate-50);
+  border: 1px solid var(--mist-050);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.25s ease;
+  color: var(--ink-500);
+}
+
+.cmd-trigger:hover {
+  border-color: var(--brand-primary-soft);
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+}
+
+.cmd-search-icon {
+  flex-shrink: 0;
+}
+
+.cmd-trigger-text {
+  font-size: 13px;
+  letter-spacing: 0.3px;
+}
+
+.cmd-kbd {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-400);
+  border: 1px solid var(--ink-200);
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: white;
+  letter-spacing: 0.5px;
+}
+
+.cmd-trigger:hover .cmd-kbd {
+  color: var(--brand-primary);
+  border-color: var(--brand-primary-soft);
+}
+
+.lang-btn {
+  background: transparent;
+  border: 1px solid var(--slate-200);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--neutral-600);
+  transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 14px 5px 5px;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+}
+
+.user-profile:hover {
+  background: color-mix(in srgb, var(--brand-primary) 6%, transparent);
+  border-color: var(--brand-primary-soft);
+}
+
+.user-profile .caret {
+  font-size: 11px;
+  color: var(--ink-500);
+  transition: transform 0.25s ease;
+}
+
+.username {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--ink-800);
+  transition: all 0.3s ease;
+}
+
+.login-btn-desktop {
+  padding: 8px 20px !important;
+  border-radius: 20px !important;
+  font-weight: 600;
+  font-size: 13px;
+  border-color: var(--brand-primary) !important;
+  color: var(--brand-primary) !important;
+  background: color-mix(in srgb, var(--brand-primary) 6%, transparent) !important;
+  transition: all 0.3s ease;
+}
+
+.login-btn-desktop:hover {
+  background: var(--brand-primary) !important;
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 20%, transparent);
+}
+
+/* Mobile Specific */
+.mobile-menu-btn {
+  font-size: 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--neutral-800);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-btn:active {
+  background: color-mix(in srgb, black 5%, transparent);
+}
+
+/* Drawer body 结构覆写（padding 0 / flex 纵向布局）已 token 化为
+   Navbar.tsx 中 Drawer 的 styles prop；
+   Collapse 折叠面板与 Dropdown 菜单内部结构无对应 styles/token，保留类名覆写 */
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0 20px 20px;
+}
+
+.mobile-menu-content {
+  flex: 1;
+  overflow-y: auto;
+  margin: 0 -8px;
+  padding: 0 8px;
+}
+
+/* 移除折叠面板的边框（原 :deep(.el-collapse*) → AntD 等价类） */
+.mobile-drawer .ant-collapse {
+  border: none !important;
+  background: transparent !important;
+}
+
+.mobile-drawer .ant-collapse-item > .ant-collapse-header {
+  border-bottom: 1px solid var(--slate-100) !important;
+}
+
+.mobile-drawer .ant-collapse-content {
+  border-bottom: none !important;
+  background: transparent !important;
+}
+
+.mobile-drawer .ant-collapse-content > .ant-collapse-content-box {
+  padding: 16px 0 !important;
+}
+
+/* 隐藏滚动条但保留功能 (可选) */
+.mobile-menu-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mobile-menu-content::-webkit-scrollbar-thumb {
+  background: var(--neutral-100);
+  border-radius: 2px;
+}
+
+.mobile-collapse-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a; /* stylelint-disable-line color-no-hex, function-allowed-list */
+}
+
+.mobile-center-link {
+  margin: 8px 16px 16px;
+  padding: 12px;
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: 1px solid var(--brand-primary-soft);
+}
+
+.mobile-center-link:active {
+  background: var(--blue-050);
+}
+
+.mobile-group {
+  padding: 12px 8px;
+  background: #fcfcfc; /* stylelint-disable-line color-no-hex, function-allowed-list */
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.mobile-group-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--slate-400);
+  margin-bottom: 8px;
+  padding-left: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mobile-item {
+  padding: 12px 16px;
+  font-size: 1rem;
+  color: var(--slate-600);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 6px;
+  line-height: 1.4;
+}
+
+.mobile-item:active {
+  background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+  color: var(--brand-primary);
+  transform: translateX(4px);
+}
+
+.mobile-item-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--slate-300);
+  border-radius: 50%;
+  transition: background 0.2s;
+  margin-top: 8px; /* 对齐多行文本 */
+  flex-shrink: 0;
+}
+
+.mobile-item:active .mobile-item-dot {
+  background: var(--brand-primary);
+  transform: scale(1.2);
+}
+
+.check-icon {
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--brand-primary);
+}
+
+/* 下拉项 label 行：让选中勾选图标靠右（等价 el-dropdown-menu__item 的 flex 布局） */
+.dropdown-check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+/* Mobile Footer Improvements */
+.mobile-footer-actions {
+  margin-top: auto;
+  padding: 24px 0 10px;
+  border-top: 1px solid var(--slate-100);
+}
+
+.mobile-action-section {
+  margin-bottom: 20px;
+}
+
+.mobile-section-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--slate-400);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mobile-action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.mobile-grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 8px;
+  background: var(--slate-50);
+  border: 1px solid var(--slate-100);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--slate-500);
+}
+
+.mobile-grid-item span {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.mobile-grid-item.active {
+  background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+.mobile-grid-item:active {
+  transform: scale(0.95);
+}
+
+/* Responsive Utilities */
+@media (width <= 1200px) {
+  .nav-container {
+    padding: 0 24px;
+  }
+
+  .nav-center {
+    margin: 0 20px;
+  }
+}
+
+@media (width <= 992px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .nav-center {
+    display: none;
+  }
+
+  /* 在移动端隐藏主题和语言切换按钮 */
+  .icon-btn,
+  .lang-btn {
+    display: none;
+  }
+}
+
+@media (width >= 993px) {
+  .mobile-only {
+    display: none;
+  }
+}
+
+/* ---------- 用户下拉菜单（AntD Dropdown 浮层，替代原全局 el-popper 样式） ---------- */
+.user-dropdown-popper.ant-dropdown {
+  border-radius: 16px !important;
+  border: 1px solid var(--mist-050) !important;
+  box-shadow: 0 12px 40px color-mix(in srgb, var(--brand-primary) 12%, transparent) !important;
+  padding: 6px !important;
+  overflow: hidden;
+}
+
+.user-dropdown-popper .ant-dropdown-menu {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 头部信息区（作为禁用的菜单项渲染，修正 AntD disabled 项的默认观感） */
+.user-dropdown-popper .ant-dropdown-menu-item.dropdown-header-item {
+  cursor: default !important;
+  color: inherit !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+}
+
+.user-dropdown-popper .dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 12px 16px;
+  margin-bottom: 4px;
+  background: linear-gradient(135deg, var(--brand-primary-faint), #e6f0ff); /* stylelint-disable-line color-no-hex, function-allowed-list */
+  border-radius: 12px;
+  border-bottom: 1px solid var(--brand-primary-soft);
+}
+
+.user-dropdown-popper .dropdown-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.user-dropdown-popper .dropdown-header-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink-900);
+  line-height: 1.2;
+}
+
+.user-dropdown-popper .dropdown-header-id {
+  font-size: 12px;
+  color: var(--ink-500);
+  letter-spacing: 0.3px;
+}
+
+.user-dropdown-popper .ant-dropdown-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  margin: 2px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-700);
+  transition: all 0.2s ease;
+}
+
+.user-dropdown-popper .ant-dropdown-menu-item .anticon {
+  font-size: 16px;
+  color: var(--ink-500);
+  transition: color 0.2s ease;
+}
+
+.user-dropdown-popper .ant-dropdown-menu-item:hover {
+  background: var(--brand-primary-faint) !important;
+  color: var(--brand-primary) !important;
+}
+
+.user-dropdown-popper .ant-dropdown-menu-item:hover .anticon {
+  color: var(--brand-primary);
+}
+
+/* 登出项（最后一个菜单项，前面是 AntD divider）hover 变危险色 */
+.user-dropdown-popper .ant-dropdown-menu-item:last-child {
+  margin-top: 6px;
+}
+
+.user-dropdown-popper .ant-dropdown-menu-item-divider {
+  margin: 0 12px;
+  background: var(--mist-050);
+}
+
+.user-dropdown-popper .ant-dropdown-menu-item:last-child:hover {
+  color: var(--danger-500) !important;
+  background: var(--danger-50) !important;
+}
+
+.user-dropdown-popper .ant-dropdown-menu-item:last-child:hover .anticon {
+  color: var(--danger-500);
+}
+
+/* ---------- 主题 / 语言下拉（AntD 浮层内的选中态布局） ---------- */
+.nav-dropdown-popper .ant-dropdown-menu-item .ant-dropdown-menu-title-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}

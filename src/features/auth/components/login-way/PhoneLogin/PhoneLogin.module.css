@@ -1,0 +1,50 @@
+/* 手机号验证码登录（CSS Modules：私有类 camelCase；antd 输入类用 :global 包裹）
+   说明：login-form 的宽度与表单项间距原为账号表单全局规则跨文件层叠生效，
+   按零变更原则在本模块等价保留；login-button 取原全局层叠最终生效值 */
+
+.loginForm {
+  width: 100%;
+}
+
+.loginForm :global(.ant-form-item) {
+  margin-bottom: 12px;
+}
+
+.captchaFormItem .captchaInputContainer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.captchaFormItem .captchaInputContainer :global(.ant-input) {
+  flex: 1;
+}
+
+.captchaFormItem .captchaInputContainer .codeBtn {
+  flex: none;
+  min-width: 120px;
+}
+
+.loginButton {
+  width: 100%;
+  margin-top: 8px; /* 减少按钮上方间距 */
+  border-radius: 8px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  letter-spacing: 1px;
+  transform: translateY(0);
+  background: linear-gradient(135deg, var(--brand-primary), var(--color-info));
+  border: none;
+}
+
+.loginButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--brand-primary) 40%, transparent);
+}
+
+.loginButton:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 35%, transparent);
+}

@@ -1,0 +1,574 @@
+/* 04 成长足迹区块 · 概览 + 徽章墙 + 分年时间线（CSS Modules：私有类 camelCase。
+   timelineKind 后接的 JS 变体字面量类（counseling/capsule 等）由数据驱动，
+   在模块内以「.timelineKind.字面量」混拼选择器匹配） */
+
+/* ============ 杂志区块通用 ============ */
+.magSection {
+  border-top: 1px solid var(--ink-200);
+  padding: 48px 0 40px;
+}
+
+.secHead {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 28px;
+  align-items: start;
+  margin-bottom: 36px;
+}
+
+.secNum {
+  font-size: 28px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--brand-primary);
+  line-height: 1;
+  padding-top: 2px;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+}
+
+.secTitles {
+  min-width: 0;
+}
+
+.secTitle {
+  margin: 0 0 8px;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink-900);
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+}
+
+.secDesc {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-500);
+  line-height: 1.6;
+  max-width: 540px;
+}
+
+.secToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand-primary);
+  background: var(--brand-primary-faint);
+  border: 1px solid var(--brand-primary-soft);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.secToggle:hover {
+  background: var(--brand-primary-soft);
+}
+
+/* ============ 成长足迹 ============ */
+.growthSummary {
+  margin-bottom: 36px;
+}
+
+.gsHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.gsLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink-900);
+  white-space: nowrap;
+}
+
+.gsLine {
+  flex: 1;
+  height: 1px;
+  background: var(--ink-900);
+}
+
+.gsStats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--ink-200);
+  border-bottom: 1px solid var(--ink-200);
+}
+
+.gsStat {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-right: 1px solid var(--ink-200);
+}
+
+.gsStat:last-child {
+  border-right: none;
+}
+
+.gsNum {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(36px, 4vw, 48px);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--brand-primary);
+  letter-spacing: -1px;
+}
+
+.gsKey {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+/* ============ 徽章墙 ============ */
+.badgeWall {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.badgeCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 16px;
+  border: 1px solid var(--ink-200);
+  transition: all 0.25s;
+}
+
+.badgeCard.earned {
+  border-color: var(--brand-primary-soft);
+  background: linear-gradient(135deg, var(--brand-primary-faint) 0%, white 100%);
+}
+
+.badgeCard.earned:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  border-color: var(--brand-primary);
+}
+
+.badgeIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  font-family: Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink-400);
+  background: var(--ink-100);
+  border: 1px solid var(--ink-200);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.badgeCard.earned .badgeIcon {
+  color: white;
+  background: linear-gradient(135deg, var(--brand-primary), var(--color-info));
+  border-color: transparent;
+}
+
+.badgeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.badgeName {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-800);
+}
+
+.badgeCard.earned .badgeName {
+  color: var(--brand-primary);
+}
+
+.badgeDesc {
+  font-size: 11px;
+  color: var(--ink-400);
+  line-height: 1.4;
+}
+
+/* ============ 时间线分组 ============ */
+.timelineGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timelineGroup {
+  margin-bottom: 16px;
+}
+
+.tgYearMark {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.tgYear {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 28px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--brand-primary);
+  line-height: 1;
+}
+
+.tgRule {
+  flex: 1;
+  height: 1px;
+  background: var(--brand-primary-soft);
+}
+
+.timelineEnd {
+  text-align: center;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--ink-400);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 20px 0 0;
+  border-top: 1px solid var(--mist-075);
+}
+
+/* ============ 时间线列表 ============ */
+.timelineList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: none;
+}
+
+.timelineRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 28px;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--mist-075);
+  transition: background 0.2s;
+}
+
+.timelineRow:hover {
+  background: var(--mist-025);
+}
+
+.timelineNo {
+  font-size: 22px;
+  font-weight: 700;
+  font-style: italic;
+  font-family: Georgia, serif;
+  color: var(--brand-primary-soft);
+  line-height: 1;
+  width: 40px;
+}
+
+.timelineRow:hover .timelineNo {
+  color: var(--brand-primary);
+}
+
+.timelineBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.timelineText {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-800);
+}
+
+.timelineDate {
+  font-size: 12px;
+  color: var(--ink-400);
+  letter-spacing: 1px;
+}
+
+.timelineKind {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: Georgia, serif;
+  color: white;
+  background: var(--brand-primary);
+  border-radius: 50%;
+}
+
+.timelineKind.counseling { background: var(--color-info); }
+.timelineKind.capsule { background: var(--purple-600); }
+.timelineKind.article { background: #fa8c16; } /* stylelint-disable-line color-no-hex, function-allowed-list */
+.timelineKind.milestone { background: var(--brand-primary); }
+.timelineKind.square { background: #13c2c2; } /* stylelint-disable-line color-no-hex, function-allowed-list */
+.timelineKind.comment { background: #eb2f96; } /* stylelint-disable-line color-no-hex, function-allowed-list */
+.timelineKind.like { background: #52c41a; } /* stylelint-disable-line color-no-hex, function-allowed-list */
+.timelineKind.login { background: var(--purple-600); }
+
+@media (width <= 1024px) {
+  .badgeWall {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width <= 768px) {
+  .magSection {
+    padding: 36px 0 28px;
+  }
+
+  .secHead {
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    margin-bottom: 26px;
+  }
+
+  .secToggle {
+    grid-column: 1 / -1;
+    justify-self: start;
+    margin-top: 4px;
+  }
+
+  .secTitle {
+    font-size: 22px;
+  }
+
+  .secNum {
+    font-size: 24px;
+  }
+
+  .timelineRow {
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    padding: 16px 0;
+  }
+
+  .timelineKind {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 6px;
+  }
+
+  .timelineNo {
+    font-size: 18px;
+    width: 32px;
+  }
+
+  .gsStats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .gsStat {
+    padding: 18px 12px;
+  }
+
+  .gsStat:nth-child(2) {
+    border-right: none;
+  }
+
+  .gsStat:nth-child(1), .gsStat:nth-child(2) {
+    border-bottom: 1px solid var(--ink-200);
+  }
+
+  .gsNum {
+    font-size: 32px;
+  }
+
+  .badgeWall {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .badgeCard {
+    padding: 14px 12px;
+  }
+
+  .badgeIcon {
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
+  }
+
+  .badgeName {
+    font-size: 13px;
+  }
+
+  .badgeDesc {
+    font-size: 10px;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移后的本组件独占有效值，均带
+   profile-page 作用域；原文件在 token 层与 hex 层各有一份的规则
+   （badge- 系列/gs-stat/sec-toggle/timeline-row hover/field-row）
+   取后层最终生效值合并迁入；timelineKind 变体字面量类只改文字色，
+   背景色沿用上方 light 变体规则，与原行为一致）
+   ============================================================ */
+:global(html.dark) .magSection {
+  border-color: #1e293b !important;
+}
+
+:global(html.dark) .secNum {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .secTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .secDesc {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .secToggle {
+  color: #4d9aff !important;
+  background: transparent !important;
+  border-color: rgb(255, 255, 255, 0.08) !important;
+}
+
+:global(html.dark) .secToggle:hover {
+  background: #1a2a4a !important;
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark) .gsLabel,
+:global(html.dark) .gsKey {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .gsLine {
+  background: #1e293b !important;
+}
+
+:global(html.dark) .gsStat {
+  background: transparent !important;
+  border-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+:global(html.dark) .gsNum {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .badgeCard {
+  background: transparent !important;
+  border-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+:global(html.dark) .badgeCard.earned {
+  background: rgb(77, 154, 255, 0.04) !important;
+  border-color: rgb(77, 154, 255, 0.15) !important;
+}
+
+:global(html.dark) .badgeCard.earned:hover {
+  background: rgb(77, 154, 255, 0.08) !important;
+  border-color: rgb(77, 154, 255, 0.3) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+:global(html.dark) .badgeIcon {
+  background: rgb(77, 154, 255, 0.1) !important;
+  border-color: transparent !important;
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .badgeCard.earned .badgeIcon {
+  background: linear-gradient(135deg, #0052d9, #1890ff) !important;
+}
+
+:global(html.dark) .badgeName {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .badgeDesc {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .tgYear {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .tgRule {
+  background: #1e293b !important;
+}
+
+:global(html.dark) .timelineEnd {
+  color: #64748b !important;
+}
+
+:global(html.dark) .timelineRow {
+  border-color: #1e293b !important;
+}
+
+:global(html.dark) .timelineRow:hover {
+  background: rgb(255, 255, 255, 0.03) !important;
+}
+
+:global(html.dark) .timelineNo {
+  color: #64748b !important;
+}
+
+:global(html.dark) .timelineText {
+  color: #e2e8f0 !important;
+}
+
+:global(html.dark) .timelineDate {
+  color: #64748b !important;
+}
+
+:global(html.dark) .timelineKind {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .timelineKind.counseling {
+  color: #a78bfa !important;
+}
+
+:global(html.dark) .timelineKind.capsule {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .timelineKind.article {
+  color: #fbbf24 !important;
+}
+
+:global(html.dark) .timelineKind.milestone {
+  color: #10b981 !important;
+}
+
+:global(html.dark) .timelineKind.square {
+  color: #f472b6 !important;
+}
+
+:global(html.dark) .timelineKind.comment {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .timelineKind.like {
+  color: #f87171 !important;
+}
+
+:global(html.dark) .timelineKind.login {
+  color: #64748b !important;
+}

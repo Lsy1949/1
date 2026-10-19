@@ -1,0 +1,191 @@
+/* 03 活动统计区块 · 编辑式数字排（CSS Modules：私有类 camelCase） */
+
+/* ============ 杂志区块通用 ============ */
+.magSection {
+  border-top: 1px solid var(--ink-200);
+  padding: 48px 0 40px;
+}
+
+.secHead {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 28px;
+  align-items: start;
+  margin-bottom: 36px;
+}
+
+.secNum {
+  font-size: 28px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--brand-primary);
+  line-height: 1;
+  padding-top: 2px;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+}
+
+.secTitles {
+  min-width: 0;
+}
+
+.secTitle {
+  margin: 0 0 8px;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink-900);
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+}
+
+.secDesc {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-500);
+  line-height: 1.6;
+  max-width: 540px;
+}
+
+/* ============ 活动统计 ============ */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+}
+
+.statBlock {
+  padding: 8px 28px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-left: 1px solid var(--ink-200);
+}
+
+.statBlock:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.statIndex {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--ink-400);
+  font-family: Georgia, serif;
+  font-style: italic;
+}
+
+.statNum {
+  font-size: clamp(40px, 5vw, 56px);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--brand-primary);
+  letter-spacing: -1px;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+}
+
+.statLabel {
+  font-size: 13px;
+  color: var(--ink-600);
+  letter-spacing: 0.5px;
+}
+
+@media (width <= 1024px) {
+  .statsRow {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .statBlock:nth-child(4) {
+    border-left: none;
+    padding-left: 0;
+  }
+}
+
+@media (width <= 768px) {
+  .magSection {
+    padding: 36px 0 28px;
+  }
+
+  .secHead {
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    margin-bottom: 26px;
+  }
+
+  .secTitle {
+    font-size: 22px;
+  }
+
+  .secNum {
+    font-size: 24px;
+  }
+
+  .statsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .statBlock {
+    border-left: none;
+    border-bottom: 1px solid var(--mist-075);
+    padding: 16px 0;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .statBlock:last-child {
+    border-bottom: none;
+  }
+
+  .statIndex {
+    width: 28px;
+  }
+
+  .statNum {
+    font-size: 38px;
+  }
+
+  .statLabel {
+    margin-left: auto;
+    text-align: right;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移后的本组件独占有效值。其中
+   .stat-label 另有跨页面共用的全局暗色规则服务 article/capsule/
+   square 等页，全局规则保留服务它们，此处按 profile-page 作用域
+   的更高优先级规则取本组件有效值；statBlock 边框色原在两段各有
+   一份，取后层最终生效值）
+   ============================================================ */
+:global(html.dark) .magSection {
+  border-color: #1e293b !important;
+}
+
+:global(html.dark) .secNum {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .secTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .secDesc {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .statBlock {
+  border-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+:global(html.dark) .statIndex {
+  color: #64748b !important;
+}
+
+:global(html.dark) .statNum {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .statLabel {
+  color: #94a3b8 !important;
+}

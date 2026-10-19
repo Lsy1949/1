@@ -1,0 +1,18 @@
+/* 基础重置（测评模块所需的最小集；全站 base.css 随全量迁移引入） */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--brand-font-family);
+  color: var(--ink-900);
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}

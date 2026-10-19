@@ -1,0 +1,333 @@
+/* 首页全屏轮播（CSS Modules：私有类 camelCase；antd 图标根类 .anticon 用 :global 包裹；
+   keyframes 由模块自动局部化，不污染全局） */
+
+.carouselSection {
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.scrollDownIndicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  animation: bounce 2s infinite;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.scrollDownIndicator:hover {
+  opacity: 1;
+}
+
+.scrollText {
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  font-weight: 500;
+  text-shadow: 0 2px 4px color-mix(in srgb, black 30%, transparent);
+}
+
+.scrollIcon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 2px 4px color-mix(in srgb, black 30%, transparent));
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  40% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+
+  60% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+.carouselContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.carouselContainer:active {
+  cursor: grabbing;
+}
+
+.carouselTrack {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carouselSlide {
+  min-width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.slideImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.slideImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, color-mix(in srgb, black 30%, transparent) 0%, color-mix(in srgb, black 60%, transparent) 100%);
+}
+
+/* 文字内容独立层：覆盖在轮播图上方，不受 track 滑动影响 */
+.slideContentOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem 0 7rem;
+  text-align: left;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.slideContentOverlay .slideText {
+  pointer-events: auto;
+  /* <transition name="fade-up" mode="out-in"> → key 重挂载入场动画 */
+  animation: fade-up-enter 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.slideText {
+  max-width: 650px;
+  padding: 0;
+  background: transparent;
+  backdrop-filter: none;
+  display: block;
+}
+
+.slideTag {
+  display: inline-block;
+  padding: 4px 12px;
+  background: color-mix(in srgb, var(--brand-primary) 20%, transparent);
+  border-left: 3px solid var(--brand-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.slideText h2 {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+  font-weight: 800;
+  text-shadow: none;
+  color: white;
+}
+
+.slideText p {
+  font-size: 1.25rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+  text-shadow: none;
+  color: color-mix(in srgb, white 90%, transparent);
+  max-width: 500px;
+}
+
+.slideActions {
+  display: flex;
+  gap: 1rem;
+}
+
+.carouselButton {
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
+}
+
+.carouselButton.primary {
+  background: var(--brand-primary);
+  color: white;
+  border: none;
+}
+
+.carouselButton.primary:hover {
+  background: var(--brand-primary-deeper);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px color-mix(in srgb, var(--brand-primary) 30%, transparent);
+}
+
+.carouselButton.secondary {
+  background: color-mix(in srgb, white 10%, transparent);
+  color: white;
+  border: 1px solid color-mix(in srgb, white 30%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.carouselButton.secondary:hover {
+  background: white;
+  color: var(--slate-800);
+  transform: translateY(-3px);
+}
+
+.carouselIndicators {
+  position: absolute;
+  bottom: 3rem;
+  left: 2rem;
+  display: flex;
+  gap: 1rem;
+  z-index: 10;
+}
+
+.carouselIndicators span {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, white 30%, transparent);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carouselIndicators span.active {
+  background: var(--brand-primary);
+  width: 60px;
+}
+
+/* <transition name="fade-up"> enter：opacity 0→1 / translateY(20px)→0 */
+@keyframes fade-up-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.carouselBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent !important;
+  color: color-mix(in srgb, white 70%, transparent);
+  border: none;
+  width: 80px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  opacity: 0;
+}
+
+.carouselContainer:hover .carouselBtn {
+  opacity: 1;
+}
+
+/* Element Plus 的 .el-icon → Ant Design 图标根类 .anticon（全局类，:global 包裹） */
+.carouselBtn :global(.anticon) {
+  font-size: 40px;
+  filter: drop-shadow(0 2px 10px color-mix(in srgb, black 30%, transparent));
+  transition: all 0.3s ease;
+}
+
+.carouselBtn:hover {
+  color: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carouselBtn.prev {
+  left: 1.5rem;
+}
+
+.carouselBtn.next {
+  right: 1.5rem;
+}
+
+.carouselBtn.prev:hover :global(.anticon) {
+  transform: translateX(-8px);
+}
+
+.carouselBtn.next:hover :global(.anticon) {
+  transform: translateX(8px);
+}
+
+.carouselBtn:active {
+  transform: translateY(-50%) scale(0.9);
+}
+
+@media (width <= 992px) {
+  .slideText h2 {
+    font-size: 2.5rem;
+  }
+}
+
+@media (width <= 768px) {
+  .carouselIndicators {
+    display: none;
+  }
+
+  .carouselBtn {
+    width: 50px;
+    height: 60px;
+  }
+
+  .carouselBtn :global(.anticon) {
+    font-size: 24px;
+  }
+
+  .slideContentOverlay {
+    padding: 0 1rem 0 4rem;
+  }
+}

@@ -1,0 +1,275 @@
+/* ===== 侧边栏（CSS Modules：私有类 camelCase） ===== */
+.sidebarColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 88px;
+  align-self: start;
+}
+
+.sidebarCard {
+  background: var(--brand-primary-wash);
+  border: 1px solid var(--mist-050);
+  border-radius: 16px;
+  padding: 22px 24px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.sidebarCard:hover {
+  border-color: var(--brand-primary-soft);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--brand-primary) 6%, transparent);
+}
+
+.sidebarCard.guidelinesCard {
+  background: color-mix(in srgb, var(--brand-primary) 4%, transparent);
+  border-color: var(--brand-primary-soft);
+}
+
+.sidebarHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sidebarTitle {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink-900);
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.onlineDot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--success-500);
+  font-weight: 600;
+}
+
+.onlineDot::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--success-500);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--success-500) 15%, transparent);
+}
+
+/* 活跃同学 */
+.membersRow {
+  display: flex;
+  align-items: center;
+}
+
+.memberAvatar {
+  border-radius: 50%;
+  border: 2px solid white;
+  transition: transform 0.2s ease;
+}
+
+.memberAvatar:hover {
+  transform: translateY(-3px);
+  z-index: 10 !important;
+}
+
+.membersMore {
+  margin-left: 12px;
+  font-size: 12px;
+  color: var(--ink-400);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 热门话题 */
+.topicCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cloudTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: var(--brand-primary-wash);
+  border: 1px solid var(--mist-050);
+  border-radius: 16px;
+  font-size: 12px;
+  color: var(--ink-600);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.cloudTag:hover {
+  background: var(--brand-primary-faint);
+  border-color: var(--brand-primary-soft);
+  color: var(--brand-primary);
+  transform: translateY(-2px);
+}
+
+.cloudHash {
+  color: var(--ink-400);
+  font-weight: 700;
+}
+
+.cloudTag:hover .cloudHash {
+  color: var(--brand-primary);
+}
+
+.cloudCount {
+  font-size: 10px;
+  color: var(--ink-400);
+  font-variant-numeric: tabular-nums;
+  margin-left: 2px;
+}
+
+/* 社区公约 */
+.guidelinesCard {
+  background: linear-gradient(160deg, var(--brand-primary-wash) 0%, white 100%);
+}
+
+.guidelinesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.guidelineItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.ruleNum {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--brand-primary);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  margin-top: 1px;
+  letter-spacing: 0.5px;
+}
+
+.ruleText {
+  font-size: 13px;
+  color: var(--ink-600);
+  line-height: 1.5;
+}
+
+@media (width <= 1100px) {
+  .sidebarColumn {
+    position: static;
+    order: 2;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移：square-page 页面作用域规则 +
+   三期「卡片融入背景」覆盖段，均为本组件独占类，页面根类 square-page
+   由 pages 层 css 定义，作用域选择器整体置于 :global 内）
+   ============================================================ */
+:global(html.dark .square-page) .sidebarCard {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .square-page) .sidebarCard:hover {
+  border-color: #4d9aff !important;
+  box-shadow: 0 16px 32px rgb(0, 0, 0, 0.4) !important;
+}
+
+:global(html.dark .square-page) .sidebarTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .square-page) .onlineDot {
+  background: #10b981 !important;
+}
+
+:global(html.dark .square-page) .memberAvatar {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+  border-color: #1e2b3a !important;
+}
+
+:global(html.dark .square-page) .membersMore {
+  background: #0f172a !important;
+  color: #94a3b8 !important;
+}
+
+:global(html.dark .square-page) .cloudTag {
+  color: #94a3b8 !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .square-page) .cloudTag:hover {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark .square-page) .cloudHash {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .square-page) .cloudCount {
+  color: #64748b !important;
+}
+
+:global(html.dark .square-page) .sidebarCard.guidelinesCard {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .square-page) .guidelineItem {
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .square-page) .ruleNum {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+}
+
+:global(html.dark .square-page) .ruleText {
+  color: #cbd5e1 !important;
+}
+
+/* 三期覆盖：卡片融入背景（文件后段，同特异性后者胜出，与原级联一致） */
+:global(html.dark .square-page) .sidebarCard {
+  background: transparent !important;
+  border-color: transparent !important;
+  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+:global(html.dark .square-page) .sidebarCard:hover {
+  background: rgb(77, 154, 255, 0.04) !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+:global(html.dark .square-page) .sidebarCard.guidelinesCard {
+  background: rgb(77, 154, 255, 0.03) !important;
+  border-color: rgb(77, 154, 255, 0.12) !important;
+}
+
+:global(html.dark .square-page) .cloudTag {
+  background: rgb(255, 255, 255, 0.03) !important;
+  border-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+:global(html.dark .square-page) .cloudTag:hover {
+  background: rgb(77, 154, 255, 0.08) !important;
+  border-color: rgb(77, 154, 255, 0.2) !important;
+  transform: none !important;
+}

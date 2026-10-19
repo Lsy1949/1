@@ -1,0 +1,408 @@
+/* 02 心理档案区块 · MBTI/压力/睡眠/兴趣标签/个人简介（CSS Modules：私有类
+   camelCase；antd 表单结构类用 :global 包裹。custom-scroll 为跨页面全局
+   工具类（滚动条样式由全局样式表提供），保留字面量不映射） */
+
+/* ============ 杂志区块通用 ============ */
+.magSection {
+  border-top: 1px solid var(--ink-200);
+  padding: 48px 0 40px;
+}
+
+.secHead {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 28px;
+  align-items: start;
+  margin-bottom: 36px;
+}
+
+.secNum {
+  font-size: 28px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--brand-primary);
+  line-height: 1;
+  padding-top: 2px;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+}
+
+.secTitles {
+  min-width: 0;
+}
+
+.secTitle {
+  margin: 0 0 8px;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink-900);
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+}
+
+.secDesc {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-500);
+  line-height: 1.6;
+  max-width: 540px;
+}
+
+.secToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand-primary);
+  background: var(--brand-primary-faint);
+  border: 1px solid var(--brand-primary-soft);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.secToggle:hover {
+  background: var(--brand-primary-soft);
+}
+
+/* ============ 字段列表（查看模式） ============ */
+.fieldList {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+
+.fieldRow {
+  padding: 18px 24px 18px 0;
+  border-bottom: 1px solid var(--mist-075);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldRow:not(:nth-child(3n)) {
+  border-right: 1px solid var(--mist-075);
+  padding-right: 24px;
+}
+
+.fieldRow:nth-child(3n) {
+  padding-left: 24px;
+}
+
+.fieldRowBlock {
+  grid-column: 1 / -1;
+  border-right: none !important;
+  padding-left: 0 !important;
+  padding-right: 0;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+
+.fieldValue {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink-800);
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.fieldValue.strong {
+  font-family: Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  letter-spacing: 1px;
+}
+
+.fieldValue.prose {
+  font-weight: 400;
+  color: var(--ink-700);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.tagChip {
+  display: inline-block;
+  margin: 2px 6px 2px 0;
+  padding: 4px 12px;
+  font-size: 13px;
+  color: var(--brand-primary);
+  background: var(--brand-primary-faint);
+  border: 1px solid var(--brand-primary-soft);
+}
+
+.tagChip.removable {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tagClose {
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.tagClose:hover {
+  opacity: 1;
+}
+
+/* ============ 表单（编辑模式） ============ */
+.magForm {
+  max-width: 100%;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px 24px;
+}
+
+.formGrid.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--mist-075);
+}
+
+.solidBtn {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  border-radius: 0;
+  font-weight: 600;
+  padding: 10px 28px;
+}
+
+.solidBtn:hover {
+  background: var(--brand-primary-deep) !important;
+  border-color: var(--brand-primary-deep) !important;
+}
+
+.ghostBtn {
+  border-radius: 0;
+  font-weight: 600;
+  padding: 10px 24px;
+}
+
+/* ============ 标签输入 ============ */
+.tagArea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.tagAdd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px dashed var(--brand-primary);
+  background: transparent;
+  color: var(--brand-primary);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.tagAdd:hover {
+  background: var(--brand-primary-faint);
+}
+
+.tagInput {
+  width: 150px;
+}
+
+/* ============ Ant 表单微调（对齐原 Element 表单视觉） ============
+   表单间距、label 字号/颜色、输入/下拉直角已 token 化为 ProfileView
+   嵌套 ConfigProvider 组件注入；label 字重/字距/大写排版与
+   radio-button 直角（Radio 无对应组件 token）保留下方 */
+.magForm :global(.ant-form-item-label) > label {
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding-bottom: 6px;
+}
+
+.magForm :global(.ant-radio-button-wrapper):first-child {
+  border-radius: 0;
+}
+
+.magForm :global(.ant-radio-button-wrapper):last-child {
+  border-radius: 0;
+}
+
+@media (width <= 1024px) {
+  .fieldList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .fieldRow:not(:nth-child(3n)) {
+    border-right: none;
+  }
+
+  .fieldRow:nth-child(odd) {
+    border-right: 1px solid var(--mist-075);
+    padding-right: 24px;
+  }
+
+  .fieldRow:nth-child(even) {
+    padding-left: 24px;
+  }
+
+  .formGrid,
+  .formGrid.two {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width <= 768px) {
+  .magSection {
+    padding: 36px 0 28px;
+  }
+
+  .secHead {
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    margin-bottom: 26px;
+  }
+
+  .secToggle {
+    grid-column: 1 / -1;
+    justify-self: start;
+    margin-top: 4px;
+  }
+
+  .secTitle {
+    font-size: 22px;
+  }
+
+  .secNum {
+    font-size: 24px;
+  }
+
+  .fieldList {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldRow,
+  .fieldRow:nth-child(odd),
+  .fieldRow:nth-child(even),
+  .fieldRow:nth-child(3n) {
+    border-right: none;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .formGrid,
+  .formGrid.two {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .formActions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .formActions :global(.ant-btn) {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移后的本组件独占有效值。tagChip
+   原在 token 层与 hex 层各一份，此处取后层最终生效值；form-actions
+   与 solid-btn 原文即为合并选择器，保留合并写法等价迁移）
+   ============================================================ */
+:global(html.dark) .magSection {
+  border-color: #1e293b !important;
+}
+
+:global(html.dark) .secNum {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .secTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .secDesc {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .secToggle {
+  color: #4d9aff !important;
+  background: transparent !important;
+  border-color: rgb(255, 255, 255, 0.08) !important;
+}
+
+:global(html.dark) .secToggle:hover {
+  background: #1a2a4a !important;
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark) .fieldRow {
+  border-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+:global(html.dark) .fieldLabel {
+  color: #64748b !important;
+}
+
+:global(html.dark) .fieldValue {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .fieldValue.strong {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .fieldValue.prose {
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark) .tagChip {
+  background: rgb(77, 154, 255, 0.08) !important;
+  color: #4d9aff !important;
+  border-color: rgb(77, 154, 255, 0.15) !important;
+}
+
+:global(html.dark) .formActions,
+:global(html.dark) .solidBtn {
+  background: #0052d9 !important;
+  color: #fff !important;
+  border-color: #0052d9 !important;
+}
+
+:global(html.dark) .solidBtn:hover {
+  background: #0042ad !important;
+  border-color: #0042ad !important;
+}
+
+:global(html.dark) .tagAdd {
+  background: transparent !important;
+  color: #4d9aff !important;
+  border-color: #334155 !important;
+}
+
+:global(html.dark) .tagAdd:hover {
+  background: #1a2a4a !important;
+  border-color: #4d9aff !important;
+}

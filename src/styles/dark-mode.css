@@ -1,0 +1,1046 @@
+/* ============================================================
+   生涯心旅 · 自主深色模式
+   通过 html.dark class + CSS 变量实现，替代 DarkReader
+   ============================================================ */
+
+/* ---------- 语义化 CSS 变量 ---------- */
+:root {
+  --bg-page: #ffffff;
+  --bg-soft: #f8fafc;
+  --bg-mute: #f1f5f9;
+  --bg-blue-tint: #f0f7ff;
+  --bg-card: #ffffff;
+  --bg-overlay: rgb(255, 255, 255, 0.95);
+  --text-heading: #0a0f1a;
+  --text-primary: #111827;
+  --text-regular: #1f2937;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --text-faint: #9ca3af;
+  --border-light: #eef2f6;
+  --border-regular: #f1f5f9;
+  --border-strong: #e2e8f0;
+  --border-blue: #d0e7ff;
+  --shadow-soft: 0 2px 8px rgb(0, 82, 217, 0.06);
+  --shadow-medium: 0 4px 16px rgb(0, 82, 217, 0.08);
+  --shadow-hover: 0 20px 40px rgb(0, 82, 217, 0.1);
+  --navbar-bg: rgb(255, 255, 255, 0.98);
+  --navbar-bg-blur: rgb(255, 255, 255, 0.8);
+}
+
+:root.dark {
+  --bg-page: #0f172a;
+  --bg-soft: #1e2b3a;
+  --bg-mute: #1e293b;
+  --bg-blue-tint: #1a2a4a;
+  --bg-card: #1e2b3a;
+  --bg-overlay: rgb(30, 43, 58, 0.95);
+  --text-heading: #f1f5f9;
+  --text-primary: #f1f5f9;
+  --text-regular: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+  --border-light: #1e293b;
+  --border-regular: #334155;
+  --border-strong: #475569;
+  --border-blue: #1a3a6b;
+  --shadow-soft: 0 2px 8px rgb(0, 0, 0, 0.3);
+  --shadow-medium: 0 4px 16px rgb(0, 0, 0, 0.4);
+  --shadow-hover: 0 20px 40px rgb(0, 0, 0, 0.5);
+  --navbar-bg: rgb(15, 23, 42, 0.98);
+  --navbar-bg-blur: rgb(15, 23, 42, 0.8);
+}
+
+/* ---------- 基础元素 ---------- */
+html.dark body {
+  background-color: var(--bg-page) !important;
+  color: var(--text-primary) !important;
+}
+
+html.dark #root {
+  background-color: var(--bg-page);
+}
+
+/* ---------- 导航栏 ---------- */
+html.dark .nav-header {
+  background-color: var(--navbar-bg) !important;
+  border-bottom-color: var(--border-light) !important;
+}
+
+html.dark .nav-header.is-transparent {
+  background-color: transparent !important;
+}
+
+html.dark .nav-logo .logo-text,
+html.dark .menu-item,
+html.dark .mega-title,
+html.dark .mega-item {
+  color: var(--text-primary) !important;
+}
+
+html.dark .mega-menu {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-regular) !important;
+}
+
+html.dark .mega-column {
+  border-color: var(--border-light) !important;
+}
+
+html.dark .cmd-trigger {
+  background-color: var(--bg-mute) !important;
+  color: var(--text-secondary) !important;
+}
+
+html.dark .icon-btn,
+html.dark .lang-btn {
+  background-color: var(--bg-mute) !important;
+  color: var(--text-regular) !important;
+}
+
+html.dark .icon-btn:hover,
+html.dark .lang-btn:hover {
+  background-color: var(--bg-blue-tint) !important;
+  color: #4d9aff !important;
+}
+
+html.dark .login-btn-desktop {
+  background-color: var(--bg-blue-tint) !important;
+  color: #4d9aff !important;
+  border-color: var(--border-blue) !important;
+}
+
+html.dark .user-profile {
+  background-color: var(--bg-mute) !important;
+}
+
+html.dark .mobile-menu-btn {
+  background-color: var(--bg-mute) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ---------- 通用排版 ---------- */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6 {
+  color: var(--text-heading) !important;
+}
+
+html.dark .section-header h2,
+html.dark .section-title,
+html.dark .nf-section-title {
+  color: var(--text-heading) !important;
+}
+
+html.dark p {
+  color: var(--text-secondary) !important;
+}
+/* stat-number/stat-label：home AboutSection 已在组件 module 内自带等价暗色规则；
+   此处全局规则保留服务 profile/article/capsule/square 等共用方 */
+html.dark .stat-number {
+  color: var(--text-heading) !important;
+}
+
+html.dark .stat-label {
+  color: var(--text-faint) !important;
+}
+
+/* ---------- 返回顶部 / 快速导航 ----------
+   （menu-item 裸规则保留服务 Navbar；home BackTop 的独占暗色规则
+   已迁至 BackTop.module.css） */
+html.dark .menu-item {
+  color: var(--text-regular) !important;
+}
+
+html.dark .menu-item:hover {
+  background-color: var(--bg-mute) !important;
+  color: #4d9aff !important;
+}
+
+/* ---------- 滚动条 ---------- */
+html.dark ::-webkit-scrollbar-track {
+  background: var(--bg-soft);
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgb(255, 255, 255, 0.15);
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgb(255, 255, 255, 0.25);
+}
+
+/* ---------- 文本选中 ---------- */
+html.dark ::selection {
+  background: rgb(51, 117, 224, 0.4);
+  color: #fff;
+}
+
+/* ---------- 杂项 ---------- */
+html.dark .drop-cap::first-letter {
+  color: #4d9aff !important;
+}
+
+html.dark .read-progress {
+  background: #4d9aff;
+}
+
+html.dark .grain-overlay {
+  opacity: 0.03;
+}
+
+/* ============================================================
+   二期覆盖：MainLayout Footer / Navbar 补全 / 各业务页面
+   ============================================================ */
+
+/* ---------- MainLayout Footer ---------- */
+html.dark .main-footer {
+  background: #0f172a !important;
+  border-top-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .footer-logo {
+  color: #4d9aff !important;
+}
+
+html.dark .brand-desc {
+  color: #94a3b8 !important;
+}
+
+html.dark .social-icon {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+}
+
+html.dark .social-icon:hover {
+  background: #0052d9 !important;
+  color: #fff !important;
+}
+
+html.dark .footer-column h4 {
+  color: #f1f5f9 !important;
+}
+
+html.dark .footer-menu a {
+  color: #94a3b8 !important;
+}
+
+html.dark .footer-menu a:hover {
+  color: #4d9aff !important;
+}
+
+html.dark .contact-list li {
+  color: #94a3b8 !important;
+}
+
+html.dark .contact-list .anticon {
+  color: #4d9aff !important;
+}
+
+html.dark .footer-bottom {
+  border-top-color: #1e293b !important;
+  background: #0a0f1a !important;
+}
+
+html.dark .footer-inner p,
+html.dark .footer-links,
+html.dark .footer-links span {
+  color: #64748b !important;
+}
+
+html.dark .footer-links span:hover {
+  color: #4d9aff !important;
+}
+
+/* ---------- Navbar 补全 ---------- */
+html.dark .nav-header {
+  background-color: rgb(15, 23, 42, 0.98) !important;
+  box-shadow: 0 2px 10px rgb(0, 0, 0, 0.3) !important;
+}
+
+html.dark .nav-header.is-scrolled {
+  background-color: rgb(15, 23, 42, 0.85) !important;
+  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
+  box-shadow: 0 4px 20px rgb(0, 0, 0, 0.3) !important;
+}
+
+html.dark .nav-header.is-transparent {
+  background-color: transparent !important;
+}
+
+html.dark .menu-item {
+  color: #e2e8f0 !important;
+}
+
+html.dark .menu-item:hover {
+  color: #4d9aff !important;
+  background: rgb(77, 154, 255, 0.12) !important;
+}
+
+html.dark .mega-menu {
+  background: #1e2b3a !important;
+  border-color: rgb(255, 255, 255, 0.06) !important;
+  box-shadow: 0 20px 40px rgb(0, 0, 0, 0.5) !important;
+}
+
+html.dark .mega-title {
+  color: #64748b !important;
+}
+
+html.dark .mega-item {
+  color: #cbd5e1 !important;
+}
+
+html.dark .mega-item:hover {
+  background: rgb(77, 154, 255, 0.12) !important;
+  color: #4d9aff !important;
+}
+
+html.dark .cmd-trigger {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .cmd-trigger:hover {
+  border-color: #1a3a6b !important;
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+}
+
+html.dark .cmd-kbd {
+  color: #64748b !important;
+  border-color: #334155 !important;
+  background: #0f172a !important;
+}
+
+html.dark .cmd-trigger:hover .cmd-kbd {
+  color: #4d9aff !important;
+  border-color: #1a3a6b !important;
+}
+
+html.dark .lang-btn {
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+html.dark .lang-btn:hover {
+  border-color: #4d9aff !important;
+  color: #4d9aff !important;
+}
+
+html.dark .user-profile:hover {
+  background: rgb(77, 154, 255, 0.1) !important;
+  border-color: #1a3a6b !important;
+}
+
+html.dark .username {
+  color: #f1f5f9 !important;
+}
+
+html.dark .user-profile .caret {
+  color: #94a3b8 !important;
+}
+
+html.dark .login-btn-desktop {
+  border-color: #4d9aff !important;
+  color: #4d9aff !important;
+  background: rgb(77, 154, 255, 0.1) !important;
+}
+
+html.dark .login-btn-desktop:hover {
+  background: #0052d9 !important;
+  color: #fff !important;
+}
+
+html.dark .mobile-menu-btn {
+  color: #e2e8f0 !important;
+}
+
+html.dark .mobile-collapse-title {
+  color: #f1f5f9 !important;
+}
+
+html.dark .mobile-center-link {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+  border-color: #1a3a6b !important;
+}
+
+html.dark .mobile-group {
+  background: #1e293b !important;
+}
+
+html.dark .mobile-group-title {
+  color: #64748b !important;
+}
+
+html.dark .mobile-item {
+  color: #cbd5e1 !important;
+}
+
+html.dark .mobile-item-dot {
+  background: #475569 !important;
+}
+
+html.dark .mobile-footer-actions {
+  border-top-color: #1e293b !important;
+}
+
+html.dark .mobile-section-title {
+  color: #64748b !important;
+}
+
+html.dark .mobile-grid-item {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .mobile-grid-item.active {
+  background: rgb(77, 154, 255, 0.12) !important;
+  border-color: #4d9aff !important;
+  color: #4d9aff !important;
+}
+
+/* 用户下拉菜单（AntD Dropdown 浮层，全局样式） */
+html.dark .user-dropdown-popper.ant-dropdown {
+  border-color: #1e293b !important;
+  box-shadow: 0 12px 40px rgb(0, 0, 0, 0.5) !important;
+  background: #1e2b3a !important;
+}
+
+html.dark .user-dropdown-popper .dropdown-header {
+  background: linear-gradient(135deg, #1a2a4a, #0f172a) !important;
+  border-bottom-color: #1a3a6b !important;
+}
+
+html.dark .user-dropdown-popper .dropdown-header-name {
+  color: #f1f5f9 !important;
+}
+
+html.dark .user-dropdown-popper .dropdown-header-id {
+  color: #94a3b8 !important;
+}
+
+html.dark .user-dropdown-popper .ant-dropdown-menu-item {
+  color: #cbd5e1 !important;
+}
+
+html.dark .user-dropdown-popper .ant-dropdown-menu-item .anticon {
+  color: #94a3b8 !important;
+}
+
+html.dark .user-dropdown-popper .ant-dropdown-menu-item:hover {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+}
+
+html.dark .user-dropdown-popper .ant-dropdown-menu-item:hover .anticon {
+  color: #4d9aff !important;
+}
+
+html.dark .user-dropdown-popper .ant-dropdown-menu-item-divider {
+  background: #1e293b !important;
+}
+
+/* 登出项 hover 变危险色 */
+html.dark .user-dropdown-popper .ant-dropdown-menu-item:last-child:hover {
+  color: #ef4444 !important;
+  background: rgb(239, 68, 68, 0.12) !important;
+}
+
+html.dark .user-dropdown-popper .ant-dropdown-menu-item:last-child:hover .anticon {
+  color: #ef4444 !important;
+}
+
+/* ---------- HomePage 补全 ----------
+   （nav-menu/nav-menu-title 为 home BackTop 独占类，暗色规则已迁至
+   BackTop.module.css；.dot 全局规则保留服务 assessment/article 共用方） */
+html.dark .animated-homepage {
+  background: linear-gradient(to bottom, #0f172a, #1a2a4a) fixed !important;
+}
+
+html.dark .dot {
+  background: #1e2b3a !important;
+}
+
+/* section-header 为 home NewsSection 与 assessment 共用类：全局规则保留服务
+   assessment（NewsSection.module.css 已自带等价局部规则）；section-subtitle/
+   section-badge/section-tag 与 about- 系列、marquee- 系列为 home 独占类，暗色规则已随
+   组件迁入各 module.css；services-/features-section 为无 tsx 引用的死规则，删除 */
+html.dark .section-header h2 {
+  color: #f1f5f9 !important;
+}
+
+html.dark .stat-number {
+  color: #f1f5f9 !important;
+}
+
+html.dark .stat-label {
+  color: #64748b !important;
+}
+
+/* home ContactSection/BackTop 独占暗色规则已迁至各自 module.css；
+   method-icon/method-text/submit-btn 全局裸规则删除不影响
+   time-capsule/square（各自页面级 scoped 暗色规则优先级更高） */
+
+/* ---------- CounselingCenter（补充：CounselingCenter.vue 自带 scoped dark，此处补全未覆盖类） ---------- */
+html.dark .counseling-page {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+
+/* ---------- AssessmentCenter（测评中心，使用真实类名） ---------- */
+html.dark .assessment-page {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+html.dark .assessment-page .module-cover {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .assessment-page .cover-eyebrow,
+html.dark .assessment-page .cover-no {
+  color: #4d9aff !important;
+}
+
+html.dark .assessment-page .cover-title,
+html.dark .assessment-page .cover-desc {
+  color: #94a3b8 !important;
+}
+/* ---------- Settings（设置页，使用真实类名） ---------- */
+html.dark .settings-page {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+
+
+/* ---------- Profile（个人主页，使用真实类名） ---------- */
+html.dark .profile-page {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+
+
+/* ---------- ArticleCenter（文章中心，使用真实类名） ---------- */
+html.dark .article-center {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .article-center .intro-eyebrow {
+  color: #4d9aff !important;
+}
+
+html.dark .article-center .intro-title {
+  color: #f1f5f9 !important;
+}
+
+html.dark .article-center .intro-sub {
+  color: #94a3b8 !important;
+}
+
+html.dark .article-center .stat-num {
+  color: #4d9aff !important;
+}
+
+html.dark .article-center .stat-label {
+  color: #94a3b8 !important;
+}
+
+html.dark .article-center .discovery-ribbon {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .article-center .ribbon-item {
+  border-color: #1e293b !important;
+}
+
+html.dark .article-center .ribbon-item.active {
+  background: #1a2a4a !important;
+}
+
+html.dark .article-center .item-num {
+  color: #64748b !important;
+}
+
+html.dark .article-center .item-label {
+  color: #cbd5e1 !important;
+}
+
+html.dark .article-center .ribbon-item.active .item-label {
+  color: #4d9aff !important;
+}
+
+html.dark .article-center .search-box {
+  background: #1e2b3a !important;
+  border-color: #334155 !important;
+}
+
+html.dark .article-center .search-icon {
+  color: #64748b !important;
+}
+
+html.dark .article-center .search-input {
+  color: #f1f5f9 !important;
+}
+
+html.dark .article-center .search-input::placeholder {
+  color: #64748b !important;
+}
+
+
+/* ---------- ArticleList（文章列表，使用真实类名） ---------- */
+html.dark .article-list-page {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .article-list-page .intro-eyebrow {
+  color: #4d9aff !important;
+}
+
+html.dark .article-list-page .intro-title {
+  color: #f1f5f9 !important;
+}
+
+html.dark .article-list-page .intro-count {
+  color: #4d9aff !important;
+}
+
+html.dark .article-list-page .intro-count-label {
+  color: #64748b !important;
+}
+
+html.dark .article-list-page .discovery-ribbon {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .article-list-page .back-link {
+  color: #94a3b8 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .article-list-page .back-link:hover {
+  color: #4d9aff !important;
+  border-color: #4d9aff !important;
+  background: #1a2a4a !important;
+}
+
+html.dark .article-list-page .item-icon {
+  color: #4d9aff !important;
+}
+
+html.dark .article-list-page .item-label {
+  color: #cbd5e1 !important;
+}
+
+html.dark .article-list-page .item-indicator {
+  background: #1e293b !important;
+}
+
+html.dark .article-list-page .search-box {
+  background: #1e2b3a !important;
+  border-color: #334155 !important;
+}
+
+html.dark .article-list-page .search-icon {
+  color: #64748b !important;
+}
+
+html.dark .article-list-page .search-input {
+  color: #f1f5f9 !important;
+}
+
+html.dark .article-list-page .search-input::placeholder {
+  color: #64748b !important;
+}
+
+
+/* ---------- ArticleDetail（文章详情，使用真实类名） ---------- */
+html.dark .article-detail-page {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .article-detail-page .top-bar {
+  background: transparent !important;
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .article-detail-page .back-btn {
+  color: #94a3b8 !important;
+}
+
+html.dark .article-detail-page .back-btn:hover {
+  color: #4d9aff !important;
+  background: #1a2a4a !important;
+}
+
+html.dark .article-detail-page .top-mark {
+  color: #64748b !important;
+}
+
+html.dark .article-detail-page .header-eyebrow,
+html.dark .article-detail-page .eyebrow-sep,
+html.dark .article-detail-page .eyebrow-date {
+  color: #4d9aff !important;
+}
+
+html.dark .article-detail-page .detail-title {
+  color: #f1f5f9 !important;
+}
+
+html.dark .article-detail-page .detail-summary {
+  color: #94a3b8 !important;
+}
+
+html.dark .article-detail-page .author-name {
+  color: #e2e8f0 !important;
+}
+
+html.dark .article-detail-page .author-title,
+html.dark .article-detail-page .meta-divider,
+html.dark .article-detail-page .meta-item {
+  color: #64748b !important;
+}
+
+
+/* ---------- AssessmentTake（沉浸式答题，使用真实类名） ---------- */
+html.dark .immersive-assessment {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .immersive-assessment .take-header {
+  background: #0f172a !important;
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .immersive-assessment .exit-btn {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .immersive-assessment .exit-btn:hover {
+  background: #1a2a4a !important;
+  color: #f87171 !important;
+  border-color: rgb(239, 68, 68, 0.4) !important;
+}
+
+html.dark .immersive-assessment .divider {
+  background: #1e293b !important;
+}
+
+html.dark .immersive-assessment .scale-meta,
+html.dark .immersive-assessment .scale-name {
+  color: #cbd5e1 !important;
+}
+
+html.dark .immersive-assessment .scale-progress-text {
+  color: #64748b !important;
+}
+
+html.dark .immersive-assessment .top-progress-track {
+  background: #1e293b !important;
+}
+
+html.dark .immersive-assessment .top-progress-fill {
+  background: #4d9aff !important;
+}
+
+html.dark .immersive-assessment .top-progress-pct {
+  color: #4d9aff !important;
+}
+
+html.dark .immersive-assessment .timer {
+  color: #fbbf24 !important;
+  background: rgb(251, 191, 36, 0.1) !important;
+}
+html.dark .immersive-assessment .take-footer {
+  background: #0f172a !important;
+  border-top-color: #1e293b !important;
+}
+
+html.dark .immersive-assessment .nav-btn {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+  color: #cbd5e1 !important;
+}
+
+html.dark .immersive-assessment .nav-btn:hover:not(:disabled) {
+  background: #1a2a4a !important;
+  border-color: #4d9aff !important;
+  color: #4d9aff !important;
+}
+
+html.dark .immersive-assessment .nav-btn:disabled {
+  opacity: 0.4;
+  background: #0f172a !important;
+  color: #64748b !important;
+}
+
+html.dark .immersive-assessment .nav-btn-primary {
+  background: #0052d9 !important;
+  color: #fff !important;
+  border-color: #0052d9 !important;
+}
+
+html.dark .immersive-assessment .nav-btn-primary:hover:not(:disabled) {
+  background: #0042ad !important;
+  border-color: #0042ad !important;
+}
+
+html.dark .immersive-assessment .nav-btn-primary:disabled {
+  background: #1e293b !important;
+  color: #64748b !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .immersive-assessment .step-dots .dot {
+  background: #334155 !important;
+}
+
+html.dark .immersive-assessment .step-dots .dot.active {
+  background: #4d9aff !important;
+}
+
+html.dark .immersive-assessment .step-dots .dot.completed {
+  background: #10b981 !important;
+}
+
+html.dark .immersive-assessment .submitting-overlay {
+  background: rgb(15, 23, 42, 0.85) !important;
+  backdrop-filter: blur(8px);
+}
+
+html.dark .immersive-assessment .loading-box {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .immersive-assessment .loading-sub {
+  color: #94a3b8 !important;
+}
+
+html.dark .immersive-assessment .bg-question-num {
+  color: rgb(77, 154, 255, 0.05) !important;
+}
+
+/* Propaganda.vue 已使用白色文字配深色背景，深色模式无需修改 */
+
+/* ---------- 404 页面局部变量重定义 ---------- */
+html.dark .nf-page {
+  --bg-primary: #0f172a !important;
+  --bg-secondary: #1e2b3a !important;
+  --text-primary: #f1f5f9 !important;
+  --text-secondary: #94a3b8 !important;
+  --text-muted: #64748b !important;
+  --border: #1e293b !important;
+  --border-light: #334155 !important;
+
+  background: #0f172a !important;
+  color: #f1f5f9 !important;
+}
+
+html.dark .nf-page h1,
+html.dark .nf-page h2,
+html.dark .nf-page h3 {
+  color: #f1f5f9 !important;
+}
+
+html.dark .nf-page p {
+  color: #94a3b8 !important;
+}
+
+/* ---------- Time Capsule 模块（CapsuleList/CapsuleCreate/CapsuleDetail，使用真实类名） ---------- */
+
+/* CapsuleList.vue */
+html.dark .capsule-list-page {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .capsule-list-page .watermark {
+  color: rgb(77, 154, 255, 0.04) !important;
+}
+html.dark .capsule-list-page .fab-button {
+  background: #0052d9 !important;
+  color: #fff !important;
+  box-shadow: 0 8px 24px rgb(0, 82, 217, 0.4) !important;
+}
+
+html.dark .capsule-list-page .fab-button:hover {
+  background: #0042ad !important;
+  box-shadow: 0 12px 32px rgb(0, 82, 217, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+/* CapsuleCreate.vue */
+html.dark .time-capsule-page {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+/* CapsuleDetail.vue */
+html.dark .detail-page {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+/* ---------- Square 模块（SquareList/SquareCreate/SquareDetail，使用真实类名） ---------- */
+
+/* SquareList.vue */
+html.dark .square-page {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .square-page .fab-btn {
+  background: #0052d9 !important;
+  color: #fff !important;
+  box-shadow: 0 8px 24px rgb(0, 82, 217, 0.4) !important;
+}
+
+html.dark .square-page .fab-btn:hover {
+  background: #0042ad !important;
+  box-shadow: 0 12px 32px rgb(0, 82, 217, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+/* SquareCreate.vue */
+html.dark .square-create-page {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+
+
+/* SquareDetail.vue */
+html.dark .square-detail-page {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+/* ---------- 通用：文本查看器/代码块 ---------- */
+html.dark pre,
+html.dark code {
+  background: #0a0f1a !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark blockquote {
+  border-left-color: #4d9aff !important;
+  background: #1a2a4a !important;
+  color: #cbd5e1 !important;
+}
+
+/* ============================================================
+   三期覆盖：杂志时尚风 — 深色模式下卡片融入背景，不卡片化
+   原则：浅色模式下卡片(#fff)与页面背景(#f8fafc)亮度接近而自然融合；
+   深色模式下复刻此效果——卡片背景透明或与页面背景(#0f172a)一致，
+   移除多余边框/阴影/位移，保持杂志时尚风视觉观感。
+   ============================================================ */
+
+/* ---------- Navbar 透明态悬停修复 ---------- */
+
+/* 修复：透明导航栏悬停时显示白色背景 → 改为极淡白色叠加 */
+html.dark .nav-header.is-transparent .menu-item:hover {
+  background: rgb(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+}
+
+html.dark .nav-header.is-transparent .cmd-trigger:hover {
+  background: rgb(255, 255, 255, 0.08) !important;
+}
+
+html.dark .nav-header.is-transparent .icon-btn:hover,
+html.dark .nav-header.is-transparent .lang-btn:hover {
+  background: rgb(255, 255, 255, 0.08) !important;
+}
+
+/* 透明态导航栏在 nav-center 悬停后变为不透明态的悬停色 */
+html.dark .nav-header.is-transparent:has(.nav-center:hover) .menu-item:hover {
+  background: rgb(0, 82, 217, 0.15) !important;
+  color: #4d9aff !important;
+}
+
+/* mega-menu 面板硬编码白色 → 深色 */
+html.dark .mega-menu {
+  background: #1a2332 !important;
+  border-color: rgb(255, 255, 255, 0.08) !important;
+  box-shadow: 0 20px 50px rgb(0, 0, 0, 0.5) !important;
+}
+
+html.dark .mega-menu-inner {
+  background: transparent !important;
+}
+
+html.dark .mega-column {
+  border-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+html.dark .mega-title {
+  color: #94a3b8 !important;
+}
+
+html.dark .mega-item {
+  color: #cbd5e1 !important;
+}
+
+html.dark .mega-item:hover {
+  background: rgb(77, 154, 255, 0.1) !important;
+  color: #4d9aff !important;
+}
+
+html.dark .assessment-page .module-cover {
+  background: transparent !important;
+  border-color: transparent !important;
+  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+/* ---------- AssessmentTake 卡片融入背景 ---------- */
+html.dark .immersive-assessment .exit-btn {
+  background: rgb(255, 255, 255, 0.04) !important;
+  border-color: rgb(255, 255, 255, 0.08) !important;
+}
+
+html.dark .immersive-assessment .nav-btn {
+  background: rgb(255, 255, 255, 0.04) !important;
+  border-color: rgb(255, 255, 255, 0.08) !important;
+}
+
+html.dark .immersive-assessment .nav-btn:hover:not(:disabled) {
+  background: rgb(77, 154, 255, 0.1) !important;
+  border-color: rgb(77, 154, 255, 0.3) !important;
+}
+
+html.dark .immersive-assessment .loading-box {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+/* ---------- ArticleCenter / ArticleList / ArticleDetail 卡片融入背景 ---------- */
+html.dark .article-center .discovery-ribbon,
+html.dark .article-list-page .discovery-ribbon {
+  background: transparent !important;
+  border-color: transparent !important;
+  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+html.dark .article-center .search-box,
+html.dark .article-list-page .search-box {
+  background: rgb(255, 255, 255, 0.04) !important;
+  border-color: rgb(255, 255, 255, 0.08) !important;
+}
+
+html.dark .article-list-page .back-link {
+  background: rgb(77, 154, 255, 0.06) !important;
+  border-color: rgb(77, 154, 255, 0.15) !important;
+}
+

@@ -1,0 +1,38 @@
+/* Element Plus 主题变量 - 与生涯心旅品牌主色 #0052d9 对齐 */
+:root {
+  --el-color-primary: #0052d9;
+  --el-color-primary-light-3: #3375e0;
+  --el-color-primary-light-5: #6696e8;
+  --el-color-primary-light-8: #c2d6f5;
+  --el-color-primary-light-9: #e0ebfb;
+  --el-color-primary-dark-2: #0042ad;
+  --el-color-primary-dark-5: #003180;
+  --el-color-primary-dark-8: #002153;
+  --el-color-success: #07a35a;
+  --el-color-warning: #e8740f;
+  --el-color-danger: #d54941;
+  --el-color-info: #5b7a99;
+  --el-border-radius-base: 8px;
+  --el-border-radius-small: 6px;
+  --el-border-radius-round: 20px;
+  --el-box-shadow: 0 4px 16px rgb(0, 82, 217, 0.08);
+  --el-box-shadow-light: 0 2px 8px rgb(0, 82, 217, 0.06);
+}
+
+/* 深色主题 */
+html.dark,
+:root.dark {
+  --el-bg-color: #141414;
+  --el-bg-color-page: #0a0a0a;
+  --el-bg-color-overlay: #1d1e1f;
+  --el-text-color-primary: #ffffff;
+  --el-text-color-regular: #d0d0d0;
+  --el-text-color-secondary: #a0a0a0;
+  --el-text-color-placeholder: #707070;
+  --el-border-color: #434343;
+  --el-border-color-light: #303030;
+  --el-border-color-extra-light: #202020;
+  --el-color-primary-light-9: #1a2a4a;
+  --el-box-shadow: 0 4px 16px rgb(0, 0, 0, 0.4);
+  --el-box-shadow-light: 0 2px 8px rgb(0, 0, 0, 0.3);
+}

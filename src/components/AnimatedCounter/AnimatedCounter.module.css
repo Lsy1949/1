@@ -1,0 +1,19 @@
+/* 数字滚动动画（原 .animated-counter 系 → camelCase 局部类） */
+.animatedCounter {
+  display: inline-flex;
+  align-items: baseline;
+  font-variant-numeric: tabular-nums;
+}
+
+.counterNum {
+  font-weight: inherit;
+  letter-spacing: inherit;
+}
+
+.counterPrefix,
+.counterSuffix {
+  font-size: 0.5em;
+  font-weight: 600;
+  opacity: 0.5;
+  margin: 0 0.1em;
+}

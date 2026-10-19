@@ -1,0 +1,329 @@
+/* 登录方式装配（CSS Modules：私有类 camelCase；antd 类暂无直接引用无需 global 包裹；
+   keyframes 由模块自动局部化，不污染全局） */
+
+.loginBox {
+  width: 100%;
+  max-width: 420px;
+  flex-shrink: 0;
+  padding: 28px 32px;
+  background: color-mix(in srgb, white 96%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, white 50%, transparent);
+  box-shadow:
+    0 20px 50px -12px color-mix(in srgb, black 35%, transparent),
+    0 0 0 1px color-mix(in srgb, white 10%, transparent);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
+}
+
+/* 标题区 */
+.loginHeader {
+  text-align: left;
+  margin-bottom: 18px;
+}
+
+.headerBadge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--ink-500);
+  background: var(--ink-100);
+  padding: 5px 12px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.loginHeader h2 {
+  margin: 0 0 6px;
+  font-size: 24px;
+  color: var(--ink-900);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.loginHeader p {
+  margin: 0;
+  color: var(--ink-500);
+  font-size: 14px;
+  letter-spacing: 0.3px;
+}
+
+/* 登录方式切换标签 */
+.loginTypeTabs {
+  display: flex;
+  background: var(--ink-100);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 16px;
+  gap: 2px;
+}
+
+.tabItem {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--ink-500);
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.tabItem:hover {
+  color: var(--ink-900);
+}
+
+.tabItem.active {
+  background: white;
+  color: var(--brand-primary);
+  font-weight: 700;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--brand-primary) 12%, transparent);
+}
+
+.tabContent {
+  min-height: 280px;
+}
+
+/* transition tab-fade（out-in）→ React key 切换 + 入场动画
+   （离场过渡简化为直接重挂载，入场视觉等价 tab-fade 的 enter-from → 正常态） */
+.tabFadeEnter {
+  animation: tabFadeIn 0.3s ease both;
+}
+
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 第三方登录 */
+.socialLogin {
+  margin-top: 14px;
+}
+
+.socialLoginSeparator {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.socialLoginSeparator::before,
+.socialLoginSeparator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--ink-200), transparent);
+}
+
+.socialLoginText {
+  color: var(--ink-400);
+  font-size: 12px;
+  padding: 0 14px;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.socialLoginButtons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.socialBtn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--ink-200);
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+}
+
+.socialBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px color-mix(in srgb, black 12%, transparent);
+  border-color: transparent;
+}
+
+.wechatBtn:hover {
+  background: #07c160; /* stylelint-disable-line color-no-hex, function-allowed-list */
+}
+
+.qqBtn:hover {
+  background: #12b7f5; /* stylelint-disable-line color-no-hex, function-allowed-list */
+}
+
+.wechatBtn:hover svg path,
+.qqBtn:hover svg path {
+  fill: white !important;
+}
+
+/* 注册链接 */
+.registerLink {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--ink-500);
+}
+
+.registerBtn {
+  margin-left: 6px;
+  background: none;
+  border: none;
+  color: var(--brand-primary);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.registerBtn:hover {
+  color: var(--color-info);
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (width <= 480px) {
+  .loginBox {
+    padding: 28px 22px;
+    max-width: 100%;
+  }
+
+  .loginHeader h2 {
+    font-size: 24px;
+  }
+
+  .socialLoginButtons {
+    gap: 14px;
+  }
+
+  .socialBtn {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* 矮视口兜底：进一步压缩卡片内边距，保证整屏放得下 */
+@media (height <= 760px) {
+  .loginBox {
+    padding: 20px 28px;
+  }
+
+  .loginHeader {
+    margin-bottom: 14px;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移：本组件全部独占类，原全局
+   「登录表单」与「登录修复」两区块多层叠加后取最终生效值；
+   register-form、forgot-password-form 修饰类的暗色背景与基础
+   卡片规则同值，为冗余 no-op 不再迁入；el-input、el-form-item
+   等 element-plus 遗留选择器无运行时 DOM，属死规则不迁）
+   ============================================================ */
+:global(html.dark) .loginBox {
+  background: rgb(15, 23, 42, 0.92) !important;
+  backdrop-filter: blur(24px) !important;
+  border-color: rgb(255, 255, 255, 0.08) !important;
+  color: #e2e8f0 !important;
+  box-shadow: 0 25px 60px rgb(0, 0, 0, 0.6) !important;
+}
+
+:global(html.dark) .loginBox h2 {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .loginBox p {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .headerBadge {
+  background: rgb(77, 154, 255, 0.12) !important;
+  color: #4d9aff !important;
+  border-color: rgb(77, 154, 255, 0.2) !important;
+}
+
+:global(html.dark) .loginTypeTabs {
+  background: rgb(255, 255, 255, 0.04) !important;
+  border-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+:global(html.dark) .loginBox .tabItem {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .loginBox .tabItem:hover {
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark) .loginBox .tabItem.active {
+  background: #0052d9 !important;
+  color: #fff !important;
+}
+
+:global(html.dark) .socialLogin {
+  border-color: rgb(255, 255, 255, 0.08) !important;
+}
+
+:global(html.dark) .loginBox .socialLoginSeparator,
+:global(html.dark) .loginBox .socialLoginText {
+  color: #64748b !important;
+}
+
+:global(html.dark) .loginBox .socialLoginSeparator::before,
+:global(html.dark) .loginBox .socialLoginSeparator::after {
+  background: rgb(255, 255, 255, 0.1) !important;
+}
+
+/* wechat、qq 按钮均同时挂 socialBtn 类，单条规则等价原三选择器并列 */
+:global(html.dark) .loginBox .socialBtn {
+  background: rgb(255, 255, 255, 0.05) !important;
+  border-color: rgb(255, 255, 255, 0.08) !important;
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark) .loginBox .socialBtn:hover {
+  background: #1a2a4a !important;
+  border-color: #4d9aff !important;
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .loginBox .registerLink,
+:global(html.dark) .loginBox .registerBtn {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .loginBox .registerBtn:hover {
+  color: #80b3ff !important;
+}

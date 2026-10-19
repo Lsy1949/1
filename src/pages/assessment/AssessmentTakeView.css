@@ -1,0 +1,337 @@
+/* 沉浸式答题 - 黑白极简专注风格（自 Vue scoped 样式 1:1 平移） */
+.immersive-assessment {
+  position: fixed;
+  inset: 0;
+  background: var(--neutral-025);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', sans-serif;
+}
+
+/* 装饰性大号背景编号 */
+.bg-question-num {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(280px, 42vw, 520px);
+  font-weight: 900;
+  color: black;
+  opacity: 0.028;
+  letter-spacing: -16px;
+  line-height: 0.8;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 顶栏 */
+.take-header {
+  height: 72px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--neutral-075);
+  z-index: 10;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.exit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--neutral-600);
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.exit-btn:hover {
+  color: var(--danger-600);
+  background: var(--danger-50);
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background: var(--neutral-150);
+}
+
+.scale-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.scale-name {
+  font-weight: 600;
+  color: var(--neutral-900);
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.scale-progress-text {
+  font-size: 12px;
+  color: var(--neutral-400);
+  margin-top: 2px;
+}
+
+.header-center {
+  flex: 1;
+  max-width: 440px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.top-progress-track {
+  flex: 1;
+  height: 3px;
+  background: var(--neutral-075);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.top-progress-fill {
+  height: 100%;
+  background: var(--neutral-900);
+  border-radius: 0;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.top-progress-pct {
+  font-size: 12px;
+  color: var(--neutral-400);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+  min-width: 36px;
+  text-align: right;
+}
+
+.header-right .timer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--neutral-800);
+  font-family: 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+  font-size: 14px;
+  background: var(--neutral-050);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  border: 1px solid var(--neutral-100);
+}
+
+/* 主体 */
+.take-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  overflow-y: auto;
+  position: relative;
+}
+
+.question-container {
+  width: 100%;
+  max-width: 720px;
+  position: relative;
+  z-index: 1;
+}
+
+/* 底栏 */
+.take-footer {
+  height: 88px;
+  background: white;
+  border-top: 1px solid var(--neutral-075);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  z-index: 10;
+}
+
+.footer-inner {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--neutral-600);
+  padding: 12px 20px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.nav-btn:hover:not(:disabled) {
+  color: var(--neutral-900);
+  background: var(--neutral-050);
+}
+
+.nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.nav-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--neutral-900);
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 14px 32px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px color-mix(in srgb, black 20%, transparent);
+}
+
+.nav-btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px color-mix(in srgb, black 25%, transparent);
+}
+
+.nav-btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.step-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.step-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--neutral-150);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-dots .dot.active {
+  width: 28px;
+  border-radius: 4px;
+  background: var(--neutral-900);
+}
+
+.step-dots .dot.completed {
+  background: var(--neutral-400);
+}
+
+/* 提交遮罩 */
+.submitting-overlay {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, white 92%, transparent);
+  backdrop-filter: blur(12px);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-box {
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--neutral-100);
+  border-top-color: var(--neutral-900);
+  border-radius: 50%;
+  margin: 0 auto 24px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-box p {
+  font-size: 16px;
+  color: var(--neutral-900);
+  font-weight: 600;
+  margin: 0;
+}
+
+.loading-sub {
+  font-size: 13px !important;
+  color: var(--neutral-400) !important;
+  font-weight: 400 !important;
+  margin-top: 6px !important;
+}
+
+/* ---- Vue <transition> → CSS keyframes（React 无内置过渡系统） ---- */
+/* q-slide (mode="out-in")：key 重挂载时仅播放入场，视觉上与原版接近 */
+.question-container {
+  animation: q-slide-in 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes q-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* fade：条件渲染挂载时淡入 */
+.submitting-overlay {
+  animation: overlay-fade-in 0.3s ease;
+}
+
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (width <= 768px) {
+  .take-header { height: 64px; padding: 0 16px; }
+  .header-center { display: none; }
+  .scale-name { font-size: 13px; }
+  .take-footer { height: 76px; padding: 0 16px; }
+  .step-dots { display: none; }
+  .nav-btn span { display: none; }
+  .nav-btn-primary { padding: 12px 24px; font-size: 14px; }
+}

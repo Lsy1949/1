@@ -1,0 +1,304 @@
+/* 个人中心 Hero 封面（CSS Modules：私有类 camelCase；antd 图标根类 .anticon 用 :global 包裹） */
+
+/* 字体定义 */
+.heroTitle,
+.heroName {
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+}
+
+/* ============ Hero 封面 ============ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--navy-800) 0%, var(--brand-primary) 50%, var(--color-info) 100%);
+}
+
+.heroBg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 88% 18%, color-mix(in srgb, white 14%, transparent) 0%, transparent 42%),
+    radial-gradient(circle at 12% 88%, color-mix(in srgb, var(--color-info) 28%, transparent) 0%, transparent 50%);
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+  padding: 56px 56px 48px;
+  color: white;
+}
+
+.heroTopline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: color-mix(in srgb, white 70%, transparent);
+  font-weight: 600;
+}
+
+.heroEyebrow {
+  white-space: nowrap;
+}
+
+.heroIssue {
+  font-family: Georgia, serif;
+  font-style: italic;
+  letter-spacing: 1px;
+}
+
+.heroTitle {
+  margin: 0 0 14px;
+  font-size: clamp(40px, 6vw, 64px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -1px;
+  color: white;
+}
+
+.heroTitle em {
+  font-style: italic;
+  font-weight: 400;
+  color: #bae0ff; /* stylelint-disable-line color-no-hex, function-allowed-list */
+}
+
+.heroSub {
+  margin: 0 0 28px;
+  max-width: 620px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: color-mix(in srgb, white 78%, transparent);
+}
+
+.heroDivider {
+  height: 1px;
+  background: color-mix(in srgb, white 25%, transparent);
+  margin-bottom: 32px;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 36px;
+  align-items: center;
+}
+
+.heroPortrait {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.heroRole {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: color-mix(in srgb, white 90%, transparent);
+  border: 1px solid color-mix(in srgb, white 30%, transparent);
+  padding: 3px 12px;
+}
+
+.heroDetail {
+  min-width: 0;
+}
+
+.heroName {
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+  line-height: 1.15;
+}
+
+.heroMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: color-mix(in srgb, white 85%, transparent);
+}
+
+.metaItem :global(.anticon) {
+  font-size: 15px;
+}
+
+.metaDot {
+  color: color-mix(in srgb, white 35%, transparent);
+  font-size: 13px;
+}
+
+.heroBio {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: color-mix(in srgb, white 72%, transparent);
+  max-width: 560px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.heroCta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid white;
+  background: white;
+  color: var(--brand-primary);
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.ctaBtn:hover {
+  background: var(--brand-primary-faint);
+}
+
+.ctaBtn.ghost {
+  background: transparent;
+  color: white;
+  border-color: color-mix(in srgb, white 40%, transparent);
+}
+
+.ctaBtn.ghost:hover {
+  background: color-mix(in srgb, white 12%, transparent);
+  border-color: color-mix(in srgb, white 70%, transparent);
+}
+
+@media (width <= 1024px) {
+  .heroGrid {
+    grid-template-columns: auto 1fr;
+    gap: 28px;
+  }
+
+  .heroCta {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    margin-top: 8px;
+  }
+}
+
+@media (width <= 768px) {
+  .heroInner {
+    padding: 36px 24px 32px;
+  }
+
+  .heroTopline {
+    margin-bottom: 18px;
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+
+  .heroTitle {
+    font-size: clamp(34px, 10vw, 44px);
+  }
+
+  .heroSub {
+    font-size: 14px;
+    margin-bottom: 22px;
+  }
+
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    text-align: center;
+  }
+
+  .heroPortrait {
+    align-items: center;
+  }
+
+  .heroDetail {
+    text-align: center;
+  }
+
+  .heroMeta {
+    justify-content: center;
+  }
+
+  .heroCta {
+    flex-flow: row wrap;
+    justify-content: center;
+  }
+
+  .ctaBtn {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移后的本组件独占有效值：
+   hero 系列为本组件独占类；.meta-item/.cta-btn 在其它页面亦有
+   同名类，但各页面路由 chunk 按需注入，互不干扰，此处取本组件
+   dark 规则原文等价迁移）
+   ============================================================ */
+:global(html.dark) .hero {
+  background: linear-gradient(135deg, #07193f 0%, #003a99 50%, #0066cc 100%) !important;
+}
+
+:global(html.dark) .heroTopline,
+:global(html.dark) .heroTitle,
+:global(html.dark) .heroRole {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .heroSub,
+:global(html.dark) .heroBio {
+  color: rgb(255, 255, 255, 0.85) !important;
+}
+
+:global(html.dark) .heroDivider {
+  background: rgb(255, 255, 255, 0.2) !important;
+}
+
+:global(html.dark) .metaItem,
+:global(html.dark) .metaDot {
+  color: rgb(255, 255, 255, 0.75) !important;
+}
+
+:global(html.dark) .ctaBtn {
+  background: rgb(255, 255, 255, 0.12) !important;
+  color: #fff !important;
+  border-color: rgb(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(10px);
+}
+
+:global(html.dark) .ctaBtn:hover {
+  background: rgb(255, 255, 255, 0.2) !important;
+  border-color: rgb(255, 255, 255, 0.4) !important;
+}
+
+:global(html.dark) .ctaBtn.ghost {
+  background: transparent !important;
+  border-color: rgb(255, 255, 255, 0.3) !important;
+}
+
+:global(html.dark) .ctaBtn.ghost:hover {
+  background: rgb(255, 255, 255, 0.1) !important;
+}

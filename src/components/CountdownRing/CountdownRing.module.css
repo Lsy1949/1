@@ -1,0 +1,42 @@
+/* 倒计时进度环（原 .countdown-ring 系 → camelCase 局部类） */
+.countdownRing {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ringSvg {
+  position: absolute;
+  inset: 0;
+}
+
+.ringProgress {
+  transition: stroke-dashoffset 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ringCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.ringNum {
+  font-size: 2.4em;
+  font-weight: 800;
+  color: black;
+  line-height: 1;
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ringUnit {
+  font-size: 0.7em;
+  color: var(--ink-400);
+  letter-spacing: 1px;
+  font-weight: 600;
+  text-transform: uppercase;
+}

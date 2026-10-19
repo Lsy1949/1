@@ -1,0 +1,280 @@
+/* ========== 色彩与字体变量（品牌蓝主题） ========== */
+.nf-page {
+  --brand-primary: var(--brand-primary);
+  --brand-light: var(--color-info);
+  --brand-dark: var(--navy-800);
+  --brand-gradient: linear-gradient(135deg, var(--navy-800) 0%, var(--brand-primary) 50%, var(--color-info) 100%);
+  --bg-primary: var(--brand-primary-wash);
+  --bg-secondary: white;
+  --bg-tint: var(--brand-primary-faint);
+  --text-primary: var(--ink-900);
+  --text-secondary: var(--ink-500);
+  --text-tertiary: var(--ink-400);
+  --border: var(--ink-200);
+  --border-light: var(--slate-100);
+  --border-blue: var(--brand-primary-soft);
+  --dark-text: white;
+  --dark-text-soft: color-mix(in srgb, white 78%, transparent);
+  --dark-text-mute: color-mix(in srgb, white 50%, transparent);
+  --font-display: 'Playfair Display', 'Noto Serif SC', georgia, serif;
+  --font-serif: 'Noto Serif SC', 'Playfair Display', georgia, serif;
+  --font-sans: 'Noto Sans SC', -apple-system, sans-serif;
+
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-weight: 300;
+  line-height: 1.6;
+  height: 100vh;
+  overflow: hidden;
+  cursor: none;
+}
+
+/* 自定义光标 cursor-dot：默认小圆点，hover 可交互元素时放大为圆环 */
+.nf-page .cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  border: 1.5px solid transparent;
+  box-sizing: border-box;
+  transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.28s ease,
+              border-color 0.28s ease,
+              opacity 0.3s ease;
+}
+
+.nf-page .cursor-dot.is-hover {
+  width: 42px;
+  height: 42px;
+  background: transparent;
+  border-color: white;
+}
+
+/* ========== 翻页容器 ========== */
+.nf-slides {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.nf-slides-track {
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.nf-slide {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 80px 56px 40px;
+  box-sizing: border-box;
+}
+
+.nf-slide-inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+/* ========== 翻页提示 ========== */
+.nf-flip-hint {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  z-index: 90;
+}
+
+.nf-flip-text {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--dark-text-soft);
+}
+
+.nf-flip-mouse {
+  width: 22px;
+  height: 36px;
+  border: 1px solid var(--dark-text-soft);
+  border-radius: 12px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+}
+
+.nf-flip-wheel {
+  width: 3px;
+  height: 8px;
+  background: var(--dark-text);
+  border-radius: 2px;
+  animation: flipWheel 1.8s ease-in-out infinite;
+}
+
+@keyframes flipWheel {
+  0% { transform: translateY(0); opacity: 1; }
+  60% { transform: translateY(12px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+
+/* Vue transition name="fade" 的 React 等价：入场动画类 */
+.nf-fade-enter {
+  animation: nfFadeIn 0.5s ease both;
+}
+
+@keyframes nfFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ========== Slide 0：Hero（深蓝渐变） ========== */
+.nf-slide-hero {
+  background: var(--brand-gradient);
+  color: var(--dark-text);
+  text-align: center;
+}
+
+.nf-hero-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(color-mix(in srgb, white 4%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, white 4%, transparent) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+/* Hero 舞台（404 ↔ 游戏 切换容器） */
+.nf-hero-stage {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nf-hero-foot {
+  position: absolute;
+  bottom: 32px;
+  left: 56px;
+  right: 56px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.nf-hero-meta-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nf-hero-meta-left span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--dark-text-soft);
+}
+
+.nf-hero-page {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--dark-text-soft);
+}
+
+/* ========== 舞台切换动画 · 游戏进入（等价 transition name="stage-game" 入场） ========== */
+.stage-game-enter {
+  animation: stageGameIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+}
+
+@keyframes stageGameIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ========== 响应式 ========== */
+@media (width <= 768px) {
+  .nf-slide {
+    padding: 80px 24px 30px;
+  }
+
+  .nf-hero-foot {
+    left: 24px;
+    right: 24px;
+    bottom: 20px;
+  }
+
+  .nf-flip-hint {
+    display: none;
+  }
+}
+
+/* 低高度屏幕：进一步压缩 */
+@media (height <= 760px) {
+  .nf-slide {
+    padding: 70px 56px 24px;
+  }
+
+  .nf-hero-stage {
+    min-height: 360px;
+  }
+}
+
+/* ========== 桌面端强制隐藏系统光标 / 触控设备恢复（原全局块） ========== */
+.nf-page,
+.nf-page * {
+  cursor: none !important;
+}
+
+@media (hover: none), (width <= 768px) {
+  .nf-page .cursor-dot {
+    display: none;
+  }
+
+  .nf-page,
+  .nf-page * {
+    cursor: auto !important;
+  }
+
+  .nf-page :is(.nf-nav-logo, .nf-nav-link, .nf-dot, .nf-flip-hint, .nf-topic, .nf-note-action, .nf-write-submit, .nf-footer-link, .nf-game-entry, .nf-game-back, .nf-memory-card, .nf-breath-wrap, a, button) {
+    cursor: pointer !important;
+  }
+
+  .nf-page .nf-write-input {
+    cursor: text !important;
+  }
+}

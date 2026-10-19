@@ -1,0 +1,512 @@
+/* 弹窗外壳样式：
+   content（padding 0 / 圆角 24 / overflow hidden）已 token 化为
+   index.tsx 中 Modal 的 styles prop，此处不再覆写。
+   关闭按钮定位/底色暂留 CSS（antd 5.29 ModalStyles 尚无 close 键）。 */
+.scaleDialog :global(.ant-modal-close) {
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  background: color-mix(in srgb, black 5%, transparent);
+  border-radius: 50%;
+}
+
+/* 介绍模式 */
+.introContent {
+  padding: 40px 36px 32px;
+}
+
+.introHeader {
+  text-align: center;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.introHeader::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: var(--brand-primary);
+  border-radius: 2px;
+}
+
+.scaleTypeTag {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  background: var(--brand-primary-faint);
+  color: var(--slate-800);
+  letter-spacing: 0.5px;
+}
+
+.introHeader h2 {
+  font-size: 26px;
+  color: var(--slate-800);
+  margin: 0 0 12px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.scaleDesc {
+  color: var(--neutral-500);
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0 auto;
+  max-width: 440px;
+}
+
+.introDetails {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+.detailItem {
+  padding: 20px 12px;
+  background: var(--slate-50);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--mist-050);
+  transition: all 0.3s ease;
+}
+
+.detailItem:hover {
+  background: var(--brand-primary-faint);
+  border-color: var(--brand-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px -6px color-mix(in srgb, var(--brand-primary) 15%, transparent);
+}
+
+.detailItem :global(.anticon) {
+  font-size: 22px;
+  color: var(--brand-primary);
+}
+
+.itemText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: center;
+}
+
+.itemText .label {
+  font-size: 11px;
+  color: var(--neutral-400);
+  letter-spacing: 0.3px;
+}
+
+.itemText .val {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--slate-800);
+}
+
+.introTips {
+  text-align: left;
+  background: linear-gradient(135deg, var(--brand-primary-faint) 0%, var(--brand-primary-wash) 100%);
+  padding: 20px 22px;
+  border-radius: 14px;
+  border: 1px solid var(--brand-primary-soft);
+  margin-bottom: 28px;
+}
+
+.introTips h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--slate-800);
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.introTips h4 :global(.anticon) {
+  color: var(--neutral-700);
+}
+
+.introTips ul {
+  padding-left: 20px;
+  color: var(--neutral-600);
+  margin: 0;
+}
+
+.introTips li {
+  margin-bottom: 6px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.introActions {
+  text-align: center;
+}
+
+.startBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 40px;
+  background: var(--brand-primary);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  box-shadow: 0 8px 22px -6px color-mix(in srgb, black 30%, transparent);
+  letter-spacing: 0.5px;
+}
+
+.startBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px -8px color-mix(in srgb, black 35%, transparent);
+  background: var(--brand-primary-deeper);
+}
+
+.startBtn :global(.anticon) {
+  transition: transform 0.3s ease;
+}
+
+.startBtn:hover :global(.anticon) {
+  transform: translateX(4px);
+}
+
+/* 结果报告 */
+.resultContent {
+  padding: 32px;
+}
+
+.resultSummaryCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, var(--brand-primary-faint) 0%, var(--brand-primary-wash) 100%);
+  padding: 28px;
+  border-radius: 18px;
+  margin-bottom: 24px;
+  border: 1px solid var(--brand-primary-soft);
+  position: relative;
+  overflow: hidden;
+}
+
+.resultSummaryCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--brand-primary);
+}
+
+.resBadge {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+/* 原 [type="..."] 属性选择器 → [data-type="..."]（div 无 type 属性，React 会告警） */
+.resBadge[data-type='success'] { background: #dcfce7; color: var(--success-600); }
+.resBadge[data-type='info'] { background: var(--blue-100); color: var(--brand-primary); }
+.resBadge[data-type='warning'] { background: var(--warning-100); color: var(--warning-600); }
+.resBadge[data-type='danger'] { background: var(--danger-100); color: var(--danger-500); }
+.resBadge[data-type='primary'] { background: var(--violet-100); color: var(--violet-600); }
+
+.resLeft h2 {
+  font-size: 22px;
+  color: var(--slate-800);
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.resDate {
+  font-size: 12px;
+  color: var(--neutral-400);
+  font-weight: 500;
+  margin: 0;
+}
+
+.resScoreCircle {
+  width: 100px;
+  height: 100px;
+  border: 5px solid var(--brand-primary);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  box-shadow: 0 8px 20px color-mix(in srgb, black 6%, transparent);
+}
+
+.scoreVal {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--slate-800);
+  line-height: 1;
+}
+
+.scoreUnit {
+  font-size: 11px;
+  color: var(--neutral-400);
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.insightGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.insightCard {
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid var(--mist-050);
+  background: white;
+}
+
+.insightCard h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  margin: 0 0 12px;
+  color: var(--slate-800);
+  font-weight: 700;
+}
+
+.insightCard p {
+  color: var(--neutral-700);
+  line-height: 1.7;
+  font-size: 13px;
+  margin: 0;
+}
+
+.insightCard.highlight {
+  background: var(--brand-primary-wash);
+  border-color: var(--brand-primary-soft);
+}
+
+.mbtiDetails h3,
+.riasecDetails h3 {
+  font-size: 15px;
+  color: var(--slate-800);
+  font-weight: 700;
+  margin: 0 0 14px;
+}
+
+.mbtiBars {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--slate-50);
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid var(--mist-050);
+}
+
+.mbtiBarItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dimL,
+.dimR {
+  width: 36px;
+  font-weight: 700;
+  color: var(--slate-800);
+  font-size: 13px;
+}
+
+.dimL {
+  text-align: right;
+}
+
+.barTrack {
+  flex: 1;
+  height: 11px;
+  background: var(--neutral-150);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.barFill {
+  position: absolute;
+  height: 100%;
+  background: linear-gradient(to right, var(--brand-primary), #4d8bf5);
+  border-radius: 6px;
+  transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.riasecBars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--slate-50);
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid var(--mist-050);
+}
+
+.rInfo {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+}
+
+.rVal {
+  font-weight: 700;
+  color: var(--slate-800);
+}
+
+/* el-progress 的轨道/内条覆写已由 Progress 组件 props
+   （trailColor / strokeWidth）承担，无需 :deep() 规则 */
+
+.resultFooter {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.resultFooter :global(.ant-btn) {
+  padding: 11px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+/* 主按钮底色与全局 colorPrimary（#0052d9）同值，原规则属冗余已删；
+   hover 加深色（默认为提亮色）无对应 token，保留覆写 */
+.resultFooter :global(.ant-btn-primary:hover) {
+  background: var(--brand-primary-deeper);
+  border-color: var(--brand-primary-deeper);
+}
+
+@media (width <= 768px) {
+  .insightGrid { grid-template-columns: 1fr; }
+  .introDetails { grid-template-columns: 1fr; }
+  .resultSummaryCard { flex-direction: column; gap: 20px; text-align: center; }
+  .introContent,
+  .resultContent { padding: 24px 20px; }
+}
+
+/* ---------- 暗色模式（自 dark-mode.css 迁入，取多层叠加后的最终生效值；intro- 系列 / detail- 系列 / item- 系列 / start- 系列 / res- 系列 / score- 系列 / insight- 系列 / mbti- 系列 / riasec- 系列 / bar- 系列 / r- 系列） ----------
+   注意：Modal 经 portal 挂载到 body，不在 .assessment-page 子树内，
+   本段作用域与原 dark-mode.css 完全一致（同样不命中），行为零变更。 */
+:global(html.dark .assessment-page) .introHeader {
+  background: transparent !important;
+  border-color: transparent !important;
+  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+}
+
+:global(html.dark .assessment-page) .scaleTypeTag {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+  border-color: #1a3a6b !important;
+}
+
+:global(html.dark .assessment-page) .scaleDesc {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark .assessment-page) .detailItem {
+  background: transparent !important;
+  border-color: rgb(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark .assessment-page) .detailItem:hover {
+  background: rgb(77, 154, 255, 0.06) !important;
+  border-color: transparent !important;
+  transform: none !important;
+}
+
+:global(html.dark .assessment-page) .startBtn {
+  background: #0052d9 !important;
+  color: #fff !important;
+  border-color: #0052d9 !important;
+}
+
+:global(html.dark .assessment-page) .startBtn:hover {
+  background: #0042ad !important;
+  border-color: #0042ad !important;
+}
+
+:global(html.dark .assessment-page) .resultSummaryCard {
+  background: rgb(77, 154, 255, 0.04) !important;
+  border-color: rgb(77, 154, 255, 0.15) !important;
+  box-shadow: none !important;
+}
+
+:global(html.dark .assessment-page) .insightCard {
+  background: transparent !important;
+  border-color: rgb(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+}
+
+/* 特异性高于通用组规则，未被后层覆盖，保留取值 */
+:global(html.dark .assessment-page) .insightCard.highlight {
+  background: #1a2a4a !important;
+  border-color: #1a3a6b !important;
+}
+
+:global(html.dark .assessment-page) .resDate,
+:global(html.dark .assessment-page) .scoreUnit {
+  color: #64748b !important;
+}
+
+:global(html.dark .assessment-page) .scoreVal {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .assessment-page) .resScoreCircle {
+  background: transparent !important;
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark .assessment-page) .resBadge {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+  border-color: #1a3a6b !important;
+}
+
+:global(html.dark .assessment-page) .barTrack {
+  background: #1e293b !important;
+}
+
+:global(html.dark .assessment-page) .barFill {
+  background: #4d9aff !important;
+}
+
+:global(html.dark .assessment-page) .mbtiBars,
+:global(html.dark .assessment-page) .riasecBars {
+  background: transparent !important;
+  border-color: rgb(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+}

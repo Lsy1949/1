@@ -1,0 +1,201 @@
+/* 联系我们区块（CSS Modules：私有类 camelCase）
+   协议类 scroll-reveal / 工具类 container 保持字面全局类，不在此文件 */
+
+/* 联系我们 - 现代表单 */
+.contactSection {
+  padding: 8rem 0;
+}
+
+.contactWrapper {
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px color-mix(in srgb, black 10%, transparent);
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  border: 1px solid var(--mist-050);
+}
+
+.contactInfo {
+  background: var(--slate-50);
+  position: relative;
+  overflow: hidden;
+  padding: 4rem;
+  color: var(--ink-800);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--mist-050);
+}
+
+.contactBgShape {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--brand-primary) 10%, transparent) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.contactHeader h2 {
+  color: var(--navy-950);
+  margin-bottom: 1rem;
+  font-size: clamp(28px, 3.5vw, 44px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.1;
+}
+
+.contactHeader p {
+  color: var(--ink-500);
+  margin-bottom: 3rem;
+  line-height: 1.7;
+}
+
+.methodItem {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.methodIcon {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border: 1px solid var(--slate-200);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  font-size: 1.2rem;
+  color: var(--brand-primary);
+}
+
+.methodText label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--ink-500);
+  margin-bottom: 0.25rem;
+}
+
+.methodText span {
+  font-size: 1rem;
+  color: var(--ink-800);
+  font-weight: 600;
+}
+
+.contactFormWrapper {
+  padding: 3rem;
+  background: white;
+}
+
+.contactFormWrapper h3 {
+  font-size: 1.5rem;
+  color: var(--ink-800);
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+.submitBtn {
+  width: auto;
+  padding: 12px 36px;
+  border-radius: 8px;
+  height: auto;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+
+.submitBtn:hover {
+  background-color: var(--brand-primary-deeper);
+  border-color: var(--brand-primary-deeper);
+}
+
+/* Element Plus :deep(.el-textarea__inner) → Ant Design .ant-input
+   （输入框底色/描边/padding/focus 聚焦圈已 token 化为 HomePageView 嵌套
+     ConfigProvider 的 Input 组件注入；textarea 专属 padding 无对应 token，保留。
+     .ant-input 为 antd 全局类，:global 包裹） */
+.techForm :global(textarea.ant-input) {
+  padding: 12px 15px;
+}
+
+@media (width <= 992px) {
+  .contactWrapper {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .contactInfo {
+    padding: 2rem;
+  }
+
+  .contactFormWrapper {
+    padding: 2rem;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移，取两层规则的最终生效值）。
+   contact- 系列为本组件独占类，原全局规则已删除；
+   method-icon/method-text/submit-btn 与 time-capsule/square 共用类名，
+   但对应页面均有更高优先级的 scoped 暗色规则（html.dark .time-capsule-page
+   .method-icon 等），删除全局裸规则不影响它们
+   ============================================================ */
+:global(html.dark) .contactSection {
+  background: transparent !important;
+}
+
+:global(html.dark) .contactWrapper {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark) .contactInfo {
+  background: #0f172a !important;
+  border-right-color: #1e293b !important;
+}
+
+:global(html.dark) .contactInfo h2 {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .contactInfo p {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .methodIcon {
+  background: #1e2b3a !important;
+  border-color: #334155 !important;
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .methodText label {
+  color: #64748b !important;
+}
+
+:global(html.dark) .methodText span {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .contactFormWrapper {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark) .contactFormWrapper h3 {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .submitBtn {
+  background-color: #0052d9 !important;
+  border-color: #0052d9 !important;
+}
+
+:global(html.dark) .submitBtn:hover {
+  background-color: #0042ad !important;
+  border-color: #0042ad !important;
+}

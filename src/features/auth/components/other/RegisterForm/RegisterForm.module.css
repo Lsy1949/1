@@ -1,0 +1,83 @@
+/* 注册表单（CSS Modules：私有类 camelCase；antd 输入类用 :global 包裹）
+   说明：captcha-image 原与账号表单的同名规则全局层叠（账号表单的
+   flex-none、line-height-0 声明未被本文件覆盖、继续生效），按零变更
+   原则在合并后的最终生效值中保留这两条 */
+
+.registerButton {
+  width: 100%;
+  margin-top: 8px;
+  border-radius: 8px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  letter-spacing: 1px;
+  transform: translateY(0);
+}
+
+.registerButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--blue-400) 45%, transparent);
+}
+
+.registerButton:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--blue-400) 40%, transparent);
+}
+
+.backToLogin {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.backToLogin :global(.ant-form-item-control-input-content) {
+  text-align: center;
+}
+
+.captchaFormItem .captchaInputContainer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.captchaFormItem .captchaInputContainer :global(.ant-input) {
+  flex: 1;
+}
+
+.captchaImage {
+  width: 100px;
+  height: 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--mist-075);
+  border: 1px solid var(--mist-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  line-height: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.captchaImage:hover {
+  transform: scale(1.03);
+  border-color: var(--blue-400);
+  box-shadow: 0 0 15px color-mix(in srgb, var(--blue-400) 30%, transparent);
+  background: var(--blue-025);
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移：captcha-image 暗色规则的最终
+   生效值，验证码画布容器在暗色下融入背景）
+   ============================================================ */
+:global(html.dark) .captchaImage {
+  background: rgb(255, 255, 255, 0.05) !important;
+  border-color: rgb(255, 255, 255, 0.1) !important;
+}
+
+:global(html.dark) .captchaImage:hover {
+  background: rgb(77, 154, 255, 0.08) !important;
+  border-color: rgb(77, 154, 255, 0.3) !important;
+  box-shadow: none !important;
+}

@@ -1,0 +1,625 @@
+/* 01 · 账号安全：密码修改 / 绑定联系方式 / 登录设备 + 三步换绑弹窗
+   （CSS Modules：私有类 camelCase；antd 类以 :global 包裹） */
+
+/* ============ 区块通用 ============ */
+.editorialSection {
+  padding: 40px 0 56px;
+  border-top: 1px solid var(--ink-200);
+  scroll-margin-top: 80px;
+}
+
+.editorialSection:first-of-type {
+  border-top: 1px solid var(--ink-900);
+}
+
+.sectionMarker {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.markerNum {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  line-height: 1;
+}
+
+.markerRule {
+  flex: 1;
+  height: 1px;
+  background: var(--ink-900);
+}
+
+.markerIcon {
+  font-size: 16px;
+  color: var(--ink-900);
+}
+
+.markerLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink-900);
+}
+
+.sectionHeadlineRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: end;
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--ink-200);
+}
+
+.sectionHeadline {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--ink-900);
+}
+
+.sectionDeck {
+  margin: 0;
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--ink-500);
+}
+
+/* ============ 网格 ============ */
+.editorialGrid {
+  display: grid;
+}
+.twoCol { grid-template-columns: 1fr 1fr; }
+
+.editorialCol {
+  padding: 0 32px;
+  border-right: 1px solid var(--ink-200);
+}
+.editorialCol:first-child { padding-left: 0; }
+
+.editorialCol:last-child {
+  padding-right: 0;
+  border-right: none;
+}
+
+/* ============ 栏目标题 ============ */
+.colTitle {
+  margin: 0 0 18px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-900);
+}
+.colTitleSpaced { margin-top: 36px; }
+
+/* ============ 字段 ============ */
+.fieldStack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 表单间距（itemMarginBottom）、label 字号/颜色（labelFontSize/labelColor）、
+   输入控件直角（Input/Select/DatePicker borderRadius）已由 SettingsView 嵌套
+   ConfigProvider 组件 token 注入，此处仅保留 label 的字重/字距/大写排版 */
+.pwdForm :global(.ant-form-item-label) > label {
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding-bottom: 6px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.fieldLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-700);
+}
+
+.fieldActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* ============ Editorial 按钮 ============ */
+.editorialBtn {
+  padding: 10px 28px;
+  background: var(--ink-900);
+  color: white;
+  border: 1px solid var(--ink-900);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.editorialBtn:hover {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+
+.editorialBtnGhost {
+  background: transparent;
+  color: var(--ink-900);
+}
+
+.editorialBtnGhost:hover {
+  background: var(--ink-900);
+  color: white;
+  border-color: var(--ink-900);
+}
+
+/* ============ 联系方式列表 ============ */
+.entryList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.entryRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--ink-200);
+}
+.entryRow:last-child { border-bottom: none; }
+
+.entryMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  color: var(--brand-primary);
+  border: 1px solid var(--ink-200);
+}
+
+.entryText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.entryKey {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+.entryValue {
+  font-size: 15px;
+  color: var(--ink-900);
+  letter-spacing: 0.5px;
+}
+
+/* ============ Link 按钮 ============ */
+.linkBtn {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  cursor: pointer;
+  border-bottom: 1px solid var(--brand-primary);
+  transition: all 0.2s;
+}
+
+.linkBtn:hover {
+  color: var(--color-info);
+  border-bottom-color: var(--color-info);
+}
+
+.linkBtnDanger {
+  color: var(--danger-600);
+  border-bottom-color: var(--danger-600);
+}
+
+.linkBtnDanger:hover {
+  color: var(--danger-700);
+  border-bottom-color: var(--danger-700);
+}
+
+/* ============ 登录设备 ============ */
+.deviceList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.deviceRow {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--ink-200);
+}
+.deviceRow:last-child { border-bottom: none; }
+
+.deviceRow.current {
+  padding-left: 16px;
+  border-left: 3px solid var(--brand-primary);
+}
+
+.deviceHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.deviceName {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.deviceTag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  border: 1px solid var(--brand-primary);
+  padding: 2px 6px;
+}
+
+.deviceMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 0 0 10px;
+}
+.deviceMeta .metaItem { margin: 0; }
+
+.deviceMeta .metaItem dt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-400);
+  margin-bottom: 2px;
+}
+
+.deviceMeta .metaItem dd {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-700);
+}
+
+@media (width <= 1024px) {
+  .sectionHeadlineRow {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .sectionHeadline { font-size: 26px; }
+  .twoCol { grid-template-columns: 1fr; }
+
+  .editorialCol {
+    padding: 24px 0;
+    border-right: none;
+    border-bottom: 1px solid var(--ink-200);
+  }
+  .editorialCol:first-child { padding-top: 0; }
+
+  .editorialCol:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+@media (width <= 768px) {
+  .deviceMeta {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .fieldActions { justify-content: stretch; }
+
+  .fieldActions .editorialBtn {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+/* ==================================================================
+   换绑弹窗（antd Modal teleport 到 body，className 随 React 渲染仍可命中）
+   弹窗结构样式（content/header/body/footer 的边框、内边距、直角，
+   以及衬线标题）已 token 化为本组件 Modal 的 styles prop 与 title 内联
+   样式，此处不再覆写 ant-modal-xx 结构类。
+   ================================================================== */
+/* 例外：antd 5.29（rc-dialog 9.6）ModalStyles 尚无 close 键（antd 6 起支持），
+   关闭按钮定位暂以 CSS 覆写对齐 20px 头部内边距 */
+.contactDialog :global(.ant-modal-close) {
+  top: 19px;
+  inset-inline-end: 19px;
+}
+
+.contactDialog .dialogSteps {
+  display: flex;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--ink-200);
+}
+
+.contactDialog .dsItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+  position: relative;
+}
+
+.contactDialog .dsItem:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 100%;
+  height: 1px;
+  background: var(--ink-200);
+  z-index: 0;
+}
+.contactDialog .dsItem.active:not(:last-child)::after { background: var(--brand-primary); }
+
+.contactDialog .dsNum {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ink-200);
+  background: white;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-400);
+  position: relative;
+  z-index: 1;
+}
+
+.contactDialog .dsItem.active .dsNum {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+.contactDialog .dsItem.current .dsNum {
+  background: var(--brand-primary);
+  color: white;
+}
+
+.contactDialog .dsLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-400);
+  text-align: center;
+}
+.contactDialog .dsItem.active .dsLabel { color: var(--ink-900); }
+.contactDialog .dsItem.current .dsLabel { color: var(--brand-primary); }
+.contactDialog .dialogBody { min-height: 140px; }
+
+.contactDialog .codeRow {
+  display: flex;
+  gap: 8px;
+}
+/* code-row 内 Input 的 flex 占位改为组件内联 style，直角由组件 token 注入 */
+.contactDialog .sendBtn {
+  flex-shrink: 0;
+  padding: 0 16px;
+  background: var(--brand-primary);
+  color: white;
+  border: 1px solid var(--brand-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.contactDialog .sendBtn:hover:not(:disabled) {
+  background: var(--color-info);
+  border-color: var(--color-info);
+}
+
+.contactDialog .sendBtn:disabled {
+  background: var(--ink-200);
+  border-color: var(--ink-200);
+  color: var(--ink-400);
+  cursor: not-allowed;
+}
+
+.contactDialog .summaryRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  background: var(--brand-primary-faint);
+  border-left: 3px solid var(--brand-primary);
+}
+
+.contactDialog .summaryLabel {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+.contactDialog .summaryValue {
+  font-size: 15px;
+  color: var(--brand-primary);
+}
+
+.contactDialog .dialogFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.contactDialog .fieldLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-700);
+}
+
+/* 弹窗内输入控件直角已由 SettingsView 嵌套 ConfigProvider 的 Input token 覆盖
+  （Modal 经 createPortal 渲染但仍在 React 树内，theme context 可穿透） */
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移的本组件有效值，原全局规则待主控统一
+   删除；区块内规则原文带 settings-page 前缀，弹窗内规则因 Modal 传送
+   至 body 无该前缀，转换时分别保留/去除）
+   ============================================================ */
+:global(html.dark .settings-page) .pwdForm,
+:global(html.dark .settings-page) .fieldLabel {
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark .settings-page) .editorialBtn {
+  background: #0052d9 !important;
+  color: #fff !important;
+  border-color: #0052d9 !important;
+}
+
+:global(html.dark .settings-page) .editorialBtn:hover {
+  background: #0042ad !important;
+  border-color: #0042ad !important;
+}
+
+:global(html.dark .settings-page) .editorialBtnGhost {
+  background: transparent !important;
+  color: #4d9aff !important;
+  border-color: #334155 !important;
+}
+
+:global(html.dark .settings-page) .editorialBtnGhost:hover {
+  background: #1a2a4a !important;
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark .settings-page) .entryRow {
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .settings-page) .entryMark {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .settings-page) .entryKey {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .settings-page) .entryValue {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark .settings-page) .linkBtn {
+  background: transparent !important;
+  color: #4d9aff !important;
+  border-color: #334155 !important;
+}
+
+:global(html.dark .settings-page) .linkBtn:hover {
+  background: #1a2a4a !important;
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark .settings-page) .linkBtnDanger {
+  color: #f87171 !important;
+  border-color: rgb(239, 68, 68, 0.4) !important;
+}
+
+:global(html.dark .settings-page) .linkBtnDanger:hover {
+  background: rgb(239, 68, 68, 0.12) !important;
+  border-color: #ef4444 !important;
+}
+
+:global(html.dark .settings-page) .deviceRow {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .settings-page) .deviceRow.current {
+  border-color: #4d9aff !important;
+  background: #1a2a4a !important;
+}
+
+:global(html.dark .settings-page) .deviceName {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .settings-page) .deviceTag {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+}
+
+:global(html.dark .settings-page) .metaItem {
+  color: #94a3b8 !important;
+}
+
+/* 换绑弹窗（Modal teleport 到 body，脱离 settings-page，原文即无前缀） */
+:global(html.dark) .contactDialog {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark) .contactDialog .dsItem {
+  border-color: #1e293b !important;
+}
+
+:global(html.dark) .contactDialog .dsNum {
+  background: #0f172a !important;
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .contactDialog .dsLabel {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .contactDialog .summaryRow {
+  border-color: #1e293b !important;
+}
+
+:global(html.dark) .contactDialog .summaryLabel {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .contactDialog .summaryValue {
+  color: #f1f5f9 !important;
+}

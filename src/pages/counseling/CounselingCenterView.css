@@ -1,0 +1,155 @@
+/* ============================================================
+   心理咨询中心 · 开放排版（贴合网站主题）
+   品牌蓝 var(--brand-primary) 主导  浅蓝点缀 var(--brand-primary-faint)
+   ============================================================ */
+
+.counseling-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 40px 96px;
+  color: var(--ink-800);
+  font-feature-settings: "tnum" 1;
+}
+
+/* ============ Tabs · 极简文字 ============
+   页签外观（字号/颜色/padding/间距/ink-bar/底部外边距）已 token 化为
+   CounselingCenterView.tsx 嵌套 ConfigProvider 的 Tabs 组件注入。
+   字重/字距/过渡无对应 token，保留在下方。 */
+.counseling-page .main-tabs .ant-tabs-tab {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: color 0.25s ease;
+}
+
+.counseling-page .main-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  font-weight: 700;
+}
+
+/* el-tabs__nav-wrap::after 底灰线 → antd nav ::before 底线隐藏（无对应 token） */
+.counseling-page .main-tabs > .ant-tabs-nav::before { display: none; }
+
+/* ============ 模块封面 · 本页节奏覆盖 ============ */
+.counseling-page .module-cover {
+  padding: 8px 0 36px;
+  margin-bottom: 40px;
+}
+.counseling-page .module-cover .cover-top { margin-bottom: 18px; }
+
+.counseling-page .module-cover .cover-title {
+  font-size: clamp(36px, 5vw, 64px);
+  margin: 0 0 14px;
+}
+.counseling-page .module-cover .cover-desc { margin: 0 0 22px; }
+.counseling-page .module-cover .cover-no { border-radius: 0; }
+
+@media (width <= 1200px) {
+  .counseling-page { padding: 24px 32px 80px; }
+}
+
+@media (width <= 900px) {
+  .counseling-page { padding: 20px 24px 64px; }
+}
+
+@media (width <= 768px) {
+  .counseling-page { padding: 16px 16px 48px; }
+  .counseling-page .main-tabs .ant-tabs-tab { font-size: 13px; padding: 0 0 12px; letter-spacing: 0.2px; }
+  .counseling-page .main-tabs .ant-tabs-tab + .ant-tabs-tab { margin-left: 20px; }
+  .counseling-page .main-tabs .ant-tabs-nav-wrap { overflow-x: auto; }
+}
+
+/* ============ 暗夜模式适配 ============ */
+html.dark .counseling-page .module-cover {
+  border-bottom-color: var(--slate-700) !important;
+}
+
+html.dark .counseling-page .module-cover .cover-line {
+  background: linear-gradient(to right, var(--brand-primary) 0, var(--brand-primary) 56px, var(--slate-700) 56px, var(--slate-700) 100%);
+}
+
+html.dark .counseling-page .module-cover .cover-title {
+  color: var(--slate-100) !important;
+}
+
+html.dark .counseling-page .module-cover .cover-desc,
+html.dark .counseling-page .module-cover .cover-eyebrow,
+html.dark .counseling-page .module-cover .cover-no {
+  color: var(--slate-400) !important;
+}
+
+/* ============ AI 咨询师入口 ============ */
+.ai-consult-entry {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  border: 1px solid var(--brand-primary-soft);
+  border-radius: 16px;
+  background: linear-gradient(120deg, var(--brand-primary-faint), var(--brand-primary-wash));
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ai-consult-entry:hover {
+  border-color: var(--brand-primary);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-primary) 16%, transparent);
+  transform: translateY(-2px);
+}
+
+.entry-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--brand-primary);
+  color: white;
+  font-size: 22px;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 30%, transparent);
+}
+
+.entry-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.entry-text strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy-950);
+}
+
+.entry-text small {
+  font-size: 12.5px;
+  color: var(--ink-400);
+  line-height: 1.5;
+}
+
+.entry-arrow {
+  color: var(--brand-primary);
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+.ai-consult-entry:hover .entry-arrow {
+  transform: translateX(4px);
+}
+
+html.dark .ai-consult-entry {
+  background: var(--slate-800);
+  border-color: var(--slate-700);
+}
+
+html.dark .entry-text strong {
+  color: var(--slate-100);
+}
+
+html.dark .entry-text small {
+  color: var(--slate-400);
+}

@@ -1,0 +1,197 @@
+/* 时光胶囊 · 列表页头部（CSS Modules：私有类 camelCase） */
+
+/* ============================================================
+   顶部标题区 · 非对称编辑式
+   ============================================================ */
+.pageHeader {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 56px 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.headerLeft {
+  flex: 1;
+  min-width: 0;
+}
+
+.headerEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.eyebrowLine {
+  width: 40px;
+  height: 1px;
+  background: var(--brand-primary);
+  flex-shrink: 0;
+}
+
+.eyebrowText {
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  color: var(--ink-500);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.headerTitle {
+  font-size: clamp(48px, 7vw, 88px);
+  font-weight: 900;
+  color: var(--ink-900);
+  margin: 0 0 16px;
+  letter-spacing: -3px;
+  line-height: 0.95;
+  font-family: Georgia, 'PingFang SC', serif;
+}
+
+.headerTitle em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--brand-primary);
+  opacity: 0.85;
+  font-family: Georgia, serif;
+}
+
+.headerDesc {
+  font-size: 14px;
+  color: var(--ink-500);
+  letter-spacing: 0.5px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* 邮戳印章 */
+.headerRight {
+  flex-shrink: 0;
+  padding-top: 8px;
+}
+
+.postmark {
+  width: 108px;
+  height: 108px;
+  border: 1.5px solid color-mix(in srgb, var(--brand-primary) 55%, transparent);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transform: rotate(-8deg);
+  position: relative;
+  opacity: 0.7;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.postmark::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent);
+  border-radius: 50%;
+}
+
+.postmark:hover {
+  opacity: 0.9;
+  transform: rotate(-4deg);
+}
+
+.pmDate {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pmBar {
+  width: 60%;
+  height: 1px;
+  background: color-mix(in srgb, var(--brand-primary) 40%, transparent);
+}
+
+.pmText {
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  letter-spacing: 1.5px;
+  text-align: center;
+  line-height: 1.3;
+}
+
+@media (width <= 768px) {
+  .pageHeader {
+    padding: 24px 20px 20px;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .headerRight {
+    align-self: flex-end;
+    padding-top: 0;
+  }
+
+  .postmark {
+    width: 84px;
+    height: 84px;
+  }
+
+  .pmDate {
+    font-size: 10px;
+  }
+
+  .pmText {
+    font-size: 7px;
+  }
+
+  .headerTitle {
+    font-size: 44px;
+    letter-spacing: -2px;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移，页面作用域 .capsule-list-page
+   为 pages 层 CapsuleListView 根类；原规则仅服务本组件，整体迁入）
+   ============================================================ */
+:global(html.dark .capsule-list-page) .headerEyebrow,
+:global(html.dark .capsule-list-page) .eyebrowText {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .capsule-list-page) .eyebrowLine {
+  background: #4d9aff !important;
+}
+
+:global(html.dark .capsule-list-page) .headerTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .capsule-list-page) .headerDesc {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark .capsule-list-page) .postmark {
+  background: #1e2b3a !important;
+  border-color: #1a3a6b !important;
+}
+
+:global(html.dark .capsule-list-page) .postmark:hover {
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark .capsule-list-page) .pmDate,
+:global(html.dark .capsule-list-page) .pmText {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark .capsule-list-page) .pmBar {
+  background: #1e293b !important;
+}

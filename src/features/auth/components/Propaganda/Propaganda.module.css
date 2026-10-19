@@ -1,0 +1,211 @@
+/* 登录页左侧品牌展示区（CSS Modules：私有类 camelCase；
+   keyframes 由模块自动局部化，不污染全局） */
+
+.presentationBox {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  position: relative;
+  padding: 8px 0;
+  animation: slideInFromLeft 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* 主标题：大字，大气 */
+.heroTitle {
+  margin-bottom: 36px;
+  animation: fadeIn 0.7s ease 0.25s both;
+}
+
+.heroTitle h1 {
+  margin: 0 0 24px;
+
+  /* 流式字号：随视口宽度缩放，适配不同分辨率 */
+  font-size: clamp(44px, 5vw, 72px);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -2px;
+  color: white;
+  text-shadow: 0 4px 24px color-mix(in srgb, black 45%, transparent);
+}
+
+.heroSubtitle {
+  margin: 0;
+  margin-left: 4px;
+  font-size: 18px;
+  line-height: 1.8;
+  color: color-mix(in srgb, white 82%, transparent);
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 8px color-mix(in srgb, black 35%, transparent);
+  font-weight: 400;
+  max-width: 360px;
+}
+
+/* 分隔线：极简 */
+.divider {
+  width: 56px;
+  height: 2px;
+  background: color-mix(in srgb, white 50%, transparent);
+  margin-bottom: 32px;
+  animation: fadeIn 0.7s ease 0.35s both;
+}
+
+/* 引言：左对齐，斜体，文字偏柔 */
+.heroQuote {
+  margin: 0 0 48px;
+  padding: 0;
+  border: none;
+  font-size: 16px;
+  line-height: 1.95;
+  color: color-mix(in srgb, white 88%, transparent);
+  font-style: italic;
+  letter-spacing: 0.6px;
+  font-weight: 300;
+  max-width: 420px;
+  text-shadow: 0 1px 6px color-mix(in srgb, black 40%, transparent);
+  animation: fadeIn 0.7s ease 0.45s both;
+}
+
+.quoteMark {
+  font-size: 22px;
+  font-weight: 600;
+  color: color-mix(in srgb, white 55%, transparent);
+  font-style: normal;
+  font-family: Georgia, serif;
+  margin-right: 4px;
+}
+
+.quoteMarkEnd {
+  margin-right: 0;
+  margin-left: 4px;
+}
+
+/* 特性列表：错落缩进 + 横线编号风格，无背景卡片 */
+.featureList {
+  list-style: none;
+  margin: 0 0 48px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 错落缩进：第二项最右，第三项稍回 */
+.featureStep1 {
+  margin-left: 0;
+  animation: fadeIn 0.7s ease 0.55s both;
+}
+
+.featureStep2 {
+  margin-left: 64px;
+  animation: fadeIn 0.7s ease 0.65s both;
+}
+
+.featureStep3 {
+  margin-left: 24px;
+  animation: fadeIn 0.7s ease 0.75s both;
+}
+
+.featureItem:hover {
+  transform: translateX(6px);
+}
+
+.featureIndex {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: color-mix(in srgb, white 55%, transparent);
+  letter-spacing: 2px;
+  font-family: Georgia, serif;
+  min-width: 28px;
+}
+
+.featureLine {
+  flex-shrink: 0;
+  width: 32px;
+  height: 1px;
+  background: color-mix(in srgb, white 40%, transparent);
+}
+
+.featureContent h3 {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.3px;
+}
+
+.featureContent p {
+  margin: 0;
+  font-size: 13px;
+  color: color-mix(in srgb, white 70%, transparent);
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 响应式：< 1200px 隐藏品牌区 */
+@media (width <= 1199px) {
+  .presentationBox {
+    display: none !important;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移：feature-item 系列为全仓独占
+   类——仅本组件使用；原「卡片与面板」两区块中与 service-card、
+   el-card 等死类并列的规则多层叠加后取最终生效值。hero 标题、
+   副标题、引言的暗色表现由 dark-mode.css 的通用元素规则
+   （html.dark h1-h6、p、blockquote）继续提供服务，本模块不加
+   等价规则以保持优先级关系不变）
+   ============================================================ */
+:global(html.dark) .featureItem {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+  color: var(--text-primary) !important;
+}
+
+:global(html.dark) .featureItem:hover {
+  border-color: #4d9aff !important;
+  box-shadow: 0 20px 40px rgb(0, 0, 0, 0.4) !important;
+}
+
+:global(html.dark) .featureItem h3 {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .featureItem p {
+  color: #94a3b8 !important;
+}

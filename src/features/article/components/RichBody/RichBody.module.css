@@ -1,0 +1,218 @@
+.articleMain {
+  min-width: 0;
+}
+
+/* ===== 正文 ===== */
+.richContent {
+  font-size: 17px;
+  line-height: 1.85;
+  color: var(--ink-800);
+  font-weight: 400;
+}
+
+.richContent p {
+  margin: 0 0 24px;
+}
+
+.richContent h3 {
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 800;
+  color: var(--navy-950);
+  letter-spacing: -0.5px;
+  margin: 56px 0 20px;
+  position: relative;
+  padding-left: 18px;
+}
+
+.richContent h3::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 6px;
+  height: 6px;
+  background: var(--brand-primary);
+  border-radius: 50%;
+}
+
+.richContent strong {
+  font-weight: 700;
+  color: var(--navy-950);
+}
+
+.richContent blockquote {
+  margin: 32px 0;
+  padding: 16px 24px;
+  border-left: 3px solid var(--brand-primary);
+  font-style: italic;
+  color: var(--ink-600);
+  background: var(--brand-primary-wash);
+}
+
+.richContent a {
+  color: var(--brand-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.richContent img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 32px 0;
+  display: block;
+}
+
+/* ===== Hero 大图 ===== */
+
+/* 文章首图（封面）· 嵌入正文；article-hero-img 由 JS 字符串注入，属协议类保留全局字面量 */
+.richContent :global(.article-hero-img) {
+  margin: 0 0 40px;
+  position: relative;
+}
+
+.richContent :global(.article-hero-img) img {
+  width: 100%;
+  height: clamp(280px, 38vw, 480px);
+  object-fit: cover;
+  display: block;
+  border-radius: 20px;
+  filter: grayscale(1%) contrast(1.02);
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.richContent :global(.article-hero-img:hover) img {
+  transform: scale(1.02);
+}
+
+.richContent :global(.article-hero-img) figcaption {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--ink-400);
+  letter-spacing: 1.5px;
+  font-style: italic;
+  font-family: Georgia, 'Times New Roman', serif;
+  text-align: center;
+}
+
+/* ===== 底部操作栏 ===== */
+.detailFooter {
+  margin: 80px 0 0;
+}
+
+.footerLine {
+  height: 1px;
+  background: var(--mist-050);
+  margin-bottom: 28px;
+}
+
+.footerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.footerMark {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--ink-400);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.footerActions {
+  display: flex;
+  gap: 12px;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: transparent;
+  border: 1px solid var(--mist-100);
+  color: var(--ink-800);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border-radius: 0;
+}
+
+.actionBtn:hover {
+  border-color: var(--navy-950);
+  background: var(--navy-950);
+  color: white;
+}
+
+.actionBtn.active {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary);
+  color: white;
+}
+
+.actionBtn :global(.anticon) {
+  font-size: 13px;
+}
+
+@media (width <= 768px) {
+  .footerRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+
+/* ===== 暗色主题（自 dark-mode.css 迁移，作用域为页面根类 article-detail-page；
+   blockquote 背景取三期覆盖值 rgb(77,154,255,0.04)，border-left/color 取二期值。
+   注：原 dark-mode.css 中 rich-content 内层规则为 :deep 与非 :deep 双写，
+   含 :deep 的选择器列表在浏览器中整条失效，此处按非 :deep 变体（等价合并值）生效，
+   与 dark-mode.css 待删清单一致，详见迁移报告说明） ===== */
+:global(html.dark .article-detail-page) .richContent {
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark .article-detail-page) .richContent p {
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark .article-detail-page) .richContent h1,
+:global(html.dark .article-detail-page) .richContent h2,
+:global(html.dark .article-detail-page) .richContent h3,
+:global(html.dark .article-detail-page) .richContent h4 {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .article-detail-page) .richContent blockquote {
+  background: rgb(77, 154, 255, 0.04) !important;
+  border-left-color: #4d9aff !important;
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark .article-detail-page) .richContent a {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .article-detail-page) .footerLine,
+:global(html.dark .article-detail-page) .footerMark {
+  color: #64748b !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .article-detail-page) .actionBtn {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+:global(html.dark .article-detail-page) .actionBtn:hover,
+:global(html.dark .article-detail-page) .actionBtn.active {
+  background: #1a2a4a !important;
+  border-color: #4d9aff !important;
+  color: #4d9aff !important;
+}

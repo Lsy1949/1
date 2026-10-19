@@ -1,0 +1,100 @@
+.settings-page {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 48px 100px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  color: var(--ink-900);
+}
+
+/* ============ Sections ============ */
+.settings-main {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============ Mobile TOC ============ */
+.mobile-toc { display: none; }
+
+/* ============ 自定义滚动条 ============ */
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--mist-350) transparent;
+}
+.custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb { background: var(--mist-350); }
+.custom-scroll::-webkit-scrollbar-thumb:hover { background: var(--brand-primary); }
+
+/* ==================================================================
+   原 Element Plus overrides（方角 + ink-300 描边 / hover·focus 品牌色）
+   已 token 化为 SettingsView.tsx 嵌套 ConfigProvider 组件注入：
+   Input/Select/DatePicker 的 borderRadius 0、colorBorder、hoverBorderColor、
+   activeBorderColor、activeShadow。checkbox/switch 选中态原规则与全局
+   colorPrimary（#0052d9）同值，属冗余，已删除。
+   仍不可 token 化的项保留在下方。
+   ================================================================== */
+/* Checkbox 选中文字着色（Checkbox 组件 token 为空，无对应 token） */
+.settings-page .ant-checkbox-wrapper-checked {
+  color: var(--brand-primary);
+}
+
+.settings-page .ant-picker .ant-picker-input > input {
+  font-family: inherit;
+}
+
+/* ============ Responsive ============ */
+@media (width <= 1024px) {
+  .settings-page { padding: 0 24px 80px; }
+
+  .mobile-toc {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: white;
+    border-top: 1px solid var(--ink-900);
+    border-bottom: 1px solid var(--ink-200);
+    overflow-x: auto;
+    margin: 0 -24px;
+    padding: 0 24px;
+    scrollbar-width: none;
+  }
+  .mobile-toc::-webkit-scrollbar { display: none; }
+
+  .mtoc-item {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 12px 18px;
+    text-decoration: none;
+    color: var(--ink-500);
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s;
+  }
+
+  .mtoc-item.active {
+    color: var(--brand-primary);
+    border-bottom-color: var(--brand-primary);
+  }
+
+  .mtoc-num {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-style: italic;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .mtoc-text {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+}
+
+@media (width <= 768px) {
+  .settings-page { padding: 0 16px 80px; }
+}

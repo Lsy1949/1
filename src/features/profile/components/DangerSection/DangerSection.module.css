@@ -1,0 +1,146 @@
+/* 05 危险操作区块 · 注销确认（CSS Modules：私有类 camelCase；
+   antd 危险按钮结构类 .ant-btn-dangerous 用 :global 包裹） */
+
+/* ============ 杂志区块通用 ============ */
+.magSection {
+  border-top: 1px solid var(--ink-200);
+  padding: 48px 0 40px;
+}
+
+.magSection:last-child {
+  border-bottom: 1px solid var(--ink-200);
+}
+
+.secHead {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 28px;
+  align-items: start;
+  margin-bottom: 36px;
+}
+
+.secNum {
+  font-size: 28px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--brand-primary);
+  line-height: 1;
+  padding-top: 2px;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+}
+
+.secNum.danger {
+  color: var(--danger-500);
+}
+
+.secTitles {
+  min-width: 0;
+}
+
+.secTitle {
+  margin: 0 0 8px;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink-900);
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+}
+
+.secDesc {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-500);
+  line-height: 1.6;
+  max-width: 540px;
+}
+
+/* ============ 危险区 ============ */
+.dangerSection {
+  border-top-color: var(--danger-200);
+}
+
+.dangerSection .secTitle {
+  color: var(--danger-700);
+}
+
+.dangerAction {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.dangerBtn {
+  border-radius: 0;
+  font-weight: 600;
+  padding: 10px 24px;
+}
+
+/* Element Plus `plain` 危险按钮的等价视觉（antd danger 默认为实心） */
+.dangerBtn:global(.ant-btn-dangerous) {
+  background: transparent;
+  border-color: var(--danger-500);
+  color: var(--danger-500);
+  box-shadow: none;
+}
+
+.dangerBtn:global(.ant-btn-dangerous):hover:not(:disabled),
+.dangerBtn:global(.ant-btn-dangerous):focus-visible {
+  background: var(--danger-500);
+  border-color: var(--danger-500);
+  color: #fff;
+}
+
+@media (width <= 768px) {
+  .magSection {
+    padding: 36px 0 28px;
+  }
+
+  .secHead {
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    margin-bottom: 26px;
+  }
+
+  .secTitle {
+    font-size: 22px;
+  }
+
+  .secNum {
+    font-size: 24px;
+  }
+
+  .dangerAction :global(.ant-btn) {
+    width: 100%;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移后的本组件独占有效值。原文件中
+   danger-section 边框规则在 mag-section 通用边框规则之后且特异性
+   更高，红色边框生效——此处保持同序书写，dangerSection 规则后置
+   以维持同级平局时后者的级联结果）
+   ============================================================ */
+:global(html.dark) .magSection {
+  border-color: #1e293b !important;
+}
+
+:global(html.dark) .secNum {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .secNum.danger {
+  color: #f87171 !important;
+}
+
+:global(html.dark) .secTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .secDesc {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .dangerSection {
+  border-color: rgb(239, 68, 68, 0.3) !important;
+  background: rgb(239, 68, 68, 0.05) !important;
+}

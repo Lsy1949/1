@@ -1,0 +1,25 @@
+/* ============================================================
+ * 品牌主题变量 —— 自 Vue 版 styles/brand.css 迁移。
+ *
+ * 与 Vue 版差异：
+ *  - Element Plus（--el-color-primary-*）与 Vant（--van-primary-color）
+ *    的色阶派生段删除；组件库主题改由 antd ConfigProvider theme.token
+ *    承担（见 main.tsx）。
+ *  - 业务组件照旧只引用 --brand-* 变量，多租户换色接入点不变。
+ * ============================================================ */
+
+:root {
+  --brand-primary: #0052d9;
+  --brand-radius: 6px;
+  --brand-font-family: -apple-system, blinkmacsystemfont, 'Segoe UI', 'PingFang SC',
+    'Microsoft YaHei', sans-serif;
+}
+
+:root {
+  --brand-primary-dark: #0040b0;
+  --brand-primary-deep: #0040a8;
+  --brand-primary-deeper: #003bb3;
+  --brand-primary-soft: #d0e7ff;
+  --brand-primary-faint: #f0f7ff;
+  --brand-primary-wash: #f8fbff;
+}

@@ -1,0 +1,224 @@
+/* 常见问题面板（CSS Modules：私有类 camelCase；antd 全局类用 :global 包裹；
+   暗色规则自本组件原 css 与全局 dark-mode.css counseling 作用域等价迁移，
+   同一选择器取最终生效值） */
+
+/* ============ FAQ · 卡片化侧栏 ============ */
+.faqLayout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 48px;
+  align-items: flex-start;
+}
+
+.faqSidebar {
+  position: sticky;
+  top: 96px;
+  background: white;
+  border: 1px solid var(--mist-050);
+  border-radius: 16px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--slate-900) 4%, transparent);
+}
+
+.faqCat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--ink-600);
+  font-weight: 500;
+  transition: all 0.25s ease;
+  border: none;
+  letter-spacing: 0.2px;
+  background: transparent;
+}
+
+.faqCat:hover { background: var(--brand-primary-faint); color: var(--brand-primary); }
+
+.faqCat.active {
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--color-info) 100%);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 25%, transparent);
+}
+.faqCat :global(.anticon) { font-size: 16px; }
+
+.faqCatCount {
+  margin-left: auto;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--slate-100);
+  color: var(--ink-400);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.faqCat.active .faqCatCount {
+  background: color-mix(in srgb, white 20%, transparent);
+  color: white;
+}
+
+.faqContent { min-width: 0; }
+
+.faqSearch { margin-bottom: 28px; max-width: 460px; }
+
+/* el-input 极简外观：底色/描边/hover/focus 已由 Counseling 页 Input token 覆盖，
+   仅保留与 booking 表单（token 10px）不同的 12px 圆角差异项 */
+.faqSearch :global(.ant-input-affix-wrapper) {
+  border-radius: 12px;
+}
+
+.faqSearch :global(.ant-input-prefix) { color: var(--ink-400); }
+
+/* el-collapse → antd Collapse 适配（无边框、行式问答） */
+.faqContent :global(.ant-collapse) {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+}
+
+.faqContent :global(.ant-collapse > .ant-collapse-item) {
+  border: none;
+  border-bottom: none;
+}
+
+.faqContent :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--mist-050);
+  border-radius: 0;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-800);
+  height: 64px;
+  align-items: center;
+  letter-spacing: -0.2px;
+  transition: color 0.2s ease;
+}
+
+.faqContent :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header):hover { color: var(--brand-primary); }
+
+.faqContent :global(.ant-collapse > .ant-collapse-item > .ant-collapse-content) {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+}
+
+.faqContent :global(.ant-collapse > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box) {
+  padding: 16px 0 24px;
+}
+
+.faqQ { display: flex; align-items: center; gap: 14px; color: var(--ink-800); }
+
+.qMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--brand-primary-faint), var(--brand-primary-soft));
+  color: var(--brand-primary);
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+
+.faqA {
+  margin: 0 0 0 44px;
+  font-size: 14px;
+  color: var(--ink-600);
+  line-height: 1.85;
+  letter-spacing: 0.1px;
+  padding: 14px 18px;
+  background: var(--slate-50);
+  border-radius: 10px;
+  border-left: 3px solid var(--brand-primary);
+}
+
+.faqContact {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 40px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--brand-primary) 6%, transparent) 0%, color-mix(in srgb, var(--color-info) 2%, transparent) 100%);
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  border-radius: 14px;
+  font-size: 14px;
+  color: var(--ink-600);
+}
+.faqContact :global(.anticon) { color: var(--brand-primary); font-size: 20px; }
+
+/* el-button link → antd link 按钮视觉对齐 */
+.faqContact :global(.ant-btn-link) { padding: 0; height: auto; }
+.faqContact :global(.ant-btn-link):hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.emptyTip { padding: 80px 0; }
+
+@media (width <= 900px) {
+  .faqLayout { grid-template-columns: 1fr; gap: 28px; }
+  .faqSidebar { position: relative; top: 0; flex-direction: row; overflow-x: auto; gap: 8px; padding: 8px; }
+  .faqCat { flex-shrink: 0; white-space: nowrap; }
+}
+
+@media (width <= 768px) {
+  .faqA { margin-left: 0; padding: 12px 14px; }
+  .qMark { width: 26px; height: 26px; }
+}
+
+/* ============================================================
+   暗色主题（等价迁移自本组件原 css 暗色区与全局 dark-mode.css 的
+   counseling 作用域规则；dark-mode.css 中同一选择器的两层规则已按
+   最终生效值合并；.counseling-page 页面根类整体置于 :global() 内）
+   ============================================================ */
+:global(html.dark) .faqSidebar {
+  background: var(--slate-800) !important;
+  border-color: var(--slate-700) !important;
+  box-shadow: 0 2px 12px color-mix(in srgb, black 30%, transparent) !important;
+}
+
+/* —— 自 dark-mode.css counseling 作用域迁入（最终生效值） —— */
+:global(html.dark .counseling-page) .faqCat {
+  color: #cbd5e1 !important;
+  background: transparent !important;
+  border-color: rgb(255, 255, 255, 0.08) !important;
+}
+
+:global(html.dark .counseling-page) .faqCat:hover,
+:global(html.dark .counseling-page) .faqCat.active {
+  background: rgb(77, 154, 255, 0.1) !important;
+  color: #4d9aff !important;
+  border-color: rgb(77, 154, 255, 0.3) !important;
+}
+
+:global(html.dark .counseling-page) .faqQ {
+  color: #f1f5f9 !important;
+  border-bottom-color: #1e293b !important;
+}
+
+:global(html.dark .counseling-page) .qMark {
+  background: rgb(77, 154, 255, 0.1) !important;
+  border-color: transparent !important;
+  color: #4d9aff !important;
+}
+
+:global(html.dark .counseling-page) .faqA {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark .counseling-page) .faqContact {
+  background: rgb(77, 154, 255, 0.06) !important;
+  border-color: rgb(77, 154, 255, 0.15) !important;
+  color: #4d9aff !important;
+}

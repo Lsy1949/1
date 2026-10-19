@@ -1,0 +1,571 @@
+/* ===== Feed 列表（CSS Modules：私有类 camelCase；item.type 与
+   photo-count-N 为数据驱动协议类，按原字面量与 module 类混拼） ===== */
+.feedColumn {
+  min-width: 0;
+}
+
+.filterBar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.filterTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid var(--mist-050);
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-500);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+}
+
+.filterTab:hover {
+  border-color: var(--brand-primary-soft);
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+}
+
+.filterTab.active {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: white;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--brand-primary) 20%, transparent);
+}
+
+.tabCount {
+  font-size: 12px;
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+
+.feedList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.feedCard {
+  background: white;
+  border: 1px solid var(--mist-050);
+  border-radius: 20px;
+  padding: 28px 32px;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.feedCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand-primary-soft), var(--brand-primary-faint));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.feedCard:hover {
+  border-color: var(--ink-200);
+  transform: translateY(-6px) rotate(-0.3deg);
+  box-shadow: 0 18px 40px color-mix(in srgb, var(--brand-primary) 12%, transparent);
+}
+
+.feedCard:hover::before {
+  opacity: 1;
+}
+
+.feedCard.isCapsule {
+  background: linear-gradient(135deg, var(--brand-primary-faint) 0%, white 60%);
+  border-color: var(--brand-primary-soft);
+}
+
+.feedCard.isCapsule::before {
+  background: linear-gradient(90deg, #e0e7ff, var(--brand-primary-faint)); /* stylelint-disable-line color-no-hex, function-allowed-list */
+  opacity: 0;
+}
+
+.feedCard.isPinned {
+  border-color: var(--ink-200);
+}
+
+/* 图片网格（photo-count-1 至 photo-count-4 为 JS 拼接协议类） */
+.cardPhotoGrid {
+  display: grid;
+  gap: 6px;
+  margin: 14px 0 4px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+.cardPhotoGrid:global(.photo-count-1) { grid-template-columns: 1fr; }
+.cardPhotoGrid:global(.photo-count-1) .cardPhoto { height: 280px; }
+.cardPhotoGrid:global(.photo-count-2) { grid-template-columns: 1fr 1fr; }
+.cardPhotoGrid:global(.photo-count-2) .cardPhoto { height: 180px; }
+.cardPhotoGrid:global(.photo-count-3) { grid-template-columns: 1fr 1fr 1fr; }
+.cardPhotoGrid:global(.photo-count-3) .cardPhoto { height: 140px; }
+.cardPhotoGrid:global(.photo-count-4) { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+.cardPhotoGrid:global(.photo-count-4) .cardPhoto { height: 120px; }
+
+.cardPhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+  transition: transform 0.4s ease;
+}
+.cardPhoto:hover { transform: scale(1.03); }
+
+.photoMore {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  background: color-mix(in srgb, var(--ink-900) 70%, transparent);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* 置顶与热议标记 */
+.cardMark {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.markBadge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+
+.markBadge.pinned {
+  background: var(--brand-primary);
+  color: white;
+}
+
+.markBadge.hot {
+  background: var(--danger-50);
+  color: var(--danger-500);
+  border: 1px solid var(--danger-200);
+}
+
+/* 卡片头部 */
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-right: 60px;
+}
+
+.headMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.headAuthor {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+  letter-spacing: 0.2px;
+}
+
+.headTime {
+  font-size: 12px;
+  color: var(--ink-400);
+  letter-spacing: 0.3px;
+}
+
+.typeBadge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* moment 与 capsule 为 item.type 数据驱动字面量 */
+.typeBadge:global(.moment) {
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+}
+
+.typeBadge:global(.capsule) {
+  background: linear-gradient(135deg, var(--brand-primary), var(--color-info));
+  color: white;
+}
+
+/* 卡片正文 */
+.cardBody {
+  margin-bottom: 16px;
+}
+
+.moodLine {
+  margin-bottom: 12px;
+}
+
+.moodEmoji {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.cardContent {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--ink-800);
+  margin: 0;
+  letter-spacing: 0.1px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 话题标签 */
+.cardTopics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.topicTag {
+  font-size: 12px;
+  color: var(--brand-primary);
+  background: var(--brand-primary-faint);
+  padding: 4px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.topicTag:hover {
+  background: var(--brand-primary);
+  color: white;
+}
+
+/* 互动栏 */
+.cardFoot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--slate-100);
+}
+
+.interactBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--ink-500);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.interactBtn:hover {
+  background: var(--brand-primary-faint);
+  border-color: var(--brand-primary-soft);
+  color: var(--brand-primary);
+}
+
+.interactBtn.liked {
+  color: var(--brand-primary);
+  background: var(--brand-primary-faint);
+  border-color: var(--brand-primary-soft);
+}
+
+/* 原 .interact-btn .el-icon → antd 图标类名等价选择器 */
+.interactBtn :global(.anticon) {
+  font-size: 15px;
+}
+
+/* ===== 空状态 ===== */
+.emptyState {
+  text-align: center;
+  padding: 80px 0 40px;
+}
+
+.emptyTitle {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--ink-900);
+  margin: 0 0 10px;
+  letter-spacing: -0.5px;
+}
+
+.emptyHint {
+  font-size: 14px;
+  color: var(--ink-400);
+  margin: 0 0 28px;
+}
+
+.emptyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: var(--brand-primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--brand-primary) 22%, transparent);
+}
+
+.emptyBtn:hover {
+  background: var(--brand-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--brand-primary) 30%, transparent);
+}
+
+@media (width <= 1100px) {
+  .feedColumn {
+    order: 1;
+  }
+}
+
+@media (width <= 768px) {
+  .feedCard {
+    padding: 20px 18px;
+    border-radius: 16px;
+  }
+
+  .interactBtn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .cardHead {
+    padding-right: 0;
+  }
+
+  .cardMark {
+    position: static;
+    margin-bottom: 10px;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移：square-page 页面作用域规则，
+   均为本组件独占类；页面根类 square-page 由 pages 层 css 定义，
+   作用域选择器整体置于 :global 内。原 tab-label 规则为无渲染
+   效果的 color: inherit，未迁入，已列入全局待删清单）
+   ============================================================ */
+:global(html.dark .square-page) .filterBar {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .square-page) .filterTab {
+  color: #94a3b8 !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .square-page) .filterTab:hover {
+  color: #4d9aff !important;
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark .square-page) .filterTab.active {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark .square-page) .tabCount {
+  color: #64748b !important;
+}
+
+:global(html.dark .square-page) .filterTab.active .tabCount {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .square-page) .feedCard {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .square-page) .feedCard:hover {
+  border-color: #4d9aff !important;
+  box-shadow: 0 20px 40px rgb(0, 0, 0, 0.45) !important;
+  transform: translateY(-4px);
+}
+
+:global(html.dark .square-page) .feedCard.isCapsule {
+  border-left-color: #4d9aff !important;
+}
+
+:global(html.dark .square-page) .feedCard.isPinned {
+  border-left-color: #fbbf24 !important;
+}
+
+:global(html.dark .square-page) .markBadge.pinned {
+  background: rgb(251, 191, 36, 0.15) !important;
+  color: #fbbf24 !important;
+}
+
+:global(html.dark .square-page) .markBadge.hot {
+  background: rgb(239, 68, 68, 0.15) !important;
+  color: #f87171 !important;
+}
+
+:global(html.dark .square-page) .headAuthor {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .square-page) .headTime {
+  color: #64748b !important;
+}
+
+:global(html.dark .square-page) .typeBadge:global(.moment) {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+}
+
+:global(html.dark .square-page) .typeBadge:global(.capsule) {
+  background: rgb(16, 185, 129, 0.15) !important;
+  color: #10b981 !important;
+}
+
+:global(html.dark .square-page) .moodLine,
+:global(html.dark .square-page) .moodEmoji {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark .square-page) .cardContent {
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark .square-page) .cardPhoto {
+  background: #0f172a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .square-page) .cardPhoto:hover {
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark .square-page) .photoMore {
+  background: rgb(15, 23, 42, 0.85) !important;
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark .square-page) .topicTag {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+  border-color: #1a3a6b !important;
+}
+
+:global(html.dark .square-page) .topicTag:hover {
+  background: #0052d9 !important;
+  color: #fff !important;
+  border-color: #0052d9 !important;
+}
+
+:global(html.dark .square-page) .interactBtn {
+  color: #64748b !important;
+  background: transparent !important;
+}
+
+:global(html.dark .square-page) .interactBtn:hover {
+  color: #4d9aff !important;
+  background: #1a2a4a !important;
+}
+
+:global(html.dark .square-page) .interactBtn.liked {
+  color: #f87171 !important;
+}
+
+:global(html.dark .square-page) .emptyState,
+:global(html.dark .square-page) .emptyTitle {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark .square-page) .emptyHint {
+  color: #64748b !important;
+}
+
+:global(html.dark .square-page) .emptyBtn {
+  background: #0052d9 !important;
+  color: #fff !important;
+  border-color: #0052d9 !important;
+}
+
+:global(html.dark .square-page) .emptyBtn:hover {
+  background: #0042ad !important;
+  border-color: #0042ad !important;
+}
+
+/* ============================================================
+   暗色主题 · 三期「卡片融入背景」覆盖段（自 dark-mode.css 迁移，
+   位于主段之后，保持原级联顺序：同特异性后写胜出）
+   ============================================================ */
+:global(html.dark .square-page) .feedCard {
+  background: transparent !important;
+  border-color: transparent !important;
+  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+:global(html.dark .square-page) .feedCard:hover {
+  background: rgb(77, 154, 255, 0.04) !important;
+  border-color: transparent !important;
+  border-bottom-color: rgb(77, 154, 255, 0.2) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+:global(html.dark .square-page) .feedCard.isCapsule {
+  background: rgb(77, 154, 255, 0.04) !important;
+  border-color: rgb(77, 154, 255, 0.15) !important;
+}
+
+:global(html.dark .square-page) .filterTab {
+  background: transparent !important;
+  border-color: rgb(255, 255, 255, 0.08) !important;
+}
+
+:global(html.dark .square-page) .filterTab:hover {
+  background: rgb(255, 255, 255, 0.04) !important;
+}
+
+:global(html.dark .square-page) .topicTag,
+:global(html.dark .square-page) .typeBadge:global(.moment) {
+  background: rgb(77, 154, 255, 0.08) !important;
+  border-color: transparent !important;
+}

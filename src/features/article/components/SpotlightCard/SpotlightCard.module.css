@@ -1,0 +1,348 @@
+/* ===== 模块标题 ===== */
+.moduleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 36px;
+  gap: 24px;
+}
+
+.moduleTitle {
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 900;
+  color: var(--navy-950);
+  margin: 0;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.articleCount {
+  font-size: 0.85rem;
+  color: var(--ink-500);
+  font-weight: 500;
+}
+
+/* ===== 今日焦点 · 图片完全覆盖 ===== */
+.moduleSpotlight {
+  margin-bottom: 88px;
+}
+
+.spotlightCard {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--mist-050);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.spotlightCard:hover {
+  box-shadow: 0 24px 56px -20px color-mix(in srgb, var(--brand-primary) 18%, transparent);
+  border-color: var(--brand-primary-soft);
+}
+
+.spotlightImage {
+  position: relative;
+  overflow: hidden;
+  min-height: 440px;
+}
+
+.spotlightImage img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.spotlightCard:hover .spotlightImage img {
+  transform: scale(1.06);
+}
+
+/* 无封面焦点卡 · 编辑式纯文字排版 */
+.spotlightCard.noCover {
+  grid-template-columns: 1fr;
+  position: relative;
+  padding: 0;
+  background: var(--neutral-025);
+}
+
+.spotlightQuoteDeco {
+  position: absolute;
+  top: -20px;
+  left: 32px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 200px;
+  font-weight: 900;
+  color: color-mix(in srgb, var(--ink-900) 5%, transparent);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.spotlightCard.noCover .spotlightContent {
+  padding: 72px 64px;
+  position: relative;
+  z-index: 1;
+  background: var(--neutral-025);
+}
+
+.spotlightCard.noCover .spotlightContent::before {
+  display: none;
+}
+
+.spotlightCard.noCover .spotlightTitle {
+  font-size: clamp(32px, 4vw, 52px);
+  background: linear-gradient(135deg, var(--ink-900), var(--ink-600));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.spotlightCard.noCover .spotlightDesc {
+  font-size: 17px;
+  line-height: 1.8;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+}
+
+.spotlightStamp {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 2;
+  background: color-mix(in srgb, white 95%, transparent);
+  color: var(--navy-950);
+  padding: 6px 12px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  border-radius: 4px;
+}
+
+.spotlightContent {
+  padding: 48px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: white;
+  position: relative;
+}
+
+.spotlightContent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--brand-primary), var(--color-info));
+}
+
+.spotlightMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.categoryTag {
+  color: var(--brand-primary);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.readBadge {
+  color: var(--ink-500);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: var(--ink-300);
+}
+
+.spotlightTitle {
+  font-size: clamp(26px, 2.6vw, 38px);
+  font-weight: 900;
+  line-height: 1.12;
+  color: var(--navy-950);
+  margin: 0 0 20px;
+  letter-spacing: -0.03em;
+}
+
+.spotlightDesc {
+  color: var(--ink-600);
+  line-height: 1.7;
+  margin: 0 0 36px;
+  font-size: 1rem;
+  font-weight: 400;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.spotlightFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 28px;
+  border-top: 1px solid var(--slate-100);
+  gap: 16px;
+}
+
+.spotlightAuthor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.authorAvatar {
+  flex-shrink: 0;
+}
+
+.authorInfo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.authorName {
+  font-weight: 700;
+  color: var(--ink-900);
+  font-size: 0.9rem;
+}
+
+.authorTitle {
+  font-size: 0.72rem;
+  color: var(--ink-500);
+  font-weight: 500;
+}
+
+.readMore {
+  background: var(--navy-950);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.readMore:hover {
+  background: var(--brand-primary);
+  transform: translateX(4px);
+}
+
+/* ===== 响应式 ===== */
+@media (width <= 1024px) {
+  .spotlightCard {
+    grid-template-columns: 1fr;
+  }
+
+  .spotlightImage {
+    min-height: 320px;
+  }
+
+  .spotlightContent {
+    padding: 36px 32px;
+  }
+}
+
+@media (width <= 768px) {
+  .spotlightTitle {
+    font-size: 1.6rem;
+  }
+
+  .moduleTitle {
+    font-size: 1.4rem;
+  }
+}
+
+/* ===== 暗色主题（自 dark-mode.css 迁移，作用域为页面根类 article-center；
+   spotlight- 系列取三期「卡片融入背景」覆盖后的最终生效值） ===== */
+:global(html.dark .article-center) .moduleTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .article-center) .articleCount {
+  color: #64748b !important;
+}
+
+/* 卡片基态与 hover 均被三期覆盖层覆盖，取三期透明基态 + hover 最终值 */
+:global(html.dark .article-center) .spotlightCard {
+  background: transparent !important;
+  border-color: transparent !important;
+  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+:global(html.dark .article-center) .spotlightCard:hover {
+  background: rgb(77, 154, 255, 0.04) !important;
+  border-color: transparent !important;
+  border-bottom-color: rgb(77, 154, 255, 0.2) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* 三期：无封面卡在暗色下融入背景 */
+:global(html.dark .article-center) .spotlightCard.noCover,
+:global(html.dark .article-center) .spotlightCard.noCover .spotlightContent {
+  background: transparent !important;
+}
+
+:global(html.dark .article-center) .spotlightTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .article-center) .spotlightDesc {
+  color: #94a3b8 !important;
+}
+
+/* category-tag / read-badge 与 collection-footer 同组规则（dark-mode.css 二期） */
+:global(html.dark .article-center) .categoryTag,
+:global(html.dark .article-center) .readBadge {
+  color: #64748b !important;
+}
+
+/* .dot 为跨组件共用类：color 取 article-center 作用域规则，background 走全局
+   html.dark .dot（dark-mode.css 保留），此处加等价局部兜底防全局规则日后移除 */
+:global(html.dark .article-center) .dot {
+  color: #64748b !important;
+}
+
+:global(html.dark) .dot {
+  background: #1e2b3a !important;
+}
+
+:global(html.dark .article-center) .authorName {
+  color: #e2e8f0 !important;
+}
+
+:global(html.dark .article-center) .authorTitle {
+  color: #64748b !important;
+}
+
+:global(html.dark .article-center) .readMore {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .article-center) .readMore:hover {
+  color: #80b3ff !important;
+}

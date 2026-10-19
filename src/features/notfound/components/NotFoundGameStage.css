@@ -1,0 +1,201 @@
+/* ========== 游戏舞台（原 scoped 块） ========== */
+.nf-game-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  width: 100%;
+}
+
+.nf-game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 460px;
+  padding: 0 8px;
+}
+
+.nf-game-back {
+  background: transparent;
+  border: none;
+  color: var(--dark-text-soft);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  transition: color 0.3s ease, gap 0.3s ease;
+}
+
+.nf-game-back:hover {
+  color: var(--dark-text);
+  gap: 14px;
+}
+
+.nf-game-back-arrow {
+  font-size: 14px;
+}
+
+.nf-game-title {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--dark-text-mute);
+}
+
+/* ========== 四个游戏共用的舞台元素样式（原全局块，加 .nf-game-stage 前缀防污染） ========== */
+.nf-game-stage .nf-game-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+}
+
+.nf-game-stage .nf-game-stats {
+  display: flex;
+  gap: 26px;
+}
+
+.nf-game-stage .nf-game-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.nf-game-stage .nf-game-stat-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--dark-text-mute);
+  font-family: var(--font-sans);
+}
+
+.nf-game-stage .nf-game-stat-value {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--dark-text);
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.nf-game-stage .nf-game-canvas-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nf-game-stage .nf-game-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.nf-game-stage .nf-game-clear {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: radial-gradient(circle at center, color-mix(in srgb, var(--color-info) 32%, transparent) 0%, color-mix(in srgb, var(--navy-800) 62%, transparent) 100%);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+.nf-game-stage .nf-game-clear-text {
+  font-family: var(--font-display);
+  font-size: 56px;
+  color: var(--dark-text);
+  letter-spacing: 8px;
+  text-shadow: 0 4px 30px color-mix(in srgb, var(--color-info) 80%, transparent);
+  animation: nfClearPop 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nf-game-stage .nf-game-clear-hint {
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--dark-text-soft);
+  animation: nfClearHintFade 0.6s ease 0.3s both;
+}
+
+@keyframes nfClearPop {
+  0% { opacity: 0; transform: scale(0.6); }
+  60% { transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes nfClearHintFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.nf-game-stage .nf-game-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--dark-text-soft);
+  font-family: var(--font-sans);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.nf-game-stage .nf-game-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--dark-text-soft);
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: var(--font-sans);
+}
+
+.nf-game-stage .nf-game-hint-text {
+  margin-left: 10px;
+  letter-spacing: 2px;
+}
+
+/* Vue transition name="fade" 的 React 等价：入场动画类（GameMaze/GameStar 通关遮罩） */
+.nf-game-stage .nf-fade-enter {
+  animation: nfFadeIn 0.5s ease both;
+}
+
+@keyframes nfFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (height <= 760px) {
+  .nf-game-stage .nf-game-canvas-wrap {
+    max-width: 360px;
+  }
+
+  .nf-game-stage .nf-game-clear-text {
+    font-size: 42px;
+    letter-spacing: 6px;
+  }
+}

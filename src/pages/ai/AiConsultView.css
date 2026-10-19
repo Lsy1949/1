@@ -1,0 +1,57 @@
+.ai-consult-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 40px 96px;
+  color: var(--ink-800);
+}
+
+.consult-card {
+  height: calc(100vh - 400px);
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: white;
+  border: 1px solid var(--mist-200);
+  border-radius: 24px;
+  box-shadow: 0 16px 48px color-mix(in srgb, var(--navy-950) 8%, transparent);
+}
+
+.consult-footnote {
+  margin: 16px 4px 0;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--ink-400);
+}
+
+.footnote-link {
+  margin-left: 6px;
+  color: var(--brand-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footnote-link:hover { text-decoration: underline; }
+
+@media (width <= 1200px) {
+  .ai-consult-page { padding: 24px 32px 80px; }
+}
+
+@media (width <= 900px) {
+  .ai-consult-page { padding: 20px 24px 64px; }
+
+  .consult-card {
+    height: calc(100vh - 320px);
+    min-height: 460px;
+  }
+}
+
+/* ============ 暗夜模式 ============ */
+html.dark .consult-card {
+  background: var(--slate-900);
+  border-color: var(--slate-700);
+}
+
+html.dark .consult-footnote {
+  color: var(--slate-400);
+}

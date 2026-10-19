@@ -1,0 +1,520 @@
+/* 咨询须知面板（CSS Modules：私有类 camelCase；布局协议类 ns-01~ns-04 仅本组件
+   私有使用，映射为 ns01~ns04；暗色规则自本组件原 css 与全局 dark-mode.css
+   counseling 作用域等价迁移，同一选择器取最终生效值） */
+
+/* ============ 通用 section ============ */
+.noticeSection {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* .section-title 为跨 feature 共享类名：dark-mode.css 134 行的
+   html.dark .section-title 全局共享规则保留不迁，此处局部规则为本组件兜底 */
+.sectionTitle {
+  font-size: 17px;
+  color: var(--ink-900);
+  font-weight: 700;
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.3px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--slate-100);
+}
+
+.sectionTitle :global(.anticon) {
+  color: var(--brand-primary);
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--brand-primary-faint) 0%, var(--blue-050) 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ============ 咨询须知 · 编辑式 bento 布局 ============ */
+.noticeLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* —— 流程图全宽 hero —— */
+.noticeHero {
+  position: relative;
+  padding: 28px 32px 30px;
+  background: linear-gradient(135deg, var(--brand-primary-wash) 0%, var(--brand-primary-faint) 100%);
+  border: 1px solid var(--brand-primary-soft);
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.noticeHero::before {
+  content: 'PROCESS';
+  position: absolute;
+  top: -20px;
+  right: -10px;
+  font-size: 110px;
+  font-weight: 900;
+  color: var(--brand-primary);
+  opacity: 0.05;
+  letter-spacing: -4px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.heroEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+  position: relative;
+  z-index: 1;
+}
+
+.heroNo {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--brand-primary);
+  background: white;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--brand-primary-soft);
+}
+.heroLine { flex: 1; height: 1px; background: linear-gradient(90deg, var(--brand-primary-soft), transparent); }
+
+.heroLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--ink-500);
+  text-transform: uppercase;
+}
+
+.processFlow {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.processStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  position: relative;
+  padding: 0 28px;
+  text-align: center;
+}
+.processStep:first-child { padding-left: 0; }
+.processStep:last-child { padding-right: 0; }
+
+/* 步骤间贯穿连接线 · 与数字圆同轴 */
+.processStep:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 24px;
+  left: calc(50% + 28px);
+  width: calc(100% - 56px);
+  height: 2px;
+  background: var(--brand-primary-soft);
+  border-radius: 1px;
+  z-index: 0;
+}
+
+.processStep .psArrow {
+  position: absolute;
+  top: 24px;
+  left: calc(100% - 14px);
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid var(--brand-primary-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand-primary);
+  font-size: 14px;
+  z-index: 2;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--brand-primary) 10%, transparent);
+}
+
+.psNum {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid var(--brand-primary);
+  color: var(--brand-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 15%, transparent);
+  font-family: Georgia, 'Times New Roman', serif;
+  position: relative;
+  z-index: 1;
+}
+
+.psContent {
+  background: var(--brand-primary-wash);
+  border: 1px solid var(--mist-050);
+  border-radius: 14px;
+  padding: 16px 20px;
+  transition: all 0.3s ease;
+  text-align: center;
+  max-width: 220px;
+  box-sizing: border-box;
+}
+
+.psContent:hover {
+  border-color: var(--brand-primary-soft);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--brand-primary) 8%, transparent);
+  transform: translateY(-2px);
+}
+.psTitle { font-size: 15px; font-weight: 700; color: var(--ink-800); margin-bottom: 6px; letter-spacing: -0.2px; }
+.psDesc { font-size: 12.5px; color: var(--ink-500); line-height: 1.65; }
+
+/* —— bento 非对称网格：4-8 / 8-4 zig-zag —— */
+.noticeGrid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+.noticeSection.ns01 { grid-column: span 4; grid-row: 1; }
+.noticeSection.ns02 { grid-column: span 8; grid-row: 1; }
+.noticeSection.ns03 { grid-column: 1 / span 8; grid-row: 2; }
+.noticeSection.ns04 { grid-column: 9 / span 4; grid-row: 2; }
+
+.noticeGrid .noticeSection {
+  position: relative;
+  padding: 32px 32px 28px;
+  background: white;
+  border: 1px solid var(--mist-050);
+  border-radius: 18px;
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--slate-900) 3%, transparent);
+  min-height: 100%;
+  box-sizing: border-box;
+  transition: box-shadow 0.35s ease, transform 0.35s ease, border-color 0.35s ease;
+  overflow: hidden;
+}
+
+.noticeGrid .noticeSection:hover {
+  box-shadow: 0 14px 36px color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  transform: translateY(-4px);
+  border-color: var(--brand-primary-soft);
+}
+
+/* 大号编辑式数字印章 */
+.nsStamp {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 88px;
+  font-weight: 900;
+  color: var(--brand-primary);
+  opacity: 0.12;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -4px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.noticeSection.ns02 .nsStamp,
+.noticeSection.ns03 .nsStamp { right: auto; left: 20px; }
+
+.noticeList { margin: 0; padding-left: 0; list-style: none; }
+
+.noticeList li {
+  font-size: 13px;
+  color: var(--ink-600);
+  line-height: 1.75;
+  padding: 10px 0 10px 22px;
+  border-bottom: 1px solid var(--slate-100);
+  position: relative;
+}
+
+.noticeList li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 18px;
+  width: 10px;
+  height: 10px;
+  background: var(--brand-primary-faint);
+  border: 2px solid var(--brand-primary);
+  border-radius: 50%;
+}
+.noticeList li:last-child { border-bottom: none; }
+
+.noticeWarn {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 12px 16px;
+  background: color-mix(in srgb, var(--danger-500) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--danger-500) 15%, transparent);
+  border-left: 3px solid var(--danger-500);
+  border-radius: 10px;
+  font-size: 12.5px;
+  color: var(--danger-700);
+  line-height: 1.65;
+}
+.noticeWarn :global(.anticon) { flex-shrink: 0; color: var(--danger-500); font-size: 16px; margin-top: 2px; }
+
+.noticeWarn.info {
+  background: color-mix(in srgb, var(--brand-primary) 5%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary) 15%, transparent);
+  border-left-color: var(--brand-primary);
+  color: #1e40af; /* stylelint-disable-line color-no-hex, function-allowed-list */
+}
+.noticeWarn.info :global(.anticon) { color: var(--brand-primary); }
+
+/* —— 咨询准备：横向三栏 —— */
+.prepRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.prepBlock {
+  padding: 14px 16px;
+  background: var(--brand-primary-wash);
+  border-radius: 12px;
+  border: 1px solid var(--mist-050);
+  border-top: 2px solid var(--brand-primary);
+}
+
+.prepBlock h4 {
+  font-size: 12px;
+  color: var(--brand-primary);
+  margin: 0 0 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prepBlock h4::before {
+  content: '';
+  width: 14px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--brand-primary), transparent);
+  border-radius: 2px;
+}
+.prepBlock .noticeList li { padding: 6px 0 6px 18px; font-size: 12px; }
+.prepBlock .noticeList li::before { top: 12px; width: 8px; height: 8px; border-width: 1.5px; }
+
+/* 服务说明 · 蓝色 banner */
+.serviceInfoBanner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--brand-primary) 8%, transparent) 0%, color-mix(in srgb, var(--color-info) 4%, transparent) 100%);
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent);
+  border-radius: 14px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.serviceInfoBanner::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--brand-primary) 10%, transparent) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.serviceInfoBanner :global(.anticon) {
+  font-size: 22px;
+  color: var(--brand-primary);
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  position: relative;
+  z-index: 1;
+}
+.sibTitle { font-size: 16px; font-weight: 700; color: var(--ink-800); letter-spacing: -0.2px; position: relative; z-index: 1; }
+.sibDesc { font-size: 12px; color: var(--ink-500); margin-top: 4px; letter-spacing: 0.2px; position: relative; z-index: 1; }
+
+.serviceTable {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: white;
+  border: 1px solid var(--mist-050);
+  border-radius: 14px;
+  padding: 4px 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--slate-900) 3%, transparent);
+}
+
+.serviceRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  background: transparent;
+  border-bottom: 1px solid var(--slate-100);
+  transition: background 0.2s ease;
+}
+.serviceRow:hover { background: var(--slate-50); }
+
+.serviceRow:last-child { border-bottom: none; }
+
+.srLabel {
+  font-size: 13px;
+  color: var(--ink-500);
+  letter-spacing: 0.2px;
+  font-weight: 500;
+}
+.srValue { font-size: 14px; font-weight: 600; color: var(--ink-800); letter-spacing: -0.2px; }
+
+@media (width <= 1200px) {
+  .noticeGrid { grid-template-columns: 1fr; gap: 24px; }
+
+  .noticeSection.ns01,
+  .noticeSection.ns02,
+  .noticeSection.ns03,
+  .noticeSection.ns04 { grid-column: 1; grid-row: auto; }
+  .noticeLayout { gap: 24px; }
+  .prepRow { grid-template-columns: 1fr; }
+}
+
+@media (width <= 900px) {
+  .processFlow { flex-direction: column; gap: 20px; padding: 28px 20px; }
+  .processStep { padding: 0; flex-direction: row; align-items: center; }
+  .psArrow { display: none; }
+  .processStep::after { display: none; }
+}
+
+/* ============================================================
+   暗色主题（等价迁移自本组件原 css 暗色区与全局 dark-mode.css 的
+   counseling 作用域规则；dark-mode.css 中同一选择器的两层规则已按
+   最终生效值合并；.counseling-page 页面根类整体置于 :global() 内）
+   ============================================================ */
+:global(html.dark) .processFlow {
+  background: linear-gradient(135deg, var(--slate-800) 0%, var(--navy-900) 100%) !important;
+  border-color: var(--slate-700) !important;
+}
+
+:global(html.dark) .noticeHero {
+  background: linear-gradient(135deg, var(--slate-800) 0%, var(--navy-900) 100%) !important;
+  border-color: var(--slate-700) !important;
+}
+:global(html.dark) .heroNo { background: var(--slate-900) !important; border-color: var(--slate-700) !important; color: var(--blue-300) !important; }
+:global(html.dark) .heroLabel { color: var(--slate-400) !important; }
+:global(html.dark) .heroLine { background: linear-gradient(90deg, var(--slate-700), transparent) !important; }
+:global(html.dark) .psNum { background: var(--slate-900) !important; border-color: var(--blue-500) !important; color: var(--blue-300) !important; }
+:global(html.dark) .psTitle { color: var(--slate-100) !important; }
+:global(html.dark) .psDesc { color: var(--slate-400) !important; }
+:global(html.dark) .nsStamp { color: var(--blue-500) !important; opacity: 0.12 !important; }
+
+/* .section-title 跨 feature 共享：dark-mode.css 134 行全局规则保留，此处为组件内兜底 */
+:global(html.dark) .sectionTitle {
+  color: var(--slate-100) !important;
+  border-bottom-color: var(--slate-700) !important;
+}
+
+:global(html.dark) .sectionTitle :global(.anticon) {
+  background: color-mix(in srgb, var(--brand-primary) 18%, transparent) !important;
+}
+
+:global(html.dark) .serviceInfoBanner {
+  background: color-mix(in srgb, var(--brand-primary) 12%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary) 25%, transparent) !important;
+}
+
+:global(html.dark) .serviceInfoBanner :global(.anticon) {
+  background: var(--slate-800) !important;
+}
+
+:global(html.dark) .noticeList li {
+  color: var(--slate-300) !important;
+  border-bottom-color: var(--slate-700) !important;
+}
+
+:global(html.dark) .noticeList li::before {
+  background: var(--slate-800) !important;
+}
+
+:global(html.dark) .noticeWarn {
+  background: color-mix(in srgb, var(--danger-500) 12%, transparent) !important;
+  border-color: color-mix(in srgb, var(--danger-500) 25%, transparent) !important;
+}
+
+:global(html.dark) .noticeGrid .noticeSection,
+:global(html.dark) .prepBlock {
+  background: var(--slate-800) !important;
+  border-color: var(--slate-700) !important;
+  box-shadow: 0 2px 12px color-mix(in srgb, black 30%, transparent) !important;
+}
+
+:global(html.dark) .psTitle,
+:global(html.dark) .sibTitle,
+:global(html.dark) .srValue {
+  color: var(--slate-100) !important;
+}
+
+:global(html.dark) .psDesc,
+:global(html.dark) .sibDesc,
+:global(html.dark) .srLabel {
+  color: var(--slate-400) !important;
+}
+
+/* —— 自 dark-mode.css counseling 作用域迁入（最终生效值） —— */
+
+/* 876 行：步骤容器融入 hero 背景 */
+:global(html.dark .counseling-page) .processStep {
+  background: transparent !important;
+}
+
+/* 880 行 */
+:global(html.dark .counseling-page) .psArrow {
+  color: #475569 !important;
+}
+
+/* 884-886 与 3409-3412 两层叠加，取后者最终生效值 */
+:global(html.dark .counseling-page) .psContent:hover {
+  background: rgb(77, 154, 255, 0.04) !important;
+  border-color: rgb(77, 154, 255, 0.15) !important;
+}
+
+/* 889-891 与 3414-3417 两层叠加，取后者最终生效值 */
+:global(html.dark .counseling-page) .noticeSection:hover {
+  border-color: rgb(77, 154, 255, 0.15) !important;
+  box-shadow: none !important;
+}

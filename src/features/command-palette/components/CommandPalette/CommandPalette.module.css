@@ -1,0 +1,389 @@
+/* 命令面板（CSS Modules：私有类 camelCase；keyframes 由模块自动局部化，不污染全局；
+   暗色规则自 dark-mode.css 等价迁入，cmd- 系列类为本组件独占） */
+
+.cmdBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: color-mix(in srgb, var(--navy-950) 40%, transparent);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+  /* 进场动画（等价 Vue <Transition name="palette"> enter） */
+  animation: palette-fade-in 0.2s ease;
+}
+
+.cmdBackdrop.closing {
+  /* 离场动画（等价 Vue leave） */
+  animation: palette-fade-out 0.2s ease both;
+}
+
+.cmdPanel {
+  width: 92%;
+  max-width: 640px;
+  background: white;
+  border: 1px solid var(--ink-200);
+  box-shadow: 0 24px 64px color-mix(in srgb, var(--navy-950) 18%, transparent);
+  display: flex;
+  flex-direction: column;
+  max-height: 70vh;
+  overflow: hidden;
+  animation: palette-panel-in 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cmdBackdrop.closing .cmdPanel {
+  animation: palette-panel-out 0.18s ease both;
+}
+
+.cmdInputRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--mist-050);
+}
+
+.cmdPrompt {
+  font-size: 22px;
+  color: var(--brand-primary);
+  font-weight: 300;
+  line-height: 1;
+}
+
+.cmdInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 17px;
+  color: var(--navy-950);
+  background: transparent;
+  font-family: inherit;
+}
+
+.cmdInput::placeholder {
+  color: #b0b8c4; /* stylelint-disable-line color-no-hex, function-allowed-list */
+}
+
+.cmdEsc {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--ink-400);
+  border: 1px solid var(--ink-200);
+  padding: 3px 7px;
+  border-radius: 3px;
+}
+
+.cmdResults {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.cmdGroup {
+  padding: 8px 0;
+}
+
+.cmdGroupLabel {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--ink-400);
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 6px 24px 4px;
+}
+
+.cmdItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 11px 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+
+.cmdItem:hover,
+.cmdItem.active {
+  background: var(--brand-primary-wash);
+}
+
+.cmdItem.active {
+  border-left: 2px solid var(--brand-primary);
+  padding-left: 22px;
+}
+
+.cmdItemNum {
+  font-size: 10px;
+  font-weight: 600;
+  color: #c0c8d4; /* stylelint-disable-line color-no-hex, function-allowed-list */
+  font-variant-numeric: tabular-nums;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.cmdItem.active .cmdItemNum {
+  color: var(--brand-primary);
+}
+
+.cmdItemBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cmdItemTitle {
+  font-size: 14px;
+  color: var(--ink-900);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.cmdItemTitle mark {
+  background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  color: var(--brand-primary);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+.cmdItemDesc {
+  font-size: 11px;
+  color: var(--ink-400);
+  letter-spacing: 0.2px;
+}
+
+.cmdItemTag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--brand-primary);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.cmdItemArrow {
+  font-size: 14px;
+  color: var(--ink-300);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: all 0.2s ease;
+}
+
+.cmdItem.active .cmdItemArrow {
+  opacity: 1;
+  transform: none;
+  color: var(--brand-primary);
+}
+
+.cmdEmpty {
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.cmdEmptyEyebrow {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--ink-400);
+  font-weight: 600;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.cmdEmptyText {
+  font-size: 14px;
+  color: var(--ink-500);
+}
+
+.cmdFooter {
+  display: flex;
+  gap: 20px;
+  padding: 12px 24px;
+  border-top: 1px solid var(--mist-050);
+  background: var(--mist-025);
+}
+
+.cmdFooterHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--ink-400);
+}
+
+.cmdFooterHint kbd {
+  font-size: 10px;
+  font-weight: 600;
+  border: 1px solid var(--ink-200);
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: white;
+  color: var(--ink-500);
+}
+
+/* 过渡 keyframes（替代 Vue <Transition name="palette">，模块内自动局部化） */
+@keyframes palette-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes palette-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes palette-panel-in {
+  from {
+    transform: translateY(-16px) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes palette-panel-out {
+  from {
+    transform: none;
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-16px) scale(0.98);
+    opacity: 0;
+  }
+}
+
+@media (width <= 576px) {
+  .cmdBackdrop {
+    padding-top: 8vh;
+  }
+
+  .cmdPanel {
+    max-height: 80vh;
+  }
+
+  .cmdItemDesc {
+    display: none;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 等价迁入：cmd- 系列类为本组件独占类，
+   原全局规则已列入待删清单；:global(html.dark) 保留全局作用域前缀，
+   !important 与多层叠加的最终生效值原样保留）
+   ============================================================ */
+:global(html.dark) .cmdBackdrop {
+  background: rgb(0, 0, 0, 0.65) !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+:global(html.dark) .cmdPanel {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+  box-shadow: 0 25px 60px rgb(0, 0, 0, 0.6) !important;
+}
+
+:global(html.dark) .cmdPrompt {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .cmdInput {
+  background: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .cmdInput::placeholder {
+  color: #64748b !important;
+}
+
+:global(html.dark) .cmdEsc {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .cmdGroupLabel {
+  color: #64748b !important;
+  border-bottom-color: #1e293b !important;
+}
+
+:global(html.dark) .cmdItem {
+  border-bottom-color: rgb(30, 41, 59, 0.6) !important;
+}
+
+:global(html.dark) .cmdItemNum {
+  color: #64748b !important;
+}
+
+:global(html.dark) .cmdItemTitle {
+  color: #e2e8f0 !important;
+}
+
+:global(html.dark) .cmdItemDesc {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .cmdItemTag {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+  border-color: #1a3a6b !important;
+}
+
+:global(html.dark) .cmdItemArrow {
+  color: #475569 !important;
+}
+
+:global(html.dark) .cmdItem:hover,
+:global(html.dark) .cmdItem.active {
+  background: #1a2a4a !important;
+}
+
+:global(html.dark) .cmdItem:hover .cmdItemTitle,
+:global(html.dark) .cmdItem.active .cmdItemTitle {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .cmdItem:hover .cmdItemArrow,
+:global(html.dark) .cmdItem.active .cmdItemArrow {
+  color: #4d9aff !important;
+}
+
+:global(html.dark) .cmdEmptyEyebrow {
+  color: #64748b !important;
+}
+
+:global(html.dark) .cmdEmptyText {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark) .cmdFooter {
+  background: #0f172a !important;
+  border-top-color: #1e293b !important;
+}
+
+:global(html.dark) .cmdFooterHint {
+  color: #64748b !important;
+}
+
+:global(html.dark) .cmdFooterHint kbd {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}

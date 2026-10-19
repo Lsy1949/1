@@ -1,0 +1,447 @@
+/* AI 对话线程（CSS Modules：私有类 camelCase；variant 形态类 is-fab/is-page 以
+   isFab/isPage 模块类等价映射；暗色规则以 :global(html.dark) 前缀迁移；
+   bubble-text 为无样式语义标记类（D 类），保留全局字面量，不在模块内定义；
+   keyframes 由模块自动局部化，不污染全局） */
+
+.aiThread {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.threadMessages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scrollbar-width: thin;
+}
+
+.msg {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.msgUser {
+  flex-direction: row-reverse;
+}
+
+.aiAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+  font-size: 16px;
+}
+
+.bubble {
+  max-width: 78%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.msgAi .bubble {
+  background: var(--brand-primary-wash);
+  color: var(--ink-800);
+  border: 1px solid var(--mist-200);
+  border-top-left-radius: 4px;
+}
+
+.msgUser .bubble {
+  background: var(--brand-primary);
+  color: white;
+  border-top-right-radius: 4px;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 22%, transparent);
+}
+
+/* 流式光标 */
+.streamCaret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 3px;
+  vertical-align: -2px;
+  background: var(--brand-primary);
+  animation: caret-blink 0.9s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  50% { opacity: 0; }
+}
+
+/* 等待首字的三点指示 */
+.typingDots {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px 2px;
+}
+
+.typingDots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  opacity: 0.35;
+  animation: dot-bounce 1.2s ease-in-out infinite;
+}
+
+.typingDots i:nth-child(2) { animation-delay: 0.15s; }
+.typingDots i:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes dot-bounce {
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+/* 快捷提问 */
+.quickPrompts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: 44px;
+}
+
+.quickBtn {
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--brand-primary-soft);
+  background: transparent;
+  color: var(--brand-primary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.quickBtn:hover {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: white;
+}
+
+/* 免责声明 */
+.threadDisclaimer {
+  margin: 0;
+  padding: 6px 18px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--ink-400);
+}
+
+/* 输入行 */
+.threadInput {
+  display: flex;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--mist-200);
+}
+
+.threadInputField {
+  flex: 1;
+  min-width: 0;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--mist-300);
+  border-radius: 10px;
+  background: white;
+  color: var(--ink-800);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.threadInputField::placeholder { color: var(--mist-400); }
+
+.threadInputField:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 12%, transparent);
+}
+
+.sendBtn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 10px;
+  background: var(--brand-primary);
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.sendBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.sendBtn:not(:disabled):hover {
+  background: var(--brand-primary-dark);
+}
+
+/* 停止按钮（生成中） */
+.sendBtn.isStop {
+  background: transparent;
+  border: 1.5px solid var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+.stopIcon {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: currentcolor;
+}
+
+/* ============ page 形态：放宽呼吸感 ============ */
+.isPage .threadMessages {
+  padding: 28px 32px;
+  gap: 20px;
+}
+
+.isPage .bubble {
+  max-width: 72%;
+  padding: 12px 16px;
+  font-size: 14.5px;
+}
+
+.isPage .aiAvatar {
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+}
+
+.isPage .threadInput {
+  padding: 14px 24px;
+}
+
+.isPage .threadInputField,
+.isPage .sendBtn {
+  height: 44px;
+}
+
+.isPage .threadInputField {
+  border-radius: 12px;
+}
+
+.isPage .sendBtn {
+  border-radius: 12px;
+  font-size: 18px;
+}
+
+.isPage .threadDisclaimer {
+  padding: 8px 24px;
+}
+
+/* ============ 暗夜模式 ============ */
+:global(html.dark) .msgAi .bubble {
+  background: var(--slate-800);
+  color: var(--slate-100);
+  border-color: var(--slate-700);
+}
+
+:global(html.dark) .threadInputField {
+  background: var(--slate-800);
+  border-color: var(--slate-700);
+  color: var(--slate-100);
+}
+
+:global(html.dark) .quickBtn {
+  border-color: var(--slate-600);
+  color: var(--brand-primary-soft);
+}
+
+/* ============ fab 形态：简约杂志风 · 品牌色（仅悬浮卡片生效） ============ */
+.isFab .threadMessages {
+  padding: 18px;
+  gap: 14px;
+}
+
+.isFab .aiAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--brand-primary-faint);
+  border: 1px solid var(--brand-primary-soft);
+  color: var(--brand-primary);
+  font-size: 15px;
+}
+
+.isFab .bubble {
+  border-radius: 2px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+}
+
+/* 欢迎语用衬线字体，呼应刊头 */
+.isFab .msg:first-child .bubble {
+  font-family: Georgia, 'Times New Roman', 'Songti SC', 'Noto Serif SC', SimSun, serif;
+  font-size: 14px;
+}
+
+.isFab .msgAi .bubble {
+  background: white;
+  border: 1px solid var(--brand-primary-soft);
+  border-radius: 0 6px 6px;
+}
+
+.isFab .msgUser .bubble {
+  background: var(--brand-primary);
+  color: white;
+  border-radius: 6px 0;
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--brand-primary) 20%, transparent);
+}
+
+.isFab .streamCaret {
+  background: var(--brand-primary);
+}
+
+.isFab .typingDots i {
+  background: var(--brand-primary);
+}
+
+/* 快捷提问：品牌细边签，悬停反白 */
+.isFab .quickPrompts {
+  margin-left: 42px;
+}
+
+.isFab .quickBtn {
+  border: 1px solid var(--brand-primary-soft);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--brand-primary);
+  padding: 5px 12px;
+  letter-spacing: 0.02em;
+}
+
+.isFab .quickBtn:hover {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: white;
+}
+
+.isFab .threadDisclaimer {
+  border-top: 1px solid var(--brand-primary-soft);
+  margin: 0 18px;
+  padding: 8px 0;
+}
+
+/* 输入行：下划线式输入框 + 方角品牌色发送键 */
+.isFab .threadInput {
+  padding: 12px 16px;
+  background: white;
+  border-top: 1px solid var(--brand-primary);
+}
+
+.isFab .threadInputField {
+  height: 36px;
+  padding: 0 2px;
+  border: none;
+  border-bottom: 1px solid var(--mist-350);
+  border-radius: 0;
+  background: transparent;
+}
+
+.isFab .threadInputField:focus {
+  border-bottom-color: var(--brand-primary);
+  box-shadow: none;
+}
+
+.isFab .sendBtn {
+  border-radius: 2px;
+  background: var(--brand-primary);
+}
+
+.isFab .sendBtn:not(:disabled):hover {
+  background: var(--brand-primary-dark);
+}
+
+.isFab .sendBtn.isStop {
+  border: 1.5px solid var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+/* fab 形态暗夜模式（品牌色不变，底色翻转） */
+:global(html.dark) .isFab .aiAvatar {
+  background: color-mix(in srgb, var(--brand-primary) 22%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary) 45%, transparent);
+  color: var(--brand-primary-soft);
+}
+
+:global(html.dark) .isFab .msg:first-child .bubble {
+  background: var(--slate-800);
+  border-color: var(--slate-600);
+  color: var(--slate-100);
+}
+
+:global(html.dark) .isFab .msgAi .bubble {
+  background: var(--slate-800);
+  border-color: var(--slate-600);
+}
+
+:global(html.dark) .isFab .msgUser .bubble {
+  background: var(--brand-primary);
+  color: white;
+  box-shadow: 3px 3px 0 color-mix(in srgb, black 35%, transparent);
+}
+
+:global(html.dark) .isFab .streamCaret,
+:global(html.dark) .isFab .typingDots i {
+  background: var(--brand-primary-soft);
+}
+
+:global(html.dark) .isFab .quickBtn {
+  border-color: color-mix(in srgb, var(--brand-primary-soft) 55%, transparent);
+  color: var(--brand-primary-soft);
+}
+
+:global(html.dark) .isFab .quickBtn:hover {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: white;
+}
+
+:global(html.dark) .isFab .threadDisclaimer {
+  border-top-color: var(--slate-700);
+}
+
+:global(html.dark) .isFab .threadInput {
+  background: var(--slate-900);
+  border-top-color: var(--brand-primary);
+}
+
+:global(html.dark) .isFab .threadInputField {
+  background: transparent;
+  border-bottom-color: var(--slate-600);
+  color: var(--slate-100);
+}
+
+:global(html.dark) .isFab .threadInputField:focus {
+  border-bottom-color: var(--brand-primary-soft);
+}
+
+:global(html.dark) .isFab .sendBtn {
+  background: var(--brand-primary);
+  color: white;
+}
+
+:global(html.dark) .isFab .sendBtn:not(:disabled):hover {
+  background: var(--brand-primary-dark);
+}
+
+:global(html.dark) .isFab .sendBtn.isStop {
+  border-color: var(--brand-primary-soft);
+  color: var(--brand-primary-soft);
+}

@@ -1,0 +1,58 @@
+/* 跑马灯滚动信息条 */
+
+.marqueeBand {
+  overflow: hidden;
+  border-top: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--mist-050);
+  background: var(--brand-primary-wash);
+  padding: 14px 0;
+}
+
+.marqueeTrack {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  white-space: nowrap;
+  animation: marquee-scroll 36s linear infinite;
+}
+
+.marqueeBand:hover .marqueeTrack {
+  animation-play-state: paused;
+}
+
+.marqueeItem {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--ink-900);
+  text-transform: uppercase;
+}
+
+.marqueeDot {
+  font-size: 6px;
+  color: var(--brand-primary);
+  line-height: 1;
+}
+
+/* @keyframes 定义在 module 内自动局部化，不污染全局 */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移，取两层规则的最终生效值；
+   marquee-* 为本组件独占类，原全局规则已删除）
+   ============================================================ */
+:global(html.dark) .marqueeBand {
+  background: #1a2a4a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark) .marqueeItem {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark) .marqueeDot {
+  color: #4d9aff !important;
+}

@@ -1,0 +1,110 @@
+/* ============================================================
+   时光邮局 · 我的胶囊列表页
+   设计语言：黑白编辑式 + 邮戳信封 + 档案编号
+   ============================================================ */
+
+.capsule-list-page {
+  min-height: 100vh;
+  background: var(--brand-primary-wash);
+  background-image:
+    radial-gradient(circle at 20% 10%, color-mix(in srgb, var(--brand-primary) 1.5%, transparent) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, color-mix(in srgb, var(--brand-primary) 1.2%, transparent) 0%, transparent 50%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', sans-serif;
+  color: var(--ink-900);
+  padding-bottom: 140px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 背景水印 */
+.watermark {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(200px, 32vw, 420px);
+  font-weight: 900;
+  color: var(--brand-primary);
+  opacity: 0.035;
+  letter-spacing: -10px;
+  line-height: 0.8;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  font-family: Georgia, serif;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   浮动新建按钮
+   ============================================================ */
+.fab-button {
+  position: fixed;
+  right: 40px;
+  bottom: 80px;
+  height: 52px;
+  padding: 0 28px;
+  background: var(--brand-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--brand-primary) 25%, transparent);
+  z-index: 100;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.fab-button:hover {
+  background: var(--brand-primary-dark);
+  color: white;
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--brand-primary) 35%, transparent);
+  gap: 14px;
+  transform: translateY(-2px);
+}
+
+.fab-button:active {
+  transform: scale(0.97);
+}
+
+.fab-plus {
+  font-size: 24px;
+  color: white;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.fab-button:hover .fab-plus {
+  color: white;
+}
+
+.fab-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.fab-button:hover .fab-label {
+  color: white;
+}
+
+@media (width <= 768px) {
+  .fab-button {
+    right: 16px;
+    bottom: 32px;
+    height: 48px;
+    padding: 0 22px;
+  }
+
+  .fab-plus {
+    font-size: 22px;
+  }
+
+  .fab-label {
+    font-size: 11px;
+  }
+}

@@ -1,0 +1,302 @@
+/* 文章网格（CSS Modules：私有类 camelCase；暗色规则自 dark-mode.css 等价迁移，取三期覆盖后的最终生效值） */
+
+/* ===== 模块标题 ===== */
+.moduleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 36px;
+  gap: 24px;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.moduleTitle {
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 900;
+  color: var(--navy-950);
+  margin: 0;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.articleCount {
+  font-size: 0.85rem;
+  color: var(--ink-500);
+  font-weight: 500;
+}
+
+.viewAllLink {
+  background: none;
+  border: none;
+  color: var(--brand-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.viewAllLink:hover {
+  transform: translateX(4px);
+  gap: 10px;
+}
+
+/* ===== 文章网格 · 等宽 3 列 ===== */
+.articleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.articleCard {
+  grid-column: span 1;
+}
+
+@media (width <= 1024px) {
+  .articleGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width <= 768px) {
+  .articleGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.articleCard {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--mist-050);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.articleCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -12px color-mix(in srgb, var(--brand-primary) 15%, transparent);
+  border-color: var(--brand-primary-soft);
+}
+
+.cardImage {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.articleCard:hover .cardImage img {
+  transform: scale(1.08);
+}
+
+.cardTag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: color-mix(in srgb, white 95%, transparent);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--brand-primary);
+  letter-spacing: 0.5px;
+}
+
+/* 无封面网格卡 · 杂志式文字排版 */
+.articleCard.noCover {
+  background: linear-gradient(180deg, white 0%, var(--neutral-025) 100%);
+  position: relative;
+}
+
+.cardNoCoverTop {
+  padding: 32px 24px 0;
+  display: flex;
+  align-items: center;
+}
+
+.noCoverEyebrow {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ink-500);
+  letter-spacing: 1.5px;
+  font-style: italic;
+}
+
+.articleCard.noCover .cardInfo {
+  padding-top: 16px;
+}
+
+.articleCard.noCover .cardTitle {
+  font-size: 20px;
+  line-height: 1.35;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.articleCard.noCover .cardSummary {
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  overflow: hidden;
+}
+
+.cardInfo {
+  padding: 22px 24px 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardMetaTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-500);
+}
+
+/* 原受同页 SpotlightCard 全局 .author-name 规则级联着色，等价收编保视觉不变 */
+.authorName {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.cardTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--navy-950);
+  margin: 0 0 10px;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardSummary {
+  color: var(--ink-600);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin: 0 0 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardMeta {
+  margin-top: auto;
+  display: flex;
+  gap: 16px;
+  color: var(--ink-400);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding-top: 14px;
+  border-top: 1px solid var(--slate-100);
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.publishDate {
+  color: var(--ink-400);
+}
+
+.noResults {
+  padding: 80px 0;
+}
+
+@media (width <= 768px) {
+  .moduleTitle {
+    font-size: 1.4rem;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移，作用域为页面根类 article-center，
+   取三期「卡片融入背景」覆盖后的最终生效值；.dot 为跨组件共用类，
+   dark-mode.css 全局规则保留服务其它使用方，此处等价局部兜底保障
+   本组件暗色渲染）
+   ============================================================ */
+:global(html.dark .article-center) .moduleTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .article-center) .articleCount {
+  color: #64748b !important;
+}
+
+:global(html.dark .article-center) .viewAllLink {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .article-center) .viewAllLink:hover {
+  color: #80b3ff !important;
+}
+
+:global(html.dark .article-center) .articleCard {
+  background: transparent !important;
+  border-color: transparent !important;
+  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+:global(html.dark .article-center) .articleCard:hover {
+  background: rgb(77, 154, 255, 0.04) !important;
+  border-color: transparent !important;
+  border-bottom-color: rgb(77, 154, 255, 0.2) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+:global(html.dark .article-center) .cardTag {
+  background: rgb(77, 154, 255, 0.1) !important;
+  border-color: transparent !important;
+  color: #4d9aff !important;
+}
+
+:global(html.dark .article-center) .cardTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .article-center) .cardSummary {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark .article-center) .cardMeta,
+:global(html.dark .article-center) .publishDate,
+:global(html.dark .article-center) .dot {
+  color: #64748b !important;
+}
+
+:global(html.dark .article-center) .authorName {
+  color: #e2e8f0 !important;
+}
+
+:global(html.dark) .dot {
+  background: #1e2b3a !important;
+}

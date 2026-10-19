@@ -1,0 +1,199 @@
+/* ===== 右侧推荐栏 ===== */
+.relatedSidebar {
+  position: sticky;
+  top: 88px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  padding-right: 8px;
+  scroll-behavior: smooth;
+}
+
+.relatedSidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.relatedSidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.relatedSidebar::-webkit-scrollbar-thumb {
+  background: var(--brand-primary-soft);
+  border-radius: 2px;
+}
+
+.relatedSidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-primary);
+}
+
+.sidebarHeader {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--mist-050);
+}
+
+.sidebarEyebrow {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--ink-400);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.sidebarTitle {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--navy-950);
+  letter-spacing: -1px;
+  margin: 0;
+}
+
+.sidebarTitle em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--brand-primary);
+}
+
+.sidebarList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebarCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.sidebarCard:hover {
+  background: var(--brand-primary-wash);
+  border-color: var(--brand-primary-soft);
+  transform: translateX(4px);
+}
+
+.sidebarCard:hover .cardArrow {
+  color: var(--brand-primary);
+  transform: translateX(2px);
+}
+
+.cardNum {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-400);
+  letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.cardCat {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--brand-primary);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-800);
+  margin: 0;
+  line-height: 1.45;
+  letter-spacing: -0.2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardMeta {
+  font-size: 11px;
+  color: var(--ink-400);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+.cardArrow {
+  font-size: 14px;
+  color: #d0d5db; /* stylelint-disable-line color-no-hex, function-allowed-list */
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+@media (width <= 992px) {
+  .relatedSidebar {
+    position: static;
+  }
+}
+
+/* ===== 暗色主题（自 dark-mode.css 迁移，作用域为页面根类 article-detail-page；
+   sidebar-card 系列取三期「融入背景」覆盖后的最终生效值） ===== */
+:global(html.dark .article-detail-page) .relatedSidebar,
+:global(html.dark .article-detail-page) .sidebarHeader {
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .article-detail-page) .sidebarEyebrow {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .article-detail-page) .sidebarTitle {
+  color: #f1f5f9 !important;
+}
+
+/* 卡片基态与 hover 均被三期覆盖层覆盖，取三期透明基态 + hover 最终值 */
+:global(html.dark .article-detail-page) .sidebarCard {
+  background: transparent !important;
+  border-color: transparent !important;
+  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+:global(html.dark .article-detail-page) .sidebarCard:hover {
+  background: rgb(77, 154, 255, 0.04) !important;
+  border-color: transparent !important;
+  border-bottom-color: rgb(77, 154, 255, 0.2) !important;
+  transform: none !important;
+}
+
+:global(html.dark .article-detail-page) .cardNum {
+  color: #64748b !important;
+}
+
+:global(html.dark .article-detail-page) .cardCat {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .article-detail-page) .cardTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .article-detail-page) .cardMeta {
+  color: #64748b !important;
+}
+
+:global(html.dark .article-detail-page) .cardArrow {
+  color: #475569 !important;
+}
+
+:global(html.dark .article-detail-page) .sidebarCard:hover .cardArrow {
+  color: #4d9aff !important;
+}

@@ -1,0 +1,459 @@
+/* 时光胶囊 · 详情主体（CSS Modules：私有类 camelCase） */
+
+.capsuleDetail {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 56px;
+  position: relative;
+  z-index: 1;
+}
+
+/* 标题区 */
+.detailTitleArea {
+  padding: 36px 0 28px;
+  border-bottom: 1px solid var(--mist-050);
+}
+
+.detailEmoji {
+  font-size: 32px;
+  line-height: 1;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.detailTitle {
+  font-size: clamp(28px, 4.5vw, 44px);
+  font-weight: 800;
+  color: var(--ink-900);
+  margin: 0 0 16px;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  overflow-wrap: break-word;
+}
+
+.detailMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+}
+
+.metaText {
+  color: var(--ink-400);
+}
+
+.metaSep {
+  color: var(--brand-primary-soft);
+}
+
+.metaStatus {
+  font-weight: 600;
+}
+
+.metaStatus.pending { color: var(--orange-600); }
+.metaStatus.opened { color: var(--success-700); }
+
+/* 内容区域 */
+.detailContent {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--mist-050);
+}
+
+.richContent {
+  font-size: 15px;
+  color: var(--ink-800);
+  line-height: 1.85;
+  letter-spacing: 0.2px;
+}
+
+.richContent p {
+  margin: 10px 0;
+  line-height: 1.85;
+}
+
+.richContent strong,
+.richContent b {
+  font-weight: 700;
+}
+
+.richContent em,
+.richContent i {
+  font-style: italic;
+}
+
+.richContent u {
+  text-decoration: underline;
+}
+
+.richContent ul,
+.richContent ol {
+  padding-left: 24px;
+  margin: 10px 0;
+}
+
+.richContent ul li {
+  list-style-type: disc;
+}
+
+.richContent ol li {
+  list-style-type: decimal;
+}
+
+/* 图片 */
+.detailImages {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.detailImage {
+  width: 100%;
+  height: 110px;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--slate-50);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.detailImage:hover {
+  opacity: 0.85;
+}
+
+/* 收件信息 · 编辑式定义列表 */
+.detailInfo {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--mist-050);
+}
+
+.infoEyebrow {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--ink-400);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.infoRows {
+  display: flex;
+  flex-direction: column;
+}
+
+.infoRow {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--mist-050);
+}
+
+.infoRow:last-child {
+  border-bottom: none;
+}
+
+.infoLabel {
+  font-size: 12px;
+  color: var(--ink-400);
+  min-width: 80px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.infoValue {
+  font-size: 14px;
+  color: var(--ink-800);
+  flex: 1;
+  letter-spacing: 0.2px;
+}
+
+/* 开启时间 · 编辑式大字 */
+.detailDate {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--mist-050);
+}
+
+.dateFlex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.dateTextCol {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dateDisplay {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  color: var(--ink-900);
+  letter-spacing: -1px;
+  line-height: 1.1;
+  margin: 8px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.dateCount {
+  font-size: 13px;
+  color: var(--orange-600);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.openedText {
+  color: var(--success-700);
+}
+
+/* 操作按钮 */
+.detailActions {
+  display: flex;
+  gap: 12px;
+  padding: 32px 0 12px;
+}
+
+.actionBtn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 0;
+  border-radius: 14px;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.actionBtn.primary {
+  background: var(--brand-primary);
+  color: white;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--brand-primary) 22%, transparent);
+}
+
+.actionBtn.primary:hover {
+  background: var(--brand-primary-dark);
+  color: white;
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--brand-primary) 30%, transparent);
+  transform: translateY(-2px);
+}
+
+.actionBtn.primary:hover .btnArrow {
+  transform: translateX(6px);
+}
+
+.btnArrow {
+  transition: transform 0.3s ease;
+}
+
+.actionBtn.ghost {
+  background: transparent;
+  color: var(--ink-800);
+  box-shadow: inset 0 0 0 1px var(--mist-050);
+}
+
+.actionBtn.ghost:hover {
+  box-shadow: inset 0 0 0 1px var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+/* 加载状态 */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 0;
+}
+
+.loadingSpinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--mist-050);
+  border-top-color: var(--brand-primary);
+  border-radius: 50%;
+  animation: capsuleSpin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes capsuleSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loadingText {
+  font-size: 14px;
+  color: var(--ink-400);
+}
+
+/* 图片预览弹窗：原 image-preview-dialog 下的 el-dialog 死规则未迁移；
+   content/header 结构覆写与关闭按钮颜色已 token 化为
+   DetailBody.tsx 中 Modal 的 styles prop 与 closeIcon 官方 prop */
+
+.previewImage {
+  max-width: 90vw;
+  max-height: 80vh;
+  border-radius: 12px;
+}
+
+@media (width <= 768px) {
+  .capsuleDetail {
+    padding: 0 16px;
+  }
+
+  .detailTitle {
+    font-size: 28px;
+  }
+
+  .detailImages {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .infoRow {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .infoLabel {
+    min-width: 0;
+  }
+
+  .detailActions {
+    flex-direction: column;
+  }
+}
+
+/* ============================================================
+   暗色主题（自 dark-mode.css 迁移，页面作用域 .detail-page
+   为 pages 层 CapsuleDetailView 根类；原规则仅服务本组件，整体迁入；
+   同类多期叠加已合并为最终生效值）
+   ============================================================ */
+:global(html.dark .detail-page) .detailEmoji {
+  background: #1a2a4a !important;
+}
+
+:global(html.dark .detail-page) .detailTitle {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .detail-page) .metaText,
+:global(html.dark .detail-page) .metaSep {
+  color: #64748b !important;
+}
+
+:global(html.dark .detail-page) .metaStatus {
+  background: #1a2a4a !important;
+  color: #4d9aff !important;
+}
+
+:global(html.dark .detail-page) .metaStatus.pending {
+  color: #fbbf24 !important;
+}
+
+:global(html.dark .detail-page) .metaStatus.opened {
+  color: #10b981 !important;
+}
+
+:global(html.dark .detail-page) .richContent,
+:global(html.dark .detail-page) .detailContent {
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark .detail-page) .richContent p {
+  color: #cbd5e1 !important;
+}
+
+/* drop-cap 为 main.css 全局共享工具类（首字下沉），组件内以字面量使用，
+   其页面作用域暗色规则以整体 :global 形式迁入 */
+:global(html.dark .detail-page .drop-cap) {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .detail-page) .detailImage {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+}
+
+:global(html.dark .detail-page) .detailImage:hover {
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark .detail-page) .detailInfo,
+:global(html.dark .detail-page) .infoRows,
+:global(html.dark .detail-page) .infoRow {
+  background: transparent !important;
+  border-color: rgb(255, 255, 255, 0.06) !important;
+}
+
+:global(html.dark .detail-page) .infoEyebrow {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .detail-page) .infoLabel {
+  color: #64748b !important;
+}
+
+:global(html.dark .detail-page) .infoValue {
+  color: #f1f5f9 !important;
+}
+
+:global(html.dark .detail-page) .detailDate {
+  background: #1a2a4a !important;
+  border-color: #1a3a6b !important;
+}
+
+:global(html.dark .detail-page) .dateDisplay {
+  color: #4d9aff !important;
+}
+
+:global(html.dark .detail-page) .dateCount {
+  color: #94a3b8 !important;
+}
+
+:global(html.dark .detail-page) .openedText {
+  color: #10b981 !important;
+}
+
+:global(html.dark .detail-page) .actionBtn {
+  background: #1e2b3a !important;
+  border-color: #1e293b !important;
+  color: #cbd5e1 !important;
+}
+
+:global(html.dark .detail-page) .actionBtn.primary {
+  background: #0052d9 !important;
+  color: #fff !important;
+  border-color: #0052d9 !important;
+}
+
+:global(html.dark .detail-page) .actionBtn.primary:hover {
+  background: #0042ad !important;
+  border-color: #0042ad !important;
+}
+
+:global(html.dark .detail-page) .actionBtn.ghost {
+  background: transparent !important;
+  color: #4d9aff !important;
+  border-color: #334155 !important;
+}
+
+:global(html.dark .detail-page) .actionBtn.ghost:hover {
+  background: #1a2a4a !important;
+  border-color: #4d9aff !important;
+}
+
+:global(html.dark .detail-page) .loadingText {
+  color: #94a3b8 !important;
+}
