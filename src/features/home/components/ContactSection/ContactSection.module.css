@@ -7,25 +7,25 @@
 }
 
 .contactWrapper {
-  background: white;
+  background: var(--bg-card);
   border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px color-mix(in srgb, black 10%, transparent);
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.1);
   display: grid;
   grid-template-columns: 400px 1fr;
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
 }
 
 .contactInfo {
-  background: var(--slate-50);
+  background: var(--bg-soft);
   position: relative;
   overflow: hidden;
   padding: 4rem;
-  color: var(--ink-800);
+  color: var(--text-regular);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-right: 1px solid var(--mist-050);
+  border-right: 1px solid var(--border-light);
 }
 
 .contactBgShape {
@@ -39,7 +39,7 @@
 }
 
 .contactHeader h2 {
-  color: var(--navy-950);
+  color: var(--text-heading);
   margin-bottom: 1rem;
   font-size: clamp(28px, 3.5vw, 44px);
   font-weight: 800;
@@ -48,7 +48,7 @@
 }
 
 .contactHeader p {
-  color: var(--ink-500);
+  color: var(--text-muted);
   margin-bottom: 3rem;
   line-height: 1.7;
 }
@@ -62,8 +62,8 @@
 .methodIcon {
   width: 40px;
   height: 40px;
-  background: white;
-  border: 1px solid var(--slate-200);
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -76,24 +76,24 @@
 .methodText label {
   display: block;
   font-size: 0.85rem;
-  color: var(--ink-500);
+  color: var(--text-muted);
   margin-bottom: 0.25rem;
 }
 
 .methodText span {
   font-size: 1rem;
-  color: var(--ink-800);
+  color: var(--text-regular);
   font-weight: 600;
 }
 
 .contactFormWrapper {
   padding: 3rem;
-  background: white;
+  background: var(--bg-card);
 }
 
 .contactFormWrapper h3 {
   font-size: 1.5rem;
-  color: var(--ink-800);
+  color: var(--text-regular);
   margin-bottom: 2rem;
   font-weight: 700;
 }
@@ -115,12 +115,18 @@
   border-color: var(--brand-primary-deeper);
 }
 
-/* Element Plus :deep(.el-textarea__inner) → Ant Design .ant-input
-   （输入框底色/描边/padding/focus 聚焦圈已 token 化为 HomePageView 嵌套
-     ConfigProvider 的 Input 组件注入；textarea 专属 padding 无对应 token，保留。
-     .ant-input 为 antd 全局类，:global 包裹） */
+/* 本页输入框底色差异：全局 Input token 底色为 var(--input-bg, var(--bg-soft))，
+   这里只覆写变量本身 —— 颜色仍全部由 CSS 变量控制，TS 侧零色值。
+   描边 / 聚焦圈 / 水平内边距已由 src/main.tsx 全局 Input token 统一提供。 */
+.techForm {
+  --input-bg: var(--bg-card);
+}
+
+/* textarea 垂直间距差异：4 行文本域 12px 比全局 8px 更舒展，此差异无对应 token，
+   故保留局部覆写；只改 padding-block，水平内边距仍由全局 token 提供。
+   .ant-input 为 antd 全局类，:global 包裹 */
 .techForm :global(textarea.ant-input) {
-  padding: 12px 15px;
+  padding-block: 12px;
 }
 
 @media (width <= 992px) {
@@ -139,63 +145,23 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移，取两层规则的最终生效值）。
-   contact- 系列为本组件独占类，原全局规则已删除；
-   method-icon/method-text/submit-btn 与 time-capsule/square 共用类名，
-   但对应页面均有更高优先级的 scoped 暗色规则（html.dark .time-capsule-page
-   .method-icon 等），删除全局裸规则不影响它们
+   暗色主题（仅保留「暗底上必须特殊处理」的规则；
+   换色类规则已由 light 基础规则的语义变量自动接管）
    ============================================================ */
 :global(html.dark) .contactSection {
   background: transparent !important;
 }
 
-:global(html.dark) .contactWrapper {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
-}
-
+/* 左侧信息面板：暗色下改用页面底色，与右侧卡片拉开层次 */
 :global(html.dark) .contactInfo {
-  background: #0f172a !important;
-  border-right-color: #1e293b !important;
-}
-
-:global(html.dark) .contactInfo h2 {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark) .contactInfo p {
-  color: #94a3b8 !important;
+  background: var(--bg-page) !important;
 }
 
 :global(html.dark) .methodIcon {
-  background: #1e2b3a !important;
-  border-color: #334155 !important;
-  color: #4d9aff !important;
+  border-color: var(--border-regular) !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .methodText label {
-  color: #64748b !important;
-}
-
-:global(html.dark) .methodText span {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark) .contactFormWrapper {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
-}
-
-:global(html.dark) .contactFormWrapper h3 {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark) .submitBtn {
-  background-color: #0052d9 !important;
-  border-color: #0052d9 !important;
-}
-
-:global(html.dark) .submitBtn:hover {
-  background-color: #0042ad !important;
-  border-color: #0042ad !important;
+  color: var(--text-faint) !important;
 }

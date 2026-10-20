@@ -8,7 +8,7 @@
   justify-content: space-between;
   position: relative;
   z-index: 1;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .backBtn {
@@ -17,7 +17,7 @@
   gap: 8px;
   background: transparent;
   border: none;
-  color: var(--ink-800);
+  color: var(--text-regular);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 1.5px;
@@ -42,7 +42,7 @@
   gap: 10px;
   font-size: 11px;
   letter-spacing: 2px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 600;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
@@ -62,7 +62,7 @@
 
 .typeMark:global(.capsule) {
   background: linear-gradient(135deg, var(--brand-primary), var(--color-info));
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 @media (width <= 768px) {
@@ -73,36 +73,25 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移：square-detail-page 页面作用域
-   规则，均为本组件独占类；页面根类 square-detail-page 由 pages 层
-   css 定义，作用域选择器整体置于 :global 内。id-mark 浅色态无
-   样式定义，module 导出仅由暗色段提供）
+   暗色主题：背景/文字/边框换色由语义变量自动跟随，仅保留
+   强调色的暗色专用取值（id-mark 浅色态无样式定义，module 导出
+   依赖本段提供）
    ============================================================ */
-:global(html.dark .square-detail-page) .topBar {
-  background: transparent !important;
-  border-bottom-color: #1e293b !important;
-}
-
-:global(html.dark .square-detail-page) .backBtn {
-  color: #94a3b8 !important;
-}
-
 :global(html.dark .square-detail-page) .backBtn:hover {
-  color: #4d9aff !important;
-  background: #1a2a4a !important;
+  color: var(--brand-primary-bright) !important;
+  background: var(--brand-primary-faint) !important;
 }
 
 :global(html.dark .square-detail-page) .topMark,
 :global(html.dark .square-detail-page) .idMark {
-  color: #64748b !important;
+  color: var(--text-faint) !important;
 }
 
 :global(html.dark .square-detail-page) .typeMark:global(.moment) {
-  color: #4d9aff !important;
-  background: #1a2a4a !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .square-detail-page) .typeMark:global(.capsule) {
-  color: #10b981 !important;
-  background: rgb(16, 185, 129, 0.15) !important;
+  color: var(--status-success) !important;
+  background: color-mix(in srgb, var(--status-success) 15%, transparent) !important;
 }

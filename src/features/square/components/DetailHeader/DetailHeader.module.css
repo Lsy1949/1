@@ -25,14 +25,14 @@
 }
 
 .eyebrowDate {
-  color: var(--ink-500);
+  color: var(--text-muted);
   font-weight: 500;
 }
 
 .detailTitle {
   font-size: clamp(32px, 4.5vw, 52px);
   font-weight: 900;
-  color: var(--navy-950);
+  color: var(--text-heading);
   line-height: 1.08;
   letter-spacing: -1.5px;
   margin: 0 0 32px;
@@ -50,7 +50,7 @@
   align-items: center;
   gap: 24px;
   padding-top: 24px;
-  border-top: 1px solid var(--mist-050);
+  border-top: 1px solid var(--border-light);
 }
 
 .authorBlock {
@@ -74,13 +74,13 @@
 .authorName {
   font-size: 14px;
   font-weight: 700;
-  color: var(--ink-900);
+  color: var(--text-heading);
   letter-spacing: 0.2px;
 }
 
 .authorTitle {
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   letter-spacing: 1px;
   text-transform: uppercase;
 }
@@ -92,24 +92,10 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移：square-detail-page 页面作用域
-   规则，均为本组件独占类；页面根类 square-detail-page 由 pages 层
-   css 定义，作用域选择器整体置于 :global 内）
+   暗色主题：背景/文字/边框换色由语义变量自动跟随，仅保留
+   强调色的暗色专用取值
    ============================================================ */
 :global(html.dark .square-detail-page) .headerEyebrow,
-:global(html.dark .square-detail-page) .eyebrowMood,
 :global(html.dark .square-detail-page) .eyebrowDate {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .square-detail-page) .detailTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .square-detail-page) .authorName {
-  color: #e2e8f0 !important;
-}
-
-:global(html.dark .square-detail-page) .authorTitle {
-  color: #64748b !important;
+  color: var(--brand-primary-bright) !important;
 }

@@ -1,0 +1,104 @@
+/* ============================================================
+ * 主题色板 · CSS 变量层
+ *
+ * 设计：
+ *  - 唯一数据源在 src/styles/palette.ts（PALETTES 常量）；
+ *    本文件仅提供 :root fallback 与 [data-palette] 覆写规则，
+ *    任何调色都改 palette.ts，然后同步本文件对应段落。
+ *  - 注入顺序：:root fallback → [data-palette] → tenant overrides → dark
+ * ============================================================ */
+
+/* ---------- 默认色板（blue）fallback：防 JS 加载前 FOUC ---------- */
+:root {
+  --brand-primary: #0052d9;
+  --brand-primary-dark: #0040b0;
+  --brand-primary-deep: #0040a8;
+  --brand-primary-deeper: #003bb3;
+  --brand-primary-soft: #d0e7ff;
+  --brand-primary-faint: #f0f7ff;
+  --brand-primary-wash: #f8fbff;
+
+  --brand-radius: 6px;
+  --brand-font-family: -apple-system, blinkmacsystemfont, 'Segoe UI', 'PingFang SC',
+    'Microsoft YaHei', sans-serif;
+}
+
+/* ---------- blue（与 :root 相同；显式声明便于脚本切回） ---------- */
+:root[data-palette='blue'] {
+  --brand-primary: #0052d9;
+  --brand-primary-dark: #0040b0;
+  --brand-primary-deep: #0040a8;
+  --brand-primary-deeper: #003bb3;
+  --brand-primary-soft: #d0e7ff;
+  --brand-primary-faint: #f0f7ff;
+  --brand-primary-wash: #f8fbff;
+}
+
+/* ---------- green ---------- */
+:root[data-palette='green'] {
+  --brand-primary: #0e8a5f;
+  --brand-primary-dark: #0a6e4b;
+  --brand-primary-deep: #0a6847;
+  --brand-primary-deeper: #086144;
+  --brand-primary-soft: #c8ecd9;
+  --brand-primary-faint: #ecfbf3;
+  --brand-primary-wash: #f6fdf9;
+}
+
+/* ---------- purple ---------- */
+:root[data-palette='purple'] {
+  --brand-primary: #6b3ac8;
+  --brand-primary-dark: #552ba3;
+  --brand-primary-deep: #51289c;
+  --brand-primary-deeper: #4a2591;
+  --brand-primary-soft: #e0d3f5;
+  --brand-primary-faint: #f5effc;
+  --brand-primary-wash: #faf7fe;
+}
+
+/* ---------- orange ---------- */
+:root[data-palette='orange'] {
+  --brand-primary: #c2520a;
+  --brand-primary-dark: #9e4107;
+  --brand-primary-deep: #973e07;
+  --brand-primary-deeper: #8f3b06;
+  --brand-primary-soft: #fadfc8;
+  --brand-primary-faint: #fdf1e6;
+  --brand-primary-wash: #fef9f3;
+}
+
+/* ---------- 暗色模式下的品牌档位：全部取该 seed 的 antd 官方暗色色板档位
+   （soft = 第 3 档 / faint = 第 2 档 / wash = 第 1 档，
+    bright = 第 8 档用于深色底强调，对 #000 底对比度 ≥ 5.5:1）。
+   --brand-primary-bright-bg 由 bright 统一派生，无需逐色板覆写。 ---------- */
+:root.dark[data-palette='blue'] {
+  --brand-primary-soft: #0e274f;
+  --brand-primary-faint: #0f1f3c;
+  --brand-primary-wash: #111826;
+  --brand-primary-bright: #4b91e7;
+  --bg-blue-tint: #111826;
+}
+
+:root.dark[data-palette='green'] {
+  --brand-primary-soft: #12372b;
+  --brand-primary-faint: #102821;
+  --brand-primary-wash: #111a18;
+  --brand-primary-bright: #439c77;
+  --bg-blue-tint: #111a18;
+}
+
+:root.dark[data-palette='purple'] {
+  --brand-primary-soft: #2e1f4a;
+  --brand-primary-faint: #221937;
+  --brand-primary-wash: #191423;
+  --brand-primary-bright: #a583d6;
+  --bg-blue-tint: #191423;
+}
+
+:root.dark[data-palette='orange'] {
+  --brand-primary-soft: #482711;
+  --brand-primary-faint: #361d0f;
+  --brand-primary-wash: #231711;
+  --brand-primary-bright: #d1894e;
+  --bg-blue-tint: #231711;
+}

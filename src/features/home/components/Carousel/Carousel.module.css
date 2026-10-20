@@ -19,7 +19,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: white;
+  color: var(--text-inverse, #fff);
   cursor: pointer;
   animation: bounce 2s infinite;
   opacity: 0.8;
@@ -36,12 +36,12 @@
   margin-bottom: 8px;
   text-transform: uppercase;
   font-weight: 500;
-  text-shadow: 0 2px 4px color-mix(in srgb, black 30%, transparent);
+  text-shadow: 0 2px 4px rgb(0 0 0 / 0.3);
 }
 
 .scrollIcon {
   font-size: 1.5rem;
-  filter: drop-shadow(0 2px 4px color-mix(in srgb, black 30%, transparent));
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.3));
 }
 
 @keyframes bounce {
@@ -109,7 +109,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, color-mix(in srgb, black 30%, transparent) 0%, color-mix(in srgb, black 60%, transparent) 100%);
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0.3) 0%, rgb(0 0 0 / 0.6) 100%);
 }
 
 /* 文字内容独立层：覆盖在轮播图上方，不受 track 滑动影响 */
@@ -124,7 +124,7 @@
   margin: 0 auto;
   padding: 0 2rem 0 7rem;
   text-align: left;
-  color: white;
+  color: var(--text-inverse, #fff);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -163,7 +163,7 @@
   line-height: 1.1;
   font-weight: 800;
   text-shadow: none;
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 .slideText p {
@@ -171,7 +171,7 @@
   margin-bottom: 2.5rem;
   line-height: 1.6;
   text-shadow: none;
-  color: color-mix(in srgb, white 90%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 90%, transparent);
   max-width: 500px;
 }
 
@@ -192,7 +192,7 @@
 
 .carouselButton.primary {
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
   border: none;
 }
 
@@ -203,15 +203,15 @@
 }
 
 .carouselButton.secondary {
-  background: color-mix(in srgb, white 10%, transparent);
-  color: white;
-  border: 1px solid color-mix(in srgb, white 30%, transparent);
+  background: color-mix(in srgb, var(--text-inverse, #fff) 10%, transparent);
+  color: var(--text-inverse, #fff);
+  border: 1px solid color-mix(in srgb, var(--text-inverse, #fff) 30%, transparent);
   backdrop-filter: blur(10px);
 }
 
 .carouselButton.secondary:hover {
-  background: white;
-  color: var(--slate-800);
+  background: var(--text-inverse, #fff);
+  color: var(--brand-primary-deep);
   transform: translateY(-3px);
 }
 
@@ -228,7 +228,7 @@
   width: 40px;
   height: 4px;
   border-radius: 2px;
-  background: color-mix(in srgb, white 30%, transparent);
+  background: color-mix(in srgb, var(--text-inverse, #fff) 30%, transparent);
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -256,7 +256,7 @@
   top: 50%;
   transform: translateY(-50%);
   background: transparent !important;
-  color: color-mix(in srgb, white 70%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 70%, transparent);
   border: none;
   width: 80px;
   height: 100px;
@@ -278,12 +278,12 @@
 /* Element Plus 的 .el-icon → Ant Design 图标根类 .anticon（全局类，:global 包裹） */
 .carouselBtn :global(.anticon) {
   font-size: 40px;
-  filter: drop-shadow(0 2px 10px color-mix(in srgb, black 30%, transparent));
+  filter: drop-shadow(0 2px 10px rgb(0 0 0 / 0.3));
   transition: all 0.3s ease;
 }
 
 .carouselBtn:hover {
-  color: white;
+  color: var(--text-inverse, #fff);
   transform: translateY(-50%) scale(1.1);
 }
 

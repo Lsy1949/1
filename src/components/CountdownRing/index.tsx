@@ -28,8 +28,8 @@ export function CountdownRing({
   total = 365,
   size = 140,
   strokeWidth = 4,
-  progressColor = '#000',
-  trackColor = '#e5e7eb',
+  progressColor = 'var(--brand-primary)',
+  trackColor = 'var(--bg-mute)',
   unit = '',
 }: CountdownRingProps) {
   const radius = useMemo(() => (size - strokeWidth) / 2 - 2, [size, strokeWidth])
@@ -56,7 +56,8 @@ export function CountdownRing({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke={trackColor}
+          // 走 style 而非 SVG 展示属性，以便 var() 生效（随明暗/色板切换）
+          style={{ stroke: trackColor }}
           strokeWidth={strokeWidth}
         />
         {/* 进度环 */}
@@ -65,13 +66,12 @@ export function CountdownRing({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke={progressColor}
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={animatedOffset}
           strokeLinecap="round"
           className={styles.ringProgress}
-          style={{ transform: 'rotate(-90deg)', transformOrigin: 'center' }}
+          style={{ stroke: progressColor, transform: 'rotate(-90deg)', transformOrigin: 'center' }}
         />
       </svg>
       <div className={styles.ringCenter}>

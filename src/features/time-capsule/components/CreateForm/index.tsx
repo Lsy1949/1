@@ -431,7 +431,7 @@ export function CreateForm() {
         /* 原 .success-modal .ant-modal-content/header/footer 结构覆写 token 化 */
         styles={{
           content: { borderRadius: 16 },
-          header: { borderBottom: '1px solid var(--mist-050)', textAlign: 'center' },
+          header: { borderBottom: '1px solid var(--border-light)', textAlign: 'center' },
           footer: { textAlign: 'center' },
         }}
       >

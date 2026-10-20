@@ -79,13 +79,26 @@ export default function ScaleDialog({
     if (!result || result.scaleKey !== 'riasec') return []
     const d = result.details
     const names: Record<string, string> = { R: '现实', I: '研究', A: '艺术', S: '社会', E: '企业', C: '常规' }
-    const colors: Record<string, string> = { R: '#ef4444', I: '#3b82f6', A: '#8b5cf6', S: '#10b981', E: '#f59e0b', C: '#6b7280' }
+    const colors: Record<string, string> = {
+      R: 'var(--cat-red)',
+      I: 'var(--cat-blue)',
+      A: 'var(--cat-purple)',
+      S: 'var(--cat-green)',
+      E: 'var(--cat-gold)',
+      C: 'var(--cat-gray)',
+    }
     return Object.keys(names).map((k) => ({ key: k, name: names[k], score: d[k], color: colors[k] }))
   }, [result])
 
   function getLevelColor(tag: string) {
-    const map: Record<string, string> = { success: '#059669', info: '#0052d9', warning: '#d97706', danger: '#ef4444', primary: '#7c3aed' }
-    return map[tag] || '#0052d9'
+    const map: Record<string, string> = {
+      success: 'var(--status-success)',
+      info: 'var(--status-info)',
+      warning: 'var(--status-warning)',
+      danger: 'var(--status-danger)',
+      primary: 'var(--brand-primary-bright)',
+    }
+    return map[tag] || 'var(--brand-primary)'
   }
 
   return (
@@ -220,7 +233,7 @@ export default function ScaleDialog({
                       <Progress
                         percent={(dim.score / 15) * 100}
                         strokeColor={dim.color}
-                        trailColor="var(--neutral-150)"
+                        trailColor="var(--bg-mute)"
                         strokeWidth={10}
                         showInfo={false}
                       />

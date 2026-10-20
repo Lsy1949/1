@@ -4,12 +4,12 @@
 /* ============ 区块通用 ============ */
 .editorialSection {
   padding: 40px 0 56px;
-  border-top: 1px solid var(--ink-200);
+  border-top: 1px solid var(--border-light);
   scroll-margin-top: 80px;
 }
 
 .editorialSection:first-of-type {
-  border-top: 1px solid var(--ink-900);
+  border-top: 1px solid var(--text-heading);
 }
 
 .sectionMarker {
@@ -31,12 +31,12 @@
 .markerRule {
   flex: 1;
   height: 1px;
-  background: var(--ink-900);
+  background: var(--text-heading);
 }
 
 .markerIcon {
   font-size: 16px;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 .markerLabel {
@@ -44,7 +44,7 @@
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 .sectionHeadlineRow {
@@ -54,7 +54,7 @@
   align-items: end;
   margin-bottom: 36px;
   padding-bottom: 24px;
-  border-bottom: 1px solid var(--ink-200);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .sectionHeadline {
@@ -63,7 +63,7 @@
   font-size: 32px;
   font-weight: 700;
   line-height: 1.1;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 .sectionDeck {
@@ -71,7 +71,7 @@
   font-size: 15px;
   font-style: italic;
   line-height: 1.6;
-  color: var(--ink-500);
+  color: var(--text-muted);
 }
 
 /* ============ 网格 ============ */
@@ -82,7 +82,7 @@
 
 .editorialCol {
   padding: 0 32px;
-  border-right: 1px solid var(--ink-200);
+  border-right: 1px solid var(--border-light);
 }
 .editorialCol:first-child { padding-left: 0; }
 
@@ -98,7 +98,7 @@
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 .colTitleSpaced { margin-top: 36px; }
 
@@ -131,7 +131,7 @@
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--ink-700);
+  color: var(--text-regular);
 }
 
 .fieldActions {
@@ -144,9 +144,9 @@
 /* ============ Editorial 按钮 ============ */
 .editorialBtn {
   padding: 10px 28px;
-  background: var(--ink-900);
-  color: white;
-  border: 1px solid var(--ink-900);
+  background: var(--text-heading);
+  color: var(--text-inverse, #fff);
+  border: 1px solid var(--text-heading);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -162,13 +162,13 @@
 
 .editorialBtnGhost {
   background: transparent;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 .editorialBtnGhost:hover {
-  background: var(--ink-900);
-  color: white;
-  border-color: var(--ink-900);
+  background: var(--text-heading);
+  color: var(--text-inverse, #fff);
+  border-color: var(--text-heading);
 }
 
 /* ============ 联系方式列表 ============ */
@@ -183,7 +183,7 @@
   align-items: center;
   gap: 16px;
   padding: 16px 0;
-  border-bottom: 1px solid var(--ink-200);
+  border-bottom: 1px solid var(--border-light);
 }
 .entryRow:last-child { border-bottom: none; }
 
@@ -195,7 +195,7 @@
   height: 36px;
   font-size: 18px;
   color: var(--brand-primary);
-  border: 1px solid var(--ink-200);
+  border: 1px solid var(--border-light);
 }
 
 .entryText {
@@ -211,12 +211,12 @@
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--ink-500);
+  color: var(--text-muted);
 }
 
 .entryValue {
   font-size: 15px;
-  color: var(--ink-900);
+  color: var(--text-heading);
   letter-spacing: 0.5px;
 }
 
@@ -236,8 +236,8 @@
 }
 
 .linkBtn:hover {
-  color: var(--color-info);
-  border-bottom-color: var(--color-info);
+  color: color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff));
+  border-bottom-color: color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff));
 }
 
 .linkBtnDanger {
@@ -246,8 +246,8 @@
 }
 
 .linkBtnDanger:hover {
-  color: var(--danger-700);
-  border-bottom-color: var(--danger-700);
+  color: var(--status-danger);
+  border-bottom-color: var(--status-danger);
 }
 
 /* ============ 登录设备 ============ */
@@ -259,7 +259,7 @@
 
 .deviceRow {
   padding: 18px 0;
-  border-bottom: 1px solid var(--ink-200);
+  border-bottom: 1px solid var(--border-light);
 }
 .deviceRow:last-child { border-bottom: none; }
 
@@ -278,7 +278,7 @@
 .deviceName {
   font-size: 15px;
   font-weight: 700;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 .deviceTag {
@@ -304,14 +304,14 @@
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: var(--ink-400);
+  color: var(--text-faint);
   margin-bottom: 2px;
 }
 
 .deviceMeta .metaItem dd {
   margin: 0;
   font-size: 13px;
-  color: var(--ink-700);
+  color: var(--text-regular);
 }
 
 @media (width <= 1024px) {
@@ -325,7 +325,7 @@
   .editorialCol {
     padding: 24px 0;
     border-right: none;
-    border-bottom: 1px solid var(--ink-200);
+    border-bottom: 1px solid var(--border-light);
   }
   .editorialCol:first-child { padding-top: 0; }
 
@@ -365,7 +365,7 @@
   display: flex;
   margin-bottom: 24px;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--ink-200);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .contactDialog .dsItem {
@@ -385,7 +385,7 @@
   left: 50%;
   width: 100%;
   height: 1px;
-  background: var(--ink-200);
+  background: var(--border-light);
   z-index: 0;
 }
 .contactDialog .dsItem.active:not(:last-child)::after { background: var(--brand-primary); }
@@ -396,12 +396,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--ink-200);
-  background: white;
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 14px;
   font-weight: 700;
-  color: var(--ink-400);
+  color: var(--text-faint);
   position: relative;
   z-index: 1;
 }
@@ -413,7 +413,7 @@
 
 .contactDialog .dsItem.current .dsNum {
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 .contactDialog .dsLabel {
@@ -421,10 +421,10 @@
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--ink-400);
+  color: var(--text-faint);
   text-align: center;
 }
-.contactDialog .dsItem.active .dsLabel { color: var(--ink-900); }
+.contactDialog .dsItem.active .dsLabel { color: var(--text-heading); }
 .contactDialog .dsItem.current .dsLabel { color: var(--brand-primary); }
 .contactDialog .dialogBody { min-height: 140px; }
 
@@ -437,7 +437,7 @@
   flex-shrink: 0;
   padding: 0 16px;
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
   border: 1px solid var(--brand-primary);
   font-size: 12px;
   font-weight: 700;
@@ -448,14 +448,14 @@
 }
 
 .contactDialog .sendBtn:hover:not(:disabled) {
-  background: var(--color-info);
-  border-color: var(--color-info);
+  background: color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff));
+  border-color: color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff));
 }
 
 .contactDialog .sendBtn:disabled {
-  background: var(--ink-200);
-  border-color: var(--ink-200);
-  color: var(--ink-400);
+  background: var(--border-light);
+  border-color: var(--border-light);
+  color: var(--text-faint);
   cursor: not-allowed;
 }
 
@@ -474,7 +474,7 @@
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: var(--ink-500);
+  color: var(--text-muted);
 }
 
 .contactDialog .summaryValue {
@@ -495,131 +495,96 @@
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--ink-700);
+  color: var(--text-regular);
 }
 
 /* 弹窗内输入控件直角已由 SettingsView 嵌套 ConfigProvider 的 Input token 覆盖
   （Modal 经 createPortal 渲染但仍在 React 树内，theme context 可穿透） */
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移的本组件有效值，原全局规则待主控统一
-   删除；区块内规则原文带 settings-page 前缀，弹窗内规则因 Modal 传送
-   至 body 无该前缀，转换时分别保留/去除）
+   暗色主题：背景/文字/边框换色已由语义变量自动跟随，仅保留暗色下
+   必要的强调色规则与覆盖 antd Modal 的第三方结构规则
    ============================================================ */
-:global(html.dark .settings-page) .pwdForm,
-:global(html.dark .settings-page) .fieldLabel {
-  color: #cbd5e1 !important;
-}
-
 :global(html.dark .settings-page) .editorialBtn {
-  background: #0052d9 !important;
-  color: #fff !important;
-  border-color: #0052d9 !important;
+  background: var(--brand-primary) !important;
+  color: var(--text-inverse, #fff) !important;
+  border-color: var(--brand-primary) !important;
 }
 
 :global(html.dark .settings-page) .editorialBtn:hover {
-  background: #0042ad !important;
-  border-color: #0042ad !important;
+  background: var(--brand-primary-dark) !important;
+  border-color: var(--brand-primary-dark) !important;
 }
 
 :global(html.dark .settings-page) .editorialBtnGhost {
   background: transparent !important;
-  color: #4d9aff !important;
-  border-color: #334155 !important;
+  color: var(--brand-primary-bright) !important;
+  border-color: var(--border-regular) !important;
 }
 
 :global(html.dark .settings-page) .editorialBtnGhost:hover {
-  background: #1a2a4a !important;
-  border-color: #4d9aff !important;
-}
-
-:global(html.dark .settings-page) .entryRow {
-  border-color: #1e293b !important;
+  background: var(--bg-blue-tint) !important;
+  border-color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .settings-page) .entryMark {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .settings-page) .entryKey {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .settings-page) .entryValue {
-  color: #94a3b8 !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .settings-page) .linkBtn {
   background: transparent !important;
-  color: #4d9aff !important;
-  border-color: #334155 !important;
+  color: var(--brand-primary-bright) !important;
+  border-color: var(--border-regular) !important;
 }
 
 :global(html.dark .settings-page) .linkBtn:hover {
-  background: #1a2a4a !important;
-  border-color: #4d9aff !important;
+  background: var(--bg-blue-tint) !important;
+  border-color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .settings-page) .linkBtnDanger {
-  color: #f87171 !important;
-  border-color: rgb(239, 68, 68, 0.4) !important;
+  color: var(--status-danger) !important;
+  border-color: color-mix(in srgb, var(--danger-500) 40%, transparent) !important;
 }
 
 :global(html.dark .settings-page) .linkBtnDanger:hover {
-  background: rgb(239, 68, 68, 0.12) !important;
-  border-color: #ef4444 !important;
-}
-
-:global(html.dark .settings-page) .deviceRow {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
+  background: color-mix(in srgb, var(--danger-500) 12%, transparent) !important;
+  border-color: var(--danger-500) !important;
 }
 
 :global(html.dark .settings-page) .deviceRow.current {
-  border-color: #4d9aff !important;
-  background: #1a2a4a !important;
-}
-
-:global(html.dark .settings-page) .deviceName {
-  color: #f1f5f9 !important;
+  border-color: var(--brand-primary-bright) !important;
+  background: var(--bg-blue-tint) !important;
 }
 
 :global(html.dark .settings-page) .deviceTag {
-  background: #1a2a4a !important;
-  color: #4d9aff !important;
+  background: var(--bg-blue-tint) !important;
+  color: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .settings-page) .metaItem {
-  color: #94a3b8 !important;
-}
-
-/* 换绑弹窗（Modal teleport 到 body，脱离 settings-page，原文即无前缀） */
+/* 换绑弹窗（antd Modal teleport 到 body，覆盖第三方结构，保留 !important） */
 :global(html.dark) .contactDialog {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
+  background: var(--bg-card) !important;
+  border-color: var(--border-light) !important;
 }
 
 :global(html.dark) .contactDialog .dsItem {
-  border-color: #1e293b !important;
+  border-color: var(--border-light) !important;
 }
 
 :global(html.dark) .contactDialog .dsNum {
-  background: #0f172a !important;
-  color: #4d9aff !important;
+  background: var(--bg-page) !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .contactDialog .dsLabel {
-  color: #f1f5f9 !important;
+  color: var(--text-heading) !important;
 }
 
 :global(html.dark) .contactDialog .summaryRow {
-  border-color: #1e293b !important;
-}
-
-:global(html.dark) .contactDialog .summaryLabel {
-  color: #94a3b8 !important;
+  border-color: var(--border-light) !important;
 }
 
 :global(html.dark) .contactDialog .summaryValue {
-  color: #f1f5f9 !important;
+  color: var(--text-heading) !important;
 }

@@ -11,7 +11,7 @@
 /* 标题区 */
 .detailTitleArea {
   padding: 36px 0 28px;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .detailEmoji {
@@ -24,7 +24,7 @@
 .detailTitle {
   font-size: clamp(28px, 4.5vw, 44px);
   font-weight: 800;
-  color: var(--ink-900);
+  color: var(--text-heading);
   margin: 0 0 16px;
   letter-spacing: -1px;
   line-height: 1.15;
@@ -40,7 +40,7 @@
 }
 
 .metaText {
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
 .metaSep {
@@ -51,18 +51,18 @@
   font-weight: 600;
 }
 
-.metaStatus.pending { color: var(--orange-600); }
-.metaStatus.opened { color: var(--success-700); }
+.metaStatus.pending { color: var(--status-warning); }
+.metaStatus.opened { color: var(--status-success); }
 
 /* 内容区域 */
 .detailContent {
   padding: 28px 0;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .richContent {
   font-size: 15px;
-  color: var(--ink-800);
+  color: var(--text-regular);
   line-height: 1.85;
   letter-spacing: 0.2px;
 }
@@ -114,7 +114,7 @@
   border-radius: 10px;
   background-size: cover;
   background-position: center;
-  background-color: var(--slate-50);
+  background-color: var(--bg-soft);
   cursor: pointer;
   transition: opacity 0.2s;
 }
@@ -126,13 +126,13 @@
 /* 收件信息 · 编辑式定义列表 */
 .detailInfo {
   padding: 28px 0;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .infoEyebrow {
   font-size: 12px;
   letter-spacing: 3px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 600;
   text-transform: uppercase;
   margin-bottom: 20px;
@@ -148,7 +148,7 @@
   align-items: baseline;
   gap: 24px;
   padding: 12px 0;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .infoRow:last-child {
@@ -157,7 +157,7 @@
 
 .infoLabel {
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   min-width: 80px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -167,7 +167,7 @@
 
 .infoValue {
   font-size: 14px;
-  color: var(--ink-800);
+  color: var(--text-primary);
   flex: 1;
   letter-spacing: 0.2px;
 }
@@ -175,7 +175,7 @@
 /* 开启时间 · 编辑式大字 */
 .detailDate {
   padding: 28px 0;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .dateFlex {
@@ -194,7 +194,7 @@
 .dateDisplay {
   font-size: clamp(32px, 5vw, 48px);
   font-weight: 800;
-  color: var(--ink-900);
+  color: var(--text-heading);
   letter-spacing: -1px;
   line-height: 1.1;
   margin: 8px 0;
@@ -203,13 +203,13 @@
 
 .dateCount {
   font-size: 13px;
-  color: var(--orange-600);
+  color: var(--status-warning);
   font-weight: 600;
   letter-spacing: 0.5px;
 }
 
 .openedText {
-  color: var(--success-700);
+  color: var(--status-success);
 }
 
 /* 操作按钮 */
@@ -239,13 +239,13 @@
 
 .actionBtn.primary {
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
   box-shadow: 0 6px 18px color-mix(in srgb, var(--brand-primary) 22%, transparent);
 }
 
 .actionBtn.primary:hover {
   background: var(--brand-primary-dark);
-  color: white;
+  color: var(--text-inverse, #fff);
   box-shadow: 0 10px 26px color-mix(in srgb, var(--brand-primary) 30%, transparent);
   transform: translateY(-2px);
 }
@@ -260,8 +260,8 @@
 
 .actionBtn.ghost {
   background: transparent;
-  color: var(--ink-800);
-  box-shadow: inset 0 0 0 1px var(--mist-050);
+  color: var(--text-regular);
+  box-shadow: inset 0 0 0 1px var(--border-light);
 }
 
 .actionBtn.ghost:hover {
@@ -281,7 +281,7 @@
 .loadingSpinner {
   width: 32px;
   height: 32px;
-  border: 3px solid var(--mist-050);
+  border: 3px solid var(--border-light);
   border-top-color: var(--brand-primary);
   border-radius: 50%;
   animation: capsuleSpin 0.8s linear infinite;
@@ -295,7 +295,7 @@
 
 .loadingText {
   font-size: 14px;
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
 /* 图片预览弹窗：原 image-preview-dialog 下的 el-dialog 死规则未迁移；
@@ -336,58 +336,27 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移，页面作用域 .detail-page
-   为 pages 层 CapsuleDetailView 根类；原规则仅服务本组件，整体迁入；
-   同类多期叠加已合并为最终生效值）
+   暗色主题（仅保留「暗底上必须提亮 / 特殊处理」的规则；
+   换色类规则已由 light 基础规则的语义变量自动接管）
    ============================================================ */
 :global(html.dark .detail-page) .detailEmoji {
-  background: #1a2a4a !important;
+  background: var(--bg-blue-tint) !important;
 }
 
-:global(html.dark .detail-page) .detailTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .detail-page) .metaText,
+/* metaSep 在 light 下用品牌浅色，暗色下对比不足改用中性弱化色 */
 :global(html.dark .detail-page) .metaSep {
-  color: #64748b !important;
+  color: var(--text-faint) !important;
 }
 
+/* 状态标签：暗色下用浅蓝底承载（文字色由 light 的状态语义色自动接管） */
 :global(html.dark .detail-page) .metaStatus {
-  background: #1a2a4a !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .detail-page) .metaStatus.pending {
-  color: #fbbf24 !important;
-}
-
-:global(html.dark .detail-page) .metaStatus.opened {
-  color: #10b981 !important;
-}
-
-:global(html.dark .detail-page) .richContent,
-:global(html.dark .detail-page) .detailContent {
-  color: #cbd5e1 !important;
-}
-
-:global(html.dark .detail-page) .richContent p {
-  color: #cbd5e1 !important;
+  background: var(--bg-blue-tint) !important;
 }
 
 /* drop-cap 为 main.css 全局共享工具类（首字下沉），组件内以字面量使用，
    其页面作用域暗色规则以整体 :global 形式迁入 */
 :global(html.dark .detail-page .drop-cap) {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .detail-page) .detailImage {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
-}
-
-:global(html.dark .detail-page) .detailImage:hover {
-  border-color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .detail-page) .detailInfo,
@@ -398,62 +367,33 @@
 }
 
 :global(html.dark .detail-page) .infoEyebrow {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .detail-page) .infoLabel {
-  color: #64748b !important;
-}
-
-:global(html.dark .detail-page) .infoValue {
-  color: #f1f5f9 !important;
-}
-
+/* 开启时间块：暗色下用浅蓝底承载 */
 :global(html.dark .detail-page) .detailDate {
-  background: #1a2a4a !important;
-  border-color: #1a3a6b !important;
+  background: var(--bg-blue-tint) !important;
+  border-color: var(--border-blue) !important;
 }
 
+/* 大字倒计时：暗底上提亮为主色强调 */
 :global(html.dark .detail-page) .dateDisplay {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .detail-page) .dateCount {
-  color: #94a3b8 !important;
+  color: var(--text-muted) !important;
 }
 
-:global(html.dark .detail-page) .openedText {
-  color: #10b981 !important;
-}
-
-:global(html.dark .detail-page) .actionBtn {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
-  color: #cbd5e1 !important;
-}
-
-:global(html.dark .detail-page) .actionBtn.primary {
-  background: #0052d9 !important;
-  color: #fff !important;
-  border-color: #0052d9 !important;
-}
-
-:global(html.dark .detail-page) .actionBtn.primary:hover {
-  background: #0042ad !important;
-  border-color: #0042ad !important;
-}
-
+/* ghost 按钮：暗色下文字用提亮主色 */
 :global(html.dark .detail-page) .actionBtn.ghost {
-  background: transparent !important;
-  color: #4d9aff !important;
-  border-color: #334155 !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .detail-page) .actionBtn.ghost:hover {
-  background: #1a2a4a !important;
-  border-color: #4d9aff !important;
+  background: var(--bg-blue-tint) !important;
 }
 
 :global(html.dark .detail-page) .loadingText {
-  color: #94a3b8 !important;
+  color: var(--text-muted) !important;
 }

@@ -1,6 +1,6 @@
 /**
  * 【base】InitialAvatar —— 姓名首字头像
- * - 按姓名哈希从固定调色板取色；品牌色使用 CSS 变量 --brand-primary
+ * - 按姓名哈希从固定调色板取色（品牌色 + 7 个 antd 官方分类色，见 --cat-*）
  * - isAnonymous 时展示灰色问号头像
  */
 import { useMemo } from 'react'
@@ -17,8 +17,14 @@ interface InitialAvatarProps {
 }
 
 const colors = [
-  'var(--brand-primary)', '#1890ff', '#10b981', '#f59e0b',
-  '#8b5cf6', '#ec4899', '#06b6d4', '#ef4444',
+  'var(--brand-primary)',
+  'var(--cat-blue)',
+  'var(--cat-green)',
+  'var(--cat-gold)',
+  'var(--cat-purple)',
+  'var(--cat-magenta)',
+  'var(--cat-cyan)',
+  'var(--cat-red)',
 ]
 
 export function InitialAvatar({
@@ -32,7 +38,7 @@ export function InitialAvatar({
   }, [name])
 
   const bgColor = useMemo(() => {
-    if (isAnonymous) return '#9ca3af'
+    if (isAnonymous) return 'var(--cat-gray)'
     const hash = name.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
     return colors[hash % colors.length]
   }, [name, isAnonymous])

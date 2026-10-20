@@ -6,6 +6,7 @@
  * - Vue 源无 <style> 块，舞台共用样式见 NotFoundGameStage.css
  */
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { readCssColor } from '@/utils/cssVar'
 
 interface MazeCell {
   walls: { top: boolean; right: boolean; bottom: boolean; left: boolean }
@@ -144,8 +145,8 @@ export const GameMaze = forwardRef<GameMazeHandle, GameMazeProps>(
       const playerRender = playerRenderRef.current
       ctx.clearRect(0, 0, canvasSize, canvasSize)
 
-      // 墙线（半透明白色，细线杂志风）
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.72)'
+      // 墙线（反色半透明细线，杂志风）
+      ctx.strokeStyle = readCssColor('color-mix(in srgb, var(--text-inverse) 72%, transparent)')
       ctx.lineWidth = 1.2
       ctx.lineCap = 'round'
 
@@ -181,36 +182,42 @@ export const GameMaze = forwardRef<GameMazeHandle, GameMazeProps>(
         }
       }
 
-      // 出口（蓝色发光圆点）
+      // 出口 / 玩家：canvas 需实色，故经 readCssColor 解析主题变量
+      const accent = readCssColor('var(--brand-primary-bright)')
+      const neutral = readCssColor('var(--text-inverse)')
+      const accentStop = (pct: number): string =>
+        readCssColor(`color-mix(in srgb, var(--brand-primary-bright) ${pct}%, transparent)`)
+
+      // 出口（品牌色发光圆点）
       const exitPx = mazeOffset + exitCell.x * cellSize + cellSize / 2
       const exitPy = mazeOffset + exitCell.y * cellSize + cellSize / 2
       const exitR = Math.max(4, cellSize * 0.26)
       const exitGlow = ctx.createRadialGradient(exitPx, exitPy, 0, exitPx, exitPy, exitR * 2.8)
-      exitGlow.addColorStop(0, 'rgba(24, 144, 255, 0.95)')
-      exitGlow.addColorStop(0.5, 'rgba(24, 144, 255, 0.35)')
-      exitGlow.addColorStop(1, 'rgba(24, 144, 255, 0)')
+      exitGlow.addColorStop(0, accentStop(95))
+      exitGlow.addColorStop(0.5, accentStop(35))
+      exitGlow.addColorStop(1, accentStop(0))
       ctx.fillStyle = exitGlow
       ctx.beginPath()
       ctx.arc(exitPx, exitPy, exitR * 2.8, 0, Math.PI * 2)
       ctx.fill()
-      ctx.fillStyle = '#1890ff'
+      ctx.fillStyle = accent
       ctx.beginPath()
       ctx.arc(exitPx, exitPy, exitR, 0, Math.PI * 2)
       ctx.fill()
 
-      // 玩家（白色发光圆点）
+      // 玩家（反色发光圆点）
       const playerPx = mazeOffset + playerRender.x * cellSize + cellSize / 2
       const playerPy = mazeOffset + playerRender.y * cellSize + cellSize / 2
       const playerR = Math.max(3, cellSize * 0.2)
       const playerGlow = ctx.createRadialGradient(playerPx, playerPy, 0, playerPx, playerPy, playerR * 2.8)
-      playerGlow.addColorStop(0, 'rgba(255, 255, 255, 0.95)')
-      playerGlow.addColorStop(0.5, 'rgba(255, 255, 255, 0.3)')
-      playerGlow.addColorStop(1, 'rgba(255, 255, 255, 0)')
+      playerGlow.addColorStop(0, neutral)
+      playerGlow.addColorStop(0.5, readCssColor('color-mix(in srgb, var(--text-inverse) 30%, transparent)'))
+      playerGlow.addColorStop(1, readCssColor('color-mix(in srgb, var(--text-inverse) 0%, transparent)'))
       ctx.fillStyle = playerGlow
       ctx.beginPath()
       ctx.arc(playerPx, playerPy, playerR * 2.8, 0, Math.PI * 2)
       ctx.fill()
-      ctx.fillStyle = '#ffffff'
+      ctx.fillStyle = neutral
       ctx.beginPath()
       ctx.arc(playerPx, playerPy, playerR, 0, Math.PI * 2)
       ctx.fill()

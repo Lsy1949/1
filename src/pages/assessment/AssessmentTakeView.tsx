@@ -22,16 +22,16 @@ interface ScaleMeta {
   category: 'mental' | 'career'
 }
 
-// --- 量表分类元信息（与 Vue 版一致） ---
+// --- 量表分类元信息（与 Vue 版一致；色值走 --cat-* 分类色，暗色自动切官方暗色档） ---
 const mentalScales: ScaleMeta[] = [
-  { key: 'phq9', name: '抑郁自评 PHQ-9', color: '#0052d9', category: 'mental' },
-  { key: 'gad7', name: '焦虑自评 GAD-7', color: '#059669', category: 'mental' },
-  { key: 'pss', name: '压力感知 PSS-10', color: '#d97706', category: 'mental' },
+  { key: 'phq9', name: '抑郁自评 PHQ-9', color: 'var(--brand-primary)', category: 'mental' },
+  { key: 'gad7', name: '焦虑自评 GAD-7', color: 'var(--cat-green)', category: 'mental' },
+  { key: 'pss', name: '压力感知 PSS-10', color: 'var(--cat-gold)', category: 'mental' },
 ]
 
 const careerScales: ScaleMeta[] = [
-  { key: 'riasec', name: '职业兴趣 RIASEC', color: '#7c3aed', category: 'career' },
-  { key: 'mbti', name: '性格倾向 MBTI', color: '#db2777', category: 'career' },
+  { key: 'riasec', name: '职业兴趣 RIASEC', color: 'var(--cat-purple)', category: 'career' },
+  { key: 'mbti', name: '性格倾向 MBTI', color: 'var(--cat-magenta)', category: 'career' },
 ]
 
 /**

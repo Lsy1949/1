@@ -346,7 +346,7 @@ export function SecuritySection() {
               fontFamily: "Georgia, 'Times New Roman', serif",
               fontSize: 22,
               fontWeight: 700,
-              color: 'var(--ink-900)',
+              color: 'var(--text-primary)',
             }}
           >
             {contactDialog.type === 'phone'
@@ -359,18 +359,18 @@ export function SecuritySection() {
         maskClosable={false}
         className={styles.contactDialog}
         styles={{
-          content: { borderRadius: 0, border: '1px solid var(--ink-900)', padding: 0 },
+          content: { borderRadius: 0, border: '1px solid var(--border-strong)', padding: 0 },
           header: {
             margin: 0,
             padding: '20px 24px',
-            borderBottom: '1px solid var(--ink-200)',
+            borderBottom: '1px solid var(--border-light)',
             background: 'transparent',
           },
           body: { padding: 24 },
           footer: {
             margin: 0,
             padding: '16px 24px 20px',
-            borderTop: '1px solid var(--ink-200)',
+            borderTop: '1px solid var(--border-light)',
           },
           /* 当前 antd 5.29（rc-dialog 9.6）ModalStyles 不含 close 键，
              关闭按钮定位退回 CSS 覆写（antd 6 起可迁入 styles.close） */

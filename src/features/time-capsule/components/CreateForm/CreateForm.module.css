@@ -13,8 +13,8 @@
 
 .formSection {
   padding: 28px 32px;
-  background: white;
-  border: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 18px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -55,7 +55,7 @@
 }
 
 .requiredMark {
-  color: #ff4d4f; /* stylelint-disable-line color-no-hex, function-allowed-list */
+  color: var(--danger-500);
   font-size: 16px;
   margin-right: 4px;
   font-weight: bold;
@@ -206,7 +206,7 @@
 }
 
 .methodOption.active .methodIcon {
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 .methodText {
@@ -216,7 +216,7 @@
 }
 
 .methodOption.active .methodText {
-  color: white;
+  color: var(--text-inverse, #fff);
   font-weight: 600;
 }
 
@@ -237,10 +237,10 @@
 }
 
 .wangEditorWrap {
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   border-radius: 12px;
   overflow: hidden;
-  background: white;
+  background: var(--bg-card);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -250,7 +250,7 @@
 }
 
 .wangToolbar {
-  border-bottom: 1px solid var(--mist-050) !important;
+  border-bottom: 1px solid var(--border-light) !important;
   background: var(--brand-primary-wash) !important;
   padding: 6px 8px !important;
 }
@@ -368,7 +368,7 @@
   width: 22px;
   height: 22px;
   background: color-mix(in srgb, var(--brand-primary) 80%, transparent);
-  color: white;
+  color: var(--text-inverse, #fff);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -433,7 +433,7 @@
   height: 48px;
   border-radius: 12px;
   background: transparent;
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -461,7 +461,7 @@
 .submitBtn {
   width: 100%;
   background: linear-gradient(135deg, var(--brand-primary), var(--color-info));
-  color: white;
+  color: var(--text-inverse, #fff);
   font-size: 13px;
   padding: 18px 0;
   border-radius: 14px;
@@ -480,8 +480,8 @@
 }
 
 .submitBtn:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--brand-primary-dark), var(--blue-600));
-  color: white;
+  background: linear-gradient(135deg, var(--brand-primary-dark), var(--brand-primary-deep, var(--color-info)));
+  color: var(--text-inverse, #fff);
   box-shadow: 0 10px 26px color-mix(in srgb, var(--brand-primary) 30%, transparent);
   transform: translateY(-2px);
 }
@@ -496,7 +496,7 @@
 
 .submitBtn:disabled {
   background: var(--brand-primary-soft);
-  color: white;
+  color: var(--text-inverse, #fff);
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -573,177 +573,59 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移，页面作用域 .time-capsule-page
-   为 pages 层 CapsuleCreateView 根类；原规则仅服务本组件，整体迁入；
-   同类多期叠加已合并为最终生效值）
+   暗色主题
+   基础规则已语义 token 化（--bg-card / --text-* / --border-light /
+   --brand-primary-wash 等），dark 下自动跟随 dark-mode.css 的变量重定义。
+   此处仅保留 dark 特有微调：主色提亮（--brand-primary-bright）、
+   半透明白色边框（卡片在深底上的层次感）与 disabled 态。
    ============================================================ */
-:global(html.dark .time-capsule-page) .formContainer {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-}
-
 :global(html.dark .time-capsule-page) .formSection {
   background: transparent !important;
   border-color: rgb(255, 255, 255, 0.06) !important;
 }
 
 :global(html.dark .time-capsule-page) .formSection:hover {
-  border-color: #4d9aff !important;
-}
-
-:global(html.dark .time-capsule-page) .sectionNum {
-  background: #0f172a !important;
-  border-color: #4d9aff !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .time-capsule-page) .sectionTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .time-capsule-page) .requiredMark {
-  color: #f87171 !important;
-}
-
-:global(html.dark .time-capsule-page) .optionalHint,
-:global(html.dark .time-capsule-page) .tipText,
-:global(html.dark .time-capsule-page) .hint {
-  color: #64748b !important;
-}
-
-:global(html.dark .time-capsule-page) .titleInput,
-:global(html.dark .time-capsule-page) .infoInput,
-:global(html.dark .time-capsule-page) .addressInput {
-  background: rgb(255, 255, 255, 0.04) !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
-  color: #f1f5f9 !important;
+  border-color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .time-capsule-page) .titleInput:focus,
-:global(html.dark .time-capsule-page) .infoInput:focus {
-  border-color: #4d9aff !important;
+:global(html.dark .time-capsule-page) .infoInput:focus,
+:global(html.dark .time-capsule-page) .datePickerRow:hover,
+:global(html.dark .time-capsule-page) .imageUploader:hover,
+:global(html.dark .time-capsule-page) .addImageBtn:hover,
+:global(html.dark .time-capsule-page) .emotionTag:hover {
+  border-color: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .time-capsule-page) .titleInput::placeholder,
-:global(html.dark .time-capsule-page) .infoInput::placeholder,
-:global(html.dark .time-capsule-page) .addressInput::placeholder {
-  color: #64748b !important;
-}
-
-:global(html.dark .time-capsule-page) .titleCount,
-:global(html.dark .time-capsule-page) .contentCount {
-  color: #64748b !important;
-}
-
-:global(html.dark .time-capsule-page) .datePickerRow {
-  background: rgb(255, 255, 255, 0.04) !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
-}
-
-:global(html.dark .time-capsule-page) .datePickerRow:hover {
-  border-color: #4d9aff !important;
-}
-
-:global(html.dark .time-capsule-page) .dateText {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .time-capsule-page) .arrow {
-  color: #64748b !important;
-}
-
-:global(html.dark .time-capsule-page) .methodOption {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-}
-
-:global(html.dark .time-capsule-page) .methodOption:hover,
-:global(html.dark .time-capsule-page) .methodOption.active {
-  background: rgb(77, 154, 255, 0.08) !important;
-  border-color: rgb(77, 154, 255, 0.2) !important;
-}
-
-:global(html.dark .time-capsule-page) .methodIcon {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .time-capsule-page) .methodText {
-  color: #cbd5e1 !important;
-}
-
-:global(html.dark .time-capsule-page) .methodOption.active .methodText {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .time-capsule-page) .imageUploader {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-}
-
-:global(html.dark .time-capsule-page) .imageUploader:hover {
-  border-color: #4d9aff !important;
-  background: #1a2a4a !important;
-}
-
+:global(html.dark .time-capsule-page) .methodIcon,
 :global(html.dark .time-capsule-page) .uploadIcon,
 :global(html.dark .time-capsule-page) .addIcon {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .time-capsule-page) .uploadText,
-:global(html.dark .time-capsule-page) .addText {
-  color: #94a3b8 !important;
+:global(html.dark .time-capsule-page) .methodOption.active {
+  background: var(--brand-primary-bright-bg) !important;
+  border-color: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .time-capsule-page) .imageItem {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
+:global(html.dark .time-capsule-page) .methodOption.active .methodIcon,
+:global(html.dark .time-capsule-page) .methodOption.active .methodText {
+  color: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .time-capsule-page) .deleteBtn {
-  background: rgb(239, 68, 68, 0.85) !important;
-  color: #fff !important;
+:global(html.dark .time-capsule-page) .methodOption:hover {
+  background: var(--brand-primary-bright-bg) !important;
+  border-color: var(--border-blue) !important;
 }
 
-:global(html.dark .time-capsule-page) .addImageBtn {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .time-capsule-page) .addImageBtn:hover {
-  border-color: #4d9aff !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .time-capsule-page) .emotionTag {
-  background: rgb(255, 255, 255, 0.04) !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
-  color: #cbd5e1 !important;
-}
-
-:global(html.dark .time-capsule-page) .emotionTag:hover,
 :global(html.dark .time-capsule-page) .emotionTag.active {
-  background: rgb(77, 154, 255, 0.1) !important;
-  border-color: rgb(77, 154, 255, 0.3) !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .time-capsule-page) .submitBtn {
-  background: #0052d9 !important;
-  color: #fff !important;
-  border-color: #0052d9 !important;
-}
-
-:global(html.dark .time-capsule-page) .submitBtn:hover:not(:disabled) {
-  background: #0042ad !important;
-  border-color: #0042ad !important;
+  background: var(--brand-primary-bright-bg) !important;
+  border-color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .time-capsule-page) .submitBtn:disabled {
-  background: #1e293b !important;
-  color: #64748b !important;
-  border-color: #1e293b !important;
+  background: var(--bg-mute) !important;
+  color: var(--text-faint) !important;
 }
 
 /* wang 编辑器深色适配（dark-mode.css 中 w-e- 内部类系列深色规则为死规则，未迁移） */

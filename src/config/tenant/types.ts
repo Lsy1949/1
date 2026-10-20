@@ -7,6 +7,8 @@
  * 接口路径暂定 GET /tenant/config（Q6 确认为公开接口）。
  */
 
+import type { PaletteKey, TenantThemeOverrides } from '@/styles/palette'
+
 /** 品牌：每个高校的独立标识 */
 export interface TenantBrand {
   /** 租户（高校）名称 */
@@ -19,7 +21,23 @@ export interface TenantBrand {
   copyright: string
 }
 
-/** 主题：primaryColor 为驱动源；深浅阶为非线性派生色，租户可按需覆盖 */
+/**
+ * 主题：三层定制模型
+ *
+ *  L1 · defaultPalette：从预置色板（PALETTES）中选一套作为租户默认。
+ *       用户可在偏好里覆盖（localStorage 带 tenantId 前缀），切租户不串。
+ *
+ *  L2 · themeOverrides：白名单语义 token 覆写（仅 --bg-* / --text-* /
+ *       --border-* / --shadow-* / --navbar-* / --brand-radius / --brand-font-family），
+ *       禁止覆盖底层色阶（--blue-300 等）以免破坏对比度系统。
+ *
+ *  L3 · 局部样式：业务方通过 [data-tenant] 作用域变量或组件 variant 实现，
+ *       禁止后端注入裸 CSS 字符串。
+ *
+ *  以下 primaryColor/darkColor/... 七档是 L1 palette 计算后的"派生结果"，
+ *  保留供 antd token 桥接使用（TenantProvider.useTenantTokens）。
+ *  后端字段可省略，前端根据 defaultPalette 自动填充。
+ */
 export interface TenantTheme {
   /** 品牌主色（驱动 Element Plus / Vant 全部色阶） */
   primaryColor: string
@@ -39,6 +57,10 @@ export interface TenantTheme {
   radius: string
   /** 全局字体（空字符串 = 系统默认） */
   fontFamily: string
+  /** L1 · 租户默认色板 */
+  defaultPalette?: PaletteKey
+  /** L2 · 白名单语义 token 覆写 */
+  themeOverrides?: TenantThemeOverrides
 }
 
 /** 业务资源：租户可自定义的静态素材 */

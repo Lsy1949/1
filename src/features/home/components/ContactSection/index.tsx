@@ -2,7 +2,7 @@
  * 【business】ContactSection —— 联系我们区块（信息栏 + 留言表单）
  * - 表单校验/提交反馈完全内聚，无路由/store 依赖，无需对外回调
  * - 校验文案由 t() 驱动，语言切换实时更新
- * - 输入框外观由 HomePageView 嵌套 ConfigProvider 的 Input token 注入
+ * - 输入框外观由 src/main.tsx 全局 Input token 提供；本页差异仅在 .techForm 覆写 --input-bg
  */
 import { App, Button, Col, Form, Input, Row } from 'antd'
 import { MessageOutlined, PhoneOutlined, RightOutlined } from '@ant-design/icons'

@@ -4,7 +4,7 @@
 
 /* ============ 杂志区块通用 ============ */
 .magSection {
-  border-top: 1px solid var(--ink-200);
+  border-top: 1px solid var(--border-light);
   padding: 48px 0 40px;
 }
 
@@ -34,7 +34,7 @@
   margin: 0 0 8px;
   font-size: 26px;
   font-weight: 700;
-  color: var(--ink-900);
+  color: var(--text-heading);
   line-height: 1.2;
   letter-spacing: -0.3px;
   font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
@@ -43,7 +43,7 @@
 .secDesc {
   margin: 0;
   font-size: 14px;
-  color: var(--ink-500);
+  color: var(--text-muted);
   line-height: 1.6;
   max-width: 540px;
 }
@@ -77,14 +77,14 @@
 
 .fieldRow {
   padding: 18px 24px 18px 0;
-  border-bottom: 1px solid var(--mist-075);
+  border-bottom: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
 .fieldRow:not(:nth-child(3n)) {
-  border-right: 1px solid var(--mist-075);
+  border-right: 1px solid var(--border-light);
   padding-right: 24px;
 }
 
@@ -104,13 +104,13 @@
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
 .fieldValue {
   margin: 0;
   font-size: 15px;
-  color: var(--ink-800);
+  color: var(--text-primary);
   line-height: 1.5;
   font-weight: 500;
 }
@@ -125,7 +125,7 @@
 
 .fieldValue.prose {
   font-weight: 400;
-  color: var(--ink-700);
+  color: var(--text-regular);
   line-height: 1.7;
   white-space: pre-wrap;
 }
@@ -177,7 +177,7 @@
   gap: 12px;
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid var(--mist-075);
+  border-top: 1px solid var(--border-light);
 }
 
 .solidBtn {
@@ -257,7 +257,7 @@
   }
 
   .fieldRow:nth-child(odd) {
-    border-right: 1px solid var(--mist-075);
+    border-right: 1px solid var(--border-light);
     padding-right: 24px;
   }
 
@@ -327,82 +327,57 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移后的本组件独占有效值。tagChip
-   原在 token 层与 hex 层各一份，此处取后层最终生效值；form-actions
-   与 solid-btn 原文即为合并选择器，保留合并写法等价迁移）
+   暗色主题：背景/文字/边框换色已由语义变量自动跟随，仅保留暗色下
+   必要的强调色规则与半透明白描边
    ============================================================ */
-:global(html.dark) .magSection {
-  border-color: #1e293b !important;
-}
-
 :global(html.dark) .secNum {
-  color: #4d9aff !important;
-}
-
-:global(html.dark) .secTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark) .secDesc {
-  color: #94a3b8 !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .secToggle {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
   background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
+  border-color: rgb(255 255 255 / 0.08) !important;
 }
 
 :global(html.dark) .secToggle:hover {
-  background: #1a2a4a !important;
-  border-color: #4d9aff !important;
+  background: var(--bg-blue-tint) !important;
+  border-color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .fieldRow {
-  border-color: rgb(255, 255, 255, 0.06) !important;
-}
-
-:global(html.dark) .fieldLabel {
-  color: #64748b !important;
-}
-
-:global(html.dark) .fieldValue {
-  color: #f1f5f9 !important;
+  border-color: rgb(255 255 255 / 0.06) !important;
 }
 
 :global(html.dark) .fieldValue.strong {
-  color: #4d9aff !important;
-}
-
-:global(html.dark) .fieldValue.prose {
-  color: #cbd5e1 !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .tagChip {
-  background: rgb(77, 154, 255, 0.08) !important;
-  color: #4d9aff !important;
-  border-color: rgb(77, 154, 255, 0.15) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 8%, transparent) !important;
+  color: var(--brand-primary-bright) !important;
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 15%, transparent) !important;
 }
 
 :global(html.dark) .formActions,
 :global(html.dark) .solidBtn {
-  background: #0052d9 !important;
-  color: #fff !important;
-  border-color: #0052d9 !important;
+  background: var(--brand-primary) !important;
+  color: var(--text-inverse, #fff) !important;
+  border-color: var(--brand-primary) !important;
 }
 
 :global(html.dark) .solidBtn:hover {
-  background: #0042ad !important;
-  border-color: #0042ad !important;
+  background: var(--brand-primary-dark) !important;
+  border-color: var(--brand-primary-dark) !important;
 }
 
 :global(html.dark) .tagAdd {
   background: transparent !important;
-  color: #4d9aff !important;
-  border-color: #334155 !important;
+  color: var(--brand-primary-bright) !important;
+  border-color: var(--border-regular) !important;
 }
 
 :global(html.dark) .tagAdd:hover {
-  background: #1a2a4a !important;
-  border-color: #4d9aff !important;
+  background: var(--bg-blue-tint) !important;
+  border-color: var(--brand-primary-bright) !important;
 }

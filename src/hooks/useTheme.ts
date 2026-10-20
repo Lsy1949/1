@@ -1,115 +1,198 @@
-import { useSyncExternalStore } from 'react'
-
-export type ThemeMode = 'light' | 'dark' | 'auto'
+import { useEffect, useState } from 'react'
+import { DEFAULT_PALETTE, isPaletteKey, type PaletteKey } from '@/styles/palette'
 
 /**
- * 主题切换（React 版，等价 VueUse useColorMode 方案）。
+ * 主题管理（palette + mode 两维）
  *
- * - 用户偏好持久化沿用 storageKey 'theme-mode'（裸字符串，与 useColorMode
- *   的 useStorage 落盘格式一致），既有用户的偏好无缝继承
- * - 'auto' 表示跟随系统深色偏好；实际深色 = 'dark' 或 ('auto' 且系统深色)
- * - 实际深色变化自动切换 html.dark（dark-mode.css 体系消费），
- *   useColorMode 的 modes 全空等价：不向 html 挂任何其他 class/属性
- * - 模块级单例：全应用共享同一份偏好状态（与 Vue 版一致，无需 Provider）
+ *  - palette：用户偏好 / 租户默认，二选一；localStorage 按 tenantId 隔离
+ *  - mode：light / dark / system，localStorage 全局共用
+ *
+ * localStorage 键位：
+ *  - theme:mode                                全局明暗偏好
+ *  - theme:palette:{tenantId}                  当前租户下的用户偏好
+ *  - tenant:brand-primary                      防 FOUC 兜底（同租户内）
+ *
+ * 监听 storage 事件，跨标签页同步。
  */
 
-const STORAGE_KEY = 'theme-mode'
+export type ThemeMode = 'light' | 'dark' | 'system'
 
-/** 读取持久化偏好（只接受合法值，脏数据回退 'auto'） */
-function readStoredMode(): ThemeMode {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored === 'light' || stored === 'dark' || stored === 'auto') return stored
-  } catch {
-    /* 读取失败按默认偏好 */
+const MODE_KEY = 'theme:mode'
+const PALETTE_KEY_PREFIX = 'theme:palette:'
+
+function paletteKey(tenantId: string): string {
+  return PALETTE_KEY_PREFIX + tenantId
+}
+
+// ---------- 读取 ----------
+
+function readMode(): ThemeMode {
+  const v = localStorage.getItem(MODE_KEY)
+  // 'auto' 为旧值，统一规约到 'system'
+  if (v === 'auto') return 'system'
+  return v === 'light' || v === 'dark' || v === 'system' ? v : 'system'
+}
+
+/** 读用户偏好；无则返回 null（调用方决定 fallback 到租户默认或全局默认） */
+function readUserPalette(tenantId: string): PaletteKey | null {
+  const v = localStorage.getItem(paletteKey(tenantId))
+  return isPaletteKey(v) ? v : null
+}
+
+// ---------- 系统暗色监听 ----------
+
+const media = window.matchMedia('(prefers-color-scheme: dark)')
+
+function systemDark(): boolean {
+  return media.matches
+}
+
+function isDarkNow(mode: ThemeMode): boolean {
+  return mode === 'dark' || (mode === 'system' && systemDark())
+}
+
+// ---------- 应用 ----------
+
+function applyModeDom(mode: ThemeMode): void {
+  const dark = isDarkNow(mode)
+  const root = document.documentElement
+  root.classList.toggle('dark', dark)
+  root.style.colorScheme = dark ? 'dark' : 'light'
+}
+
+function applyPaletteDom(palette: PaletteKey): void {
+  const root = document.documentElement
+  if (root.dataset.palette !== palette) {
+    root.dataset.palette = palette
   }
-  return 'auto'
 }
 
-// ---------- 模块级单例状态（对应 Vue 版模块顶层的 colorMode / systemDark） ----------
+// ---------- 模块级共享状态 ----------
 
-let themeModeValue: ThemeMode = readStoredMode()
+let currentMode: ThemeMode = readMode()
+let currentTenantId = 'default'
+let currentPalette: PaletteKey = readUserPalette(currentTenantId) ?? DEFAULT_PALETTE
 
-// 系统深色偏好（模块顶层仅执行一次，无重复监听问题）
-const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-let systemDark = mediaQuery.matches
-
-const modeListeners = new Set<() => void>()
-const systemListeners = new Set<() => void>()
-
-/** 当前是否实际为深色（auto 时跟随系统），并同步 html.dark */
-function applyThemeClass(): void {
-  const dark = themeModeValue === 'dark' || (themeModeValue === 'auto' && systemDark)
-  document.documentElement.classList.toggle('dark', dark)
+function applyAllDom(): void {
+  applyModeDom(currentMode)
+  applyPaletteDom(currentPalette)
 }
 
-function emitModeChange(): void {
-  for (const listener of modeListeners) listener()
+applyAllDom()
+
+// ---------- 监听器（React 订阅） ----------
+
+type Listener = () => void
+const listeners = new Set<Listener>()
+
+function emit(): void {
+  listeners.forEach((fn) => fn())
 }
 
-function setThemeModeValue(mode: ThemeMode): void {
-  if (mode === themeModeValue) return
-  themeModeValue = mode
-  try {
-    localStorage.setItem(STORAGE_KEY, mode)
-  } catch {
-    /* localStorage 不可用时仅保留内存偏好 */
+// 系统主题跟随
+media.addEventListener('change', () => {
+  if (currentMode === 'system') {
+    applyModeDom(currentMode)
+    emit()
   }
-  applyThemeClass()
-  emitModeChange()
-}
-
-function onSystemChange(e: MediaQueryListEvent): void {
-  systemDark = e.matches
-  applyThemeClass()
-  for (const listener of systemListeners) listener()
-}
-
-mediaQuery.addEventListener('change', onSystemChange)
-
-// 跨标签页同步（VueUse useStorage 的等价行为：他页改偏好，本页跟随）
-window.addEventListener('storage', (e: StorageEvent) => {
-  if (e.key !== STORAGE_KEY) return
-  const next = e.newValue
-  if (next !== 'light' && next !== 'dark' && next !== 'auto') return
-  setThemeModeValue(next)
 })
 
-// 启动时立即应用一次（对应 Vue 版 watch(isDark, ..., { immediate: true })）
-applyThemeClass()
-
-// ---------- useSyncExternalStore 订阅接口 ----------
-
-function subscribeMode(listener: () => void): () => void {
-  modeListeners.add(listener)
-  return () => {
-    modeListeners.delete(listener)
+// 跨标签页同步
+window.addEventListener('storage', (e) => {
+  if (!e.key) return
+  if (e.key === MODE_KEY) {
+    currentMode = readMode()
+    applyModeDom(currentMode)
+    emit()
+  } else if (e.key === paletteKey(currentTenantId)) {
+    const next = readUserPalette(currentTenantId) ?? currentPalette
+    if (next !== currentPalette) {
+      currentPalette = next
+      applyPaletteDom(currentPalette)
+      emit()
+    }
   }
-}
+})
 
-function getModeSnapshot(): ThemeMode {
-  return themeModeValue
-}
+// ---------- 公开 API ----------
 
-function subscribeSystem(listener: () => void): () => void {
-  systemListeners.add(listener)
-  return () => {
-    systemListeners.delete(listener)
-  }
-}
-
-function getSystemSnapshot(): boolean {
-  return systemDark
+export function setMode(mode: ThemeMode): void {
+  if (currentMode === mode) return
+  currentMode = mode
+  localStorage.setItem(MODE_KEY, mode)
+  applyModeDom(mode)
+  emit()
 }
 
 /**
- * 与 Vue 版调用形态一致：const { isDark, themeMode, setThemeMode } = useTheme()
- * 差异仅一处：themeMode 由可写 ref 变为只读值 + setThemeMode(mode) 写入
- * （Vue 侧切换器 UI 也统一走 setThemeMode）。
+ * 用户主动切换 palette（UI 操作）。
+ *  - 写入 localStorage（按 tenantId 隔离）
+ *  - 更新 DOM 与 antd token（通过 emit 通知 AntdThemeBridge）
  */
-export function useTheme() {
-  const themeMode = useSyncExternalStore(subscribeMode, getModeSnapshot)
-  const systemDarkSnapshot = useSyncExternalStore(subscribeSystem, getSystemSnapshot)
-  const isDark = themeMode === 'dark' || (themeMode === 'auto' && systemDarkSnapshot)
-  return { isDark, themeMode, setThemeMode: setThemeModeValue }
+export function setUserPalette(palette: PaletteKey, tenantId?: string): void {
+  const tid = tenantId ?? currentTenantId
+  if (tid === currentTenantId && currentPalette === palette) return
+
+  localStorage.setItem(paletteKey(tid), palette)
+
+  if (tid === currentTenantId) {
+    currentPalette = palette
+    applyPaletteDom(palette)
+    emit()
+  }
+}
+
+/**
+ * 租户初始化时调用：设定当前租户 + 计算生效 palette
+ *
+ * 优先级：用户偏好（localStorage） > 租户默认 > 全局默认 'blue'
+ *
+ * 注意：此函数**不写入 localStorage**，仅更新内存与 DOM。
+ * 用户后续若调用 setUserPalette 才会持久化。
+ */
+export function setTenantPaletteScope(tenantId: string, tenantDefault?: PaletteKey): void {
+  currentTenantId = tenantId
+  const userPref = readUserPalette(tenantId)
+  const next = userPref ?? tenantDefault ?? DEFAULT_PALETTE
+  if (next !== currentPalette) {
+    currentPalette = next
+    applyPaletteDom(next)
+    emit()
+  }
+}
+
+// ---------- React Hook ----------
+
+export interface ThemeState {
+  mode: ThemeMode
+  palette: PaletteKey
+  isDark: boolean
+  setMode: (mode: ThemeMode) => void
+  setPalette: (palette: PaletteKey) => void
+  /** @deprecated 兼容旧 API，使用 mode 代替。当前 mode === 'system' 时返回 'auto' 保持业务兼容 */
+  themeMode: ThemeMode | 'auto'
+  /** @deprecated 兼容旧 API，使用 setMode 代替。'auto' 自动规约到 'system' */
+  setThemeMode: (mode: ThemeMode | 'auto') => void
+}
+
+export function useTheme(): ThemeState {
+  // 用 useState + 手动订阅，避免 useSyncExternalStore 在模块单例下的边界问题
+  const [, force] = useState(0)
+  useEffect(() => {
+    const rerender = (): void => force((n) => n + 1)
+    listeners.add(rerender)
+    return () => {
+      listeners.delete(rerender)
+    }
+  }, [])
+
+  return {
+    mode: currentMode,
+    palette: currentPalette,
+    isDark: isDarkNow(currentMode),
+    setMode,
+    setPalette: (p: PaletteKey) => setUserPalette(p),
+    themeMode: currentMode === 'system' ? 'auto' : currentMode,
+    setThemeMode: (m) => setMode(m === 'auto' ? 'system' : m),
+  }
 }

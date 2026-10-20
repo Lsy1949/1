@@ -5,7 +5,7 @@
   margin: 0 auto;
   padding: 40px 56px 32px;
   position: relative;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
   z-index: 1;
 }
 
@@ -14,7 +14,7 @@
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: var(--ink-500);
+  color: var(--text-muted);
   cursor: pointer;
   transition: color 0.2s;
   letter-spacing: 0.5px;
@@ -29,7 +29,7 @@
   display: block;
   font-size: 12px;
   letter-spacing: 3px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 600;
   margin-bottom: 16px;
   text-transform: uppercase;
@@ -38,7 +38,7 @@
 .headerTitle {
   font-size: clamp(40px, 6vw, 64px);
   font-weight: 800;
-  color: var(--ink-900);
+  color: var(--text-heading);
   margin: 0 0 14px;
   letter-spacing: -2px;
   line-height: 1.02;
@@ -53,7 +53,7 @@
 
 .headerSubtitle {
   font-size: 13px;
-  color: var(--ink-500);
+  color: var(--text-muted);
   letter-spacing: 0.5px;
   margin: 0;
 }
@@ -73,22 +73,10 @@
    暗色主题（自 dark-mode.css 迁移，页面作用域 .time-capsule-page
    为 pages 层 CapsuleCreateView 根类；原规则仅服务本组件，整体迁入）
    ============================================================ */
-:global(html.dark .time-capsule-page) .headerBack {
-  color: #94a3b8 !important;
-}
-
 :global(html.dark .time-capsule-page) .headerBack:hover {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .time-capsule-page) .headerEyebrow {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .time-capsule-page) .headerTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .time-capsule-page) .headerSubtitle {
-  color: #94a3b8 !important;
+  color: var(--brand-primary-bright) !important;
 }

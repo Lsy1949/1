@@ -31,36 +31,29 @@ const TAB_QUERY_MAP: Record<string, string> = {
 
 /**
  * counseling 作用域组件 token：
- * 页签「极简文字」外观（原 CounselingCenterView.css 的 .ant-tabs-* 覆写）与
- * booking/faq 表单「科技蓝输入框」外观（原 BookingPanel.module.css /
- * FaqPanel.module.css 的 .ant-input* 覆写）收敛为嵌套 ConfigProvider
- * 官方注入，仅作用于本页。字重/字距/过渡、faq 搜索框 12px 圆角（与 booking
- * 的 10px 不同）等差异项仍保留在组件 css。
+ * 页签「极简文字」外观（原 CounselingCenterView.css 的 .ant-tabs-* 覆写）
+ * 收敛为嵌套 ConfigProvider 官方注入，仅作用于本页。
+ * booking/faq 表单「科技蓝输入框」外观已统一由 src/main.tsx 的全局 Input token
+ * 提供，本页只保留更紧凑的形态差异（paddingInline 14）。字重/字距、faq 搜索框
+ * 12px 圆角（与 booking 的 10px 不同）等差异项仍保留在组件 css。
  */
 const counselingThemeComponents = {
   Tabs: {
     titleFontSize: 14,
-    itemColor: 'var(--ink-400)',
-    itemHoverColor: 'var(--navy-950)',
-    itemSelectedColor: 'var(--navy-950)',
+    itemColor: 'var(--text-faint)',
+    itemHoverColor: 'var(--text-heading)',
+    itemSelectedColor: 'var(--text-heading)',
     horizontalItemPadding: '0 0 14px',
     horizontalItemGutter: 32,
     horizontalMargin: '0 0 40px 0',
-    inkBarColor: 'var(--navy-950)',
+    inkBarColor: 'var(--text-heading)',
   },
+  /* 底色 / 描边 / hover / active / padding / 过渡已由 src/main.tsx 全局 Input token 提供；
+     这里仅保留本页更紧凑的形态差异（paddingInline 14 < 全局 15） */
   Input: {
     borderRadius: 10,
-    colorBgContainer: 'var(--slate-50)',
-    colorBorder: 'var(--slate-200)',
-    colorText: 'var(--ink-800)',
+    colorText: 'var(--text-regular)',
     paddingInline: 14,
-    paddingBlock: 8,
-    hoverBorderColor: 'var(--brand-primary)',
-    hoverBg: '#ffffff',
-    activeBorderColor: 'var(--brand-primary)',
-    activeBg: '#ffffff',
-    activeShadow: '0 0 0 3px color-mix(in srgb, var(--brand-primary) 10%, transparent)',
-    motionDurationMid: '0.25s',
   },
 }
 

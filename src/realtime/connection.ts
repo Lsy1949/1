@@ -74,8 +74,11 @@ function registerStateHandlers(conn: HubConnection): void {
 export function getConnection(): HubConnection {
   if (connection) return connection
 
+  // 空值降级由调用侧（connect 前）负责，这里只做类型收窄：
+  // 未配置时传入空串，signalr 会给出与传 undefined 相同的 "Url cannot be empty" 报错
+  const hubUrl = import.meta.env.VITE_SIGNALR_HUB_URL ?? ''
   connection = new HubConnectionBuilder()
-    .withUrl(import.meta.env.VITE_SIGNALR_HUB_URL, {
+    .withUrl(hubUrl, {
       accessTokenFactory: () => getUserStore().token,
     })
     .withAutomaticReconnect([0, 2000, 5000, 10000])

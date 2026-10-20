@@ -24,28 +24,27 @@ import './SettingsView.css'
  * 不可 token 化的字重/字距/大写变换仍保留在区块组件 module css（见 SecuritySection.module.css）。
  */
 const settingsThemeComponents = {
+  /* 描边 / hover / focus 描边色已由 src/main.tsx 全局 Input token 提供，
+     这里仅保留页面专属差异：直角 + 无聚焦光圈 */
   Input: {
     borderRadius: 0,
-    colorBorder: 'var(--ink-300)',
-    hoverBorderColor: 'var(--brand-primary)',
-    activeBorderColor: 'var(--brand-primary)',
     activeShadow: 'none',
   },
   Select: {
     borderRadius: 0,
-    colorBorder: 'var(--ink-300)',
+    colorBorder: 'var(--border-strong)',
     hoverBorderColor: 'var(--brand-primary)',
     activeBorderColor: 'var(--brand-primary)',
     activeShadow: 'none',
   },
   DatePicker: {
     borderRadius: 0,
-    colorBorder: 'var(--ink-300)',
+    colorBorder: 'var(--border-strong)',
     hoverBorderColor: 'var(--brand-primary)',
     activeBorderColor: 'var(--brand-primary)',
     activeShadow: 'none',
   },
-  Form: { itemMarginBottom: 0, labelFontSize: 12, labelColor: 'var(--ink-700)' },
+  Form: { itemMarginBottom: 0, labelFontSize: 12, labelColor: 'var(--text-regular)' },
 }
 
 export default function SettingsView() {

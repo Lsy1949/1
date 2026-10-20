@@ -263,7 +263,7 @@ export function CreateForm({ onPublished }: CreateFormProps) {
         /* 原 .success-modal .ant-modal-content/header 结构覆写 token 化 */
         styles={{
           content: { borderRadius: 16 },
-          header: { borderBottom: '1px solid var(--mist-050)', paddingBottom: 16 },
+          header: { borderBottom: '1px solid var(--border-light)', paddingBottom: 16 },
         }}
       >
         <div className={styles.successDialogContent}>

@@ -46,15 +46,15 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         }}
       >
         <h1 style={{ fontSize: 20, margin: 0 }}>页面出了点问题</h1>
-        <p style={{ color: '#64748b', margin: 0 }}>{error.message}</p>
+        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{error.message}</p>
         <button
           type="button"
           onClick={this.handleRetry}
           style={{
             padding: '8px 24px',
             borderRadius: 8,
-            border: '1px solid #0052d9',
-            color: '#0052d9',
+            border: '1px solid var(--brand-primary)',
+            color: 'var(--brand-primary)',
             background: 'transparent',
             cursor: 'pointer',
           }}

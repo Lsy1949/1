@@ -10,7 +10,7 @@
 .moduleTitle {
   font-size: clamp(22px, 2.2vw, 30px);
   font-weight: 900;
-  color: var(--navy-950);
+  color: var(--text-heading);
   margin: 0;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -18,7 +18,7 @@
 
 .articleCount {
   font-size: 0.85rem;
-  color: var(--ink-500);
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -30,10 +30,10 @@
 .spotlightCard {
   display: grid;
   grid-template-columns: 1.3fr 1fr;
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
   overflow: hidden;
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -66,7 +66,7 @@
   grid-template-columns: 1fr;
   position: relative;
   padding: 0;
-  background: var(--neutral-025);
+  background: var(--bg-soft);
 }
 
 .spotlightQuoteDeco {
@@ -76,7 +76,7 @@
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 200px;
   font-weight: 900;
-  color: color-mix(in srgb, var(--ink-900) 5%, transparent);
+  color: color-mix(in srgb, var(--text-heading) 5%, transparent);
   line-height: 1;
   pointer-events: none;
   user-select: none;
@@ -87,7 +87,7 @@
   padding: 72px 64px;
   position: relative;
   z-index: 1;
-  background: var(--neutral-025);
+  background: var(--bg-soft);
 }
 
 .spotlightCard.noCover .spotlightContent::before {
@@ -96,7 +96,7 @@
 
 .spotlightCard.noCover .spotlightTitle {
   font-size: clamp(32px, 4vw, 52px);
-  background: linear-gradient(135deg, var(--ink-900), var(--ink-600));
+  background: linear-gradient(135deg, var(--text-heading), var(--text-secondary));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -115,8 +115,8 @@
   top: 24px;
   left: 24px;
   z-index: 2;
-  background: color-mix(in srgb, white 95%, transparent);
-  color: var(--navy-950);
+  background: var(--bg-overlay);
+  color: var(--text-heading);
   padding: 6px 12px;
   font-size: 0.7rem;
   font-weight: 800;
@@ -129,7 +129,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: white;
+  background: var(--bg-card);
   position: relative;
 }
 
@@ -140,7 +140,11 @@
   left: 0;
   width: 3px;
   height: 100%;
-  background: linear-gradient(180deg, var(--brand-primary), var(--color-info));
+  background: linear-gradient(
+    180deg,
+    var(--brand-primary),
+    color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff))
+  );
 }
 
 .spotlightMeta {
@@ -159,7 +163,7 @@
 }
 
 .readBadge {
-  color: var(--ink-500);
+  color: var(--text-muted);
   font-size: 0.75rem;
   font-weight: 500;
 }
@@ -168,20 +172,20 @@
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background-color: var(--ink-300);
+  background-color: var(--text-faint);
 }
 
 .spotlightTitle {
   font-size: clamp(26px, 2.6vw, 38px);
   font-weight: 900;
   line-height: 1.12;
-  color: var(--navy-950);
+  color: var(--text-heading);
   margin: 0 0 20px;
   letter-spacing: -0.03em;
 }
 
 .spotlightDesc {
-  color: var(--ink-600);
+  color: var(--text-secondary);
   line-height: 1.7;
   margin: 0 0 36px;
   font-size: 1rem;
@@ -197,7 +201,7 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 28px;
-  border-top: 1px solid var(--slate-100);
+  border-top: 1px solid var(--border-light);
   gap: 16px;
 }
 
@@ -220,19 +224,19 @@
 
 .authorName {
   font-weight: 700;
-  color: var(--ink-900);
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 
 .authorTitle {
   font-size: 0.72rem;
-  color: var(--ink-500);
+  color: var(--text-muted);
   font-weight: 500;
 }
 
 .readMore {
-  background: var(--navy-950);
-  color: white;
+  background: var(--brand-primary);
+  color: var(--text-inverse, #fff);
   border: none;
   padding: 12px 24px;
   border-radius: 8px;
@@ -247,7 +251,7 @@
 }
 
 .readMore:hover {
-  background: var(--brand-primary);
+  background: var(--brand-primary-dark);
   transform: translateX(4px);
 }
 
@@ -276,17 +280,8 @@
   }
 }
 
-/* ===== 暗色主题（自 dark-mode.css 迁移，作用域为页面根类 article-center；
-   spotlight- 系列取三期「卡片融入背景」覆盖后的最终生效值） ===== */
-:global(html.dark .article-center) .moduleTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .article-center) .articleCount {
-  color: #64748b !important;
-}
-
-/* 卡片基态与 hover 均被三期覆盖层覆盖，取三期透明基态 + hover 最终值 */
+/* ===== 暗色主题：颜色换色已由语义变量自动跟随，此处仅保留
+   「卡片融入背景」这一暗色专用视觉与深色底上的主色提亮 ===== */
 :global(html.dark .article-center) .spotlightCard {
   background: transparent !important;
   border-color: transparent !important;
@@ -294,9 +289,9 @@
 }
 
 :global(html.dark .article-center) .spotlightCard:hover {
-  background: rgb(77, 154, 255, 0.04) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
   border-color: transparent !important;
-  border-bottom-color: rgb(77, 154, 255, 0.2) !important;
+  border-bottom-color: color-mix(in srgb, var(--brand-primary-bright) 20%, transparent) !important;
   box-shadow: none !important;
   transform: none !important;
 }
@@ -307,42 +302,6 @@
   background: transparent !important;
 }
 
-:global(html.dark .article-center) .spotlightTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .article-center) .spotlightDesc {
-  color: #94a3b8 !important;
-}
-
-/* category-tag / read-badge 与 collection-footer 同组规则（dark-mode.css 二期） */
-:global(html.dark .article-center) .categoryTag,
-:global(html.dark .article-center) .readBadge {
-  color: #64748b !important;
-}
-
-/* .dot 为跨组件共用类：color 取 article-center 作用域规则，background 走全局
-   html.dark .dot（dark-mode.css 保留），此处加等价局部兜底防全局规则日后移除 */
-:global(html.dark .article-center) .dot {
-  color: #64748b !important;
-}
-
-:global(html.dark) .dot {
-  background: #1e2b3a !important;
-}
-
-:global(html.dark .article-center) .authorName {
-  color: #e2e8f0 !important;
-}
-
-:global(html.dark .article-center) .authorTitle {
-  color: #64748b !important;
-}
-
-:global(html.dark .article-center) .readMore {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .article-center) .readMore:hover {
-  color: #80b3ff !important;
+:global(html.dark .article-center) .categoryTag {
+  color: var(--brand-primary-bright) !important;
 }

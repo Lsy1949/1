@@ -8,7 +8,7 @@
 /* 个人信息 · 编辑式横向数据栏 */
 .profileEditorial {
   padding: 28px 0 24px;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .profileStats {
@@ -32,13 +32,13 @@
 }
 
 .profileStat.level .psNum {
-  color: var(--brand-primary);
+  color: var(--brand-primary-bright);
 }
 
 .psNum {
   font-size: clamp(28px, 3.4vw, 40px);
   font-weight: 800;
-  color: var(--navy-950);
+  color: var(--text-heading);
   line-height: 1;
   letter-spacing: -1px;
   font-variant-numeric: tabular-nums;
@@ -46,7 +46,7 @@
 
 .psLabel {
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-muted);
   font-weight: 600;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -54,7 +54,7 @@
 
 .profileDivider {
   width: 1px;
-  background: var(--mist-050);
+  background: var(--border-light);
   align-self: stretch;
 }
 
@@ -65,7 +65,7 @@
   gap: 10px;
   margin-top: 24px;
   font-size: 13px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
 }
 
 .pmItem {
@@ -77,11 +77,11 @@
 
 .pmItem :global(.anticon) {
   font-size: 13px;
-  color: var(--ink-400);
+  color: var(--text-muted);
 }
 
 .pmSep {
-  color: var(--ink-300);
+  color: var(--text-faint);
 }
 
 .levelBarWrap {
@@ -94,20 +94,24 @@
 .levelBarTrack {
   flex: 1;
   height: 4px;
-  background: var(--slate-100);
+  background: var(--bg-mute);
   border-radius: 0;
   overflow: hidden;
 }
 
 .levelBarFill {
   height: 100%;
-  background: linear-gradient(to right, var(--brand-primary), var(--color-info));
+  background: linear-gradient(
+    to right,
+    var(--brand-primary),
+    color-mix(in srgb, var(--brand-primary) 65%, var(--text-inverse, #fff))
+  );
   transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .levelBarPct {
   font-size: 12px;
-  color: var(--brand-primary);
+  color: var(--brand-primary-bright);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.5px;
@@ -128,7 +132,7 @@
   gap: 8px;
   font-size: 18px;
   font-weight: 700;
-  color: var(--slate-800);
+  color: var(--text-heading);
   margin: 0;
   letter-spacing: -0.2px;
 }
@@ -139,7 +143,7 @@
 
 .badgesCount {
   font-size: 13px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
@@ -165,7 +169,7 @@
   top: 24px;
   bottom: -16px;
   width: 2px;
-  background: var(--mist-050);
+  background: var(--border-light);
 }
 
 .timelineItem:last-child::before {
@@ -176,24 +180,43 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 3px solid white;
+  border: 3px solid var(--bg-card);
   flex-shrink: 0;
   margin-top: 18px;
   z-index: 1;
-  box-shadow: 0 0 0 2px var(--mist-050);
+  box-shadow: 0 0 0 2px var(--border-light);
 }
 
 /* dot- 为运行时动态等级类（协议类，保留字面量，经 :global 挂接） */
-.timelineDot:global(.dot-success) { background: var(--success-600); box-shadow: 0 0 0 2px #d1fae5; }
-.timelineDot:global(.dot-info) { background: var(--brand-primary); box-shadow: 0 0 0 2px var(--blue-100); }
-.timelineDot:global(.dot-warning) { background: var(--warning-600); box-shadow: 0 0 0 2px var(--warning-100); }
-.timelineDot:global(.dot-danger) { background: var(--danger-500); box-shadow: 0 0 0 2px var(--danger-100); }
-.timelineDot:global(.dot-primary) { background: var(--violet-600); box-shadow: 0 0 0 2px var(--violet-100); }
+.timelineDot:global(.dot-success) {
+  background: var(--status-success);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--status-success) 25%, transparent);
+}
+
+.timelineDot:global(.dot-info) {
+  background: var(--brand-primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand-primary) 20%, transparent);
+}
+
+.timelineDot:global(.dot-warning) {
+  background: var(--status-warning);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--status-warning) 25%, transparent);
+}
+
+.timelineDot:global(.dot-danger) {
+  background: var(--status-danger);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--status-danger) 22%, transparent);
+}
+
+.timelineDot:global(.dot-primary) {
+  background: color-mix(in srgb, var(--brand-primary-bright) 60%, var(--status-info));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--status-info) 22%, transparent);
+}
 
 .timelineCard {
   flex: 1;
-  background: white;
-  border: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 14px;
   padding: 18px 22px;
   transition: all 0.3s ease;
@@ -215,7 +238,7 @@
 .timelineTitle {
   font-size: 15px;
   font-weight: 700;
-  color: var(--slate-800);
+  color: var(--text-heading);
 }
 
 .timelineDate {
@@ -223,7 +246,7 @@
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -238,12 +261,12 @@
 .timelineScore {
   font-size: 13px;
   font-weight: 700;
-  color: var(--brand-primary);
+  color: var(--brand-primary-bright);
 }
 
 .timelineResultTitle {
   font-size: 13px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
 }
 
 .timelineActions {
@@ -261,8 +284,8 @@
 
 /* 空状态 */
 .emptyState {
-  background: white;
-  border: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 16px;
   padding: 48px 24px;
 }
@@ -278,8 +301,8 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  background: white;
-  border: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 14px;
   padding: 18px 20px;
   transition: all 0.3s ease;
@@ -289,7 +312,7 @@
 
 .badgeCard.unlocked {
   border-color: var(--brand-primary-soft);
-  background: linear-gradient(135deg, white 0%, var(--brand-primary-faint) 100%);
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--brand-primary-faint) 100%);
 }
 
 .badgeCard.unlocked:hover {
@@ -299,7 +322,7 @@
 
 .badgeCard.locked {
   opacity: 0.55;
-  background: var(--slate-50);
+  background: var(--bg-soft);
 }
 
 .badgeCard.locked .badgeIcon {
@@ -314,9 +337,9 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
 }
 
 .badgeCard.unlocked .badgeIcon {
@@ -331,13 +354,13 @@
 .badgeName {
   font-size: 14px;
   font-weight: 700;
-  color: var(--slate-800);
+  color: var(--text-heading);
   margin-bottom: 3px;
 }
 
 .badgeDesc {
   font-size: 12px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
@@ -350,115 +373,4 @@
   .badgesGrid { grid-template-columns: 1fr; }
 }
 
-/* ---------- 暗色模式（自 dark-mode.css 迁入，取多层叠加后的最终生效值；profile- 系列 / pm- 系列 / level-bar- 系列 / timeline- 系列 / badge- 系列） ---------- */
-:global(html.dark .assessment-page) .profileEditorial {
-  background: transparent !important;
-  border-color: transparent !important;
-  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
-}
-
-:global(html.dark .assessment-page) .sectionHeader {
-  border-bottom-color: #1e293b !important;
-}
-
-:global(html.dark .assessment-page) .badgesCount {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .assessment-page) .timelineCard {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-  box-shadow: none !important;
-}
-
-:global(html.dark .assessment-page) .timelineCard:hover {
-  background: rgb(77, 154, 255, 0.06) !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-
-:global(html.dark .assessment-page) .timelineDate {
-  color: #64748b !important;
-}
-
-:global(html.dark .assessment-page) .timelineScore {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .assessment-page) .timelineTitle {
-  color: #f1f5f9 !important;
-}
-
-/* 后层取值覆盖前层同名规则，最终生效为 #94a3b8 */
-:global(html.dark .assessment-page) .timelineResultTitle {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .assessment-page) .levelBarTrack {
-  background: #1e293b !important;
-}
-
-:global(html.dark .assessment-page) .levelBarFill {
-  background: #4d9aff !important;
-}
-
-:global(html.dark .assessment-page) .levelBarPct {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .assessment-page) .emptyState {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-  box-shadow: none !important;
-  color: #64748b !important;
-}
-
-:global(html.dark .assessment-page) .badgeDesc {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .assessment-page) .psLabel {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .assessment-page) .profileStat,
-:global(html.dark .assessment-page) .profileDivider,
-:global(html.dark .assessment-page) .profileMetaRow {
-  border-color: #1e293b !important;
-}
-
-:global(html.dark .assessment-page) .psNum {
-  background: #0f172a !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .assessment-page) .timelineDot {
-  background: #4d9aff !important;
-  border-color: #1e2b3a !important;
-}
-
-:global(html.dark .assessment-page) .badgeCard {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-  box-shadow: none !important;
-}
-
-:global(html.dark .assessment-page) .badgeCard.locked {
-  opacity: 0.5;
-  background: transparent !important;
-}
-
-:global(html.dark .assessment-page) .badgeCard.unlocked {
-  border-color: #1a3a6b !important;
-}
-
-:global(html.dark .assessment-page) .badgeIcon {
-  background: rgb(77, 154, 255, 0.1) !important;
-  color: #4d9aff !important;
-  border-color: transparent !important;
-}
-
-:global(html.dark .assessment-page) .badgeName {
-  color: #f1f5f9 !important;
-}
+/* ---------- 暗色模式：颜色已全部由语义变量接管，无需额外覆盖 ---------- */

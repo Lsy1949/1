@@ -1,6 +1,6 @@
 .article-list-page {
   min-height: 100vh;
-  background-color: var(--slate-50);
+  background-color: var(--bg-mute);
   padding-top: 28px;
   position: relative;
 }
@@ -20,7 +20,7 @@
   align-items: flex-end;
   gap: 40px;
   padding-bottom: 40px;
-  border-bottom: 1px solid var(--mist-100);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .intro-left {
@@ -40,7 +40,7 @@
 .intro-title {
   font-size: clamp(48px, 7vw, 96px);
   font-weight: 900;
-  color: var(--navy-950);
+  color: var(--text-primary);
   margin: 0;
   letter-spacing: -3px;
   line-height: 0.95;
@@ -57,7 +57,7 @@
 .intro-count {
   font-size: clamp(48px, 5vw, 72px);
   font-weight: 200;
-  color: var(--navy-950);
+  color: var(--text-primary);
   line-height: 1;
   letter-spacing: -2px;
   font-variant-numeric: tabular-nums;
@@ -65,7 +65,7 @@
 
 .intro-count-label {
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   letter-spacing: 1px;
   font-weight: 500;
   text-transform: uppercase;
@@ -79,8 +79,8 @@
 
 /* Discovery Ribbon · sticky 紧贴 navbar（滚动后 navbar 64px） */
 .discovery-ribbon {
-  background: white;
-  border-bottom: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
   padding: 14px 0;
   position: sticky;
   top: 64px;
@@ -115,7 +115,7 @@
 .back-link:hover {
   background: var(--brand-primary);
   border-color: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
   transform: translateX(-4px);
   box-shadow: 0 8px 18px -6px color-mix(in srgb, var(--brand-primary) 30%, transparent);
 }
@@ -144,12 +144,12 @@
 
 .item-icon {
   font-size: 1.1rem;
-  color: var(--slate-800);
+  color: var(--text-primary);
 }
 
 .item-label {
   font-size: 1rem;
-  color: var(--slate-800);
+  color: var(--text-primary);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -197,7 +197,7 @@
 .search-box {
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--ink-300);
+  border-bottom: 1px solid var(--border-regular);
   border-radius: 0;
   padding: 12px 0;
   display: flex;
@@ -214,7 +214,7 @@
 }
 
 .search-icon {
-  color: var(--slate-400);
+  color: var(--text-faint);
   font-size: 1.2rem;
 }
 
@@ -223,7 +223,7 @@
   outline: none;
   width: 100%;
   font-size: 1rem;
-  color: var(--slate-800);
+  color: var(--text-primary);
   font-weight: 500;
 }
 

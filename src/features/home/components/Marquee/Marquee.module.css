@@ -2,8 +2,8 @@
 
 .marqueeBand {
   overflow: hidden;
-  border-top: 1px solid var(--mist-050);
-  border-bottom: 1px solid var(--mist-050);
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
   background: var(--brand-primary-wash);
   padding: 14px 0;
 }
@@ -24,7 +24,7 @@
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 1.5px;
-  color: var(--ink-900);
+  color: var(--text-primary);
   text-transform: uppercase;
 }
 
@@ -41,18 +41,13 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移，取两层规则的最终生效值；
-   marquee-* 为本组件独占类，原全局规则已删除）
+   暗色主题（仅保留「暗底上必须提亮 / 特殊处理」的规则；
+   换色类规则已由 light 基础规则的语义变量自动接管）
    ============================================================ */
 :global(html.dark) .marqueeBand {
-  background: #1a2a4a !important;
-  border-color: #1e293b !important;
-}
-
-:global(html.dark) .marqueeItem {
-  color: #f1f5f9 !important;
+  background: var(--bg-blue-tint) !important;
 }
 
 :global(html.dark) .marqueeDot {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }

@@ -23,7 +23,7 @@
   height: 56px;
   border-radius: 50%;
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -71,7 +71,7 @@
 .dot {
   width: 3px;
   height: 3px;
-  background: white;
+  background: var(--text-inverse, #fff);
   border-radius: 50%;
 }
 
@@ -88,14 +88,14 @@
   position: absolute;
   bottom: 70px;
   right: 0;
-  background: color-mix(in srgb, white 80%, transparent);
+  background: var(--bg-overlay);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 20px;
   padding: 12px;
-  box-shadow: 0 15px 40px color-mix(in srgb, black 12%, transparent);
+  box-shadow: 0 15px 40px rgb(0 0 0 / 0.12);
   min-width: 160px;
-  border: 1px solid color-mix(in srgb, white 60%, transparent);
+  border: 1px solid var(--border-light);
   transform-origin: bottom right;
   /* <transition name="fade-slide"> → is-open 类切换（等价 enter-from/leave-to 隐藏态） */
   opacity: 0;
@@ -113,7 +113,7 @@
 .navMenuTitle {
   display: block;
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 600;
   padding: 4px 12px 8px;
   letter-spacing: 1px;
@@ -124,7 +124,7 @@
   padding: 10px 16px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--ink-700);
+  color: var(--text-regular);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
@@ -151,9 +151,9 @@
 }
 
 .menuItem:hover {
-  background: white;
+  background: var(--bg-blue-tint);
   color: var(--brand-primary);
-  box-shadow: 0 4px 12px color-mix(in srgb, black 5%, transparent);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
   padding-left: 20px;
 }
 
@@ -163,35 +163,13 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移后的本组件有效值：
-   .back-to-top-btn/.nav-menu/.nav-menu-title 为本组件独占类，原全局
-   规则已删除；.menu-item/.dot 为跨组件共用类（Navbar/assessment/article
-   亦用），dark-mode.css 全局规则保留服务它们，此处等价局部规则保障本
-   组件暗色渲染——原受 .nav-menu 后代规则（更高优先级）覆盖，取其有效值）
+   暗色主题（仅保留「暗底上必须提亮 / 特殊处理」的规则；
+   换色类规则已由 light 基础规则的语义变量自动接管）
    ============================================================ */
-:global(html.dark) .backToTopBtn {
-  background: #0052d9 !important;
-}
-
 :global(html.dark) .navMenu {
-  background: rgb(15, 23, 42, 0.9) !important;
-  border-color: #1e293b !important;
-  box-shadow: 0 15px 40px rgb(0, 0, 0, 0.4) !important;
-}
-
-:global(html.dark) .navMenuTitle {
-  color: #64748b !important;
-}
-
-:global(html.dark) .menuItem {
-  color: #cbd5e1 !important;
+  box-shadow: var(--shadow-hover) !important;
 }
 
 :global(html.dark) .menuItem:hover {
-  background: #1a2a4a !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark) .dot {
-  background: #1e2b3a !important;
+  color: var(--brand-primary-bright) !important;
 }

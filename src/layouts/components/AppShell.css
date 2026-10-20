@@ -20,8 +20,8 @@
 .main-footer {
   position: relative;
   z-index: 2;
-  background: white;
-  border-top: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-light);
   color: var(--ink-600);
 }
 
@@ -73,7 +73,7 @@
 
 .social-icon:hover {
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
   transform: translateY(-3px);
 }
 
@@ -130,9 +130,9 @@
 }
 
 .footer-bottom {
-  border-top: 1px solid var(--slate-100);
+  border-top: 1px solid var(--border-light);
   padding: 1.5rem 0;
-  background: #fcfcfd; /* stylelint-disable-line color-no-hex, function-allowed-list */
+  background: var(--bg-mute);
 }
 
 .footer-inner {

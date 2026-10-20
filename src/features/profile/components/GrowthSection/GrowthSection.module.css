@@ -4,7 +4,7 @@
 
 /* ============ 杂志区块通用 ============ */
 .magSection {
-  border-top: 1px solid var(--ink-200);
+  border-top: 1px solid var(--border-light);
   padding: 48px 0 40px;
 }
 
@@ -34,7 +34,7 @@
   margin: 0 0 8px;
   font-size: 26px;
   font-weight: 700;
-  color: var(--ink-900);
+  color: var(--text-heading);
   line-height: 1.2;
   letter-spacing: -0.3px;
   font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
@@ -43,7 +43,7 @@
 .secDesc {
   margin: 0;
   font-size: 14px;
-  color: var(--ink-500);
+  color: var(--text-muted);
   line-height: 1.6;
   max-width: 540px;
 }
@@ -84,22 +84,22 @@
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--ink-900);
+  color: var(--text-heading);
   white-space: nowrap;
 }
 
 .gsLine {
   flex: 1;
   height: 1px;
-  background: var(--ink-900);
+  background: var(--text-heading);
 }
 
 .gsStats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
-  border-top: 1px solid var(--ink-200);
-  border-bottom: 1px solid var(--ink-200);
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .gsStat {
@@ -107,7 +107,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border-right: 1px solid var(--ink-200);
+  border-right: 1px solid var(--border-light);
 }
 
 .gsStat:last-child {
@@ -128,7 +128,7 @@
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--ink-500);
+  color: var(--text-muted);
 }
 
 /* ============ 徽章墙 ============ */
@@ -144,13 +144,13 @@
   align-items: center;
   gap: 14px;
   padding: 18px 16px;
-  border: 1px solid var(--ink-200);
+  border: 1px solid var(--border-light);
   transition: all 0.25s;
 }
 
 .badgeCard.earned {
   border-color: var(--brand-primary-soft);
-  background: linear-gradient(135deg, var(--brand-primary-faint) 0%, white 100%);
+  background: linear-gradient(135deg, var(--brand-primary-faint) 0%, var(--bg-card) 100%);
 }
 
 .badgeCard.earned:hover {
@@ -168,16 +168,16 @@
   font-family: Georgia, serif;
   font-size: 18px;
   font-weight: 700;
-  color: var(--ink-400);
-  background: var(--ink-100);
-  border: 1px solid var(--ink-200);
+  color: var(--text-faint);
+  background: var(--bg-mute);
+  border: 1px solid var(--border-light);
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .badgeCard.earned .badgeIcon {
-  color: white;
-  background: linear-gradient(135deg, var(--brand-primary), var(--color-info));
+  color: var(--text-inverse, #fff);
+  background: linear-gradient(135deg, var(--brand-primary), color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff)));
   border-color: transparent;
 }
 
@@ -191,7 +191,7 @@
 .badgeName {
   font-size: 14px;
   font-weight: 700;
-  color: var(--ink-800);
+  color: var(--text-primary);
 }
 
 .badgeCard.earned .badgeName {
@@ -200,7 +200,7 @@
 
 .badgeDesc {
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   line-height: 1.4;
 }
 
@@ -241,11 +241,11 @@
   text-align: center;
   font-size: 12px;
   font-style: italic;
-  color: var(--ink-400);
+  color: var(--text-faint);
   letter-spacing: 2px;
   text-transform: uppercase;
   padding: 20px 0 0;
-  border-top: 1px solid var(--mist-075);
+  border-top: 1px solid var(--border-light);
 }
 
 /* ============ 时间线列表 ============ */
@@ -262,12 +262,12 @@
   gap: 28px;
   align-items: center;
   padding: 18px 0;
-  border-bottom: 1px solid var(--mist-075);
+  border-bottom: 1px solid var(--border-light);
   transition: background 0.2s;
 }
 
 .timelineRow:hover {
-  background: var(--mist-025);
+  background: var(--bg-soft);
 }
 
 .timelineNo {
@@ -294,12 +294,12 @@
 .timelineText {
   font-size: 15px;
   font-weight: 500;
-  color: var(--ink-800);
+  color: var(--text-primary);
 }
 
 .timelineDate {
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   letter-spacing: 1px;
 }
 
@@ -312,19 +312,19 @@
   font-size: 12px;
   font-weight: 700;
   font-family: Georgia, serif;
-  color: white;
+  color: var(--text-inverse, #fff);
   background: var(--brand-primary);
   border-radius: 50%;
 }
 
-.timelineKind.counseling { background: var(--color-info); }
-.timelineKind.capsule { background: var(--purple-600); }
-.timelineKind.article { background: #fa8c16; } /* stylelint-disable-line color-no-hex, function-allowed-list */
+.timelineKind.counseling { background: color-mix(in srgb, var(--brand-primary) 65%, var(--text-inverse, #fff)); }
+.timelineKind.capsule { background: var(--status-info); }
+.timelineKind.article { background: var(--status-warning); }
 .timelineKind.milestone { background: var(--brand-primary); }
-.timelineKind.square { background: #13c2c2; } /* stylelint-disable-line color-no-hex, function-allowed-list */
-.timelineKind.comment { background: #eb2f96; } /* stylelint-disable-line color-no-hex, function-allowed-list */
-.timelineKind.like { background: #52c41a; } /* stylelint-disable-line color-no-hex, function-allowed-list */
-.timelineKind.login { background: var(--purple-600); }
+.timelineKind.square { background: color-mix(in srgb, var(--status-success) 60%, var(--brand-primary) 40%); }
+.timelineKind.comment { background: var(--status-danger); }
+.timelineKind.like { background: var(--status-success); }
+.timelineKind.login { background: var(--status-info); }
 
 @media (width <= 1024px) {
   .badgeWall {
@@ -387,7 +387,7 @@
   }
 
   .gsStat:nth-child(1), .gsStat:nth-child(2) {
-    border-bottom: 1px solid var(--ink-200);
+    border-bottom: 1px solid var(--border-light);
   }
 
   .gsNum {
@@ -419,156 +419,104 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移后的本组件独占有效值，均带
-   profile-page 作用域；原文件在 token 层与 hex 层各有一份的规则
-   （badge- 系列/gs-stat/sec-toggle/timeline-row hover/field-row）
-   取后层最终生效值合并迁入；timelineKind 变体字面量类只改文字色，
-   背景色沿用上方 light 变体规则，与原行为一致）
+   暗色主题：背景/文字/边框换色已由语义变量自动跟随，仅保留暗色下
+   必要的强调色/装饰规则与半透明白描边
    ============================================================ */
-:global(html.dark) .magSection {
-  border-color: #1e293b !important;
-}
-
 :global(html.dark) .secNum {
-  color: #4d9aff !important;
-}
-
-:global(html.dark) .secTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark) .secDesc {
-  color: #94a3b8 !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .secToggle {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
   background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
+  border-color: rgb(255 255 255 / 0.08) !important;
 }
 
 :global(html.dark) .secToggle:hover {
-  background: #1a2a4a !important;
-  border-color: #4d9aff !important;
-}
-
-:global(html.dark) .gsLabel,
-:global(html.dark) .gsKey {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark) .gsLine {
-  background: #1e293b !important;
+  background: var(--bg-blue-tint) !important;
+  border-color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .gsStat {
   background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
+  border-color: rgb(255 255 255 / 0.06) !important;
 }
 
 :global(html.dark) .gsNum {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .badgeCard {
   background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
+  border-color: rgb(255 255 255 / 0.06) !important;
 }
 
 :global(html.dark) .badgeCard.earned {
-  background: rgb(77, 154, 255, 0.04) !important;
-  border-color: rgb(77, 154, 255, 0.15) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 15%, transparent) !important;
 }
 
 :global(html.dark) .badgeCard.earned:hover {
-  background: rgb(77, 154, 255, 0.08) !important;
-  border-color: rgb(77, 154, 255, 0.3) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 8%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 30%, transparent) !important;
   box-shadow: none !important;
   transform: none !important;
 }
 
 :global(html.dark) .badgeIcon {
-  background: rgb(77, 154, 255, 0.1) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 10%, transparent) !important;
   border-color: transparent !important;
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .badgeCard.earned .badgeIcon {
-  background: linear-gradient(135deg, #0052d9, #1890ff) !important;
-}
-
-:global(html.dark) .badgeName {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark) .badgeDesc {
-  color: #94a3b8 !important;
+  background: linear-gradient(135deg, var(--brand-primary), color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff))) !important;
 }
 
 :global(html.dark) .tgYear {
-  color: #4d9aff !important;
-}
-
-:global(html.dark) .tgRule {
-  background: #1e293b !important;
-}
-
-:global(html.dark) .timelineEnd {
-  color: #64748b !important;
-}
-
-:global(html.dark) .timelineRow {
-  border-color: #1e293b !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .timelineRow:hover {
-  background: rgb(255, 255, 255, 0.03) !important;
+  background: rgb(255 255 255 / 0.03) !important;
 }
 
 :global(html.dark) .timelineNo {
-  color: #64748b !important;
-}
-
-:global(html.dark) .timelineText {
-  color: #e2e8f0 !important;
-}
-
-:global(html.dark) .timelineDate {
-  color: #64748b !important;
+  color: var(--text-faint) !important;
 }
 
 :global(html.dark) .timelineKind {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .timelineKind.counseling {
-  color: #a78bfa !important;
+  color: var(--status-info) !important;
 }
 
 :global(html.dark) .timelineKind.capsule {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .timelineKind.article {
-  color: #fbbf24 !important;
+  color: var(--status-warning) !important;
 }
 
 :global(html.dark) .timelineKind.milestone {
-  color: #10b981 !important;
+  color: var(--status-success) !important;
 }
 
 :global(html.dark) .timelineKind.square {
-  color: #f472b6 !important;
+  color: var(--status-danger) !important;
 }
 
 :global(html.dark) .timelineKind.comment {
-  color: #94a3b8 !important;
+  color: var(--text-secondary) !important;
 }
 
 :global(html.dark) .timelineKind.like {
-  color: #f87171 !important;
+  color: var(--status-danger) !important;
 }
 
 :global(html.dark) .timelineKind.login {
-  color: #64748b !important;
+  color: var(--text-faint) !important;
 }

@@ -28,14 +28,14 @@
 .sidebarHeader {
   margin-bottom: 28px;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .sidebarEyebrow {
   display: block;
   font-size: 11px;
   letter-spacing: 2px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 600;
   text-transform: uppercase;
   margin-bottom: 10px;
@@ -44,7 +44,7 @@
 .sidebarTitle {
   font-size: 24px;
   font-weight: 900;
-  color: var(--navy-950);
+  color: var(--text-heading);
   letter-spacing: -1px;
   margin: 0;
 }
@@ -86,7 +86,7 @@
 .cardNum {
   font-size: 11px;
   font-weight: 700;
-  color: var(--ink-400);
+  color: var(--text-faint);
   letter-spacing: 1px;
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
@@ -112,7 +112,7 @@
 .cardTitle {
   font-size: 13px;
   font-weight: 600;
-  color: var(--ink-800);
+  color: var(--text-primary);
   margin: 0;
   line-height: 1.45;
   letter-spacing: -0.2px;
@@ -124,7 +124,7 @@
 
 .cardMeta {
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 500;
   letter-spacing: 0.5px;
   font-variant-numeric: tabular-nums;
@@ -133,7 +133,7 @@
 
 .cardArrow {
   font-size: 14px;
-  color: #d0d5db; /* stylelint-disable-line color-no-hex, function-allowed-list */
+  color: var(--text-faint);
   transition: all 0.3s ease;
   flex-shrink: 0;
   margin-top: 2px;
@@ -145,22 +145,12 @@
   }
 }
 
-/* ===== 暗色主题（自 dark-mode.css 迁移，作用域为页面根类 article-detail-page；
-   sidebar-card 系列取三期「融入背景」覆盖后的最终生效值） ===== */
-:global(html.dark .article-detail-page) .relatedSidebar,
-:global(html.dark .article-detail-page) .sidebarHeader {
-  border-color: #1e293b !important;
-}
-
+/* ===== 暗色主题：颜色换色已由语义变量自动跟随，此处仅保留
+   「卡片融入背景」这一暗色专用视觉与深色底上的主色提亮 ===== */
 :global(html.dark .article-detail-page) .sidebarEyebrow {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .article-detail-page) .sidebarTitle {
-  color: #f1f5f9 !important;
-}
-
-/* 卡片基态与 hover 均被三期覆盖层覆盖，取三期透明基态 + hover 最终值 */
 :global(html.dark .article-detail-page) .sidebarCard {
   background: transparent !important;
   border-color: transparent !important;
@@ -168,32 +158,16 @@
 }
 
 :global(html.dark .article-detail-page) .sidebarCard:hover {
-  background: rgb(77, 154, 255, 0.04) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
   border-color: transparent !important;
-  border-bottom-color: rgb(77, 154, 255, 0.2) !important;
+  border-bottom-color: color-mix(in srgb, var(--brand-primary-bright) 20%, transparent) !important;
   transform: none !important;
 }
 
-:global(html.dark .article-detail-page) .cardNum {
-  color: #64748b !important;
-}
-
 :global(html.dark .article-detail-page) .cardCat {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .article-detail-page) .cardTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .article-detail-page) .cardMeta {
-  color: #64748b !important;
-}
-
-:global(html.dark .article-detail-page) .cardArrow {
-  color: #475569 !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .article-detail-page) .sidebarCard:hover .cardArrow {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }

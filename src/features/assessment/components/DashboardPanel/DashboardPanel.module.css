@@ -1,10 +1,10 @@
 /* 面板基础 */
 .panel {
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 28px;
-  border: 1px solid var(--mist-050);
-  box-shadow: 0 1px 3px color-mix(in srgb, black 3%, transparent);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-soft);
   height: 100%;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
@@ -24,7 +24,7 @@
 }
 
 .dashboardCard:hover {
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--navy-950) 5%, transparent);
+  box-shadow: var(--shadow-medium);
 }
 
 .cardHeader {
@@ -33,12 +33,12 @@
   align-items: center;
   margin-bottom: 22px;
   padding-bottom: 14px;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .cardHeader h3 {
   font-size: 15px;
-  color: var(--navy-950);
+  color: var(--text-heading);
   font-weight: 700;
   margin: 0;
   display: flex;
@@ -57,7 +57,7 @@
   align-items: center;
   gap: 12px;
   font-size: 12px;
-  color: var(--neutral-500);
+  color: var(--text-muted);
 }
 
 .legendDot {
@@ -69,7 +69,7 @@
 }
 
 .legendDot.phq { background: var(--brand-primary); }
-.legendDot.gad { background: var(--mist-400); }
+.legendDot.gad { background: var(--text-faint); }
 
 /* 雷达图 */
 .radarContainer {
@@ -87,19 +87,19 @@
 
 .radarBgPoly {
   fill: none;
-  stroke: var(--neutral-100);
+  stroke: var(--border-strong);
   stroke-width: 1;
   stroke-dasharray: 4;
 }
 
 .radarAxis {
-  stroke: var(--neutral-100);
+  stroke: var(--border-strong);
   stroke-width: 1;
 }
 
 .radarAvgPoly {
-  fill: color-mix(in srgb, var(--neutral-400) 8%, transparent);
-  stroke: #bbb;
+  fill: color-mix(in srgb, var(--text-faint) 8%, transparent);
+  stroke: var(--text-faint);
   stroke-width: 1.5;
   stroke-dasharray: 4 3;
   stroke-linejoin: round;
@@ -114,7 +114,7 @@
 
 .radarLabel {
   font-size: 11px;
-  fill: var(--neutral-450);
+  fill: var(--text-muted);
   font-weight: 600;
   text-anchor: middle;
 }
@@ -131,7 +131,7 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: var(--neutral-450);
+  color: var(--text-muted);
 }
 
 /* dot 为跨 feature 共享协议类（字面量保留，经 :global 挂接） */
@@ -147,13 +147,13 @@
   height: 10px;
   border-radius: 3px;
   background: transparent;
-  border: 1px dashed var(--neutral-400);
+  border: 1px dashed var(--text-faint);
 }
 
 /* AI 卡片 */
 .aiSummaryCard {
-  background: white;
-  border: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   position: relative;
   overflow: hidden;
 }
@@ -165,7 +165,7 @@
   right: -8px;
   font-size: 7rem;
   font-weight: 900;
-  color: color-mix(in srgb, var(--neutral-900) 3%, transparent);
+  color: color-mix(in srgb, var(--text-heading) 3%, transparent);
   pointer-events: none;
 }
 
@@ -179,8 +179,8 @@
 .aiIcon {
   width: 36px;
   height: 36px;
-  background: var(--navy-950);
-  color: white;
+  background: var(--brand-primary);
+  color: var(--text-inverse, #fff);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -190,7 +190,7 @@
 
 .aiHeader h3 {
   margin: 0;
-  color: var(--navy-950);
+  color: var(--text-heading);
   font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.1px;
@@ -199,7 +199,7 @@
 .iTitle {
   font-size: 13px;
   font-weight: 700;
-  color: var(--slate-800);
+  color: var(--text-primary);
   margin-bottom: 5px;
   display: flex;
   align-items: center;
@@ -214,20 +214,22 @@
   border-radius: 2px;
 }
 
-.insightItem.insightStrength .iTitle::before { background: var(--success-500); }
-.insightItem.insightRisk .iTitle::before { background: var(--warning-500); }
-.insightItem.insightSuggestion .iTitle::before { background: var(--violet-600); }
+.insightItem.insightStrength .iTitle::before { background: var(--status-success); }
+.insightItem.insightRisk .iTitle::before { background: var(--status-warning); }
+.insightItem.insightSuggestion .iTitle::before {
+  background: color-mix(in srgb, var(--brand-primary) 50%, var(--status-info));
+}
 
 .insightItem p {
   font-size: 13px;
-  color: var(--neutral-600);
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 0;
 }
 
 .aiEmpty p {
   font-size: 13px;
-  color: var(--neutral-400);
+  color: var(--text-faint);
   line-height: 1.6;
   margin: 0;
 }
@@ -244,7 +246,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  color: var(--neutral-300);
+  color: var(--text-faint);
   font-size: 11px;
   width: 20px;
   font-weight: 600;
@@ -255,7 +257,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-around;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
   padding-bottom: 28px;
   position: relative;
 }
@@ -274,7 +276,7 @@
 }
 
 .bar.phq { background: var(--brand-primary); }
-.bar.gad { background: var(--mist-400); }
+.bar.gad { background: var(--text-faint); }
 
 .barDate {
   position: absolute;
@@ -282,7 +284,7 @@
   left: 50%;
   transform: translateX(-50%);
   font-size: 11px;
-  color: var(--neutral-450);
+  color: var(--text-muted);
   white-space: nowrap;
   font-weight: 500;
 }
@@ -290,7 +292,7 @@
 .chartEmpty {
   width: 100%;
   text-align: center;
-  color: var(--neutral-300);
+  color: var(--text-faint);
   font-size: 13px;
   align-self: center;
 }
@@ -315,12 +317,12 @@
 }
 
 .historyTableWrapper :global(.ant-table-tbody > tr > td) {
-  border-color: var(--mist-050);
+  border-color: var(--border-light);
 }
 
 /* el-table stripe → rowClassName 斑马纹（striped-row 为协议类，保留字面量） */
 .historyTableWrapper :global(.ant-table-tbody > tr.striped-row > td) {
-  background: var(--slate-50);
+  background: var(--bg-soft);
 }
 
 .historyTableWrapper :global(.ant-table .ant-tag) {
@@ -332,7 +334,7 @@
 
 .historyEmpty {
   text-align: center;
-  color: var(--neutral-300);
+  color: var(--text-faint);
   font-size: 13px;
   padding: 32px 0;
 }
@@ -343,8 +345,8 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
   margin-bottom: 24px;
-  background: white;
-  border: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 6px;
   overflow: hidden;
 }
@@ -355,7 +357,7 @@
   gap: 16px;
   background: transparent;
   border: none;
-  border-left: 1px solid var(--mist-050);
+  border-left: 1px solid var(--border-light);
   border-radius: 0;
   padding: 22px 24px;
   transition: background 0.25s ease;
@@ -366,14 +368,14 @@
 }
 
 .kpiCard:hover {
-  background: var(--mist-025);
+  background: var(--bg-soft);
 }
 
 .kpiIcon {
   width: 38px;
   height: 38px;
   border-radius: 8px;
-  background: var(--slate-50);
+  background: var(--bg-soft);
   color: var(--brand-primary);
   display: flex;
   align-items: center;
@@ -391,7 +393,7 @@
 .kpiValue {
   font-size: 30px;
   font-weight: 800;
-  color: var(--navy-950);
+  color: var(--text-heading);
   line-height: 1;
   letter-spacing: -1px;
   font-variant-numeric: tabular-nums;
@@ -399,7 +401,7 @@
 
 .kpiLabel {
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-muted);
   font-weight: 600;
   letter-spacing: 2px;
 }
@@ -410,8 +412,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  background: white;
-  border: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 6px;
   padding: 22px 28px;
   color: inherit;
@@ -441,7 +443,7 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 3px;
-  color: var(--navy-950);
+  color: var(--text-heading);
   margin-bottom: 8px;
 }
 
@@ -452,7 +454,7 @@
 
 .goalDesc {
   font-size: 13px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
 }
 
 .goalProgressWrap {
@@ -467,7 +469,7 @@
 .goalProgressBar {
   flex: 1;
   height: 4px;
-  background: var(--mist-050);
+  background: var(--bg-mute);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -482,7 +484,7 @@
 .goalPercent {
   font-size: 26px;
   font-weight: 800;
-  color: var(--navy-950);
+  color: var(--text-heading);
   min-width: 58px;
   text-align: right;
   letter-spacing: -0.5px;
@@ -510,12 +512,12 @@
 .donutCenterVal {
   font-size: 26px;
   font-weight: 800;
-  fill: var(--slate-800);
+  fill: var(--text-primary);
 }
 
 .donutCenterLabel {
   font-size: 11px;
-  fill: var(--neutral-400);
+  fill: var(--text-faint);
   font-weight: 600;
 }
 
@@ -541,12 +543,12 @@
 }
 
 .donutLegendItem .legendName {
-  color: var(--slate-800);
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .donutLegendItem .legendVal {
-  color: var(--ink-500);
+  color: var(--text-secondary);
   margin-left: auto;
   font-weight: 500;
 }
@@ -575,7 +577,7 @@
 .rangeTabs span {
   padding: 4px 2px;
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-muted);
   cursor: pointer;
   border-radius: 0;
   border-bottom: 1.5px solid transparent;
@@ -584,13 +586,13 @@
 }
 
 .rangeTabs span:hover {
-  color: var(--navy-950);
-  border-bottom-color: var(--mist-300);
+  color: var(--text-heading);
+  border-bottom-color: var(--border-strong);
 }
 
 .rangeTabs span.active {
   background: transparent;
-  color: var(--navy-950);
+  color: var(--text-heading);
   font-weight: 700;
   border-bottom-color: var(--brand-primary);
   box-shadow: none;
@@ -600,7 +602,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  border-top: 1px dashed var(--warning-500);
+  border-top: 1px dashed var(--status-warning);
   pointer-events: none;
   z-index: 1;
 }
@@ -610,7 +612,7 @@
   right: 4px;
   top: -15px;
   font-size: 10px;
-  color: var(--warning-700);
+  color: var(--status-warning);
   font-weight: 700;
   background: transparent;
   padding: 0;
@@ -632,18 +634,18 @@
   padding: 18px 4px;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
   border-radius: 0;
   transition: background 0.2s ease;
 }
 
 .comparisonItem:first-child {
-  border-top: 1px solid var(--mist-050);
+  border-top: 1px solid var(--border-light);
 }
 
 .comparisonItem:hover {
-  background: var(--mist-025);
-  border-color: var(--mist-050);
+  background: var(--bg-soft);
+  border-color: var(--border-light);
   transform: none;
   box-shadow: none;
 }
@@ -656,14 +658,14 @@
 .cmpName {
   font-size: 14px;
   font-weight: 700;
-  color: var(--navy-950);
+  color: var(--text-heading);
   margin-bottom: 3px;
   letter-spacing: -0.1px;
 }
 
 .cmpDate {
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -676,24 +678,24 @@
 .cmpPrev {
   font-size: 15px;
   font-weight: 600;
-  color: var(--mist-400);
+  color: var(--text-faint);
   font-variant-numeric: tabular-nums;
 }
 
 /* up/down/stable 为运行时趋势类（协议类，保留字面量，经 :global 挂接） */
 .cmpArrow {
   font-size: 14px;
-  color: var(--mist-400);
+  color: var(--text-faint);
   display: inline-flex;
 }
 
-.cmpArrow:global(.up) { color: var(--success-600); }
-.cmpArrow:global(.down) { color: var(--danger-600); }
+.cmpArrow:global(.up) { color: var(--status-success); }
+.cmpArrow:global(.down) { color: var(--status-danger); }
 
 .cmpCurr {
   font-size: 20px;
   font-weight: 800;
-  color: var(--navy-950);
+  color: var(--text-heading);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.5px;
 }
@@ -707,12 +709,12 @@
 }
 
 .cmpDiff.good {
-  color: var(--success-600);
+  color: var(--status-success);
   background: transparent;
 }
 
 .cmpDiff.bad {
-  color: var(--danger-600);
+  color: var(--status-danger);
   background: transparent;
 }
 
@@ -737,17 +739,17 @@
 }
 
 .cmpTag.good {
-  color: var(--success-600);
+  color: var(--status-success);
   background: transparent;
 }
 
 .cmpTag.bad {
-  color: var(--danger-600);
+  color: var(--status-danger);
   background: transparent;
 }
 
 .cmpTag.stable {
-  color: var(--ink-500);
+  color: var(--text-secondary);
   background: transparent;
 }
 
@@ -764,19 +766,19 @@
   padding: 15px 4px;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
   border-radius: 0;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
 .recommendItem:first-child {
-  border-top: 1px solid var(--mist-050);
+  border-top: 1px solid var(--border-light);
 }
 
 .recommendItem:hover {
-  background: var(--mist-025);
-  border-color: var(--mist-050);
+  background: var(--bg-soft);
+  border-color: var(--border-light);
   transform: none;
   box-shadow: none;
 }
@@ -785,7 +787,7 @@
   width: 40px;
   height: 40px;
   border-radius: 8px;
-  background: var(--slate-50);
+  background: var(--bg-soft);
   color: var(--brand-primary);
   display: flex;
   align-items: center;
@@ -797,7 +799,7 @@
 
 .recommendItem:hover .recIcon {
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 .recInfo {
@@ -808,7 +810,7 @@
 .recName {
   font-size: 14px;
   font-weight: 700;
-  color: var(--navy-950);
+  color: var(--text-heading);
   margin-bottom: 3px;
   letter-spacing: -0.1px;
   transition: color 0.2s ease;
@@ -820,7 +822,7 @@
 
 .recReason {
   font-size: 12px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
@@ -859,8 +861,8 @@
   flex-shrink: 0;
   position: sticky;
   top: 16px;
-  background: white;
-  border: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 6px;
   padding: 14px 0 8px;
   display: flex;
@@ -879,7 +881,7 @@
   border-left: 2px solid transparent;
   cursor: pointer;
   font-size: 13.5px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
   font-weight: 500;
   counter-increment: dashnav;
   transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
@@ -890,7 +892,7 @@
   content: counter(dashnav, decimal-leading-zero);
   font-size: 11px;
   font-weight: 600;
-  color: var(--mist-400);
+  color: var(--text-faint);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.5px;
   min-width: 20px;
@@ -904,13 +906,13 @@
 }
 
 .navItem:hover {
-  background: var(--mist-025);
-  color: var(--navy-950);
+  background: var(--bg-soft);
+  color: var(--text-heading);
 }
 
 .navItem.active {
   background: transparent;
-  color: var(--navy-950);
+  color: var(--text-heading);
   font-weight: 700;
   border-left-color: var(--brand-primary);
   box-shadow: none;
@@ -958,7 +960,7 @@
   padding: 15px 4px;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
   border-radius: 0;
   cursor: pointer;
   transition: color 0.2s ease;
@@ -977,7 +979,7 @@
 
 .quickEntryItem:hover {
   background: transparent;
-  border-color: var(--mist-050);
+  border-color: var(--border-light);
   transform: none;
   box-shadow: none;
 }
@@ -991,7 +993,7 @@
   width: 34px;
   height: 34px;
   border-radius: 8px;
-  background: var(--slate-50);
+  background: var(--bg-soft);
   color: var(--brand-primary);
   display: flex;
   align-items: center;
@@ -1003,13 +1005,13 @@
 
 .quickEntryItem:hover .quickEntryIcon {
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 .quickEntryItem span {
   font-size: 13px;
   font-weight: 600;
-  color: var(--slate-800);
+  color: var(--text-primary);
   transition: color 0.2s ease;
 }
 
@@ -1027,14 +1029,14 @@
 .aiInsightGrid .insightItem {
   background: transparent;
   border: none;
-  border-top: 1px solid var(--mist-050);
+  border-top: 1px solid var(--border-light);
   border-radius: 0;
   padding: 16px 2px 0;
   transition: border-color 0.25s ease;
 }
 
 .aiInsightGrid .insightItem:hover {
-  border-color: var(--mist-050);
+  border-color: var(--border-light);
   background: transparent;
   box-shadow: none;
 }
@@ -1069,9 +1071,9 @@
 /* 成长看板响应式 */
 @media (width <= 1200px) {
   .kpiGrid { grid-template-columns: repeat(2, 1fr); }
-  .kpiCard { border-left: none; border-top: 1px solid var(--mist-050); }
+  .kpiCard { border-left: none; border-top: 1px solid var(--border-light); }
   .kpiCard:nth-child(-n + 2) { border-top: none; }
-  .kpiCard:nth-child(even) { border-left: 1px solid var(--mist-050); }
+  .kpiCard:nth-child(even) { border-left: 1px solid var(--border-light); }
   .aiInsightGrid { grid-template-columns: 1fr; }
   .donutLarge { flex-direction: column; gap: 20px; }
 }
@@ -1104,7 +1106,7 @@
 
 @media (width <= 768px) {
   .kpiGrid { grid-template-columns: 1fr; }
-  .kpiCard { border-left: none !important; border-top: 1px solid var(--mist-050); }
+  .kpiCard { border-left: none !important; border-top: 1px solid var(--border-light); }
   .kpiCard:first-child { border-top: none; }
   .goalBanner { flex-direction: column; align-items: flex-start; gap: 16px; }
   .goalProgressWrap { width: 100%; min-width: 0; }
@@ -1117,215 +1119,37 @@
   .donutSvgLarge { width: 180px; height: 180px; }
 }
 
-/* ---------- 暗色模式（自 dark-mode.css 迁入，取多层叠加后的最终生效值；cmp- 系列 / rec- 系列 / kpi- 系列 / goal- 系列 / donut- 系列 / radar- 系列 / nav- 系列 / quick-entry- 系列 / insight- 系列） ---------- */
-:global(html.dark .assessment-page) .panel,
-:global(html.dark .assessment-page) .dashboardSidebar,
-:global(html.dark .assessment-page) .dashboardCard {
-  background: transparent !important;
-  border-color: transparent !important;
-  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
-  box-shadow: none !important;
-}
-
-:global(html.dark .assessment-page) .dashboardCard:hover,
-:global(html.dark .assessment-page) .kpiCard:hover,
-:global(html.dark .assessment-page) .recommendItem:hover,
-:global(html.dark .assessment-page) .comparisonItem:hover,
-:global(html.dark .assessment-page) .quickEntryItem:hover {
-  background: rgb(77, 154, 255, 0.06) !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-
-:global(html.dark .assessment-page) .aiSummaryCard {
-  background: rgb(77, 154, 255, 0.04) !important;
-  border-color: rgb(77, 154, 255, 0.15) !important;
-  box-shadow: none !important;
-}
-
-:global(html.dark .assessment-page) .kpiCard {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-  box-shadow: none !important;
-}
-
-:global(html.dark .assessment-page) .goalBanner {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
-}
-
-:global(html.dark .assessment-page) .recommendItem,
-:global(html.dark .assessment-page) .comparisonItem,
-:global(html.dark .assessment-page) .quickEntryItem {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-  box-shadow: none !important;
-}
-
-/* 后层取值覆盖前层同名规则，最终生效为 #f1f5f9 */
-:global(html.dark .assessment-page) .kpiLabel {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .assessment-page) .goalDesc {
-  color: #64748b !important;
-}
-
+/* ---------- 暗色模式补充：颜色由语义变量接管，此处仅保留品牌强调色 ---------- */
 :global(html.dark .assessment-page) .kpiValue,
-:global(html.dark .assessment-page) .donutCenterVal {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .assessment-page) .donutCenterLabel {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .assessment-page) .kpiIcon {
-  background: rgb(77, 154, 255, 0.1) !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .assessment-page) .cardHeader {
-  color: #f1f5f9 !important;
-  border-bottom-color: rgb(255, 255, 255, 0.08) !important;
-}
-
-:global(html.dark .assessment-page) .iTitle,
-:global(html.dark .assessment-page) .cmpName,
-:global(html.dark .assessment-page) .recName {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .assessment-page) .goalProgressBar {
-  background: #1e293b !important;
+:global(html.dark .assessment-page) .donutCenterVal,
+:global(html.dark .assessment-page) .goalPercent {
+  color: var(--brand-primary-bright);
 }
 
 :global(html.dark .assessment-page) .goalProgressFill {
-  background: #4d9aff !important;
+  background: var(--brand-primary-bright);
 }
 
-:global(html.dark .assessment-page) .goalTitle {
-  color: #f1f5f9 !important;
+:global(html.dark .assessment-page) .kpiIcon,
+:global(html.dark .assessment-page) .recIcon,
+:global(html.dark .assessment-page) .quickEntryIcon {
+  background: var(--brand-primary-bright-bg);
+  color: var(--brand-primary-bright);
 }
 
-:global(html.dark .assessment-page) .goalPercent {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .assessment-page) .chartArea,
-:global(html.dark .assessment-page) .chartEmpty,
-:global(html.dark .assessment-page) .historyEmpty,
-:global(html.dark .assessment-page) .aiEmpty {
-  background: transparent !important;
-  color: #64748b !important;
-}
-
-:global(html.dark .assessment-page) .yAxis,
-:global(html.dark .assessment-page) .barDate,
-:global(html.dark .assessment-page) .avgLabel,
-:global(html.dark .assessment-page) .cmpDate,
-:global(html.dark .assessment-page) .cmpPrev,
-:global(html.dark .assessment-page) .cmpCurr,
-:global(html.dark .assessment-page) .recReason,
-:global(html.dark .assessment-page) .recArrow,
-:global(html.dark .assessment-page) .quickEntryIcon,
-:global(html.dark .assessment-page) .legendDot,
-:global(html.dark .assessment-page) .legendItem,
-:global(html.dark .assessment-page) .chartLegend {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .assessment-page) .rangeTabs span {
-  background: transparent !important;
-  color: #94a3b8 !important;
-  border-color: transparent !important;
-}
-
-:global(html.dark .assessment-page) .rangeTabs span:hover {
-  color: #e2e8f0 !important;
-  border-color: rgb(255, 255, 255, 0.2) !important;
-}
-
-:global(html.dark .assessment-page) .rangeTabs span.active {
-  background: transparent !important;
-  color: #f1f5f9 !important;
-  border-color: #4d9aff !important;
-}
-
-:global(html.dark .assessment-page) .avgLine {
-  background: #fbbf24 !important;
-}
-
-:global(html.dark .assessment-page) .cmpDiff.good,
-:global(html.dark .assessment-page) .cmpTag.good {
-  color: #10b981 !important;
-}
-
-:global(html.dark .assessment-page) .cmpDiff.bad,
-:global(html.dark .assessment-page) .cmpTag.bad {
-  color: #f87171 !important;
-}
-
-:global(html.dark .assessment-page) .cmpTag.stable {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .assessment-page) .cmpArrow:global(.up) {
-  color: #10b981 !important;
-}
-
-:global(html.dark .assessment-page) .cmpArrow:global(.down) {
-  color: #f87171 !important;
-}
-
-:global(html.dark .assessment-page) .navItem {
-  color: #94a3b8 !important;
-  border-left-color: transparent !important;
-}
-
-:global(html.dark .assessment-page) .navItem::before {
-  color: #475569 !important;
-}
-
-:global(html.dark .assessment-page) .navItem:hover {
-  background: rgb(255, 255, 255, 0.03) !important;
-  color: #e2e8f0 !important;
+:global(html.dark .assessment-page) .recArrow {
+  color: var(--brand-primary-bright);
 }
 
 :global(html.dark .assessment-page) .navItem.active {
-  background: transparent !important;
-  color: #f1f5f9 !important;
-  border-left-color: #4d9aff !important;
+  border-left-color: var(--brand-primary-bright);
 }
 
 :global(html.dark .assessment-page) .navItem.active::before {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright);
 }
 
-:global(html.dark .assessment-page) .kpiGrid {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
+:global(html.dark .assessment-page) .rangeTabs span.active {
+  border-bottom-color: var(--brand-primary-bright);
 }
 
-:global(html.dark .assessment-page) .aiInsightGrid .insightItem {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-  box-shadow: none !important;
-}
-
-:global(html.dark .assessment-page) .aiInsightGrid .insightItem:hover {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-  box-shadow: none !important;
-}
-
-:global(html.dark .assessment-page) .recIcon {
-  background: rgb(77, 154, 255, 0.1) !important;
-}
-
-/* html.dark .dot 为跨 feature 共享全局规则（dark-mode.css 保留），
-   此处加等价局部兜底，防止全局规则日后清理后图例圆点失去暗色底 */
-:global(html.dark) .legendItem :global(.dot) {
-  background: #1e2b3a !important;
-}

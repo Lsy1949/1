@@ -1,4 +1,5 @@
 import type { TenantConfig } from './types'
+import type { TenantConfigDTO } from '@/api/types'
 import { getDefaultConfig, mergeTenantConfig } from './default'
 import { fetchTenantConfig } from '@/api/modules/tenant'
 
@@ -11,18 +12,18 @@ function cacheKey(tenantId: string): string {
   return CACHE_PREFIX + tenantId
 }
 
-function readCache(tenantId: string): Partial<TenantConfig> | null {
+function readCache(tenantId: string): TenantConfigDTO | null {
   try {
     const raw = localStorage.getItem(cacheKey(tenantId))
     if (!raw) return null
     const parsed: unknown = JSON.parse(raw)
-    return parsed && typeof parsed === 'object' ? (parsed as Partial<TenantConfig>) : null
+    return parsed && typeof parsed === 'object' ? (parsed as TenantConfigDTO) : null
   } catch {
     return null
   }
 }
 
-function writeCache(tenantId: string, config: Partial<TenantConfig>): void {
+function writeCache(tenantId: string, config: TenantConfigDTO): void {
   try {
     localStorage.setItem(cacheKey(tenantId), JSON.stringify(config))
   } catch {
@@ -31,7 +32,7 @@ function writeCache(tenantId: string, config: Partial<TenantConfig>): void {
 }
 
 /** AbortController 双保险（实例层另有 1.5s timeout） */
-async function fetchWithTimeout(tenantId: string): Promise<Partial<TenantConfig> | null> {
+async function fetchWithTimeout(tenantId: string): Promise<TenantConfigDTO | null> {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
   try {

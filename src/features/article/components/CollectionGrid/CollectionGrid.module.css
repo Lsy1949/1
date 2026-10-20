@@ -16,7 +16,7 @@
 .moduleTitle {
   font-size: clamp(22px, 2.2vw, 30px);
   font-weight: 900;
-  color: var(--navy-950);
+  color: var(--text-heading);
   margin: 0;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -24,7 +24,7 @@
 
 .articleCount {
   font-size: 0.85rem;
-  color: var(--ink-500);
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -52,7 +52,7 @@
 .moduleCollections {
   margin-top: 88px;
   padding-top: 64px;
-  border-top: 1px solid var(--mist-050);
+  border-top: 1px solid var(--border-light);
 }
 
 .collectionGrid {
@@ -62,7 +62,7 @@
 }
 
 .collectionCard {
-  background: white;
+  background: var(--bg-card);
   padding: 28px 24px;
   border-radius: 16px;
   display: flex;
@@ -71,7 +71,7 @@
   gap: 20px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   position: relative;
   overflow: hidden;
 }
@@ -103,12 +103,12 @@
 
 .collectionCard:hover .collectionIconWrapper {
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 .collectionCount {
   font-size: 0.72rem;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -117,14 +117,14 @@
 .collectionTitle {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--navy-950);
+  color: var(--text-heading);
   margin: 0 0 8px;
   line-height: 1.3;
 }
 
 .collectionDesc {
   font-size: 0.88rem;
-  color: var(--ink-500);
+  color: var(--text-muted);
   line-height: 1.6;
   margin: 0;
   display: -webkit-box;
@@ -138,7 +138,7 @@
   align-items: center;
   gap: 6px;
   padding-top: 16px;
-  border-top: 1px solid var(--slate-100);
+  border-top: 1px solid var(--border-light);
   color: var(--brand-primary);
   font-weight: 600;
   font-size: 0.85rem;
@@ -159,25 +159,12 @@
   }
 }
 
-/* ===== 暗色主题（自 dark-mode.css 迁移，作用域为页面根类 article-center；
-   collection- 系列取三期「卡片融入背景」覆盖后的最终生效值） ===== */
-:global(html.dark .article-center) .moduleTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .article-center) .articleCount {
-  color: #64748b !important;
-}
-
+/* ===== 暗色主题：颜色换色已由语义变量自动跟随，此处仅保留
+   「卡片融入背景」这一暗色专用视觉与深色底上的主色提亮 ===== */
 :global(html.dark .article-center) .viewAllLink {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .article-center) .viewAllLink:hover {
-  color: #80b3ff !important;
-}
-
-/* 卡片基态与 hover 均被三期覆盖层覆盖，取三期透明基态 + hover 最终值 */
 :global(html.dark .article-center) .collectionCard {
   background: transparent !important;
   border-color: transparent !important;
@@ -185,31 +172,17 @@
 }
 
 :global(html.dark .article-center) .collectionCard:hover {
-  background: rgb(77, 154, 255, 0.04) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
   border-color: transparent !important;
-  border-bottom-color: rgb(77, 154, 255, 0.2) !important;
+  border-bottom-color: color-mix(in srgb, var(--brand-primary-bright) 20%, transparent) !important;
   box-shadow: none !important;
   transform: none !important;
 }
 
-/* 图标底座取三期 rgb(77,154,255,0.08)（覆盖二期 #1a2a4a）；
-   !important 基态同时压制 Light 段 hover 的背景，暗色下 hover 背景保持不变（color 仍走 Light hover 的 white） */
 :global(html.dark .article-center) .collectionIconWrapper {
-  background: rgb(77, 154, 255, 0.08) !important;
-}
-
-:global(html.dark .article-center) .collectionCount {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .article-center) .collectionTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .article-center) .collectionDesc {
-  color: #94a3b8 !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 8%, transparent) !important;
 }
 
 :global(html.dark .article-center) .collectionFooter {
-  color: #64748b !important;
+  color: var(--brand-primary-bright) !important;
 }

@@ -41,12 +41,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(0, 82, 217, 0.2);
+  background: color-mix(in srgb, var(--brand-primary) 20%, transparent);
   border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(0, 82, 217, 0.4);
+  background: color-mix(in srgb, var(--brand-primary) 40%, transparent);
 }
 
 html.dark ::-webkit-scrollbar-thumb {
@@ -59,29 +59,29 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 
 /* 文本选中色 */
 ::selection {
-  background: rgb(0, 82, 217, 0.2);
+  background: color-mix(in srgb, var(--brand-primary) 20%, transparent);
   color: inherit;
 }
 
 html.dark ::selection {
-  background: rgb(51, 117, 224, 0.4);
+  background: color-mix(in srgb, var(--brand-primary-bright) 40%, transparent);
 }
 
 /* 链接默认样式 */
 a {
-  color: var(--el-color-primary, #0052d9);
+  color: var(--brand-primary);
   text-decoration: none;
   transition: color 0.2s;
 }
 
 a:hover {
-  color: var(--el-color-primary-light-3, #3375e0);
+  color: var(--brand-primary-dark);
 }
 /* 深色主题适配 */
 html.dark,
 :root.dark {
-  background-color: #0f172a;
-  color: #f1f5f9;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
 }
 /* ============================================================
    滚动揭示动画 (v-reveal 指令)
@@ -145,7 +145,7 @@ html.dark,
   line-height: 0.82;
   font-weight: 800;
   margin: 0.08em 0.12em 0 0;
-  color: #0052d9;
+  color: var(--brand-primary);
 }
 
 /* ============================================================
@@ -156,7 +156,7 @@ html.dark,
   top: 0;
   left: 0;
   height: 2px;
-  background: #0052d9;
+  background: var(--brand-primary);
   z-index: 1001;
   transition: width 0.1s linear;
 }

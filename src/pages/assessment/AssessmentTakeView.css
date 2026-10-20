@@ -18,7 +18,7 @@
   transform: translate(-50%, -50%);
   font-size: clamp(280px, 42vw, 520px);
   font-weight: 900;
-  color: black;
+  color: var(--text-primary);
   opacity: 0.028;
   letter-spacing: -16px;
   line-height: 0.8;
@@ -31,7 +31,7 @@
 /* 顶栏 */
 .take-header {
   height: 72px;
-  background: white;
+  background: var(--bg-card);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -159,7 +159,7 @@
 /* 底栏 */
 .take-footer {
   height: 88px;
-  background: white;
+  background: var(--bg-card);
   border-top: 1px solid var(--neutral-075);
   display: flex;
   align-items: center;
@@ -208,7 +208,7 @@
   align-items: center;
   gap: 6px;
   background: var(--neutral-900);
-  color: white;
+  color: var(--text-inverse, #fff);
   border: none;
   cursor: pointer;
   padding: 14px 32px;
@@ -259,7 +259,7 @@
 .submitting-overlay {
   position: fixed;
   inset: 0;
-  background: color-mix(in srgb, white 92%, transparent);
+  background: color-mix(in srgb, var(--bg-page) 92%, transparent);
   backdrop-filter: blur(12px);
   z-index: 3000;
   display: flex;

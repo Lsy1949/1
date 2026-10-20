@@ -1,4 +1,4 @@
 .animated-homepage {
-  background: linear-gradient(to bottom, white, var(--brand-primary-faint)) fixed;
+  background: linear-gradient(to bottom, var(--bg-page), var(--brand-primary-faint)) fixed;
   min-height: 100vh;
 }

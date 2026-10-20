@@ -5,7 +5,7 @@
   position: fixed;
   inset: 0;
   z-index: 10000;
-  background: color-mix(in srgb, var(--navy-950) 40%, transparent);
+  background: rgb(0 0 0 / 0.4);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: flex-start;
@@ -23,9 +23,9 @@
 .cmdPanel {
   width: 92%;
   max-width: 640px;
-  background: white;
-  border: 1px solid var(--ink-200);
-  box-shadow: 0 24px 64px color-mix(in srgb, var(--navy-950) 18%, transparent);
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.18);
   display: flex;
   flex-direction: column;
   max-height: 70vh;
@@ -42,7 +42,7 @@
   align-items: center;
   gap: 12px;
   padding: 18px 24px;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .cmdPrompt {
@@ -57,21 +57,21 @@
   border: none;
   outline: none;
   font-size: 17px;
-  color: var(--navy-950);
+  color: var(--text-heading);
   background: transparent;
   font-family: inherit;
 }
 
 .cmdInput::placeholder {
-  color: #b0b8c4; /* stylelint-disable-line color-no-hex, function-allowed-list */
+  color: var(--text-faint); /* stylelint-disable-line color-no-hex, function-allowed-list */
 }
 
 .cmdEsc {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1px;
-  color: var(--ink-400);
-  border: 1px solid var(--ink-200);
+  color: var(--text-faint);
+  border: 1px solid var(--border-strong);
   padding: 3px 7px;
   border-radius: 3px;
 }
@@ -89,7 +89,7 @@
 .cmdGroupLabel {
   font-size: 10px;
   letter-spacing: 2px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 700;
   text-transform: uppercase;
   padding: 6px 24px 4px;
@@ -122,7 +122,7 @@
 .cmdItemNum {
   font-size: 10px;
   font-weight: 600;
-  color: #c0c8d4; /* stylelint-disable-line color-no-hex, function-allowed-list */
+  color: var(--text-faint); /* stylelint-disable-line color-no-hex, function-allowed-list */
   font-variant-numeric: tabular-nums;
   width: 20px;
   flex-shrink: 0;
@@ -142,7 +142,7 @@
 
 .cmdItemTitle {
   font-size: 14px;
-  color: var(--ink-900);
+  color: var(--text-primary);
   font-weight: 500;
   line-height: 1.3;
 }
@@ -156,7 +156,7 @@
 
 .cmdItemDesc {
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   letter-spacing: 0.2px;
 }
 
@@ -171,7 +171,7 @@
 
 .cmdItemArrow {
   font-size: 14px;
-  color: var(--ink-300);
+  color: var(--border-strong);
   opacity: 0;
   transform: translateX(-4px);
   transition: all 0.2s ease;
@@ -191,7 +191,7 @@
 .cmdEmptyEyebrow {
   font-size: 11px;
   letter-spacing: 3px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 600;
   text-transform: uppercase;
   display: block;
@@ -200,15 +200,15 @@
 
 .cmdEmptyText {
   font-size: 14px;
-  color: var(--ink-500);
+  color: var(--text-muted);
 }
 
 .cmdFooter {
   display: flex;
   gap: 20px;
   padding: 12px 24px;
-  border-top: 1px solid var(--mist-050);
-  background: var(--mist-025);
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-soft);
 }
 
 .cmdFooterHint {
@@ -216,17 +216,17 @@
   align-items: center;
   gap: 5px;
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
 .cmdFooterHint kbd {
   font-size: 10px;
   font-weight: 600;
-  border: 1px solid var(--ink-200);
+  border: 1px solid var(--border-strong);
   padding: 2px 5px;
   border-radius: 3px;
-  background: white;
-  color: var(--ink-500);
+  background: var(--bg-card);
+  color: var(--text-muted);
 }
 
 /* 过渡 keyframes（替代 Vue <Transition name="palette">，模块内自动局部化） */
@@ -285,105 +285,61 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 等价迁入：cmd- 系列类为本组件独占类，
-   原全局规则已列入待删清单；:global(html.dark) 保留全局作用域前缀，
-   !important 与多层叠加的最终生效值原样保留）
+   暗色主题（仅保留「暗底上必须提亮 / 特殊处理」的规则；
+   换色类规则已由 light 基础规则的语义变量自动接管。遮罩用纯黑
+   半透明表达，浮层阴影保留 rgb(0 0 0 / x)）
    ============================================================ */
 :global(html.dark) .cmdBackdrop {
-  background: rgb(0, 0, 0, 0.65) !important;
+  background: rgb(0 0 0 / 0.65) !important;
   backdrop-filter: blur(6px) !important;
 }
 
 :global(html.dark) .cmdPanel {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
-  box-shadow: 0 25px 60px rgb(0, 0, 0, 0.6) !important;
+  border-color: var(--border-light) !important;
+  box-shadow: 0 25px 60px rgb(0 0 0 / 0.6) !important;
 }
 
 :global(html.dark) .cmdPrompt {
-  color: #4d9aff !important;
-}
-
-:global(html.dark) .cmdInput {
-  background: transparent !important;
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark) .cmdInput::placeholder {
-  color: #64748b !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .cmdEsc {
-  background: #0f172a !important;
-  border-color: #334155 !important;
-  color: #94a3b8 !important;
-}
-
-:global(html.dark) .cmdGroupLabel {
-  color: #64748b !important;
-  border-bottom-color: #1e293b !important;
-}
-
-:global(html.dark) .cmdItem {
-  border-bottom-color: rgb(30, 41, 59, 0.6) !important;
-}
-
-:global(html.dark) .cmdItemNum {
-  color: #64748b !important;
-}
-
-:global(html.dark) .cmdItemTitle {
-  color: #e2e8f0 !important;
+  background: var(--bg-page) !important;
+  border-color: var(--border-regular) !important;
+  color: var(--text-muted) !important;
 }
 
 :global(html.dark) .cmdItemDesc {
-  color: #94a3b8 !important;
+  color: var(--text-muted) !important;
 }
 
 :global(html.dark) .cmdItemTag {
-  background: #1a2a4a !important;
-  color: #4d9aff !important;
-  border-color: #1a3a6b !important;
-}
-
-:global(html.dark) .cmdItemArrow {
-  color: #475569 !important;
+  background: var(--bg-blue-tint) !important;
+  color: var(--brand-primary-bright) !important;
+  border-color: var(--border-blue) !important;
 }
 
 :global(html.dark) .cmdItem:hover,
 :global(html.dark) .cmdItem.active {
-  background: #1a2a4a !important;
+  background: var(--bg-blue-tint) !important;
 }
 
 :global(html.dark) .cmdItem:hover .cmdItemTitle,
 :global(html.dark) .cmdItem.active .cmdItemTitle {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .cmdItem:hover .cmdItemArrow,
 :global(html.dark) .cmdItem.active .cmdItemArrow {
-  color: #4d9aff !important;
-}
-
-:global(html.dark) .cmdEmptyEyebrow {
-  color: #64748b !important;
-}
-
-:global(html.dark) .cmdEmptyText {
-  color: #94a3b8 !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .cmdFooter {
-  background: #0f172a !important;
-  border-top-color: #1e293b !important;
-}
-
-:global(html.dark) .cmdFooterHint {
-  color: #64748b !important;
+  background: var(--bg-page) !important;
 }
 
 :global(html.dark) .cmdFooterHint kbd {
-  background: #1e293b !important;
-  border-color: #334155 !important;
-  color: #cbd5e1 !important;
+  background: var(--bg-mute) !important;
+  border-color: var(--border-regular) !important;
+  color: var(--text-regular) !important;
 }

@@ -194,7 +194,7 @@ export function DetailBody() {
         wrapClassName="image-preview-dialog"
         /* 原 .image-preview-dialog .ant-modal-content/header 结构覆写 token 化；
            关闭按钮颜色走 closeIcon 官方 prop */
-        closeIcon={<CloseOutlined style={{ color: 'var(--ink-500)' }} />}
+        closeIcon={<CloseOutlined style={{ color: 'var(--text-muted)' }} />}
         styles={{
           content: { background: 'transparent', boxShadow: 'none', borderRadius: 16 },
           header: { display: 'none' },

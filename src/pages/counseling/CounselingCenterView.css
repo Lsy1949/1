@@ -7,7 +7,7 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 32px 40px 96px;
-  color: var(--ink-800);
+  color: var(--text-heading);
   font-feature-settings: "tnum" 1;
 }
 
@@ -57,24 +57,7 @@
   .counseling-page .main-tabs .ant-tabs-nav-wrap { overflow-x: auto; }
 }
 
-/* ============ 暗夜模式适配 ============ */
-html.dark .counseling-page .module-cover {
-  border-bottom-color: var(--slate-700) !important;
-}
-
-html.dark .counseling-page .module-cover .cover-line {
-  background: linear-gradient(to right, var(--brand-primary) 0, var(--brand-primary) 56px, var(--slate-700) 56px, var(--slate-700) 100%);
-}
-
-html.dark .counseling-page .module-cover .cover-title {
-  color: var(--slate-100) !important;
-}
-
-html.dark .counseling-page .module-cover .cover-desc,
-html.dark .counseling-page .module-cover .cover-eyebrow,
-html.dark .counseling-page .module-cover .cover-no {
-  color: var(--slate-400) !important;
-}
+/* ============ 暗夜模式由全局语义变量自动适配 ============ */
 
 /* ============ AI 咨询师入口 ============ */
 .ai-consult-entry {
@@ -106,7 +89,7 @@ html.dark .counseling-page .module-cover .cover-no {
   display: grid;
   place-items: center;
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
   font-size: 22px;
   box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 30%, transparent);
 }
@@ -127,7 +110,7 @@ html.dark .counseling-page .module-cover .cover-no {
 
 .entry-text small {
   font-size: 12.5px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   line-height: 1.5;
 }
 
@@ -139,17 +122,4 @@ html.dark .counseling-page .module-cover .cover-no {
 
 .ai-consult-entry:hover .entry-arrow {
   transform: translateX(4px);
-}
-
-html.dark .ai-consult-entry {
-  background: var(--slate-800);
-  border-color: var(--slate-700);
-}
-
-html.dark .entry-text strong {
-  color: var(--slate-100);
-}
-
-html.dark .entry-text small {
-  color: var(--slate-400);
 }

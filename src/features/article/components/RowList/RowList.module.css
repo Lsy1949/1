@@ -10,14 +10,14 @@
   gap: 32px;
   align-items: center;
   padding: 36px 0;
-  border-bottom: 1px solid var(--mist-100);
+  border-bottom: 1px solid var(--border-regular);
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
 
 .articleRow:first-child {
-  border-top: 1px solid var(--mist-100);
+  border-top: 1px solid var(--border-regular);
 }
 
 .articleRow:hover {
@@ -78,14 +78,14 @@
 
 .rowDate {
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 500;
 }
 
 .rowTitle {
   font-size: clamp(20px, 2vw, 26px);
   font-weight: 700;
-  color: var(--navy-950);
+  color: var(--text-heading);
   line-height: 1.3;
   margin: 0 0 10px;
   letter-spacing: -0.02em;
@@ -102,7 +102,7 @@
 
 .rowSummary {
   font-size: 14px;
-  color: var(--ink-500);
+  color: var(--text-muted);
   line-height: 1.6;
   margin: 0 0 14px;
   display: -webkit-box;
@@ -116,14 +116,14 @@
   align-items: center;
   gap: 10px;
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 500;
 }
 
 .rowMeta .dot {
   width: 3px;
   height: 3px;
-  background: var(--ink-300);
+  background: var(--text-faint);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -176,7 +176,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: color-mix(in srgb, white 95%, transparent);
+  background: var(--bg-overlay);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -231,10 +231,8 @@
   padding: 100px 0;
 }
 
-/* ===== 暗色主题（自 dark-mode.css 迁移，作用域为页面根类 article-list-page；
-   行基态取三期「保持编辑风分割线」覆盖后的最终生效值，hover 保留二期
-   border/shadow/transform 并叠加三期的 background；article-row 不在全局
-   transform:none 豁免组内，hover 位移行为维持原样） ===== */
+/* ===== 暗色主题：颜色换色已由语义变量自动跟随，此处仅保留
+   「行融入背景」这一暗色专用视觉与深色底上的主色提亮 ===== */
 :global(html.dark .article-list-page) .articleRow {
   background: transparent !important;
   border-color: transparent !important;
@@ -246,62 +244,39 @@
 }
 
 :global(html.dark .article-list-page) .articleRow:hover {
-  background: rgb(77, 154, 255, 0.04) !important;
-  border-color: #4d9aff !important;
-  border-bottom-color: #4d9aff !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
+  border-color: var(--brand-primary-bright) !important;
+  border-bottom-color: var(--brand-primary-bright) !important;
   box-shadow: 0 16px 32px rgb(0, 0, 0, 0.4) !important;
   transform: translateY(-4px);
 }
 
 :global(html.dark .article-list-page) .rowIndex {
-  color: #64748b !important;
+  color: var(--text-faint) !important;
 }
 
 :global(html.dark .article-list-page) .articleRow:hover .rowIndex {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .article-list-page) .rowCat {
-  color: #4d9aff !important;
-  background: #1a2a4a !important;
-}
-
-:global(html.dark .article-list-page) .rowDate {
-  color: #64748b !important;
-}
-
-:global(html.dark .article-list-page) .rowTitle {
-  color: #f1f5f9 !important;
+  color: var(--brand-primary-bright) !important;
+  background: var(--bg-blue-tint) !important;
 }
 
 :global(html.dark .article-list-page) .articleRow:hover .rowTitle {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .article-list-page) .rowSummary {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .article-list-page) .rowMeta {
-  color: #64748b !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .article-list-page) .rowImage {
-  background: #0f172a !important;
+  background: var(--bg-page) !important;
 }
 
-/* 箭头底色取三期 transparent（覆盖二期仅改 color 的规则），color 走二期 #475569 */
 :global(html.dark .article-list-page) .rowArrow {
-  color: #475569 !important;
+  color: var(--text-faint) !important;
   background: transparent !important;
 }
 
 :global(html.dark .article-list-page) .articleRow:hover .rowArrow {
-  color: #4d9aff !important;
-}
-
-/* .dot 为跨组件共用类：背景走全局 html.dark .dot（dark-mode.css 保留），
-   此处加等价局部兜底防全局规则日后移除 */
-:global(html.dark) .dot {
-  background: #1e2b3a !important;
+  color: var(--brand-primary-bright) !important;
 }

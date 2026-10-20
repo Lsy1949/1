@@ -27,7 +27,7 @@
 .ringNum {
   font-size: 2.4em;
   font-weight: 800;
-  color: black;
+  color: var(--text-primary);
   line-height: 1;
   letter-spacing: -1px;
   font-variant-numeric: tabular-nums;
@@ -35,7 +35,7 @@
 
 .ringUnit {
   font-size: 0.7em;
-  color: var(--ink-400);
+  color: var(--text-faint);
   letter-spacing: 1px;
   font-weight: 600;
   text-transform: uppercase;

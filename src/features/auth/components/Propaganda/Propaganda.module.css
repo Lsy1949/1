@@ -7,7 +7,7 @@
   max-width: 620px;
   display: flex;
   flex-direction: column;
-  color: white;
+  color: var(--text-inverse, #fff);
   position: relative;
   padding: 8px 0;
   animation: slideInFromLeft 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
@@ -27,8 +27,8 @@
   font-weight: 800;
   line-height: 1.02;
   letter-spacing: -2px;
-  color: white;
-  text-shadow: 0 4px 24px color-mix(in srgb, black 45%, transparent);
+  color: var(--text-inverse, #fff);
+  text-shadow: 0 4px 24px rgb(0 0 0 / 0.45);
 }
 
 .heroSubtitle {
@@ -36,9 +36,9 @@
   margin-left: 4px;
   font-size: 18px;
   line-height: 1.8;
-  color: color-mix(in srgb, white 82%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 82%, transparent);
   letter-spacing: 0.5px;
-  text-shadow: 0 1px 8px color-mix(in srgb, black 35%, transparent);
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.35);
   font-weight: 400;
   max-width: 360px;
 }
@@ -47,7 +47,7 @@
 .divider {
   width: 56px;
   height: 2px;
-  background: color-mix(in srgb, white 50%, transparent);
+  background: color-mix(in srgb, var(--text-inverse, #fff) 50%, transparent);
   margin-bottom: 32px;
   animation: fadeIn 0.7s ease 0.35s both;
 }
@@ -59,19 +59,19 @@
   border: none;
   font-size: 16px;
   line-height: 1.95;
-  color: color-mix(in srgb, white 88%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 88%, transparent);
   font-style: italic;
   letter-spacing: 0.6px;
   font-weight: 300;
   max-width: 420px;
-  text-shadow: 0 1px 6px color-mix(in srgb, black 40%, transparent);
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.4);
   animation: fadeIn 0.7s ease 0.45s both;
 }
 
 .quoteMark {
   font-size: 22px;
   font-weight: 600;
-  color: color-mix(in srgb, white 55%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 55%, transparent);
   font-style: normal;
   font-family: Georgia, serif;
   margin-right: 4px;
@@ -123,7 +123,7 @@
   flex-shrink: 0;
   font-size: 14px;
   font-weight: 700;
-  color: color-mix(in srgb, white 55%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 55%, transparent);
   letter-spacing: 2px;
   font-family: Georgia, serif;
   min-width: 28px;
@@ -133,21 +133,21 @@
   flex-shrink: 0;
   width: 32px;
   height: 1px;
-  background: color-mix(in srgb, white 40%, transparent);
+  background: color-mix(in srgb, var(--text-inverse, #fff) 40%, transparent);
 }
 
 .featureContent h3 {
   margin: 0 0 4px;
   font-size: 17px;
   font-weight: 700;
-  color: white;
+  color: var(--text-inverse, #fff);
   letter-spacing: 0.3px;
 }
 
 .featureContent p {
   margin: 0;
   font-size: 13px;
-  color: color-mix(in srgb, white 70%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 70%, transparent);
   line-height: 1.5;
   letter-spacing: 0.2px;
 }
@@ -184,28 +184,11 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移：feature-item 系列为全仓独占
-   类——仅本组件使用；原「卡片与面板」两区块中与 service-card、
-   el-card 等死类并列的规则多层叠加后取最终生效值。hero 标题、
-   副标题、引言的暗色表现由 dark-mode.css 的通用元素规则
-   （html.dark h1-h6、p、blockquote）继续提供服务，本模块不加
-   等价规则以保持优先级关系不变）
+   暗色主题（仅保留「暗底上必须提亮」的规则；
+   换色类规则已由 light 基础规则的语义变量自动接管。品牌展示区
+   始终叠在深色背景插画上，白色文字为设计常量，无需暗色覆写）
    ============================================================ */
-:global(html.dark) .featureItem {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
-  color: var(--text-primary) !important;
-}
-
 :global(html.dark) .featureItem:hover {
-  border-color: #4d9aff !important;
-  box-shadow: 0 20px 40px rgb(0, 0, 0, 0.4) !important;
-}
-
-:global(html.dark) .featureItem h3 {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark) .featureItem p {
-  color: #94a3b8 !important;
+  border-color: var(--brand-primary-bright) !important;
+  box-shadow: 0 20px 40px rgb(0 0 0 / 0.4) !important;
 }

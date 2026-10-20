@@ -4,7 +4,7 @@
   padding: 0 48px 100px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
     'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  color: var(--ink-900);
+  color: var(--text-primary);
 }
 
 /* ============ Sections ============ */
@@ -31,7 +31,7 @@
    已 token 化为 SettingsView.tsx 嵌套 ConfigProvider 组件注入：
    Input/Select/DatePicker 的 borderRadius 0、colorBorder、hoverBorderColor、
    activeBorderColor、activeShadow。checkbox/switch 选中态原规则与全局
-   colorPrimary（#0052d9）同值，属冗余，已删除。
+   colorPrimary（--brand-primary）同值，属冗余，已删除。
    仍不可 token 化的项保留在下方。
    ================================================================== */
 /* Checkbox 选中文字着色（Checkbox 组件 token 为空，无对应 token） */
@@ -52,9 +52,9 @@
     position: sticky;
     top: 0;
     z-index: 50;
-    background: white;
-    border-top: 1px solid var(--ink-900);
-    border-bottom: 1px solid var(--ink-200);
+    background: var(--bg-card);
+    border-top: 1px solid var(--text-primary);
+    border-bottom: 1px solid var(--border-light);
     overflow-x: auto;
     margin: 0 -24px;
     padding: 0 24px;
@@ -70,7 +70,7 @@
     gap: 2px;
     padding: 12px 18px;
     text-decoration: none;
-    color: var(--ink-500);
+    color: var(--text-secondary);
     border-bottom: 2px solid transparent;
     transition: color 0.2s;
   }

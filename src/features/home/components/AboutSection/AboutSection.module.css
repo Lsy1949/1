@@ -18,7 +18,7 @@
 }
 
 .sectionTag {
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 3px;
@@ -28,7 +28,7 @@
 
 .aboutText h2 {
   font-size: clamp(32px, 4vw, 54px);
-  color: var(--navy-950);
+  color: var(--text-heading);
   margin-bottom: 1.5rem;
   font-weight: 800;
   line-height: 1.08;
@@ -38,7 +38,7 @@
 .aboutText p {
   font-size: 1.05rem;
   line-height: 1.8;
-  color: var(--ink-500);
+  color: var(--text-muted);
   margin-bottom: 1.5rem;
 }
 
@@ -48,13 +48,13 @@
   gap: 2rem;
   margin-top: 3rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--mist-050);
+  border-top: 1px solid var(--border-light);
 }
 
 .statNumber {
   font-size: clamp(28px, 3vw, 40px);
   font-weight: 800;
-  color: var(--navy-950);
+  color: var(--text-heading);
   margin-bottom: 0.25rem;
   line-height: 1;
   letter-spacing: -1px;
@@ -62,7 +62,7 @@
 }
 
 .statLabel {
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 1.5px;
@@ -77,7 +77,7 @@
 .aboutImage {
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px color-mix(in srgb, black 15%, transparent);
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.15);
   transform: rotateY(-5deg);
   transition: transform 0.5s ease;
   height: auto;
@@ -107,40 +107,14 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移，取两层规则的最终生效值；
-   about- 系列与 section-tag 为本组件独占类，原全局规则已删除。
-   stat-number/stat-label 为跨组件共用类（profile/article/capsule/square
-   亦用），dark-mode.css 全局规则保留服务它们，此处等价局部规则保障本
-   组件暗色渲染）
+   暗色主题（仅保留「暗底上必须特殊处理」的规则；
+   换色类规则已由 light 基础规则的语义变量自动接管）
    ============================================================ */
 :global(html.dark) .aboutSection {
   background: transparent !important;
 }
 
-:global(html.dark) .sectionTag {
-  color: #64748b !important;
-}
-
-:global(html.dark) .aboutText h2 {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark) .aboutText p {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark) .aboutStats {
-  border-top-color: #1e293b !important;
-}
-
-:global(html.dark) .statNumber {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark) .statLabel {
-  color: #64748b !important;
-}
-
+/* 暗色下图片投影加深 */
 :global(html.dark) .aboutImage {
-  box-shadow: 0 25px 50px -12px rgb(0, 0, 0, 0.5) !important;
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5) !important;
 }

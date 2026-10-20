@@ -13,6 +13,7 @@ import type { KeyboardEvent as ReactKeyboardEvent, RefObject } from 'react'
 import { App as AntApp, Button, Checkbox, Form, Input, Select } from 'antd'
 import { BankOutlined, LockOutlined, UserOutlined } from '@ant-design/icons'
 import { useI18n } from '@/i18n'
+import { readCssColor } from '@/utils/cssVar'
 import { useAuthLogin } from '@/features/auth/hooks/useAuth'
 import styles from './AccountPasswordLogin.module.css'
 
@@ -122,16 +123,10 @@ export function AccountPasswordLogin({
     // 清空画布
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    // 设置背景（深色模式使用深色渐变）
-    const isDark = document.documentElement.classList.contains('dark')
+    // 设置背景：跟随明暗主题（canvas 需实色，故经 readCssColor 解析语义变量）
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
-    if (isDark) {
-      gradient.addColorStop(0, 'rgba(30, 43, 58, 0.6)')
-      gradient.addColorStop(1, 'rgba(26, 42, 74, 0.6)')
-    } else {
-      gradient.addColorStop(0, '#f0f2f5')
-      gradient.addColorStop(1, '#e6f7ff')
-    }
+    gradient.addColorStop(0, readCssColor('var(--bg-soft)'))
+    gradient.addColorStop(1, readCssColor('var(--bg-blue-tint)'))
     ctx.fillStyle = gradient
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 

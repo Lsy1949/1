@@ -3,12 +3,12 @@
 /* ============ 区块通用 ============ */
 .editorialSection {
   padding: 40px 0 56px;
-  border-top: 1px solid var(--ink-200);
+  border-top: 1px solid var(--border-light);
   scroll-margin-top: 80px;
 }
 
 .editorialSection:first-of-type {
-  border-top: 1px solid var(--ink-900);
+  border-top: 1px solid var(--text-heading);
 }
 
 .sectionMarker {
@@ -30,12 +30,12 @@
 .markerRule {
   flex: 1;
   height: 1px;
-  background: var(--ink-900);
+  background: var(--text-heading);
 }
 
 .markerIcon {
   font-size: 16px;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 .markerLabel {
@@ -43,7 +43,7 @@
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 .sectionHeadlineRow {
@@ -53,7 +53,7 @@
   align-items: end;
   margin-bottom: 36px;
   padding-bottom: 24px;
-  border-bottom: 1px solid var(--ink-200);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .sectionHeadline {
@@ -62,7 +62,7 @@
   font-size: 32px;
   font-weight: 700;
   line-height: 1.1;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 .sectionDeck {
@@ -70,7 +70,7 @@
   font-size: 15px;
   font-style: italic;
   line-height: 1.6;
-  color: var(--ink-500);
+  color: var(--text-muted);
 }
 
 /* ============ 网格 ============ */
@@ -81,7 +81,7 @@
 
 .editorialCol {
   padding: 0 32px;
-  border-right: 1px solid var(--ink-200);
+  border-right: 1px solid var(--border-light);
 }
 .editorialCol:first-child { padding-left: 0; }
 
@@ -103,7 +103,7 @@
   align-items: center;
   gap: 16px;
   padding: 18px 0;
-  border-bottom: 1px solid var(--ink-200);
+  border-bottom: 1px solid var(--border-light);
 }
 .switchRow:last-child { border-bottom: none; }
 
@@ -117,13 +117,13 @@
 .switchLabel {
   font-size: 14px;
   font-weight: 600;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 .switchHint {
   font-size: 12px;
   font-style: italic;
-  color: var(--ink-400);
+  color: var(--text-faint);
   line-height: 1.4;
 }
 
@@ -137,9 +137,9 @@
 
 .editorialBtn {
   padding: 10px 28px;
-  background: var(--ink-900);
-  color: white;
-  border: 1px solid var(--ink-900);
+  background: var(--text-heading);
+  color: var(--text-inverse, #fff);
+  border: 1px solid var(--text-heading);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -164,7 +164,7 @@
   .editorialCol {
     padding: 24px 0;
     border-right: none;
-    border-bottom: 1px solid var(--ink-200);
+    border-bottom: 1px solid var(--border-light);
   }
   .editorialCol:first-child { padding-top: 0; }
 
@@ -184,60 +184,27 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移的本组件有效值，原全局规则
-   「html.dark 加 settings-page 前缀的开关列表系列」待主控统一删除）
+   暗色主题：背景/文字/边框换色已由语义变量自动跟随，仅保留暗色下
+   必要的强调色规则
    ============================================================ */
-:global(html.dark .settings-page) .editorialSection {
-  border-color: #1e293b !important;
-}
-
 :global(html.dark .settings-page) .markerNum {
-  background: #0f172a !important;
-  border-color: #4d9aff !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .settings-page) .markerRule {
-  background: #1e293b !important;
+  background: var(--bg-page) !important;
+  border-color: var(--brand-primary-bright) !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .settings-page) .markerIcon {
-  background: #1a2a4a !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .settings-page) .markerLabel,
-:global(html.dark .settings-page) .sectionHeadline {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .settings-page) .sectionDeck {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .settings-page) .editorialCol {
-  color: #f1f5f9 !important;
+  background: var(--bg-blue-tint) !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .settings-page) .editorialBtn {
-  background: #0052d9 !important;
-  color: #fff !important;
-  border-color: #0052d9 !important;
+  background: var(--brand-primary) !important;
+  color: var(--text-inverse, #fff) !important;
+  border-color: var(--brand-primary) !important;
 }
 
 :global(html.dark .settings-page) .editorialBtn:hover {
-  background: #0042ad !important;
-  border-color: #0042ad !important;
-}
-
-:global(html.dark .settings-page) .switchRow {
-  border-color: #1e293b !important;
-}
-
-:global(html.dark .settings-page) .switchLabel {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .settings-page) .switchHint {
-  color: #64748b !important;
+  background: var(--brand-primary-dark) !important;
+  border-color: var(--brand-primary-dark) !important;
 }

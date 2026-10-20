@@ -6,6 +6,8 @@ import {
 import { resolveTenantId } from '@/config/tenant/resolve'
 import { bootstrapTenantConfig, refreshTenantConfig } from '@/config/tenant/loader'
 import type { TenantConfig, TenantFeatures } from '@/config/tenant/types'
+import { setTenantPaletteScope } from '@/hooks/useTheme'
+import { DEFAULT_PALETTE, isPaletteKey } from '@/styles/palette'
 
 // 类型从 config/tenant 统一转出（保持 Vue 版从 @/stores 引用的兼容性）
 export type {
@@ -21,17 +23,74 @@ export { resolveTenantId } from '@/config/tenant/resolve'
 /** localStorage 品牌色缓存 key（index.html 防闪烁脚本读取） */
 export const BRAND_PRIMARY_CACHE_KEY = 'tenant:brand-primary'
 
-/** 把配置应用到全局：CSS 变量 / 标题 / favicon / 品牌色缓存 */
+/** L2 覆写样式表元素 id */
+const OVERRIDE_STYLE_ID = 'tenant-theme-overrides'
+
+/** 与明暗无关的 token：可直接 inline 注入，不参与暗色重定义 */
+const MODE_AGNOSTIC_TOKENS = new Set(['--brand-radius', '--brand-font-family'])
+
+/**
+ * 注入 L2 白名单语义 token 覆写。
+ *
+ * 关键点：明暗敏感 token 必须写成**样式表规则**而非 inline style。
+ * inline style 优先级高于任何选择器，会压过 dark-mode.css 的暗色重定义，
+ * 导致切到暗色后输入框 / 导航仍是浅色（租户覆写是浅色取值）。
+ *
+ * 这里用 `html:not(.dark)` 作用域（优先级 0,1,1）承载覆写值：
+ * 既高于浅色 `:root`（0,1,0），又低于暗色 `:root.dark`（0,2,0），
+ * 与既定注入顺序「palette → tenant overrides → dark 变量重定义」一致
+ * —— 即租户覆写默认只在浅色生效，暗色由官方暗色 token 接管。
+ */
+function applyOverrides(overrides: Record<string, string>): void {
+  const root = document.documentElement
+  let styleEl = document.getElementById(OVERRIDE_STYLE_ID) as HTMLStyleElement | null
+  if (!styleEl) {
+    styleEl = document.createElement('style')
+    styleEl.id = OVERRIDE_STYLE_ID
+    document.head.appendChild(styleEl)
+  }
+
+  const lightDecls: string[] = []
+  for (const [key, value] of Object.entries(overrides)) {
+    if (MODE_AGNOSTIC_TOKENS.has(key)) {
+      root.style.setProperty(key, value)
+    } else {
+      lightDecls.push(`${key}: ${value};`)
+    }
+  }
+  styleEl.textContent = lightDecls.length ? `html:not(.dark){${lightDecls.join('')}}` : ''
+}
+
+/** 把配置应用到全局：palette 作用域 / L2 overrides / 标题 / favicon / 品牌色缓存 */
 function applyConfig(c: TenantConfig): void {
   try {
+    // L1 · 应用租户 palette（只更新内存作用域，不写 localStorage，
+    // 避免覆盖用户主动设置的 palette 偏好；缺失时回退默认 palette）
+    const tenantDefault = isPaletteKey(c.theme.defaultPalette)
+      ? c.theme.defaultPalette
+      : DEFAULT_PALETTE
+    setTenantPaletteScope(c.tenantId, tenantDefault)
+
     const root = document.documentElement
-    root.style.setProperty('--brand-primary', c.theme.primaryColor)
-    root.style.setProperty('--brand-primary-dark', c.theme.darkColor)
-    root.style.setProperty('--brand-primary-deep', c.theme.deepColor)
-    root.style.setProperty('--brand-primary-deeper', c.theme.deeperColor)
-    root.style.setProperty('--brand-primary-soft', c.theme.softColor)
-    root.style.setProperty('--brand-primary-faint', c.theme.faintColor)
-    root.style.setProperty('--brand-primary-wash', c.theme.washColor)
+
+    // 清掉上一次租户注入的 inline brand-*，避免串色（palette 已接管七档）
+    const legacyKeys = [
+      '--brand-primary',
+      '--brand-primary-dark',
+      '--brand-primary-deep',
+      '--brand-primary-deeper',
+      '--brand-primary-soft',
+      '--brand-primary-faint',
+      '--brand-primary-wash',
+      '--brand-radius',
+      '--brand-font-family',
+    ]
+    for (const k of legacyKeys) root.style.removeProperty(k)
+
+    // L2 · 租户白名单语义 token 覆写（sanitizeOverrides 已在 merge 时过滤）
+    applyOverrides(c.theme.themeOverrides ?? {})
+
+    // 兼容字段：radius / fontFamily 也允许通过 theme 直给（与 L2 等价）
     if (c.theme.radius) root.style.setProperty('--brand-radius', c.theme.radius)
     if (c.theme.fontFamily) root.style.setProperty('--brand-font-family', c.theme.fontFamily)
 
@@ -47,7 +106,7 @@ function applyConfig(c: TenantConfig): void {
       link.href = c.brand.favicon
     }
 
-    // 写入品牌色缓存，供下次加载 index.html 内联脚本防闪烁
+    // 写入品牌色缓存，供下次加载 index.html 内联脚本防 FOUC
     localStorage.setItem(BRAND_PRIMARY_CACHE_KEY, c.theme.primaryColor)
   } catch {
     /* DOM/localStorage 异常不影响应用运行 */

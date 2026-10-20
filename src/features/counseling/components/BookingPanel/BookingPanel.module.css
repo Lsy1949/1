@@ -26,7 +26,7 @@
   grid-template-columns: 88px 1fr;
   gap: 36px;
   padding: 36px 28px;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
   border-radius: 16px;
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -74,7 +74,7 @@
 .stepTitle {
   font-size: 22px;
   font-weight: 700;
-  color: var(--ink-900);
+  color: var(--text-heading);
   margin: 0 0 24px;
   letter-spacing: -0.4px;
   display: flex;
@@ -102,12 +102,12 @@
 
 .optional {
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 500;
   margin-left: 8px;
   letter-spacing: 0.3px;
   padding: 2px 8px;
-  background: var(--ink-100);
+  background: var(--bg-mute);
   border-radius: 6px;
 }
 
@@ -124,9 +124,9 @@
   align-items: flex-start;
   gap: 4px;
   padding: 14px 20px;
-  border: 1.5px solid var(--slate-200);
+  border: 1.5px solid var(--border-strong);
   border-radius: 12px;
-  background: white;
+  background: var(--bg-card);
   cursor: pointer;
   font-family: inherit;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -145,11 +145,11 @@
   background: var(--brand-primary);
   box-shadow: 0 8px 20px color-mix(in srgb, var(--brand-primary) 20%, transparent);
 }
-.typeOpt.active .toName { color: white; font-weight: 700; }
-.typeOpt.active .toDur { color: color-mix(in srgb, white 85%, transparent); }
+.typeOpt.active .toName { color: var(--text-inverse, #fff); font-weight: 700; }
+.typeOpt.active .toDur { color: color-mix(in srgb, var(--text-inverse, #fff) 85%, transparent); }
 
-.toName { font-size: 16px; color: var(--ink-800); font-weight: 600; transition: all 0.2s; letter-spacing: -0.2px; }
-.toDur { font-size: 11px; color: var(--ink-400); font-variant-numeric: tabular-nums; letter-spacing: 0.3px; }
+.toName { font-size: 16px; color: var(--text-primary); font-weight: 600; transition: all 0.2s; letter-spacing: -0.2px; }
+.toDur { font-size: 11px; color: var(--text-faint); font-variant-numeric: tabular-nums; letter-spacing: 0.3px; }
 
 /* 心理老师 · 搜索框 */
 .counselorSearch {
@@ -157,19 +157,19 @@
   align-items: center;
   gap: 10px;
   padding: 8px 14px;
-  border: 1px solid var(--slate-200);
+  border: 1px solid var(--border-strong);
   border-radius: 24px;
-  background: white;
+  background: var(--bg-card);
   transition: all 0.25s ease;
   width: 280px;
-  box-shadow: 0 1px 4px color-mix(in srgb, var(--slate-900) 3%, transparent);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.03);
 }
 
 .counselorSearch:focus-within {
   border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 10%, transparent);
 }
-.counselorSearch :global(.anticon) { color: var(--ink-400); font-size: 14px; }
+.counselorSearch :global(.anticon) { color: var(--text-faint); font-size: 14px; }
 
 .counselorSearch input {
   flex: 1;
@@ -177,10 +177,10 @@
   outline: none;
   background: transparent;
   font-size: 13px;
-  color: var(--ink-800);
+  color: var(--text-primary);
   font-family: inherit;
 }
-.counselorSearch input::placeholder { color: var(--ink-400); }
+.counselorSearch input::placeholder { color: var(--text-faint); }
 
 .csCount {
   font-size: 11px;
@@ -216,11 +216,11 @@
 .counselorEmpty {
   padding: 32px;
   text-align: center;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-size: 13px;
-  background: var(--slate-50);
+  background: var(--bg-soft);
   border-radius: 12px;
-  border: 1px dashed var(--slate-200);
+  border: 1px dashed var(--border-strong);
 }
 
 /* 心理老师 · 列表（卡片化） */
@@ -237,9 +237,9 @@
   align-items: center;
   padding: 14px 18px;
   cursor: pointer;
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   border-radius: 12px;
-  background: white;
+  background: var(--bg-card);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
@@ -275,9 +275,9 @@
   color: var(--brand-primary);
 }
 
-.cpName { font-size: 15px; font-weight: 600; color: var(--ink-800); transition: color 0.2s; letter-spacing: -0.2px; }
-.cpMeta { font-size: 12px; color: var(--ink-400); letter-spacing: 0.2px; }
-.cpRating { font-size: 13px; color: var(--warning-500); font-weight: 600; font-variant-numeric: tabular-nums; }
+.cpName { font-size: 15px; font-weight: 600; color: var(--text-primary); transition: color 0.2s; letter-spacing: -0.2px; }
+.cpMeta { font-size: 12px; color: var(--text-faint); letter-spacing: 0.2px; }
+.cpRating { font-size: 13px; color: var(--status-warning); font-weight: 600; font-variant-numeric: tabular-nums; }
 
 /* 日期 · 卡片化横向 */
 .dateRow {
@@ -295,9 +295,9 @@
   text-align: center;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1.5px solid var(--slate-200);
+  border: 1.5px solid var(--border-strong);
   border-radius: 12px;
-  background: white;
+  background: var(--bg-card);
 }
 
 .dateOpt:hover {
@@ -313,11 +313,11 @@
   background: var(--brand-primary);
   box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 20%, transparent);
 }
-.dateOpt.active .doWeek { color: color-mix(in srgb, white 85%, transparent); }
-.dateOpt.active .doDate { color: white; font-weight: 700; }
+.dateOpt.active .doWeek { color: color-mix(in srgb, var(--text-inverse, #fff) 85%, transparent); }
+.dateOpt.active .doDate { color: var(--text-inverse, #fff); font-weight: 700; }
 
-.doWeek { display: block; font-size: 11px; color: var(--ink-400); margin-bottom: 4px; letter-spacing: 0.5px; }
-.doDate { display: block; font-size: 17px; font-weight: 600; color: var(--ink-800); font-variant-numeric: tabular-nums; transition: all 0.2s; letter-spacing: -0.3px; }
+.doWeek { display: block; font-size: 11px; color: var(--text-faint); margin-bottom: 4px; letter-spacing: 0.5px; }
+.doDate { display: block; font-size: 17px; font-weight: 600; color: var(--text-primary); font-variant-numeric: tabular-nums; transition: all 0.2s; letter-spacing: -0.3px; }
 
 /* 时段 + 方式 */
 .timeMode { display: flex; flex-direction: column; gap: 20px; }
@@ -330,12 +330,12 @@
 
 .slotOpt {
   padding: 8px 16px;
-  border: 1px solid var(--slate-200);
-  background: white;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-card);
   font-family: inherit;
   font-size: 13px;
   font-weight: 500;
-  color: var(--ink-600);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s;
   border-radius: 8px;
@@ -350,7 +350,7 @@
 }
 
 .slotOpt.active {
-  color: white;
+  color: var(--text-inverse, #fff);
   background: var(--brand-primary);
   border-color: var(--brand-primary);
   font-weight: 600;
@@ -358,10 +358,10 @@
 }
 
 .slotOpt.disabled {
-  color: var(--ink-300);
+  color: var(--text-faint);
   cursor: not-allowed;
   text-decoration: line-through;
-  background: var(--ink-50);
+  background: var(--bg-soft);
 }
 
 .modeRow {
@@ -372,11 +372,11 @@
 
 .modeOpt {
   padding: 8px 18px;
-  border: 1px solid var(--slate-200);
-  background: white;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-card);
   font-family: inherit;
   font-size: 13px;
-  color: var(--ink-600);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s;
   border-radius: 20px;
@@ -386,7 +386,7 @@
 .modeOpt:hover { color: var(--brand-primary); border-color: var(--brand-primary); background: var(--brand-primary-faint); }
 
 .modeOpt.active {
-  color: white;
+  color: var(--text-inverse, #fff);
   background: var(--brand-primary);
   border-color: var(--brand-primary);
   font-weight: 600;
@@ -400,14 +400,14 @@
   gap: 16px;
   margin-bottom: 20px;
   padding: 12px 16px;
-  background: var(--slate-50);
+  background: var(--bg-soft);
   border-radius: 10px;
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
 }
 
 .formInlineLabel {
   font-size: 13px;
-  color: var(--ink-600);
+  color: var(--text-secondary);
   font-weight: 600;
   letter-spacing: 0.2px;
 }
@@ -417,7 +417,7 @@
 
 .formLabel {
   font-size: 13px;
-  color: var(--ink-800);
+  color: var(--text-primary);
   font-weight: 600;
   padding-bottom: 8px;
   line-height: 1.4;
@@ -447,8 +447,8 @@
 }
 
 /* 表单 · 现代化输入（el-input → antd Input）
-   输入框圆角/底色/描边/文字色/padding/hover/focus 聚焦圈已 token 化为
-   CounselingCenterView 嵌套 ConfigProvider 的 Input 组件注入；
+   输入框圆角/底色/描边/文字色/padding/hover/focus 聚焦圈已统一由
+   src/main.tsx 的全局 Input token 提供（本页仅覆写 paddingInline 14）；
    textarea 专属 padding/行高与占位色无对应 token，保留下方 */
 
 /* el-textarea → antd TextArea */
@@ -457,7 +457,7 @@
   line-height: 1.7;
 }
 
-.bookingForm :global(textarea.ant-input)::placeholder { color: var(--ink-400); }
+.bookingForm :global(textarea.ant-input)::placeholder { color: var(--text-faint); }
 
 .bookingForm a {
   color: var(--brand-primary);
@@ -469,7 +469,7 @@
 /* el-checkbox → antd Checkbox
    （内圆角 4px 与 antd 默认 borderRadiusSM 同值、选中底色与全局 colorPrimary
      同值，均属冗余已删；文字排版无组件 token，保留） */
-.bookingForm :global(.ant-checkbox-wrapper) { font-size: 13px; color: var(--ink-600); align-items: flex-start; }
+.bookingForm :global(.ant-checkbox-wrapper) { font-size: 13px; color: var(--text-secondary); align-items: flex-start; }
 
 /* el-switch → antd Switch：选中底色与全局 colorPrimary（#0052d9）同值，冗余已删 */
 
@@ -480,13 +480,13 @@
   align-items: center;
   margin-top: 40px;
   padding-top: 28px;
-  border-top: 1px solid var(--slate-200);
+  border-top: 1px solid var(--border-strong);
 }
 
 .formFooter :global(.ant-btn) { border-radius: 10px; font-weight: 600; }
 
 .formFooter :global(.ant-btn-primary) {
-  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--color-info) 100%);
+  background: linear-gradient(135deg, var(--brand-primary) 0%, color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff)) 100%);
   border-color: transparent;
   min-width: 200px;
   height: 52px;
@@ -508,7 +508,7 @@
 
 .formHint {
   font-size: 13px;
-  color: var(--ink-500);
+  color: var(--text-muted);
   font-weight: 500;
   letter-spacing: 0.2px;
 }
@@ -521,7 +521,7 @@
 
 /* 预约摘要 · 卡片化 */
 .summaryCard {
-  background: linear-gradient(135deg, var(--brand-primary-faint) 0%, white 100%);
+  background: linear-gradient(135deg, var(--brand-primary-faint) 0%, var(--bg-card) 100%);
   border: 1px solid var(--brand-primary-soft);
   border-radius: 16px;
   padding: 24px;
@@ -547,16 +547,16 @@
   padding: 10px 0;
   font-size: 13px;
   align-items: center;
-  border-bottom: 1px dashed var(--slate-200);
+  border-bottom: 1px dashed var(--border-strong);
 }
 .summaryRow:last-of-type { border-bottom: none; }
-.summaryRow span { color: var(--ink-500); font-size: 12px; }
-.summaryRow b { color: var(--ink-800); font-weight: 600; font-size: 13px; }
+.summaryRow span { color: var(--text-muted); font-size: 12px; }
+.summaryRow b { color: var(--text-primary); font-weight: 600; font-size: 13px; }
 
 .summaryRow b:empty::before,
 .summaryRow b.unset {
   content: var(--unset-text, '未选择');
-  color: var(--slate-300);
+  color: var(--text-faint);
   font-weight: 400;
   font-size: 12px;
   font-style: italic;
@@ -569,7 +569,7 @@
   border-top: 1px solid var(--brand-primary-soft);
   border-bottom: none;
 }
-.summaryRow.total b { font-size: 13px; color: var(--ink-900); font-weight: 600; }
+.summaryRow.total b { font-size: 13px; color: var(--text-heading); font-weight: 600; }
 
 .summaryRow.total b.freeTag {
   color: var(--brand-primary);
@@ -594,11 +594,11 @@
 }
 
 .myBookings {
-  background: white;
-  border: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 16px;
   padding: 22px 24px;
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--slate-900) 4%, transparent);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.04);
 }
 
 .mbHeader {
@@ -640,14 +640,14 @@
   background: transparent;
   border-radius: 0;
   border-left: none;
-  border-bottom: 1px solid var(--slate-100);
+  border-bottom: 1px solid var(--border-light);
 }
 .mbItem:last-child { border-bottom: none; }
 .mbItem:global(.status-completed) { opacity: 0.6; }
 .mbItem:global(.status-cancelled) { opacity: 0.5; }
 
 .mbTop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-.mbCounselor { font-size: 14px; font-weight: 700; color: var(--ink-800); letter-spacing: -0.2px; }
+.mbCounselor { font-size: 14px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.2px; }
 
 /* s- 系列同上，与预约状态值联动 */
 .mbStatus {
@@ -657,15 +657,15 @@
   border-radius: 10px;
   letter-spacing: 0.3px;
 }
-.mbStatus:global(.s-pending) { color: var(--warning-700); background: color-mix(in srgb, var(--warning-700) 10%, transparent); }
+.mbStatus:global(.s-pending) { color: var(--status-warning); background: color-mix(in srgb, var(--status-warning) 10%, transparent); }
 .mbStatus:global(.s-confirmed) { color: var(--brand-primary); background: color-mix(in srgb, var(--brand-primary) 10%, transparent); }
-.mbStatus:global(.s-completed) { color: var(--ink-500); background: var(--ink-100); }
+.mbStatus:global(.s-completed) { color: var(--text-muted); background: var(--bg-mute); }
 .mbStatus:global(.s-cancelled) { color: var(--danger-500); background: color-mix(in srgb, var(--danger-500) 10%, transparent); }
 
-.mbInfo { font-size: 12px; color: var(--ink-400); letter-spacing: 0.2px; }
+.mbInfo { font-size: 12px; color: var(--text-faint); letter-spacing: 0.2px; }
 .mbActions { margin-top: 10px; }
 .mbActions :global(.ant-btn) { border-radius: 8px; }
-.mbEmpty { font-size: 13px; color: var(--ink-400); text-align: center; padding: 24px 0; letter-spacing: 0.3px; }
+.mbEmpty { font-size: 13px; color: var(--text-faint); text-align: center; padding: 24px 0; letter-spacing: 0.3px; }
 
 @media (width <= 1200px) {
   .bookingLayout { grid-template-columns: 1fr 280px; gap: 48px; }
@@ -695,17 +695,16 @@
 }
 
 /* ============================================================
-   暗色主题（等价迁移自本组件原 css 暗色区与全局 dark-mode.css 的
-   counseling 作用域规则；dark-mode.css 中同一选择器的两层规则已按
-   最终生效值合并；.counseling-page 页面根类整体置于 :global() 内）
+   暗色主题：背景/文字/边框换色已由语义变量自动跟随；仅保留暗色下的
+   玻璃态（半透明白描边）、品牌强调色与第三方（antd Popover/Input）覆盖
    ============================================================ */
 :global(html.dark) .counselorSearch,
 :global(html.dark) .summaryCard,
 :global(html.dark) .myBookings,
 :global(html.dark) .counselorPickCard {
-  background: var(--slate-800) !important;
-  border-color: var(--slate-700) !important;
-  box-shadow: 0 2px 12px color-mix(in srgb, black 30%, transparent) !important;
+  background: var(--bg-card) !important;
+  border-color: var(--border-regular) !important;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.3) !important;
 }
 
 :global(html.dark) .typeHint,
@@ -714,43 +713,32 @@
   border-color: color-mix(in srgb, var(--brand-primary) 25%, transparent) !important;
 }
 
-:global(html.dark) .bookingForm :global(.ant-input),
-:global(html.dark) .bookingForm :global(textarea.ant-input) {
-  background: var(--slate-800);
-  border-color: var(--slate-700);
-  color: var(--slate-100);
-}
-
 /* —— 自 dark-mode.css counseling 作用域迁入（最终生效值） —— */
 :global(html.dark .counseling-page) .stepBlock {
   background: transparent !important;
   border-color: transparent !important;
-  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
+  border-bottom-color: rgb(255 255 255 / 0.06) !important;
 }
 
 :global(html.dark .counseling-page) .stepBlock:hover {
-  background: rgb(77, 154, 255, 0.04) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
   border-color: transparent !important;
   box-shadow: none !important;
 }
 
 :global(html.dark .counseling-page) .stepNum {
-  background: #0f172a !important;
-  border-color: #4d9aff !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .counseling-page) .stepTitle {
-  color: #f1f5f9 !important;
+  background: var(--bg-page) !important;
+  border-color: var(--brand-primary-bright) !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .counseling-page) .typeOpt,
 :global(html.dark .counseling-page) .dateOpt,
 :global(html.dark .counseling-page) .slotOpt,
 :global(html.dark .counseling-page) .modeOpt {
-  background: rgb(255, 255, 255, 0.03) !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
-  color: #cbd5e1 !important;
+  background: rgb(255 255 255 / 0.03) !important;
+  border-color: rgb(255 255 255 / 0.08) !important;
+  color: var(--text-regular) !important;
 }
 
 :global(html.dark .counseling-page) .typeOpt:hover,
@@ -761,66 +749,29 @@
 :global(html.dark .counseling-page) .slotOpt.active,
 :global(html.dark .counseling-page) .modeOpt:hover,
 :global(html.dark .counseling-page) .modeOpt.active {
-  background: rgb(77, 154, 255, 0.1) !important;
-  border-color: rgb(77, 154, 255, 0.3) !important;
-  color: #4d9aff !important;
+  background: var(--brand-primary-bright-bg) !important;
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 30%, transparent) !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .counseling-page) .slotOpt.disabled {
   opacity: 0.4 !important;
-  background: #0f172a !important;
-  color: #64748b !important;
-}
-
-:global(html.dark .counseling-page) .toName,
-:global(html.dark .counseling-page) .cpName {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .counseling-page) .toDur,
-:global(html.dark .counseling-page) .cpMeta {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .counseling-page) .cpRating {
-  color: #fbbf24 !important;
-}
-
-:global(html.dark .counseling-page) .formInline,
-:global(html.dark .counseling-page) .formHint {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .counseling-page) .summaryRow,
-:global(html.dark .counseling-page) .summaryDivider {
-  border-color: #1e293b !important;
-  color: #94a3b8 !important;
+  background: var(--bg-page) !important;
+  color: var(--text-faint) !important;
 }
 
 :global(html.dark .counseling-page) .mbItem {
   background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-}
-
-:global(html.dark .counseling-page) .mbCounselor {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .counseling-page) .mbInfo {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .counseling-page) .mbEmpty {
-  color: #64748b !important;
+  border-color: rgb(255 255 255 / 0.06) !important;
 }
 
 /* ============ counselor-popover：antd Popover 挂载于 body，浮层根类为字面量 ============ */
 :global(.counselor-popover .ant-popover-inner) {
   padding: 18px 20px;
   border-radius: 14px;
-  border: 1px solid var(--mist-050);
-  box-shadow: 0 12px 32px color-mix(in srgb, var(--slate-900) 10%, transparent);
-  background: white;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.1);
+  background: var(--bg-card);
 }
 
 .popDetail { font-size: 13px; }
@@ -831,49 +782,24 @@
   gap: 14px;
   margin-bottom: 14px;
   padding-bottom: 14px;
-  border-bottom: 1px solid var(--slate-100);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .popAvatar {
   width: 44px; height: 44px; border-radius: 12px;
-  color: white; display: flex; align-items: center; justify-content: center;
+  color: var(--text-inverse, #fff); display: flex; align-items: center; justify-content: center;
   font-size: 18px; font-weight: 700;
-  box-shadow: 0 4px 10px color-mix(in srgb, var(--slate-900) 10%, transparent);
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
 }
-.popName { font-size: 16px; font-weight: 700; color: var(--ink-800); letter-spacing: -0.2px; }
-.popTitle { font-size: 12px; color: var(--ink-400); margin-top: 4px; letter-spacing: 0.2px; }
-.popStats { display: flex; gap: 14px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--slate-100); }
-.popStats span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-500); font-variant-numeric: tabular-nums; }
+.popName { font-size: 16px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.2px; }
+.popTitle { font-size: 12px; color: var(--text-faint); margin-top: 4px; letter-spacing: 0.2px; }
+.popStats { display: flex; gap: 14px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-light); }
+.popStats span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
 .popStats :global(.anticon) { color: var(--brand-primary); font-size: 13px; }
-.popIntro { font-size: 13px; color: var(--ink-600); line-height: 1.75; margin: 0; }
+.popIntro { font-size: 13px; color: var(--text-secondary); line-height: 1.75; margin: 0; }
 
-/* popover 暗色：浮层根 counselor-popover 与 antd 内部类均在 :global，
-   pop 系列私有类保持局部 hash */
+/* ============ counselor-popover：antd Popover 挂载于 body（第三方覆盖） ============ */
 :global(html.dark .counselor-popover) :global(.ant-popover-inner) {
-  background: var(--slate-800);
-  border-color: var(--slate-700);
-}
-
-:global(html.dark .counselor-popover) .popHead {
-  border-bottom-color: #1e293b !important;
-}
-
-:global(html.dark .counselor-popover) .popName {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .counselor-popover) .popTitle {
-  color: #64748b !important;
-}
-
-:global(html.dark .counselor-popover) .popStats {
-  border-bottom-color: #1e293b !important;
-}
-
-:global(html.dark .counselor-popover) .popStats span {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .counselor-popover) .popIntro {
-  color: #cbd5e1 !important;
+  background: var(--bg-card);
+  border-color: var(--border-regular);
 }

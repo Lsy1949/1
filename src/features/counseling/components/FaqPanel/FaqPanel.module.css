@@ -13,14 +13,14 @@
 .faqSidebar {
   position: sticky;
   top: 96px;
-  background: white;
-  border: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 16px;
   padding: 10px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--slate-900) 4%, transparent);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.04);
 }
 
 .faqCat {
@@ -31,7 +31,7 @@
   border-radius: 10px;
   cursor: pointer;
   font-size: 13px;
-  color: var(--ink-600);
+  color: var(--text-secondary);
   font-weight: 500;
   transition: all 0.25s ease;
   border: none;
@@ -42,8 +42,8 @@
 .faqCat:hover { background: var(--brand-primary-faint); color: var(--brand-primary); }
 
 .faqCat.active {
-  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--color-info) 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--brand-primary) 0%, color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff)) 100%);
+  color: var(--text-inverse, #fff);
   font-weight: 600;
   box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 25%, transparent);
 }
@@ -54,15 +54,15 @@
   font-size: 11px;
   padding: 2px 8px;
   border-radius: 8px;
-  background: var(--slate-100);
-  color: var(--ink-400);
+  background: var(--border-light);
+  color: var(--text-faint);
   font-variant-numeric: tabular-nums;
   font-weight: 600;
 }
 
 .faqCat.active .faqCatCount {
-  background: color-mix(in srgb, white 20%, transparent);
-  color: white;
+  background: color-mix(in srgb, var(--text-inverse, #fff) 20%, transparent);
+  color: var(--text-inverse, #fff);
 }
 
 .faqContent { min-width: 0; }
@@ -75,7 +75,7 @@
   border-radius: 12px;
 }
 
-.faqSearch :global(.ant-input-prefix) { color: var(--ink-400); }
+.faqSearch :global(.ant-input-prefix) { color: var(--text-faint); }
 
 /* el-collapse → antd Collapse 适配（无边框、行式问答） */
 .faqContent :global(.ant-collapse) {
@@ -92,12 +92,12 @@
 .faqContent :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
   border-radius: 0;
   padding: 0;
   font-size: 15px;
   font-weight: 600;
-  color: var(--ink-800);
+  color: var(--text-primary);
   height: 64px;
   align-items: center;
   letter-spacing: -0.2px;
@@ -116,7 +116,7 @@
   padding: 16px 0 24px;
 }
 
-.faqQ { display: flex; align-items: center; gap: 14px; color: var(--ink-800); }
+.faqQ { display: flex; align-items: center; gap: 14px; color: var(--text-primary); }
 
 .qMark {
   display: inline-flex;
@@ -137,11 +137,11 @@
 .faqA {
   margin: 0 0 0 44px;
   font-size: 14px;
-  color: var(--ink-600);
+  color: var(--text-secondary);
   line-height: 1.85;
   letter-spacing: 0.1px;
   padding: 14px 18px;
-  background: var(--slate-50);
+  background: var(--bg-soft);
   border-radius: 10px;
   border-left: 3px solid var(--brand-primary);
 }
@@ -152,11 +152,11 @@
   gap: 14px;
   margin-top: 40px;
   padding: 20px 24px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--brand-primary) 6%, transparent) 0%, color-mix(in srgb, var(--color-info) 2%, transparent) 100%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--brand-primary) 6%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff)) 2%, transparent) 100%);
   border: 1px solid color-mix(in srgb, var(--brand-primary) 12%, transparent);
   border-radius: 14px;
   font-size: 14px;
-  color: var(--ink-600);
+  color: var(--text-secondary);
 }
 .faqContact :global(.anticon) { color: var(--brand-primary); font-size: 20px; }
 
@@ -178,47 +178,37 @@
 }
 
 /* ============================================================
-   暗色主题（等价迁移自本组件原 css 暗色区与全局 dark-mode.css 的
-   counseling 作用域规则；dark-mode.css 中同一选择器的两层规则已按
-   最终生效值合并；.counseling-page 页面根类整体置于 :global() 内）
+   暗色主题：背景/文字/边框换色已由语义变量自动跟随；仅保留暗色下的
+   玻璃态（半透明白描边）与品牌强调色
    ============================================================ */
 :global(html.dark) .faqSidebar {
-  background: var(--slate-800) !important;
-  border-color: var(--slate-700) !important;
-  box-shadow: 0 2px 12px color-mix(in srgb, black 30%, transparent) !important;
+  background: var(--bg-card) !important;
+  border-color: var(--border-regular) !important;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.3) !important;
 }
 
 /* —— 自 dark-mode.css counseling 作用域迁入（最终生效值） —— */
 :global(html.dark .counseling-page) .faqCat {
-  color: #cbd5e1 !important;
+  color: var(--text-regular) !important;
   background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
+  border-color: rgb(255 255 255 / 0.08) !important;
 }
 
 :global(html.dark .counseling-page) .faqCat:hover,
 :global(html.dark .counseling-page) .faqCat.active {
-  background: rgb(77, 154, 255, 0.1) !important;
-  color: #4d9aff !important;
-  border-color: rgb(77, 154, 255, 0.3) !important;
-}
-
-:global(html.dark .counseling-page) .faqQ {
-  color: #f1f5f9 !important;
-  border-bottom-color: #1e293b !important;
+  background: var(--brand-primary-bright-bg) !important;
+  color: var(--brand-primary-bright) !important;
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 30%, transparent) !important;
 }
 
 :global(html.dark .counseling-page) .qMark {
-  background: rgb(77, 154, 255, 0.1) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 10%, transparent) !important;
   border-color: transparent !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .counseling-page) .faqA {
-  color: #94a3b8 !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .counseling-page) .faqContact {
-  background: rgb(77, 154, 255, 0.06) !important;
-  border-color: rgb(77, 154, 255, 0.15) !important;
-  color: #4d9aff !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 6%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 15%, transparent) !important;
+  color: var(--brand-primary-bright) !important;
 }

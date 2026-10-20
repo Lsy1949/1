@@ -213,7 +213,15 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
         catCount[name] = (catCount[name] || 0) + 1
       }
     })
-    const colors = ['#0052d9', '#4d8bf5', '#10b981', '#f59e0b', '#7c3aed', '#ef4444', '#6b7280']
+    const colors = [
+      'var(--brand-primary)',
+      'var(--cat-geekblue)',
+      'var(--cat-green)',
+      'var(--cat-gold)',
+      'var(--cat-purple)',
+      'var(--cat-red)',
+      'var(--cat-gray)',
+    ]
     return Object.entries(catCount)
       .map(([name, value], i) => ({
         name,
@@ -595,11 +603,12 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
               {categoryDistribution.length > 0 ? (
                 <div className={`${styles.donutWrapper} ${styles.donutLarge}`}>
                   <svg viewBox="0 0 180 180" className={`${styles.donutSvg} ${styles.donutSvgLarge}`}>
+                    {/* SVG 展示属性不支持 var()，改用 style 以便分类色随主题切换 */}
                     {donutSegments.map((seg, i) =>
                       seg.isFull ? (
-                        <circle key={i} cx="90" cy="90" r="70" fill={seg.color} opacity="0.85" />
+                        <circle key={i} cx="90" cy="90" r="70" style={{ fill: seg.color }} opacity="0.85" />
                       ) : (
-                        <path key={i} d={seg.path} fill={seg.color} opacity="0.85" />
+                        <path key={i} d={seg.path} style={{ fill: seg.color }} opacity="0.85" />
                       )
                     )}
                     <text x="90" y="84" textAnchor="middle" className={styles.donutCenterVal}>

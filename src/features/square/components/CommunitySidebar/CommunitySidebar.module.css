@@ -10,7 +10,7 @@
 
 .sidebarCard {
   background: var(--brand-primary-wash);
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   border-radius: 16px;
   padding: 22px 24px;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
@@ -36,7 +36,7 @@
 .sidebarTitle {
   font-size: 13px;
   font-weight: 800;
-  color: var(--ink-900);
+  color: var(--text-heading);
   margin: 0;
   letter-spacing: 0.5px;
 }
@@ -46,7 +46,7 @@
   align-items: center;
   gap: 5px;
   font-size: 11px;
-  color: var(--success-500);
+  color: var(--status-success);
   font-weight: 600;
 }
 
@@ -54,10 +54,10 @@
   content: '';
   width: 6px;
   height: 6px;
-  background: var(--success-500);
+  background: var(--status-success);
   border-radius: 50%;
   display: inline-block;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--success-500) 15%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--status-success) 15%, transparent);
 }
 
 /* 活跃同学 */
@@ -68,7 +68,7 @@
 
 .memberAvatar {
   border-radius: 50%;
-  border: 2px solid white;
+  border: 2px solid var(--bg-card);
   transition: transform 0.2s ease;
 }
 
@@ -80,7 +80,7 @@
 .membersMore {
   margin-left: 12px;
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
@@ -98,10 +98,10 @@
   gap: 4px;
   padding: 6px 12px;
   background: var(--brand-primary-wash);
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   border-radius: 16px;
   font-size: 12px;
-  color: var(--ink-600);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
@@ -116,7 +116,7 @@
 }
 
 .cloudHash {
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 700;
 }
 
@@ -126,14 +126,14 @@
 
 .cloudCount {
   font-size: 10px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-variant-numeric: tabular-nums;
   margin-left: 2px;
 }
 
 /* 社区公约 */
 .guidelinesCard {
-  background: linear-gradient(160deg, var(--brand-primary-wash) 0%, white 100%);
+  background: linear-gradient(160deg, var(--brand-primary-wash) 0%, var(--bg-card) 100%);
 }
 
 .guidelinesList {
@@ -163,7 +163,7 @@
 
 .ruleText {
   font-size: 13px;
-  color: var(--ink-600);
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
@@ -175,74 +175,13 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移：square-page 页面作用域规则 +
-   三期「卡片融入背景」覆盖段，均为本组件独占类，页面根类 square-page
-   由 pages 层 css 定义，作用域选择器整体置于 :global 内）
+   暗色主题（背景/文字/边框换色由语义变量自动跟随，仅保留
+   强调色的暗色专用取值；三期「卡片融入背景」覆盖段见下文）
    ============================================================ */
-:global(html.dark .square-page) .sidebarCard {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
-}
-
-:global(html.dark .square-page) .sidebarCard:hover {
-  border-color: #4d9aff !important;
-  box-shadow: 0 16px 32px rgb(0, 0, 0, 0.4) !important;
-}
-
-:global(html.dark .square-page) .sidebarTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .square-page) .onlineDot {
-  background: #10b981 !important;
-}
-
-:global(html.dark .square-page) .memberAvatar {
-  background: #1a2a4a !important;
-  color: #4d9aff !important;
-  border-color: #1e2b3a !important;
-}
-
-:global(html.dark .square-page) .membersMore {
-  background: #0f172a !important;
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .square-page) .cloudTag {
-  color: #94a3b8 !important;
-  border-color: #1e293b !important;
-}
-
-:global(html.dark .square-page) .cloudTag:hover {
-  background: #1a2a4a !important;
-  color: #4d9aff !important;
-  border-color: #4d9aff !important;
-}
-
-:global(html.dark .square-page) .cloudHash {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .square-page) .cloudCount {
-  color: #64748b !important;
-}
-
-:global(html.dark .square-page) .sidebarCard.guidelinesCard {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
-}
-
-:global(html.dark .square-page) .guidelineItem {
-  border-color: #1e293b !important;
-}
-
+:global(html.dark .square-page) .cloudTag:hover,
+:global(html.dark .square-page) .cloudHash,
 :global(html.dark .square-page) .ruleNum {
-  background: #1a2a4a !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .square-page) .ruleText {
-  color: #cbd5e1 !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 /* 三期覆盖：卡片融入背景（文件后段，同特异性后者胜出，与原级联一致） */
@@ -253,14 +192,14 @@
 }
 
 :global(html.dark .square-page) .sidebarCard:hover {
-  background: rgb(77, 154, 255, 0.04) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
   border-color: transparent !important;
   box-shadow: none !important;
 }
 
 :global(html.dark .square-page) .sidebarCard.guidelinesCard {
-  background: rgb(77, 154, 255, 0.03) !important;
-  border-color: rgb(77, 154, 255, 0.12) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 3%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 12%, transparent) !important;
 }
 
 :global(html.dark .square-page) .cloudTag {
@@ -269,7 +208,7 @@
 }
 
 :global(html.dark .square-page) .cloudTag:hover {
-  background: rgb(77, 154, 255, 0.08) !important;
-  border-color: rgb(77, 154, 255, 0.2) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 8%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 20%, transparent) !important;
   transform: none !important;
 }

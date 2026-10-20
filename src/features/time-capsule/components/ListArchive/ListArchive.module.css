@@ -33,20 +33,20 @@
 .statValue {
   font-size: clamp(32px, 4vw, 44px);
   font-weight: 900;
-  color: var(--ink-900);
+  color: var(--text-primary);
   letter-spacing: -1.5px;
   line-height: 1;
   font-variant-numeric: tabular-nums;
   font-family: Georgia, serif;
 }
 
-.statPending { color: var(--warning-700); }
-.statOpened { color: var(--success-800); }
-.statAuditing { color: var(--warning-800); }
+.statPending { color: var(--status-warning); }
+.statOpened { color: var(--status-success); }
+.statAuditing { color: var(--status-info); }
 
 .statLabel {
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 600;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -54,7 +54,7 @@
 
 .statDivider {
   width: 1px;
-  background: var(--mist-050);
+  background: var(--border-light);
   align-self: stretch;
 }
 
@@ -67,7 +67,7 @@
   padding: 0 56px;
   display: flex;
   gap: 8px;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
   position: relative;
   z-index: 1;
 }
@@ -109,7 +109,7 @@
 .navLabel {
   font-size: 15px;
   font-weight: 500;
-  color: var(--ink-800);
+  color: var(--text-heading);
   letter-spacing: 0.3px;
 }
 
@@ -120,7 +120,7 @@
 .navCount {
   font-size: 12px;
   font-weight: 500;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-variant-numeric: tabular-nums;
   margin-left: 2px;
 }
@@ -143,7 +143,7 @@
 /* 单条档案（原文件两段定义合并为一段） */
 .archiveEntry {
   position: relative;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
   overflow: hidden;
   transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -229,7 +229,7 @@
 .envSerial {
   font-size: 14px;
   font-weight: 700;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.5px;
   font-family: Georgia, serif;
@@ -257,7 +257,7 @@
 .envTitle {
   font-size: 17px;
   font-weight: 600;
-  color: var(--ink-800);
+  color: var(--text-heading);
   margin: 0;
   line-height: 1.35;
   letter-spacing: 0.1px;
@@ -280,7 +280,7 @@
 
 .metaDate {
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.3px;
 }
@@ -292,13 +292,13 @@
 
 .metaMethod {
   font-size: 12px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
   letter-spacing: 0.2px;
 }
 
 .metaCountdown {
   font-size: 12px;
-  color: var(--warning-700);
+  color: var(--status-warning);
   font-weight: 600;
   letter-spacing: 0.2px;
 }
@@ -323,25 +323,25 @@
 /* tag- 系列为 JS 拼接的协议类（tag-xxx 按 statusKey 动态生成），
    以组合选择器形式定义避免全局泄漏 */
 .statusTag:global(.tag-pending) {
-  color: var(--warning-700);
-  border-color: var(--warning-700);
+  color: var(--status-warning);
+  border-color: var(--status-warning);
 }
 
 .statusTag:global(.tag-opened) {
-  color: var(--success-800);
-  border-color: var(--success-800);
+  color: var(--status-success);
+  border-color: var(--status-success);
 }
 
 .statusTag:global(.tag-auditing) {
-  color: var(--warning-800);
-  border-color: var(--warning-800);
+  color: var(--status-info);
+  border-color: var(--status-info);
   border-style: dashed;
 }
 
 .statusTag:global(.tag-rejected),
 .statusTag:global(.tag-failed) {
-  color: var(--danger-800);
-  border-color: var(--danger-800);
+  color: var(--status-danger);
+  border-color: var(--status-danger);
 }
 
 /* 滑出删除面板（delete-panel 为字符串协议类：onPointerDown 中
@@ -359,7 +359,7 @@
   justify-content: center;
   gap: 4px;
   background: var(--danger-500);
-  color: white;
+  color: var(--text-inverse, #fff);
   cursor: pointer;
   transition: background 0.2s ease;
 }
@@ -395,7 +395,7 @@
 
 .endText {
   font-size: 10px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   letter-spacing: 3px;
   font-weight: 700;
 }
@@ -437,7 +437,7 @@
 .emptyTitle {
   font-size: clamp(40px, 5.5vw, 64px);
   font-weight: 900;
-  color: var(--ink-900);
+  color: var(--text-primary);
   margin: 0 0 16px;
   letter-spacing: -2.5px;
   line-height: 1;
@@ -452,7 +452,7 @@
 
 .emptyHint {
   font-size: 14px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
   margin: 0 0 36px;
   letter-spacing: 0.3px;
 }
@@ -463,7 +463,7 @@
   gap: 10px;
   padding: 16px 36px;
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
   border: none;
   border-radius: 14px;
   font-size: 13px;
@@ -478,7 +478,7 @@
 
 .emptyBtn:hover {
   background: var(--brand-primary-dark);
-  color: white;
+  color: var(--text-inverse, #fff);
   box-shadow: 0 10px 26px color-mix(in srgb, var(--brand-primary) 30%, transparent);
   transform: translateY(-2px);
   gap: 16px;
@@ -591,207 +591,51 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移，页面作用域 .capsule-list-page
-   为 pages 层 CapsuleListView 根类；原规则仅服务本组件，整体迁入；
-   同类多期叠加已合并为最终生效值）
+   暗色主题（仅保留「暗底上必须提亮/特殊处理」的规则；
+   换色类规则已由 light 基础规则的语义变量自动接管）
    ============================================================ */
-:global(html.dark .capsule-list-page) .statsBar {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
+
+/* 主色在暗色底上对比不足，强调色统一走 bright 变体 */
+:global(html.dark .capsule-list-page) .navItem.active .navCount,
+:global(html.dark .capsule-list-page) .envelope:hover .envSerial,
+:global(html.dark .capsule-list-page) .envelope:hover .envTitle {
+  color: var(--brand-primary-bright);
 }
 
-:global(html.dark .capsule-list-page) .statBlock {
-  border-color: #1e293b !important;
+:global(html.dark .capsule-list-page) .navItem::after {
+  background: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .capsule-list-page) .statValue {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .capsule-list-page) .statPending {
-  color: #fbbf24 !important;
-}
-
-:global(html.dark .capsule-list-page) .statOpened {
-  color: #10b981 !important;
-}
-
-:global(html.dark .capsule-list-page) .statAuditing {
-  color: #a78bfa !important;
-}
-
-/* stat-label 存在全局共享暗色规则（服务 profile/article 等共用方，
-   留在 dark-mode.css 不迁），此处取本页面作用域规则的最终生效值兜底 */
-:global(html.dark .capsule-list-page) .statLabel {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .capsule-list-page) .statDivider {
-  background: #1e293b !important;
-}
-
-:global(html.dark .capsule-list-page) .filterNav {
-  border-color: #1e293b !important;
-}
-
-:global(html.dark .capsule-list-page) .navItem {
-  color: #94a3b8 !important;
-  border-color: #1e293b !important;
-}
-
-:global(html.dark .capsule-list-page) .navItem:hover {
-  color: #4d9aff !important;
-  border-color: #4d9aff !important;
-}
-
-:global(html.dark .capsule-list-page) .navItem.active {
-  color: #4d9aff !important;
-  border-color: #4d9aff !important;
-  background: #1a2a4a !important;
-}
-
-:global(html.dark .capsule-list-page) .navItem.active::after {
-  background: #4d9aff !important;
-}
-
-:global(html.dark .capsule-list-page) .navCount {
-  color: #64748b !important;
-}
-
-:global(html.dark .capsule-list-page) .navItem.active .navCount {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .capsule-list-page) .archiveEntry {
-  border-color: #1e293b !important;
-}
-
+/* 背景编号在暗底上需提亮才可见 */
 :global(html.dark .capsule-list-page) .entryBgNum {
-  color: rgb(77, 154, 255, 0.08) !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .capsule-list-page) .archiveEntry:hover .entryBgNum {
-  color: rgb(77, 154, 255, 0.18) !important;
+  color: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .capsule-list-page) .envelope {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
-}
-
+/* 信封 hover：暗色下用投影替代边框来表达抬升 */
 :global(html.dark .capsule-list-page) .envelope:hover {
-  border-color: #4d9aff !important;
   box-shadow: 0 20px 40px rgb(0, 0, 0, 0.45) !important;
   transform: translateY(-6px);
 }
 
-:global(html.dark .capsule-list-page) .envFlap {
-  background: #0f172a !important;
-  border-bottom-color: #1e293b !important;
-}
-
-:global(html.dark .capsule-list-page) .envSerial {
-  color: #64748b !important;
-}
-
-:global(html.dark .capsule-list-page) .envelope:hover .envSerial {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .capsule-list-page) .envTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .capsule-list-page) .envelope:hover .envTitle {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .capsule-list-page) .envMeta,
-:global(html.dark .capsule-list-page) .metaDate,
-:global(html.dark .capsule-list-page) .metaMethod,
-:global(html.dark .capsule-list-page) .metaCountdown {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .capsule-list-page) .metaDot {
-  color: #475569 !important;
-}
-
-:global(html.dark .capsule-list-page) .statusTag {
-  background: #1a2a4a !important;
-  border-color: #1a3a6b !important;
-}
-
-:global(html.dark .capsule-list-page) .statusTag:global(.tag-pending) {
-  color: #fbbf24 !important;
-}
-
-:global(html.dark .capsule-list-page) .statusTag:global(.tag-opened) {
-  color: #10b981 !important;
-}
-
-:global(html.dark .capsule-list-page) .statusTag:global(.tag-auditing) {
-  color: #a78bfa !important;
-}
-
-:global(html.dark .capsule-list-page) .statusTag:global(.tag-rejected),
-:global(html.dark .capsule-list-page) .statusTag:global(.tag-failed) {
-  color: #f87171 !important;
-}
-
-/* 删除面板（红色危险信号；delete-panel 为字面量协议类，整体 :global） */
+/* 删除面板：暗色下改半透明红，避免大面积高饱和色块 */
 :global(html.dark .capsule-list-page .delete-panel) {
-  background: rgb(239, 68, 68, 0.15) !important;
-  border-left-color: #ef4444 !important;
+  background: color-mix(in srgb, var(--status-danger) 15%, transparent) !important;
 }
 
 :global(html.dark .capsule-list-page .delete-panel:hover) {
-  background: rgb(239, 68, 68, 0.25) !important;
+  background: color-mix(in srgb, var(--status-danger) 25%, transparent) !important;
 }
 
 :global(html.dark .capsule-list-page) .deleteIcon,
 :global(html.dark .capsule-list-page) .deleteText {
-  color: #f87171 !important;
+  color: var(--status-danger) !important;
 }
 
-:global(html.dark .capsule-list-page) .archiveEnd,
-:global(html.dark .capsule-list-page) .endLine {
-  border-color: #1e293b !important;
-}
-
-:global(html.dark .capsule-list-page) .endText {
-  color: #64748b !important;
-}
-
-:global(html.dark .capsule-list-page) .emptyArchive,
-:global(html.dark .capsule-list-page) .emptyStamp {
-  border-color: #1e293b !important;
-}
-
-:global(html.dark .capsule-list-page) .stampText {
-  color: #64748b !important;
-}
-
-:global(html.dark .capsule-list-page) .emptyTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .capsule-list-page) .emptyHint {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .capsule-list-page) .emptyBtn {
-  background: #0052d9 !important;
-  color: #fff !important;
-  border-color: #0052d9 !important;
-}
-
-:global(html.dark .capsule-list-page) .emptyBtn:hover {
-  background: #0042ad !important;
-  border-color: #0042ad !important;
-}
-
-/* 卡片融入背景（三期覆盖规则，取最终生效值） */
+/* 滑动时轨道需融入页面底色 */
 :global(html.dark .capsule-list-page) .swipeTrack {
   background: transparent !important;
 }

@@ -1,11 +1,10 @@
 /* 题目卡片 */
 .qCardImmersive {
-  background: white;
+  background: var(--bg-card);
   border-radius: 24px;
   padding: 56px 48px;
-  box-shadow: 0 1px 3px color-mix(in srgb, black 4%, transparent),
-    0 12px 32px color-mix(in srgb, black 5%, transparent);
-  border: 1px solid var(--neutral-075);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--border-light);
 }
 
 .qHeader {
@@ -23,8 +22,8 @@
   display: inline-block;
   padding: 5px 12px;
   border-radius: 8px;
-  background: var(--neutral-900);
-  color: white;
+  background: var(--brand-primary);
+  color: var(--text-inverse, #fff);
   font-weight: 600;
   font-size: 13px;
   letter-spacing: 0.5px;
@@ -32,8 +31,8 @@
 
 .qCategoryTag {
   font-size: 12px;
-  color: var(--neutral-600);
-  background: var(--neutral-050);
+  color: var(--text-secondary);
+  background: var(--bg-mute);
   padding: 5px 10px;
   border-radius: 8px;
   font-weight: 500;
@@ -42,7 +41,7 @@
 .qProgressMark {
   margin-left: auto;
   font-size: 12px;
-  color: var(--neutral-400);
+  color: var(--text-faint);
   font-weight: 600;
   letter-spacing: 1px;
   font-variant-numeric: tabular-nums;
@@ -50,7 +49,7 @@
 
 .qText {
   font-size: clamp(22px, 2.6vw, 30px);
-  color: var(--neutral-900);
+  color: var(--text-heading);
   font-weight: 700;
   line-height: 1.4;
   margin: 0;
@@ -66,14 +65,14 @@
 
 .optCard {
   padding: 20px 24px;
-  border: 1.5px solid var(--neutral-100);
+  border: 1.5px solid var(--border-regular);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: white;
+  background: var(--bg-card);
   animation: slide-in 0.4s ease-out backwards;
   animation-delay: var(--delay);
   position: relative;
@@ -87,7 +86,7 @@
   top: 0;
   bottom: 0;
   width: 3px;
-  background: var(--neutral-900);
+  background: var(--brand-primary);
   transform: scaleY(0);
   transform-origin: center;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -107,13 +106,13 @@
   width: 32px;
   height: 32px;
   border-radius: 10px;
-  background: #f9f9f9;
-  border: 1px solid var(--neutral-100);
+  background: var(--bg-soft);
+  border: 1px solid var(--border-regular);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  color: var(--neutral-450);
+  color: var(--text-muted);
   font-size: 14px;
   transition: all 0.25s;
   flex-shrink: 0;
@@ -121,7 +120,7 @@
 
 .optLabel {
   font-size: 16px;
-  color: var(--neutral-800);
+  color: var(--text-primary);
   font-weight: 500;
 }
 
@@ -129,45 +128,45 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  border: 2px solid #ddd;
+  border: 2px solid var(--border-strong);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--text-inverse, #fff);
   transition: all 0.25s;
   flex-shrink: 0;
   font-size: 13px;
 }
 
 .optCard:hover {
-  border-color: var(--neutral-900);
+  border-color: var(--text-heading);
   transform: translateX(4px);
 }
 
 .optCard:hover .optIndex {
-  border-color: var(--neutral-900);
-  color: var(--neutral-900);
+  border-color: var(--text-heading);
+  color: var(--text-heading);
 }
 
 .optCard.selected {
-  border-color: var(--neutral-900);
-  background: var(--neutral-900);
-  box-shadow: 0 8px 20px color-mix(in srgb, black 15%, transparent);
+  border-color: var(--brand-primary);
+  background: var(--brand-primary);
+  box-shadow: var(--shadow-medium);
 }
 
 .optCard.selected .optLabel {
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 .optCard.selected .optIndex {
-  background: color-mix(in srgb, white 15%, transparent);
+  background: color-mix(in srgb, var(--text-inverse, #fff) 15%, transparent);
   border-color: transparent;
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 .optCard.selected .optCheck {
-  border-color: white;
-  background: color-mix(in srgb, white 20%, transparent);
+  border-color: var(--text-inverse, #fff);
+  background: color-mix(in srgb, var(--text-inverse, #fff) 20%, transparent);
 }
 
 @keyframes slide-in {
@@ -202,71 +201,4 @@
   }
 }
 
-/* ---------- 暗色模式（自 dark-mode.css 迁入，取多层叠加后的最终生效值；q- 系列 / opt- 系列） ---------- */
-:global(html.dark .immersive-assessment) .qCardImmersive {
-  background: transparent !important;
-  border-color: transparent !important;
-  box-shadow: none !important;
-}
-
-:global(html.dark .immersive-assessment) .qBadgeRow {
-  color: #64748b !important;
-}
-
-:global(html.dark .immersive-assessment) .qBadge {
-  background: #1a2a4a !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .immersive-assessment) .qCategoryTag {
-  background: #1a2a4a !important;
-  color: #4d9aff !important;
-  border-color: #1a3a6b !important;
-}
-
-:global(html.dark .immersive-assessment) .qProgressMark {
-  color: #64748b !important;
-}
-
-:global(html.dark .immersive-assessment) .qText {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .immersive-assessment) .optCard {
-  background: rgb(255, 255, 255, 0.03) !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
-}
-
-:global(html.dark .immersive-assessment) .optCard:hover {
-  background: rgb(77, 154, 255, 0.06) !important;
-  border-color: rgb(77, 154, 255, 0.2) !important;
-}
-
-:global(html.dark .immersive-assessment) .optCard.selected {
-  background: rgb(77, 154, 255, 0.1) !important;
-  border-color: #4d9aff !important;
-  box-shadow: none !important;
-}
-
-:global(html.dark .immersive-assessment) .optIndex {
-  color: #64748b !important;
-  background: rgb(255, 255, 255, 0.04) !important;
-}
-
-:global(html.dark .immersive-assessment) .optCard:hover .optIndex,
-:global(html.dark .immersive-assessment) .optCard.selected .optIndex {
-  background: #0052d9 !important;
-  color: #fff !important;
-}
-
-:global(html.dark .immersive-assessment) .optLabel {
-  color: #e2e8f0 !important;
-}
-
-:global(html.dark .immersive-assessment) .optCard.selected .optLabel {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .immersive-assessment) .optCheck {
-  color: #4d9aff !important;
-}
+/* ---------- 暗色模式：颜色已全部由语义变量接管，无需额外覆盖 ---------- */

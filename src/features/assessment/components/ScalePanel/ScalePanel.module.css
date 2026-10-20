@@ -5,8 +5,8 @@
   align-items: center;
   gap: 24px;
   padding: 18px 0;
-  border-top: 1px solid var(--navy-950);
-  border-bottom: 1px solid var(--mist-050);
+  border-top: 1px solid var(--text-heading);
+  border-bottom: 1px solid var(--border-light);
   margin-bottom: 8px;
   flex-wrap: wrap;
 }
@@ -42,7 +42,7 @@
 .ribbonCat .catName {
   font-size: 15px;
   font-weight: 500;
-  color: var(--navy-950);
+  color: var(--text-heading);
   letter-spacing: 0.2px;
 }
 
@@ -52,7 +52,7 @@
 
 .ribbonCat .catCount {
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-muted);
   font-variant-numeric: tabular-nums;
   margin-left: 4px;
   opacity: 0.7;
@@ -67,14 +67,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid var(--navy-950);
+  border-bottom: 1px solid var(--text-heading);
   padding: 4px 0;
   min-width: 200px;
 }
 
 .ribbonSearch .searchIco {
   font-size: 15px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
 }
 
 .ribbonSearch input {
@@ -82,14 +82,14 @@
   outline: none;
   background: transparent;
   font-size: 14px;
-  color: var(--navy-950);
+  color: var(--text-heading);
   font-family: inherit;
   width: 100%;
   padding: 4px 0;
 }
 
 .ribbonSearch input::placeholder {
-  color: var(--ink-400);
+  color: var(--text-muted);
 }
 
 /* 当前分类小标题 */
@@ -103,19 +103,19 @@
 .rowsHeading .headingName {
   font-size: clamp(22px, 2.4vw, 30px);
   font-weight: 800;
-  color: var(--navy-950);
+  color: var(--text-heading);
   letter-spacing: -0.5px;
 }
 
 .rowsHeading .headingLine {
   flex: 1;
   height: 1px;
-  background: var(--mist-050);
+  background: var(--border-light);
 }
 
 .rowsHeading .headingCount {
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-muted);
   font-weight: 600;
   letter-spacing: 1px;
   font-variant-numeric: tabular-nums;
@@ -126,8 +126,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 0;
-  border-top: 1px solid var(--mist-050);
-  border-left: 1px solid var(--mist-050);
+  border-top: 1px solid var(--border-light);
+  border-left: 1px solid var(--border-light);
 }
 
 .scaleRow {
@@ -135,12 +135,12 @@
   flex-direction: column;
   gap: 18px;
   padding: 28px 24px 24px;
-  border-right: 1px solid var(--mist-050);
-  border-bottom: 1px solid var(--mist-050);
+  border-right: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
   cursor: pointer;
   transition: background 0.3s ease, box-shadow 0.3s ease;
   position: relative;
-  background: white;
+  background: var(--bg-card);
 }
 
 .scaleRow:hover {
@@ -159,7 +159,7 @@
 
 .scaleRow.isUnavailable:hover {
   opacity: 0.9;
-  background: var(--neutral-025);
+  background: var(--bg-soft);
 }
 
 .rowNumber {
@@ -171,14 +171,14 @@
 .rowNumber .num {
   font-size: 13px;
   font-weight: 700;
-  color: var(--ink-400);
+  color: var(--text-muted);
   letter-spacing: 1.5px;
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
 .scaleRow:hover .rowNumber .num {
-  color: var(--brand-primary);
+  color: var(--brand-primary-bright);
 }
 
 .rowIcon {
@@ -189,18 +189,37 @@
   justify-content: center;
   font-size: 18px;
   border-radius: 8px;
-  background: var(--slate-50);
-  color: var(--brand-primary);
+  background: var(--bg-soft);
+  color: var(--brand-primary-bright);
   transition: all 0.3s ease;
 }
 
-/* cat- 为运行时动态分类类（协议类，保留字面量，经 :global 挂接） */
-.rowIcon:global(.cat-mental) { background: var(--brand-primary-faint); color: var(--brand-primary); }
-.rowIcon:global(.cat-career) { background: #eef6ff; color: var(--color-info); }
-.rowIcon:global(.cat-cognitive) { background: #f5f0ff; color: #6b5ce7; }
-.rowIcon:global(.cat-esports) { background: #fff0f6; color: #e84393; }
-.rowIcon:global(.cat-learning) { background: #f0fbf6; color: #00a878; }
-.rowIcon:global(.cat-social) { background: #fff7e6; color: #e8830c; }
+/* cat- 为运行时动态分类类（协议类，保留字面量，经 :global 挂接）
+   类别专用色由品牌色 / 状态色派生，避免新增全局变量 */
+.rowIcon:global(.cat-mental) {
+  background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  color: var(--brand-primary-bright);
+}
+.rowIcon:global(.cat-career) {
+  background: color-mix(in srgb, var(--brand-primary) 16%, transparent);
+  color: color-mix(in srgb, var(--brand-primary-bright) 70%, var(--status-info));
+}
+.rowIcon:global(.cat-cognitive) {
+  background: color-mix(in srgb, var(--status-info) 12%, transparent);
+  color: color-mix(in srgb, var(--brand-primary-bright) 50%, var(--status-info));
+}
+.rowIcon:global(.cat-esports) {
+  background: color-mix(in srgb, var(--status-danger) 12%, transparent);
+  color: var(--status-danger);
+}
+.rowIcon:global(.cat-learning) {
+  background: color-mix(in srgb, var(--status-success) 12%, transparent);
+  color: var(--status-success);
+}
+.rowIcon:global(.cat-social) {
+  background: color-mix(in srgb, var(--status-warning) 12%, transparent);
+  color: var(--status-warning);
+}
 
 .scaleRow:hover .rowIcon {
   transform: scale(1.08) rotate(-4deg);
@@ -222,7 +241,7 @@
 .rowTitle {
   font-size: 17px;
   font-weight: 700;
-  color: var(--navy-950);
+  color: var(--text-heading);
   margin: 0;
   line-height: 1.3;
   letter-spacing: -0.2px;
@@ -238,19 +257,19 @@
 }
 
 .rowStatus.done {
-  background: var(--navy-950);
-  color: white;
+  background: var(--brand-primary);
+  color: var(--text-inverse, #fff);
 }
 
 .rowStatus.soon {
   background: transparent;
-  color: var(--ink-400);
-  border: 1px dashed var(--mist-300);
+  color: var(--text-muted);
+  border: 1px dashed var(--border-strong);
 }
 
 .rowDesc {
   font-size: 13px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 0 0 10px;
   display: -webkit-box;
@@ -267,14 +286,14 @@
 
 .rowTag {
   font-size: 11px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
   padding: 2px 0;
   font-weight: 500;
 }
 
 .rowTag::before {
   content: '/ ';
-  color: var(--mist-300);
+  color: var(--border-strong);
 }
 
 .rowTag:first-child::before {
@@ -287,7 +306,7 @@
   justify-content: space-between;
   gap: 12px;
   padding-top: 14px;
-  border-top: 1px solid var(--slate-100);
+  border-top: 1px solid var(--border-regular);
 }
 
 .rowMeta .metaItem {
@@ -305,14 +324,14 @@
 .metaDifficulty {
   font-size: 11px;
   font-weight: 700;
-  color: var(--navy-950);
+  color: var(--text-heading);
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 
 .rowArrow {
   font-size: 16px;
-  color: var(--brand-primary);
+  color: var(--brand-primary-bright);
   opacity: 0;
   transform: translateX(-8px);
   transition: all 0.3s ease;
@@ -342,143 +361,23 @@
   align-items: center;
   gap: 10px;
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-muted);
   line-height: 1.6;
-  border-top: 1px solid var(--mist-050);
+  border-top: 1px solid var(--border-light);
 }
 
 .footerTip :global(.anticon) {
-  color: var(--ink-500);
+  color: var(--text-secondary);
   flex-shrink: 0;
   font-size: 14px;
 }
 
-/* ---------- 暗色模式（自 dark-mode.css 迁入，取多层叠加后的最终生效值；row- 系列 / ribbon- 系列 / heading- 系列） ---------- */
-:global(html.dark .assessment-page) .scaleRibbon {
-  background: transparent !important;
-  border-color: transparent !important;
-  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
-}
-
-:global(html.dark .assessment-page) .ribbonCat {
-  border-color: transparent !important;
-}
-
-:global(html.dark .assessment-page) .catName {
-  color: #cbd5e1 !important;
-}
-
-:global(html.dark .assessment-page) .catCount {
-  color: #64748b !important;
-}
-
-:global(html.dark .assessment-page) .ribbonSearch {
-  background: rgb(255, 255, 255, 0.04) !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
-}
-
-:global(html.dark .assessment-page) .searchIco {
-  color: #64748b !important;
-}
-
-:global(html.dark .assessment-page) .ribbonSearch input {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .assessment-page) .ribbonSearch input::placeholder {
-  color: #64748b !important;
-}
-
-:global(html.dark .assessment-page) .rowsHeading {
-  border-bottom-color: #1e293b !important;
-}
-
-:global(html.dark .assessment-page) .headingName,
-:global(html.dark .assessment-page) .headingCount {
-  color: #f1f5f9 !important;
-}
-
+/* ---------- 暗色模式补充：颜色由语义变量接管，仅保留必要的品牌强调 ---------- */
 :global(html.dark .assessment-page) .headingLine {
-  background: #4d9aff !important;
-}
-
-:global(html.dark .assessment-page) .scaleRows {
-  border-color: transparent !important;
-}
-
-:global(html.dark .assessment-page) .scaleRow {
-  background: transparent !important;
-  border-color: transparent !important;
-  border-bottom-color: rgb(255, 255, 255, 0.04) !important;
+  background: var(--brand-primary-bright);
 }
 
 :global(html.dark .assessment-page) .scaleRow:hover {
-  background: rgb(77, 154, 255, 0.06) !important;
-  border-color: transparent !important;
-  border-bottom-color: rgb(77, 154, 255, 0.2) !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-
-:global(html.dark .assessment-page) .scaleRow.isCompleted {
-  background: transparent !important;
-  opacity: 0.7;
-}
-
-/* 特异性高于通用 hover 最终值，未被后层覆盖，保留 Block1 取值 */
-:global(html.dark .assessment-page) .scaleRow.isUnavailable:hover {
-  border-color: #1e293b !important;
-  background: #1e2b3a !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-
-:global(html.dark .assessment-page) .rowNumber {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .assessment-page) .rowIcon {
-  background: rgb(77, 154, 255, 0.1) !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .assessment-page) .rowTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .assessment-page) .rowStatus.done {
-  background: rgb(16, 185, 129, 0.15) !important;
-  color: #10b981 !important;
-}
-
-:global(html.dark .assessment-page) .rowStatus.soon {
-  background: rgb(245, 158, 11, 0.15) !important;
-  color: #fbbf24 !important;
-}
-
-:global(html.dark .assessment-page) .rowDesc {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .assessment-page) .rowTag {
-  background: #1a2a4a !important;
-  color: #4d9aff !important;
-  border-color: #1a3a6b !important;
-}
-
-:global(html.dark .assessment-page) .rowMeta,
-:global(html.dark .assessment-page) .metaDifficulty {
-  color: #64748b !important;
-}
-
-:global(html.dark .assessment-page) .rowArrow {
-  color: #475569 !important;
-}
-
-:global(html.dark .assessment-page) .scaleRow:hover .rowArrow {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .assessment-page) .footerTip {
-  color: #94a3b8 !important;
+  background: var(--brand-primary-bright-bg);
+  border-bottom-color: color-mix(in srgb, var(--brand-primary-bright) 35%, transparent);
 }

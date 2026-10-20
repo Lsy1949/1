@@ -1,21 +1,17 @@
 /* ========== 色彩与字体变量（品牌蓝主题） ========== */
 .nf-page {
-  --brand-primary: var(--brand-primary);
   --brand-light: var(--color-info);
   --brand-dark: var(--navy-800);
   --brand-gradient: linear-gradient(135deg, var(--navy-800) 0%, var(--brand-primary) 50%, var(--color-info) 100%);
   --bg-primary: var(--brand-primary-wash);
-  --bg-secondary: white;
+  --bg-secondary: var(--bg-card);
   --bg-tint: var(--brand-primary-faint);
-  --text-primary: var(--ink-900);
-  --text-secondary: var(--ink-500);
-  --text-tertiary: var(--ink-400);
-  --border: var(--ink-200);
-  --border-light: var(--slate-100);
+  --text-tertiary: var(--text-faint);
+  --border: var(--border-light);
   --border-blue: var(--brand-primary-soft);
-  --dark-text: white;
-  --dark-text-soft: color-mix(in srgb, white 78%, transparent);
-  --dark-text-mute: color-mix(in srgb, white 50%, transparent);
+  --dark-text: var(--text-inverse, #fff);
+  --dark-text-soft: color-mix(in srgb, var(--text-inverse, #fff) 78%, transparent);
+  --dark-text-mute: color-mix(in srgb, var(--text-inverse, #fff) 50%, transparent);
   --font-display: 'Playfair Display', 'Noto Serif SC', georgia, serif;
   --font-serif: 'Noto Serif SC', 'Playfair Display', georgia, serif;
   --font-sans: 'Noto Sans SC', -apple-system, sans-serif;
@@ -56,7 +52,7 @@
   width: 42px;
   height: 42px;
   background: transparent;
-  border-color: white;
+  border-color: var(--text-inverse, #fff);
 }
 
 /* ========== 翻页容器 ========== */
@@ -159,8 +155,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(color-mix(in srgb, white 4%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, white 4%, transparent) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--text-inverse, #fff) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text-inverse, #fff) 4%, transparent) 1px, transparent 1px);
   background-size: 60px 60px;
   pointer-events: none;
 }

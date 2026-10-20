@@ -40,7 +40,7 @@ interface UserExtra {
  * label 字重/字距/大写变换、radio-button 直角等无对应 token 的维度仍保留在组件 css。
  */
 const profileThemeComponents = {
-  Form: { itemMarginBottom: 0, labelFontSize: 11, labelColor: 'var(--ink-500)' },
+  Form: { itemMarginBottom: 0, labelFontSize: 11, labelColor: 'var(--text-muted)' },
   Input: { borderRadius: 0 },
   Select: { borderRadius: 0 },
 }

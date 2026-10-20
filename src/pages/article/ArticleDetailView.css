@@ -1,6 +1,6 @@
 .article-detail-page {
   min-height: 100vh;
-  background: white;
+  background: var(--bg-page);
   padding-top: 28px;
   padding-bottom: 80px;
 }
@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .back-btn {
@@ -22,7 +22,7 @@
   gap: 8px;
   background: transparent;
   border: none;
-  color: var(--ink-800);
+  color: var(--text-primary);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 1.5px;
@@ -44,7 +44,7 @@
 .top-mark {
   font-size: 11px;
   letter-spacing: 2px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 600;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
@@ -69,13 +69,13 @@
   margin-bottom: 28px;
 }
 
-.eyebrow-sep { color: #d0d5db; font-weight: 400; } /* stylelint-disable-line color-no-hex, function-allowed-list */
-.eyebrow-date { color: var(--ink-500); font-weight: 500; }
+.eyebrow-sep { color: var(--border-light); font-weight: 400; }
+.eyebrow-date { color: var(--text-secondary); font-weight: 500; }
 
 .detail-title {
   font-size: clamp(36px, 5.5vw, 68px);
   font-weight: 900;
-  color: var(--navy-950);
+  color: var(--text-primary);
   line-height: 1.04;
   letter-spacing: -2px;
   margin: 0 0 28px;
@@ -84,7 +84,7 @@
 .detail-summary {
   font-size: clamp(16px, 1.4vw, 20px);
   line-height: 1.7;
-  color: var(--ink-600);
+  color: var(--text-regular);
   font-weight: 400;
   font-style: italic;
   margin: 0 0 40px;
@@ -99,7 +99,7 @@
   align-items: center;
   gap: 24px;
   padding-top: 28px;
-  border-top: 1px solid var(--mist-050);
+  border-top: 1px solid var(--border-light);
 }
 
 .author-block {
@@ -121,13 +121,13 @@
 .author-name {
   font-size: 14px;
   font-weight: 700;
-  color: var(--ink-900);
+  color: var(--text-primary);
   letter-spacing: 0.2px;
 }
 
 .author-title {
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   letter-spacing: 1px;
   text-transform: uppercase;
 }
@@ -135,7 +135,7 @@
 .meta-divider {
   width: 1px;
   height: 28px;
-  background: var(--mist-050);
+  background: var(--border-light);
 }
 
 .meta-stats {
@@ -148,7 +148,7 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
   font-weight: 500;
   letter-spacing: 0.5px;
   font-variant-numeric: tabular-nums;
@@ -156,7 +156,7 @@
 
 .meta-item .anticon {
   font-size: 13px;
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
 /* ===== 双栏布局 ===== */

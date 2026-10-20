@@ -32,7 +32,7 @@ export function PreferencesSection() {
     message.success(t('settings.card.preferences.languageChanged'))
   }
 
-  function onThemeChange(val: ThemeMode) {
+  function onThemeChange(val: ThemeMode | 'auto') {
     setThemeMode(val)
     message.success(t('settings.card.preferences.themeChanged'))
   }
@@ -65,7 +65,7 @@ export function PreferencesSection() {
         </div>
         <div className={styles.editorialCol}>
           <h3 className={styles.colTitle}>{t('settings.card.preferences.theme')}</h3>
-          <Select<ThemeMode>
+          <Select<ThemeMode | 'auto'>
             value={themeMode}
             onChange={onThemeChange}
             style={{ width: '100%' }}

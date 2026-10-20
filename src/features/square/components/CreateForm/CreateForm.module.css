@@ -12,8 +12,8 @@
 
 .formCard {
   padding: 28px;
-  background: white;
-  border: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 18px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -34,7 +34,7 @@
 .sectionTitle {
   font-size: 13px;
   font-weight: 700;
-  color: var(--ink-900);
+  color: var(--text-heading);
   margin-bottom: 18px;
   display: flex;
   align-items: baseline;
@@ -46,7 +46,7 @@
 .sectionNum {
   font-size: 11px;
   font-weight: 600;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.5px;
 }
@@ -56,7 +56,7 @@
 }
 
 .optionalHint {
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-size: 12px;
   font-weight: normal;
   margin-left: 8px;
@@ -79,7 +79,7 @@
   padding: 12px 16px;
   border-radius: 14px;
   background: var(--brand-primary-wash);
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 72px;
@@ -92,7 +92,7 @@
 
 .emotionLabel {
   font-size: 11px;
-  color: var(--ink-500);
+  color: var(--text-muted);
   font-weight: 600;
   letter-spacing: 0.5px;
 }
@@ -110,7 +110,7 @@
 }
 
 .emotionTag.active .emotionLabel {
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 /* 话题输入 */
@@ -121,14 +121,14 @@
   align-items: center;
   padding: 12px 14px;
   background: var(--brand-primary-wash);
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   border-radius: 12px;
   transition: border-color 0.25s ease;
 }
 
 .topicInputWrap:focus-within {
   border-color: var(--brand-primary);
-  background: white;
+  background: var(--bg-card);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 8%, transparent);
 }
 
@@ -173,12 +173,12 @@
   outline: none;
   background: transparent;
   font-size: 13px;
-  color: var(--ink-800);
+  color: var(--text-regular);
   font-family: inherit;
 }
 
 .topicInput::placeholder {
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
 /* 内容输入 */
@@ -190,12 +190,12 @@
   width: 100%;
   min-height: 160px;
   padding: 16px 18px;
-  background: white;
-  border: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 14px;
   font-size: 15px;
   line-height: 1.8;
-  color: var(--ink-800);
+  color: var(--text-regular);
   resize: vertical;
   outline: none;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -209,7 +209,7 @@
 }
 
 .contentTextarea::placeholder {
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
 .contentCount {
@@ -217,7 +217,7 @@
   right: 8px;
   bottom: -22px;
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-variant-numeric: tabular-nums;
 }
 
@@ -243,13 +243,13 @@
 
 .uploadIcon {
   font-size: 32px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   margin-bottom: 12px;
 }
 
 .uploadText {
   font-size: 13px;
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
 .imageGrid {
@@ -264,7 +264,7 @@
   padding-bottom: 100%;
   border-radius: 12px;
   overflow: hidden;
-  background: var(--slate-50);
+  background: var(--bg-soft);
 }
 
 .uploadedImage {
@@ -283,7 +283,7 @@
   width: 22px;
   height: 22px;
   background: color-mix(in srgb, var(--brand-primary) 80%, transparent);
-  color: white;
+  color: var(--text-inverse, #fff);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -324,13 +324,13 @@
 
 .addIcon {
   font-size: 24px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   margin-bottom: 4px;
 }
 
 .addText {
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
 .hiddenFileInput {
@@ -345,7 +345,7 @@
 .submitBtn {
   width: 100%;
   background: linear-gradient(135deg, var(--brand-primary), var(--color-info));
-  color: white;
+  color: var(--text-inverse, #fff);
   font-size: 13px;
   padding: 18px 0;
   border-radius: 14px;
@@ -364,8 +364,8 @@
 }
 
 .submitBtn:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--brand-primary-dark), var(--blue-600));
-  color: white;
+  background: linear-gradient(135deg, var(--brand-primary-dark), var(--brand-primary-deep));
+  color: var(--text-inverse, #fff);
   box-shadow: 0 12px 28px color-mix(in srgb, var(--brand-primary) 35%, transparent);
   transform: translateY(-3px);
 }
@@ -380,7 +380,7 @@
 
 .submitBtn:disabled {
   background: var(--brand-primary-soft);
-  color: white;
+  color: var(--text-inverse, #fff);
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -393,14 +393,14 @@
 
 .successBigIcon {
   font-size: 56px;
-  color: var(--green-800);
+  color: var(--status-success);
   margin-bottom: 16px;
 }
 
 .successDialogContent h3 {
   font-size: 20px;
   margin-bottom: 24px;
-  color: var(--ink-800);
+  color: var(--text-heading);
   font-weight: 700;
 }
 
@@ -437,169 +437,32 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移：square-create-page 页面作用域
-   规则，均为本组件独占类；页面根类 square-create-page 由 pages 层
-   css 定义，作用域选择器整体置于 :global 内）
+   暗色主题：背景/文字/边框换色由语义变量自动跟随，仅保留
+   强调色、状态色与「卡片融入背景」的暗色专用视觉
    ============================================================ */
-:global(html.dark .square-create-page) .formCard {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
-}
-
-:global(html.dark .square-create-page) .formCard:hover {
-  border-color: #4d9aff !important;
-}
-
-:global(html.dark .square-create-page) .sectionNum {
-  background: #0f172a !important;
-  border-color: #4d9aff !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .square-create-page) .sectionTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .square-create-page) .optionalHint {
-  color: #64748b !important;
-}
-
-:global(html.dark .square-create-page) .emotionTag {
-  background: #0f172a !important;
-  border-color: #334155 !important;
-  color: #cbd5e1 !important;
-}
-
-:global(html.dark .square-create-page) .emotionTag:hover,
-:global(html.dark .square-create-page) .emotionTag.active {
-  background: #1a2a4a !important;
-  border-color: #4d9aff !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .square-create-page) .contentTextarea {
-  background: #0f172a !important;
-  border-color: #334155 !important;
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .square-create-page) .contentTextarea:focus {
-  border-color: #4d9aff !important;
-}
-
-:global(html.dark .square-create-page) .contentTextarea::placeholder {
-  color: #64748b !important;
-}
-
-:global(html.dark .square-create-page) .contentCount {
-  color: #64748b !important;
-}
-
-:global(html.dark .square-create-page) .topicInputWrap {
-  background: #0f172a !important;
-  border-color: #334155 !important;
-}
-
-:global(html.dark .square-create-page) .topicInputWrap:focus-within {
-  border-color: #4d9aff !important;
-}
-
-:global(html.dark .square-create-page) .topicTag {
-  background: #1a2a4a !important;
-  color: #4d9aff !important;
-  border-color: #1a3a6b !important;
-}
-
+:global(html.dark .square-create-page) .sectionNum,
+:global(html.dark .square-create-page) .uploadIcon,
+:global(html.dark .square-create-page) .addIcon,
+:global(html.dark .square-create-page) .topicTag,
 :global(html.dark .square-create-page) .topicRemove {
-  color: #64748b !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .square-create-page) .topicRemove:hover {
-  color: #f87171 !important;
-}
-
-:global(html.dark .square-create-page) .topicInput {
-  background: transparent !important;
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .square-create-page) .topicInput::placeholder {
-  color: #64748b !important;
-}
-
-:global(html.dark .square-create-page) .imageUploader {
-  background: #0f172a !important;
-  border-color: #334155 !important;
-}
-
-:global(html.dark .square-create-page) .imageUploader:hover {
-  border-color: #4d9aff !important;
-  background: #1a2a4a !important;
-}
-
-:global(html.dark .square-create-page) .uploadIcon,
-:global(html.dark .square-create-page) .addIcon {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .square-create-page) .uploadText,
-:global(html.dark .square-create-page) .addText {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .square-create-page) .imageItem {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
+  color: var(--status-danger) !important;
 }
 
 :global(html.dark .square-create-page) .deleteBtn {
-  background: rgb(239, 68, 68, 0.85) !important;
-  color: #fff !important;
-}
-
-:global(html.dark .square-create-page) .addImageBtn {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .square-create-page) .addImageBtn:hover {
-  border-color: #4d9aff !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .square-create-page) .submitBtn {
-  background: #0052d9 !important;
-  color: #fff !important;
-  border-color: #0052d9 !important;
-}
-
-:global(html.dark .square-create-page) .submitBtn:hover:not(:disabled) {
-  background: #0042ad !important;
-  border-color: #0042ad !important;
-}
-
-:global(html.dark .square-create-page) .submitBtn:disabled {
-  background: #1e293b !important;
-  color: #64748b !important;
-  border-color: #1e293b !important;
+  background: var(--danger-500) !important;
+  color: var(--text-inverse, #fff) !important;
 }
 
 :global(html.dark .square-create-page) .successBigIcon {
-  color: #10b981 !important;
-  background: rgb(16, 185, 129, 0.15) !important;
-}
-
-/* section-title 为跨域共享类，dark-mode.css 全局规则保留服务其它页面，
-   此处按全局规则等值兜底保障本组件暗色渲染（square-create-page 作用域
-   规则特异性更高、仍最终生效为 #f1f5f9） */
-:global(html.dark) .sectionTitle {
-  color: var(--text-heading) !important;
+  background: color-mix(in srgb, var(--status-success) 15%, transparent) !important;
 }
 
 /* ============================================================
-   暗色主题 · 三期「卡片融入背景」覆盖段（自 dark-mode.css 迁移，
-   位于主段之后，保持原级联顺序：同特异性后写胜出）
+   暗色主题 · 三期「卡片融入背景」覆盖段
    ============================================================ */
 :global(html.dark .square-create-page) .formContainer,
 :global(html.dark .square-create-page) .formCard,
@@ -614,7 +477,6 @@
 :global(html.dark .square-create-page) .contentTextarea {
   background: rgb(255, 255, 255, 0.04) !important;
   border-color: rgb(255, 255, 255, 0.08) !important;
-  color: #f1f5f9 !important;
 }
 
 :global(html.dark .square-create-page) .emotionTag {
@@ -624,16 +486,11 @@
 
 :global(html.dark .square-create-page) .emotionTag:hover,
 :global(html.dark .square-create-page) .emotionTag.active {
-  background: rgb(77, 154, 255, 0.1) !important;
-  border-color: rgb(77, 154, 255, 0.3) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 10%, transparent) !important;
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 30%, transparent) !important;
 }
 
 :global(html.dark .square-create-page) .topicTag {
-  background: rgb(77, 154, 255, 0.08) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 8%, transparent) !important;
   border-color: transparent !important;
-}
-
-:global(html.dark .square-create-page) .topicInput {
-  background: transparent !important;
-  color: #f1f5f9 !important;
 }

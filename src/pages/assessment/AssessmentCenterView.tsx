@@ -25,23 +25,23 @@ import './AssessmentCenterView.css'
 const assessmentThemeComponents = {
   Tabs: {
     titleFontSize: 14,
-    itemColor: 'var(--ink-400)',
-    itemSelectedColor: 'var(--navy-950)',
+    itemColor: 'var(--text-faint)',
+    itemSelectedColor: 'var(--text-heading)',
     horizontalItemPadding: '0 20px 14px 0',
     horizontalItemGutter: 0,
     horizontalMargin: '0 0 36px 0',
-    inkBarColor: 'var(--navy-950)',
+    inkBarColor: 'var(--text-heading)',
   },
   Table: {
-    headerBg: 'var(--slate-50)',
-    headerColor: 'var(--slate-800)',
+    headerBg: 'var(--bg-soft)',
+    headerColor: 'var(--text-regular)',
   },
   Select: {
     borderRadius: 8,
-    colorBorder: 'var(--neutral-100)',
-    selectorBg: 'var(--slate-50)',
+    colorBorder: 'var(--border-light)',
+    selectorBg: 'var(--bg-soft)',
     hoverBorderColor: 'var(--brand-primary)',
-    activeBorderColor: 'var(--neutral-100)',
+    activeBorderColor: 'var(--border-light)',
     activeOutlineColor: 'transparent',
   },
 }

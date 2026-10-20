@@ -37,7 +37,7 @@
 .eyebrowText {
   font-size: 11px;
   letter-spacing: 2.5px;
-  color: var(--ink-500);
+  color: var(--text-muted);
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -45,7 +45,7 @@
 .headerTitle {
   font-size: clamp(48px, 7vw, 88px);
   font-weight: 900;
-  color: var(--ink-900);
+  color: var(--text-heading);
   margin: 0 0 16px;
   letter-spacing: -3px;
   line-height: 0.95;
@@ -62,7 +62,7 @@
 
 .headerDesc {
   font-size: 14px;
-  color: var(--ink-500);
+  color: var(--text-muted);
   letter-spacing: 0.5px;
   margin: 0;
   line-height: 1.6;
@@ -161,37 +161,31 @@
    暗色主题（自 dark-mode.css 迁移，页面作用域 .capsule-list-page
    为 pages 层 CapsuleListView 根类；原规则仅服务本组件，整体迁入）
    ============================================================ */
+/* 主色在暗底上对比不足：强调色统一走 bright 变体 */
 :global(html.dark .capsule-list-page) .headerEyebrow,
 :global(html.dark .capsule-list-page) .eyebrowText {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .capsule-list-page) .eyebrowLine {
-  background: #4d9aff !important;
+  background: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .capsule-list-page) .headerTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .capsule-list-page) .headerDesc {
-  color: #94a3b8 !important;
-}
-
+/* 邮戳：暗色下给印章块一个卡片底，保持与页面层次 */
 :global(html.dark .capsule-list-page) .postmark {
-  background: #1e2b3a !important;
-  border-color: #1a3a6b !important;
+  background: var(--bg-card) !important;
+  border-color: var(--border-blue) !important;
 }
 
 :global(html.dark .capsule-list-page) .postmark:hover {
-  border-color: #4d9aff !important;
+  border-color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .capsule-list-page) .pmDate,
 :global(html.dark .capsule-list-page) .pmText {
-  color: #94a3b8 !important;
+  color: var(--text-muted) !important;
 }
 
 :global(html.dark .capsule-list-page) .pmBar {
-  background: #1e293b !important;
+  background: var(--bg-mute) !important;
 }

@@ -28,19 +28,19 @@
   display: inline-block;
   font-size: 10px;
   letter-spacing: 2px;
-  color: color-mix(in srgb, white 70%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 70%, transparent);
   font-weight: 700;
   text-transform: uppercase;
   margin-bottom: 10px;
   padding: 3px 10px;
-  background: color-mix(in srgb, white 15%, transparent);
+  background: color-mix(in srgb, var(--text-inverse, #fff) 15%, transparent);
   border-radius: 4px;
 }
 
 .promptQuestion {
   font-size: clamp(18px, 2vw, 24px);
   font-weight: 700;
-  color: white;
+  color: var(--text-inverse, #fff);
   margin: 0 0 14px;
   line-height: 1.4;
   letter-spacing: -0.3px;
@@ -51,9 +51,9 @@
   align-items: center;
   gap: 6px;
   padding: 8px 18px;
-  background: color-mix(in srgb, white 18%, transparent);
-  border: 1px solid color-mix(in srgb, white 30%, transparent);
-  color: white;
+  background: color-mix(in srgb, var(--text-inverse, #fff) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-inverse, #fff) 30%, transparent);
+  color: var(--text-inverse, #fff);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 1px;
@@ -65,7 +65,7 @@
 }
 
 .promptJoin:hover {
-  background: color-mix(in srgb, white 28%, transparent);
+  background: color-mix(in srgb, var(--text-inverse, #fff) 28%, transparent);
   transform: translateX(4px);
 }
 
@@ -77,7 +77,7 @@
 .promptDeco {
   font-size: 120px;
   font-weight: 900;
-  color: color-mix(in srgb, white 12%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 12%, transparent);
   line-height: 0.7;
   font-family: Georgia, serif;
   flex-shrink: 0;
@@ -106,29 +106,27 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移：square-page 页面作用域规则，
-   均为本组件独占类；页面根类 square-page 由 pages 层 css 定义，
-   作用域选择器整体置于 :global 内）
+   暗色主题：浅色渐变卡片改为深色底，文字/强调色跟随语义变量
    ============================================================ */
 :global(html.dark .square-page) .dailyPromptCard {
-  background: linear-gradient(135deg, #1a2a4a 0%, #182234 100%) !important;
-  border-color: #1a3a6b !important;
+  background: linear-gradient(135deg, var(--bg-blue-tint) 0%, var(--bg-card) 100%) !important;
+  border-color: var(--border-blue) !important;
 }
 
 :global(html.dark .square-page) .promptLabel {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .square-page) .promptQuestion {
-  color: #f1f5f9 !important;
+  color: var(--text-heading) !important;
 }
 
 :global(html.dark .square-page) .promptJoin {
-  color: #4d9aff !important;
-  background: rgb(77, 154, 255, 0.12) !important;
+  color: var(--brand-primary-bright) !important;
+  background: var(--brand-primary-bright-bg) !important;
 }
 
 :global(html.dark .square-page) .promptJoin:hover {
-  background: #0052d9 !important;
-  color: #fff !important;
+  background: var(--brand-primary) !important;
+  color: var(--text-inverse, #fff) !important;
 }

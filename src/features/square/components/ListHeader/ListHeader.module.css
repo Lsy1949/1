@@ -13,7 +13,7 @@
   justify-content: space-between;
   gap: 48px;
   padding-bottom: 32px;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .headerLeft {
@@ -25,7 +25,7 @@
   display: block;
   font-size: 12px;
   letter-spacing: 3px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 600;
   margin-bottom: 14px;
   text-transform: uppercase;
@@ -34,7 +34,7 @@
 .headerTitle {
   font-size: clamp(40px, 6vw, 68px);
   font-weight: 900;
-  color: var(--ink-900);
+  color: var(--text-heading);
   margin: 0 0 14px;
   letter-spacing: -2px;
   line-height: 1.02;
@@ -49,7 +49,7 @@
 
 .headerDesc {
   font-size: 15px;
-  color: var(--ink-500);
+  color: var(--text-muted);
   margin: 0;
   letter-spacing: 0.3px;
 }
@@ -79,7 +79,7 @@
 
 .statLabel {
   font-size: 11px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   letter-spacing: 1px;
   text-transform: uppercase;
   font-weight: 600;
@@ -88,7 +88,7 @@
 .statDivider {
   width: 1px;
   height: 36px;
-  background: var(--mist-050);
+  background: var(--border-light);
 }
 
 @media (width <= 992px) {
@@ -119,45 +119,10 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移：square-page 页面作用域规则，
-   均为本组件独占类；页面根类 square-page 由 pages 层 css 定义，
-   作用域选择器整体置于 :global 内）
+   暗色主题：背景/文字/边框换色由语义变量自动跟随，仅保留
+   强调色的暗色专用取值
    ============================================================ */
-:global(html.dark .square-page) .pageHeader {
-  border-bottom-color: #1e293b !important;
-}
-
-:global(html.dark .square-page) .headerEyebrow {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .square-page) .headerTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .square-page) .headerDesc {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .square-page) .statBlock {
-  border-color: #1e293b !important;
-}
-
+:global(html.dark .square-page) .headerEyebrow,
 :global(html.dark .square-page) .statNum {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .square-page) .statLabel {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .square-page) .statDivider {
-  background: #1e293b !important;
-}
-
-/* stat-label 为 profile/article/capsule 等跨域共享类，dark-mode.css 全局规则
-   （token 层与 hex 层各一份）保留服务它们，此处取 hex 层最终生效值做等价局部
-   兜底，保障本组件暗色渲染（square-page 作用域规则特异性更高、仍最终生效） */
-:global(html.dark) .statLabel {
-  color: #64748b !important;
+  color: var(--brand-primary-bright) !important;
 }

@@ -18,7 +18,7 @@
 .moduleTitle {
   font-size: clamp(22px, 2.2vw, 30px);
   font-weight: 900;
-  color: var(--navy-950);
+  color: var(--text-heading);
   margin: 0;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -26,7 +26,7 @@
 
 .articleCount {
   font-size: 0.85rem;
-  color: var(--ink-500);
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -74,10 +74,10 @@
 }
 
 .articleCard {
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
@@ -111,7 +111,7 @@
   position: absolute;
   top: 14px;
   left: 14px;
-  background: color-mix(in srgb, white 95%, transparent);
+  background: var(--bg-overlay);
   padding: 4px 10px;
   border-radius: 4px;
   font-size: 0.7rem;
@@ -122,7 +122,7 @@
 
 /* 无封面网格卡 · 杂志式文字排版 */
 .articleCard.noCover {
-  background: linear-gradient(180deg, white 0%, var(--neutral-025) 100%);
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-soft) 100%);
   position: relative;
 }
 
@@ -136,7 +136,7 @@
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 22px;
   font-weight: 400;
-  color: var(--ink-500);
+  color: var(--text-muted);
   letter-spacing: 1.5px;
   font-style: italic;
 }
@@ -172,20 +172,20 @@
   margin-bottom: 10px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--ink-500);
+  color: var(--text-muted);
 }
 
 /* 原受同页 SpotlightCard 全局 .author-name 规则级联着色，等价收编保视觉不变 */
 .authorName {
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--ink-900);
+  color: var(--text-primary);
 }
 
 .cardTitle {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--navy-950);
+  color: var(--text-heading);
   margin: 0 0 10px;
   line-height: 1.35;
   letter-spacing: -0.015em;
@@ -196,7 +196,7 @@
 }
 
 .cardSummary {
-  color: var(--ink-600);
+  color: var(--text-secondary);
   font-size: 0.88rem;
   line-height: 1.6;
   margin: 0 0 16px;
@@ -210,11 +210,11 @@
   margin-top: auto;
   display: flex;
   gap: 16px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-size: 0.78rem;
   font-weight: 500;
   padding-top: 14px;
-  border-top: 1px solid var(--slate-100);
+  border-top: 1px solid var(--border-light);
 }
 
 .metaItem {
@@ -224,7 +224,7 @@
 }
 
 .publishDate {
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
 .noResults {
@@ -238,25 +238,11 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移，作用域为页面根类 article-center，
-   取三期「卡片融入背景」覆盖后的最终生效值；.dot 为跨组件共用类，
-   dark-mode.css 全局规则保留服务其它使用方，此处等价局部兜底保障
-   本组件暗色渲染）
+   暗色主题：颜色换色已由语义变量自动跟随，此处仅保留
+   「卡片融入背景」这一暗色专用视觉与深色底上的主色提亮
    ============================================================ */
-:global(html.dark .article-center) .moduleTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .article-center) .articleCount {
-  color: #64748b !important;
-}
-
 :global(html.dark .article-center) .viewAllLink {
-  color: #4d9aff !important;
-}
-
-:global(html.dark .article-center) .viewAllLink:hover {
-  color: #80b3ff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .article-center) .articleCard {
@@ -266,37 +252,14 @@
 }
 
 :global(html.dark .article-center) .articleCard:hover {
-  background: rgb(77, 154, 255, 0.04) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
   border-color: transparent !important;
-  border-bottom-color: rgb(77, 154, 255, 0.2) !important;
+  border-bottom-color: color-mix(in srgb, var(--brand-primary-bright) 20%, transparent) !important;
   box-shadow: none !important;
   transform: none !important;
 }
 
 :global(html.dark .article-center) .cardTag {
-  background: rgb(77, 154, 255, 0.1) !important;
-  border-color: transparent !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .article-center) .cardTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .article-center) .cardSummary {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .article-center) .cardMeta,
-:global(html.dark .article-center) .publishDate,
-:global(html.dark .article-center) .dot {
-  color: #64748b !important;
-}
-
-:global(html.dark .article-center) .authorName {
-  color: #e2e8f0 !important;
-}
-
-:global(html.dark) .dot {
-  background: #1e2b3a !important;
+  background: var(--brand-primary-bright-bg) !important;
+  color: var(--brand-primary-bright) !important;
 }

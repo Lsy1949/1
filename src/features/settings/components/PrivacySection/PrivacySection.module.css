@@ -3,12 +3,12 @@
 /* ============ 区块通用 ============ */
 .editorialSection {
   padding: 40px 0 56px;
-  border-top: 1px solid var(--ink-200);
+  border-top: 1px solid var(--border-light);
   scroll-margin-top: 80px;
 }
 
 .editorialSection:first-of-type {
-  border-top: 1px solid var(--ink-900);
+  border-top: 1px solid var(--text-heading);
 }
 
 .sectionMarker {
@@ -30,12 +30,12 @@
 .markerRule {
   flex: 1;
   height: 1px;
-  background: var(--ink-900);
+  background: var(--text-heading);
 }
 
 .markerIcon {
   font-size: 16px;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 .markerLabel {
@@ -43,7 +43,7 @@
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 .sectionHeadlineRow {
@@ -53,7 +53,7 @@
   align-items: end;
   margin-bottom: 36px;
   padding-bottom: 24px;
-  border-bottom: 1px solid var(--ink-200);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .sectionHeadline {
@@ -62,7 +62,7 @@
   font-size: 32px;
   font-weight: 700;
   line-height: 1.1;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 .sectionDeck {
@@ -70,7 +70,7 @@
   font-size: 15px;
   font-style: italic;
   line-height: 1.6;
-  color: var(--ink-500);
+  color: var(--text-muted);
 }
 
 /* ============ 栏目标题 ============ */
@@ -80,7 +80,7 @@
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 /* ============ 可见性选项 ============ */
@@ -88,8 +88,8 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   margin-bottom: 28px;
-  border-top: 1px solid var(--ink-200);
-  border-bottom: 1px solid var(--ink-200);
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .visOption {
@@ -99,7 +99,7 @@
   gap: 12px;
   padding: 24px 20px;
   cursor: pointer;
-  border-right: 1px solid var(--ink-200);
+  border-right: 1px solid var(--border-light);
   transition: background 0.2s;
 }
 .visOption:last-child { border-right: none; }
@@ -117,14 +117,14 @@
   font-style: italic;
   font-size: 20px;
   font-weight: 600;
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 .visOption.checked .visNum { color: var(--brand-primary); }
 
 .visLabel {
   font-size: 14px;
   font-weight: 700;
-  color: var(--ink-700);
+  color: var(--text-regular);
 }
 .visOption.checked .visLabel { color: var(--brand-primary); }
 
@@ -156,7 +156,7 @@
   align-items: center;
   gap: 16px;
   padding: 18px 0;
-  border-bottom: 1px solid var(--ink-200);
+  border-bottom: 1px solid var(--border-light);
 }
 .switchRow:last-child { border-bottom: none; }
 
@@ -170,7 +170,7 @@
 .switchLabel {
   font-size: 14px;
   font-weight: 600;
-  color: var(--ink-900);
+  color: var(--text-heading);
 }
 
 /* ============ 字段与按钮 ============ */
@@ -183,9 +183,9 @@
 
 .editorialBtn {
   padding: 10px 28px;
-  background: var(--ink-900);
-  color: white;
-  border: 1px solid var(--ink-900);
+  background: var(--text-heading);
+  color: var(--text-inverse, #fff);
+  border: 1px solid var(--text-heading);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -212,7 +212,7 @@
 
   .visOption {
     border-right: none;
-    border-bottom: 1px solid var(--ink-200);
+    border-bottom: 1px solid var(--border-light);
   }
   .visOption:last-child { border-bottom: none; }
   .fieldActions { justify-content: stretch; }
@@ -224,59 +224,29 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移的本组件有效值，原全局规则
-   「html.dark 加 settings-page 前缀的可见性选项系列」待主控统一删除；
-   原组合选择器中的 home 选项部分归偏好设置组件 module 处理）
+   暗色主题：背景/文字/边框换色已由语义变量自动跟随，仅保留暗色下
+   必要的强调色规则与确需的布局差异
    ============================================================ */
-:global(html.dark .settings-page) .editorialSection {
-  border-color: #1e293b !important;
-}
-
 :global(html.dark .settings-page) .markerNum {
-  background: #0f172a !important;
-  border-color: #4d9aff !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .settings-page) .markerRule {
-  background: #1e293b !important;
+  background: var(--bg-page) !important;
+  border-color: var(--brand-primary-bright) !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .settings-page) .markerIcon {
-  background: #1a2a4a !important;
-  color: #4d9aff !important;
-}
-
-:global(html.dark .settings-page) .markerLabel,
-:global(html.dark .settings-page) .sectionHeadline {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .settings-page) .sectionDeck {
-  color: #94a3b8 !important;
-}
-
-:global(html.dark .settings-page) .colTitle {
-  color: #f1f5f9 !important;
+  background: var(--bg-blue-tint) !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .settings-page) .editorialBtn {
-  background: #0052d9 !important;
-  color: #fff !important;
-  border-color: #0052d9 !important;
+  background: var(--brand-primary) !important;
+  color: var(--text-inverse, #fff) !important;
+  border-color: var(--brand-primary) !important;
 }
 
 :global(html.dark .settings-page) .editorialBtn:hover {
-  background: #0042ad !important;
-  border-color: #0042ad !important;
-}
-
-:global(html.dark .settings-page) .switchRow {
-  border-color: #1e293b !important;
-}
-
-:global(html.dark .settings-page) .switchLabel {
-  color: #f1f5f9 !important;
+  background: var(--brand-primary-dark) !important;
+  border-color: var(--brand-primary-dark) !important;
 }
 
 :global(html.dark .settings-page) .visibilityGrid {
@@ -284,26 +254,21 @@
 }
 
 :global(html.dark .settings-page) .visOption {
-  background: #1e2b3a !important;
-  border-color: #1e293b !important;
-  color: #cbd5e1 !important;
+  background: var(--bg-card) !important;
+  border-color: var(--border-light) !important;
+  color: var(--text-regular) !important;
 }
 
 :global(html.dark .settings-page) .visOption:hover {
-  border-color: #4d9aff !important;
-  background: #1a2a4a !important;
+  border-color: var(--brand-primary-bright) !important;
+  background: var(--bg-blue-tint) !important;
 }
 
 :global(html.dark .settings-page) .visOption.checked {
-  border-color: #4d9aff !important;
-  background: #1a2a4a !important;
-}
-
-:global(html.dark .settings-page) .visNum,
-:global(html.dark .settings-page) .visLabel {
-  color: #cbd5e1 !important;
+  border-color: var(--brand-primary-bright) !important;
+  background: var(--bg-blue-tint) !important;
 }
 
 :global(html.dark .settings-page) .visCheck {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }

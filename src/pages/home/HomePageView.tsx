@@ -4,7 +4,7 @@
  */
 import { useEffect, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { App, ConfigProvider } from 'antd'
+import { App } from 'antd'
 import { useI18n } from '@/i18n'
 import { Carousel, Marquee, NewsSection, AboutSection, ContactSection, BackTop } from '@/features/home'
 // AI 客服悬浮窗（Vue 版 <AiAssistantFab />，全局浮动于首页）
@@ -17,24 +17,8 @@ import './HomePageView.css'
 // Vue 命名路由 → react-router 路径（home→'/'、articles→'/articles'、assessment→'/assessment'、
 // counseling→'/counseling'、time-capsule→'/time-capsule'、square→'/square'）
 
-/**
- * home 作用域组件 token：
- * 联系表单「科技蓝输入框」外观（原 ContactSection 的 .ant-input 覆写）
- * 收敛为嵌套 ConfigProvider 官方注入，仅作用于本页。
- * textarea 专属 padding 无对应 token，保留在组件 module css。
- */
-const homeThemeComponents = {
-  Input: {
-    colorBgContainer: 'var(--slate-50)',
-    colorBorder: 'var(--slate-200)',
-    paddingInline: 15,
-    paddingBlock: 8,
-    activeBg: '#ffffff',
-    activeBorderColor: 'var(--brand-primary)',
-    activeShadow: '0 0 0 3px color-mix(in srgb, var(--brand-primary) 10%, transparent)',
-    motionDurationMid: '0.3s',
-  },
-}
+/* 输入框外观已统一由 src/main.tsx 的全局 Input token 提供，
+   首页差异只在 ContactSection.module.css 里覆写 --input-bg 变量 */
 
 export function HomePageView() {
   const navigate = useNavigate()
@@ -143,8 +127,7 @@ export function HomePageView() {
   }, [])
 
   return (
-    <ConfigProvider theme={{ components: homeThemeComponents }}>
-      <div className="animated-homepage">
+    <div className="animated-homepage">
       {/* 轮播图区域 */}
       <Carousel
         slides={carouselSlides}
@@ -170,8 +153,7 @@ export function HomePageView() {
 
       {/* AI 客服悬浮窗 */}
       <AssistantFab />
-      </div>
-    </ConfigProvider>
+    </div>
   )
 }
 

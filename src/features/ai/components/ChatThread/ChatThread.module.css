@@ -55,14 +55,14 @@
 
 .msgAi .bubble {
   background: var(--brand-primary-wash);
-  color: var(--ink-800);
-  border: 1px solid var(--mist-200);
+  color: var(--text-regular);
+  border: 1px solid var(--border-strong);
   border-top-left-radius: 4px;
 }
 
 .msgUser .bubble {
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
   border-top-right-radius: 4px;
   box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 22%, transparent);
 }
@@ -127,7 +127,7 @@
 .quickBtn:hover {
   background: var(--brand-primary);
   border-color: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 /* 免责声明 */
@@ -136,7 +136,7 @@
   padding: 6px 18px;
   font-size: 11px;
   line-height: 1.6;
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
 /* 输入行 */
@@ -144,7 +144,7 @@
   display: flex;
   gap: 8px;
   padding: 12px 14px;
-  border-top: 1px solid var(--mist-200);
+  border-top: 1px solid var(--border-strong);
 }
 
 .threadInputField {
@@ -152,16 +152,16 @@
   min-width: 0;
   height: 38px;
   padding: 0 12px;
-  border: 1px solid var(--mist-300);
+  border: 1px solid var(--border-strong);
   border-radius: 10px;
-  background: white;
-  color: var(--ink-800);
+  background: var(--bg-card);
+  color: var(--text-regular);
   font-size: 14px;
   outline: none;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.threadInputField::placeholder { color: var(--mist-400); }
+.threadInputField::placeholder { color: var(--text-faint); }
 
 .threadInputField:focus {
   border-color: var(--brand-primary);
@@ -174,7 +174,7 @@
   border: none;
   border-radius: 10px;
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
   display: grid;
   place-items: center;
   font-size: 16px;
@@ -247,20 +247,19 @@
 
 /* ============ 暗夜模式 ============ */
 :global(html.dark) .msgAi .bubble {
-  background: var(--slate-800);
-  color: var(--slate-100);
-  border-color: var(--slate-700);
+  background: var(--bg-mute);
+  border-color: var(--border-regular);
 }
 
 :global(html.dark) .threadInputField {
-  background: var(--slate-800);
-  border-color: var(--slate-700);
-  color: var(--slate-100);
+  background: var(--bg-mute);
+  border-color: var(--border-regular);
 }
 
+/* 快捷提问签：暗色下边框改中性、文字用提亮主色 */
 :global(html.dark) .quickBtn {
-  border-color: var(--slate-600);
-  color: var(--brand-primary-soft);
+  border-color: var(--border-strong);
+  color: var(--brand-primary-bright);
 }
 
 /* ============ fab 形态：简约杂志风 · 品牌色（仅悬浮卡片生效） ============ */
@@ -292,14 +291,14 @@
 }
 
 .isFab .msgAi .bubble {
-  background: white;
+  background: var(--bg-card);
   border: 1px solid var(--brand-primary-soft);
   border-radius: 0 6px 6px;
 }
 
 .isFab .msgUser .bubble {
   background: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
   border-radius: 6px 0;
   box-shadow: 3px 3px 0 color-mix(in srgb, var(--brand-primary) 20%, transparent);
 }
@@ -329,7 +328,7 @@
 .isFab .quickBtn:hover {
   background: var(--brand-primary);
   border-color: var(--brand-primary);
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 .isFab .threadDisclaimer {
@@ -341,7 +340,7 @@
 /* 输入行：下划线式输入框 + 方角品牌色发送键 */
 .isFab .threadInput {
   padding: 12px 16px;
-  background: white;
+  background: var(--bg-card);
   border-top: 1px solid var(--brand-primary);
 }
 
@@ -349,7 +348,7 @@
   height: 36px;
   padding: 0 2px;
   border: none;
-  border-bottom: 1px solid var(--mist-350);
+  border-bottom: 1px solid var(--border-strong);
   border-radius: 0;
   background: transparent;
 }
@@ -373,75 +372,58 @@
   color: var(--brand-primary);
 }
 
-/* fab 形态暗夜模式（品牌色不变，底色翻转） */
+/* fab 形态暗夜模式（品牌色不变，底色翻转；层次统一走语义变量） */
 :global(html.dark) .isFab .aiAvatar {
   background: color-mix(in srgb, var(--brand-primary) 22%, transparent);
   border-color: color-mix(in srgb, var(--brand-primary) 45%, transparent);
-  color: var(--brand-primary-soft);
+  color: var(--brand-primary-bright);
 }
 
 :global(html.dark) .isFab .msg:first-child .bubble {
-  background: var(--slate-800);
-  border-color: var(--slate-600);
-  color: var(--slate-100);
+  background: var(--bg-mute);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
 }
 
 :global(html.dark) .isFab .msgAi .bubble {
-  background: var(--slate-800);
-  border-color: var(--slate-600);
+  background: var(--bg-mute);
+  border-color: var(--border-strong);
 }
 
 :global(html.dark) .isFab .msgUser .bubble {
-  background: var(--brand-primary);
-  color: white;
-  box-shadow: 3px 3px 0 color-mix(in srgb, black 35%, transparent);
+  box-shadow: 3px 3px 0 rgb(0 0 0 / 0.35);
 }
 
 :global(html.dark) .isFab .streamCaret,
 :global(html.dark) .isFab .typingDots i {
-  background: var(--brand-primary-soft);
+  background: var(--brand-primary-bright);
 }
 
 :global(html.dark) .isFab .quickBtn {
-  border-color: color-mix(in srgb, var(--brand-primary-soft) 55%, transparent);
-  color: var(--brand-primary-soft);
-}
-
-:global(html.dark) .isFab .quickBtn:hover {
-  background: var(--brand-primary);
-  border-color: var(--brand-primary);
-  color: white;
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 55%, transparent);
+  color: var(--brand-primary-bright);
 }
 
 :global(html.dark) .isFab .threadDisclaimer {
-  border-top-color: var(--slate-700);
+  border-top-color: var(--border-regular);
 }
 
 :global(html.dark) .isFab .threadInput {
-  background: var(--slate-900);
+  background: var(--bg-page);
   border-top-color: var(--brand-primary);
 }
 
 :global(html.dark) .isFab .threadInputField {
   background: transparent;
-  border-bottom-color: var(--slate-600);
-  color: var(--slate-100);
+  border-bottom-color: var(--border-strong);
+  color: var(--text-primary);
 }
 
 :global(html.dark) .isFab .threadInputField:focus {
-  border-bottom-color: var(--brand-primary-soft);
-}
-
-:global(html.dark) .isFab .sendBtn {
-  background: var(--brand-primary);
-  color: white;
-}
-
-:global(html.dark) .isFab .sendBtn:not(:disabled):hover {
-  background: var(--brand-primary-dark);
+  border-bottom-color: var(--brand-primary-bright);
 }
 
 :global(html.dark) .isFab .sendBtn.isStop {
-  border-color: var(--brand-primary-soft);
-  color: var(--brand-primary-soft);
+  border-color: var(--brand-primary-bright);
+  color: var(--brand-primary-bright);
 }

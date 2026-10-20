@@ -8,6 +8,7 @@
  */
 import { useEffect, useRef, useState } from 'react'
 import type { MouseEvent as ReactMouseEvent } from 'react'
+import { readCssColor } from '@/utils/cssVar'
 
 interface StarPoint {
   x: number
@@ -77,12 +78,14 @@ export function GameStar(_props: GameStarProps) {
     const starPoints = starPointsRef.current
     ctx.clearRect(0, 0, size, size)
 
-    // 已连接的星轨连线（蓝色发光）
+    // 已连接的星轨连线（品牌色发光）
     if (connected > 1) {
-      ctx.strokeStyle = 'rgba(24, 144, 255, 0.75)'
+      const accentLine = readCssColor('color-mix(in srgb, var(--brand-primary-bright) 75%, transparent)')
+      const accentShadow = readCssColor('color-mix(in srgb, var(--brand-primary-bright) 85%, transparent)')
+      ctx.strokeStyle = accentLine
       ctx.lineWidth = 1.4
       ctx.lineCap = 'round'
-      ctx.shadowColor = 'rgba(24, 144, 255, 0.85)'
+      ctx.shadowColor = accentShadow
       ctx.shadowBlur = 10
       ctx.beginPath()
       for (let i = 0; i < connected; i++) {
@@ -97,6 +100,14 @@ export function GameStar(_props: GameStarProps) {
     }
 
     // 星辰
+    const accent = readCssColor('var(--brand-primary-bright)')
+    const neutral = readCssColor('var(--text-inverse)')
+    /* canvas 需实色，故经 readCssColor 解析主题变量（含 alpha 变体） */
+    const accentMix = (pct: number): string =>
+      readCssColor(`color-mix(in srgb, var(--brand-primary-bright) ${pct}%, transparent)`)
+    const neutralMix = (pct: number): string =>
+      readCssColor(`color-mix(in srgb, var(--text-inverse) ${pct}%, transparent)`)
+
     for (let i = 0; i < starPoints.length; i++) {
       const p = starPoints[i]
       const px = p.x * size
@@ -107,30 +118,30 @@ export function GameStar(_props: GameStarProps) {
 
       const glow = ctx.createRadialGradient(px, py, 0, px, py, r * 4)
       if (isLinked) {
-        glow.addColorStop(0, 'rgba(24, 144, 255, 0.95)')
-        glow.addColorStop(0.5, 'rgba(24, 144, 255, 0.3)')
-        glow.addColorStop(1, 'rgba(24, 144, 255, 0)')
+        glow.addColorStop(0, accentMix(95))
+        glow.addColorStop(0.5, accentMix(30))
+        glow.addColorStop(1, accentMix(0))
       } else if (isNext) {
-        glow.addColorStop(0, 'rgba(255, 255, 255, 0.95)')
-        glow.addColorStop(0.5, 'rgba(255, 255, 255, 0.4)')
-        glow.addColorStop(1, 'rgba(255, 255, 255, 0)')
+        glow.addColorStop(0, neutralMix(95))
+        glow.addColorStop(0.5, neutralMix(40))
+        glow.addColorStop(1, neutralMix(0))
       } else {
-        glow.addColorStop(0, 'rgba(255, 255, 255, 0.5)')
-        glow.addColorStop(0.5, 'rgba(255, 255, 255, 0.15)')
-        glow.addColorStop(1, 'rgba(255, 255, 255, 0)')
+        glow.addColorStop(0, neutralMix(50))
+        glow.addColorStop(0.5, neutralMix(15))
+        glow.addColorStop(1, neutralMix(0))
       }
       ctx.fillStyle = glow
       ctx.beginPath()
       ctx.arc(px, py, r * 4, 0, Math.PI * 2)
       ctx.fill()
 
-      ctx.fillStyle = isLinked ? '#1890ff' : (isNext ? '#ffffff' : 'rgba(255, 255, 255, 0.6)')
+      ctx.fillStyle = isLinked ? accent : isNext ? neutral : neutralMix(60)
       ctx.beginPath()
       ctx.arc(px, py, r, 0, Math.PI * 2)
       ctx.fill()
 
       // 序号
-      ctx.fillStyle = isLinked ? 'rgba(24, 144, 255, 0.9)' : (isNext ? '#ffffff' : 'rgba(255, 255, 255, 0.5)')
+      ctx.fillStyle = isLinked ? accentMix(90) : isNext ? neutral : neutralMix(50)
       ctx.font = '10px "Noto Sans SC", sans-serif'
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'

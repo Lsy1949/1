@@ -12,7 +12,7 @@
   gap: 8px;
   margin-bottom: 36px;
   padding-bottom: 24px;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
   position: relative;
 }
 
@@ -27,7 +27,7 @@
 .commentsHeader .commentsTitle {
   font-size: clamp(28px, 3.5vw, 40px);
   font-weight: 900;
-  color: var(--navy-950);
+  color: var(--text-heading);
   letter-spacing: -1px;
   margin: 0;
 }
@@ -37,7 +37,7 @@
   right: 0;
   bottom: 28px;
   font-size: 13px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-weight: 500;
   letter-spacing: 0.5px;
   font-variant-numeric: tabular-nums;
@@ -50,14 +50,14 @@
   margin-bottom: 40px;
   padding: 20px;
   background: var(--brand-primary-wash);
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   border-radius: 16px;
   transition: border-color 0.25s ease;
 }
 
 .commentInputWrap:focus-within {
   border-color: var(--brand-primary-soft);
-  background: white;
+  background: var(--bg-card);
   box-shadow: 0 4px 16px color-mix(in srgb, var(--brand-primary) 6%, transparent);
 }
 
@@ -71,12 +71,12 @@
 .commentTextarea {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   border-radius: 12px;
   font-size: 14px;
   line-height: 1.6;
-  color: var(--ink-800);
-  background: white;
+  color: var(--text-primary);
+  background: var(--bg-card);
   resize: vertical;
   min-height: 72px;
   font-family: inherit;
@@ -91,14 +91,18 @@
 }
 
 .commentTextarea::placeholder {
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
 .commentSubmitBtn {
   align-self: flex-end;
   padding: 10px 28px;
-  background: linear-gradient(135deg, var(--brand-primary), var(--color-info));
-  color: white;
+  background: linear-gradient(
+    135deg,
+    var(--brand-primary),
+    color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff))
+  );
+  color: var(--text-inverse, #fff);
   border: none;
   border-radius: 12px;
   font-size: 13px;
@@ -132,8 +136,8 @@
   display: flex;
   gap: 14px;
   padding: 20px 24px;
-  background: white;
-  border: 1px solid var(--mist-050);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 14px;
   transition: all 0.25s ease;
 }
@@ -160,19 +164,19 @@
 .commentAuthor {
   font-size: 14px;
   font-weight: 700;
-  color: var(--ink-900);
+  color: var(--text-primary);
 }
 
 .commentTime {
   font-size: 12px;
-  color: var(--ink-400);
+  color: var(--text-faint);
   letter-spacing: 0.5px;
 }
 
 .commentContent {
   font-size: 14px;
   line-height: 1.75;
-  color: var(--ink-600);
+  color: var(--text-secondary);
   margin: 0 0 12px;
 }
 
@@ -182,10 +186,10 @@
   gap: 6px;
   padding: 5px 12px;
   background: transparent;
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   border-radius: 20px;
   font-size: 12px;
-  color: var(--ink-500);
+  color: var(--text-muted);
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
@@ -211,7 +215,7 @@
 .commentsEmpty {
   text-align: center;
   padding: 48px 0;
-  color: var(--ink-400);
+  color: var(--text-faint);
   font-size: 14px;
 }
 
@@ -227,101 +231,48 @@
   }
 }
 
-/* ===== 暗色主题（自 dark-mode.css 迁移，作用域为页面根类 article-detail-page；
-   comment-input-wrap / comment-textarea / comment-item 系列取三期「融入背景」
-   覆盖后的最终生效值） ===== */
-:global(html.dark .article-detail-page) .commentsHeader {
-  border-color: #1e293b !important;
-}
-
+/* ===== 暗色主题：颜色换色已由语义变量自动跟随，此处仅保留
+   「输入卡/评论卡融入背景」这一暗色专用视觉与深色底上的主色提亮 ===== */
 :global(html.dark .article-detail-page) .commentsEyebrow {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .article-detail-page) .commentsTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .article-detail-page) .commentsCount {
-  color: #64748b !important;
-}
-
-/* 输入卡基态取三期（覆盖二期 #1e2b3a/#1e293b）；!important 基态同时压制
-   Light 段 focus-within 的 border/background，暗色下边框恒为三期值 */
 :global(html.dark .article-detail-page) .commentInputWrap {
   background: rgb(255, 255, 255, 0.03) !important;
   border-color: rgb(255, 255, 255, 0.08) !important;
 }
 
 :global(html.dark .article-detail-page) .commentInputWrap:focus-within {
-  background: rgb(77, 154, 255, 0.04) !important;
+  background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
   box-shadow: none !important;
 }
 
-/* 输入框背景/边框取三期 transparent（覆盖二期 #0f172a/#334155），文字色保留二期 */
 :global(html.dark .article-detail-page) .commentTextarea {
   background: transparent !important;
   border-color: transparent !important;
-  color: #f1f5f9 !important;
 }
 
-/* focus 边框选择器特异性高于三期基态，保留二期高亮 */
 :global(html.dark .article-detail-page) .commentTextarea:focus {
-  border-color: #4d9aff !important;
-}
-
-:global(html.dark .article-detail-page) .commentTextarea::placeholder {
-  color: #64748b !important;
-}
-
-:global(html.dark .article-detail-page) .commentSubmitBtn {
-  background: #0052d9 !important;
-  color: #fff !important;
-}
-
-:global(html.dark .article-detail-page) .commentSubmitBtn:hover:not(:disabled) {
-  background: #0042ad !important;
+  border-color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark .article-detail-page) .commentSubmitBtn:disabled {
-  background: #1e293b !important;
-  color: #64748b !important;
+  background: var(--bg-mute) !important;
+  color: var(--text-faint) !important;
 }
 
-/* 评论卡基态取三期透明（覆盖二期 #1e2b3a/#1e293b） */
 :global(html.dark .article-detail-page) .commentItem {
   background: transparent !important;
   border-color: rgb(255, 255, 255, 0.06) !important;
 }
 
-/* hover 取三期最终值（覆盖二期 #1a2a4a） */
 :global(html.dark .article-detail-page) .commentItem:hover {
   background: rgb(255, 255, 255, 0.03) !important;
   box-shadow: none !important;
   transform: none !important;
 }
 
-:global(html.dark .article-detail-page) .commentAuthor {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark .article-detail-page) .commentTime {
-  color: #64748b !important;
-}
-
-:global(html.dark .article-detail-page) .commentContent {
-  color: #cbd5e1 !important;
-}
-
-:global(html.dark .article-detail-page) .commentLikeBtn {
-  color: #64748b !important;
-}
-
 :global(html.dark .article-detail-page) .commentLikeBtn:hover,
 :global(html.dark .article-detail-page) .commentLikeBtn.liked {
-  color: #f87171 !important;
-}
-
-:global(html.dark .article-detail-page) .commentsEmpty {
-  color: #64748b !important;
+  color: var(--brand-primary-bright) !important;
 }

@@ -11,22 +11,22 @@
   position: relative;
   overflow: hidden;
   margin-bottom: 8px;
-  background: linear-gradient(135deg, var(--navy-800) 0%, var(--brand-primary) 50%, var(--color-info) 100%);
+  background: linear-gradient(135deg, var(--brand-primary-dark) 0%, var(--brand-primary) 50%, color-mix(in srgb, var(--brand-primary) 68%, var(--text-inverse, #fff)) 100%);
 }
 
 .heroBg {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 88% 18%, color-mix(in srgb, white 14%, transparent) 0%, transparent 42%),
-    radial-gradient(circle at 12% 88%, color-mix(in srgb, var(--color-info) 28%, transparent) 0%, transparent 50%);
+    radial-gradient(circle at 88% 18%, color-mix(in srgb, var(--text-inverse, #fff) 14%, transparent) 0%, transparent 42%),
+    radial-gradient(circle at 12% 88%, color-mix(in srgb, var(--brand-primary-bright) 28%, transparent) 0%, transparent 50%);
 }
 
 .heroInner {
   position: relative;
   z-index: 1;
   padding: 56px 56px 48px;
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 .heroTopline {
@@ -37,7 +37,7 @@
   font-size: 12px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: color-mix(in srgb, white 70%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 70%, transparent);
   font-weight: 600;
 }
 
@@ -57,13 +57,13 @@
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -1px;
-  color: white;
+  color: var(--text-inverse, #fff);
 }
 
 .heroTitle em {
   font-style: italic;
   font-weight: 400;
-  color: #bae0ff; /* stylelint-disable-line color-no-hex, function-allowed-list */
+  color: color-mix(in srgb, var(--text-inverse, #fff) 70%, var(--brand-primary-bright));
 }
 
 .heroSub {
@@ -71,12 +71,12 @@
   max-width: 620px;
   font-size: 15px;
   line-height: 1.7;
-  color: color-mix(in srgb, white 78%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 78%, transparent);
 }
 
 .heroDivider {
   height: 1px;
-  background: color-mix(in srgb, white 25%, transparent);
+  background: color-mix(in srgb, var(--text-inverse, #fff) 25%, transparent);
   margin-bottom: 32px;
 }
 
@@ -99,8 +99,8 @@
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: color-mix(in srgb, white 90%, transparent);
-  border: 1px solid color-mix(in srgb, white 30%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-inverse, #fff) 30%, transparent);
   padding: 3px 12px;
 }
 
@@ -129,7 +129,7 @@
   align-items: center;
   gap: 6px;
   font-size: 14px;
-  color: color-mix(in srgb, white 85%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 85%, transparent);
 }
 
 .metaItem :global(.anticon) {
@@ -137,7 +137,7 @@
 }
 
 .metaDot {
-  color: color-mix(in srgb, white 35%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 35%, transparent);
   font-size: 13px;
 }
 
@@ -145,7 +145,7 @@
   margin: 0;
   font-size: 14px;
   line-height: 1.65;
-  color: color-mix(in srgb, white 72%, transparent);
+  color: color-mix(in srgb, var(--text-inverse, #fff) 72%, transparent);
   max-width: 560px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -168,8 +168,8 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  border: 1px solid white;
-  background: white;
+  border: 1px solid var(--text-inverse, #fff);
+  background: var(--text-inverse, #fff);
   color: var(--brand-primary);
   transition: all 0.25s ease;
   white-space: nowrap;
@@ -181,13 +181,13 @@
 
 .ctaBtn.ghost {
   background: transparent;
-  color: white;
-  border-color: color-mix(in srgb, white 40%, transparent);
+  color: var(--text-inverse, #fff);
+  border-color: color-mix(in srgb, var(--text-inverse, #fff) 40%, transparent);
 }
 
 .ctaBtn.ghost:hover {
-  background: color-mix(in srgb, white 12%, transparent);
-  border-color: color-mix(in srgb, white 70%, transparent);
+  background: color-mix(in srgb, var(--text-inverse, #fff) 12%, transparent);
+  border-color: color-mix(in srgb, var(--text-inverse, #fff) 70%, transparent);
 }
 
 @media (width <= 1024px) {
@@ -253,52 +253,26 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移后的本组件独占有效值：
-   hero 系列为本组件独占类；.meta-item/.cta-btn 在其它页面亦有
-   同名类，但各页面路由 chunk 按需注入，互不干扰，此处取本组件
-   dark 规则原文等价迁移）
+   暗色主题：hero 封面本身即深色底（浅色规则已用变量与半透明白表达），
+   仅保留暗色下 cta 按钮的玻璃态
    ============================================================ */
-:global(html.dark) .hero {
-  background: linear-gradient(135deg, #07193f 0%, #003a99 50%, #0066cc 100%) !important;
-}
-
-:global(html.dark) .heroTopline,
-:global(html.dark) .heroTitle,
-:global(html.dark) .heroRole {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark) .heroSub,
-:global(html.dark) .heroBio {
-  color: rgb(255, 255, 255, 0.85) !important;
-}
-
-:global(html.dark) .heroDivider {
-  background: rgb(255, 255, 255, 0.2) !important;
-}
-
-:global(html.dark) .metaItem,
-:global(html.dark) .metaDot {
-  color: rgb(255, 255, 255, 0.75) !important;
-}
-
 :global(html.dark) .ctaBtn {
-  background: rgb(255, 255, 255, 0.12) !important;
-  color: #fff !important;
-  border-color: rgb(255, 255, 255, 0.2) !important;
+  background: rgb(255 255 255 / 0.12) !important;
+  color: var(--text-inverse, #fff) !important;
+  border-color: rgb(255 255 255 / 0.2) !important;
   backdrop-filter: blur(10px);
 }
 
 :global(html.dark) .ctaBtn:hover {
-  background: rgb(255, 255, 255, 0.2) !important;
-  border-color: rgb(255, 255, 255, 0.4) !important;
+  background: rgb(255 255 255 / 0.2) !important;
+  border-color: rgb(255 255 255 / 0.4) !important;
 }
 
 :global(html.dark) .ctaBtn.ghost {
   background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.3) !important;
+  border-color: rgb(255 255 255 / 0.3) !important;
 }
 
 :global(html.dark) .ctaBtn.ghost:hover {
-  background: rgb(255, 255, 255, 0.1) !important;
+  background: rgb(255 255 255 / 0.1) !important;
 }

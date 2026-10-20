@@ -3,12 +3,12 @@
 
 /* ============ 杂志区块通用 ============ */
 .magSection {
-  border-top: 1px solid var(--ink-200);
+  border-top: 1px solid var(--border-light);
   padding: 48px 0 40px;
 }
 
 .magSection:last-child {
-  border-bottom: 1px solid var(--ink-200);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .secHead {
@@ -41,7 +41,7 @@
   margin: 0 0 8px;
   font-size: 26px;
   font-weight: 700;
-  color: var(--ink-900);
+  color: var(--text-heading);
   line-height: 1.2;
   letter-spacing: -0.3px;
   font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
@@ -50,18 +50,18 @@
 .secDesc {
   margin: 0;
   font-size: 14px;
-  color: var(--ink-500);
+  color: var(--text-muted);
   line-height: 1.6;
   max-width: 540px;
 }
 
 /* ============ 危险区 ============ */
 .dangerSection {
-  border-top-color: var(--danger-200);
+  border-top-color: color-mix(in srgb, var(--danger-500) 20%, transparent);
 }
 
 .dangerSection .secTitle {
-  color: var(--danger-700);
+  color: var(--status-danger);
 }
 
 .dangerAction {
@@ -87,7 +87,7 @@
 .dangerBtn:global(.ant-btn-dangerous):focus-visible {
   background: var(--danger-500);
   border-color: var(--danger-500);
-  color: #fff;
+  color: var(--text-inverse, #fff);
 }
 
 @media (width <= 768px) {
@@ -115,32 +115,18 @@
 }
 
 /* ============================================================
-   暗色主题（自 dark-mode.css 迁移后的本组件独占有效值。原文件中
-   danger-section 边框规则在 mag-section 通用边框规则之后且特异性
-   更高，红色边框生效——此处保持同序书写，dangerSection 规则后置
-   以维持同级平局时后者的级联结果）
+   暗色主题：背景/文字/边框换色已由语义变量自动跟随，仅保留暗色下
+   必要的强调色规则
    ============================================================ */
-:global(html.dark) .magSection {
-  border-color: #1e293b !important;
-}
-
 :global(html.dark) .secNum {
-  color: #4d9aff !important;
+  color: var(--brand-primary-bright) !important;
 }
 
 :global(html.dark) .secNum.danger {
-  color: #f87171 !important;
-}
-
-:global(html.dark) .secTitle {
-  color: #f1f5f9 !important;
-}
-
-:global(html.dark) .secDesc {
-  color: #94a3b8 !important;
+  color: var(--status-danger) !important;
 }
 
 :global(html.dark) .dangerSection {
-  border-color: rgb(239, 68, 68, 0.3) !important;
-  background: rgb(239, 68, 68, 0.05) !important;
+  border-color: color-mix(in srgb, var(--danger-500) 30%, transparent) !important;
+  background: color-mix(in srgb, var(--danger-500) 5%, transparent) !important;
 }
