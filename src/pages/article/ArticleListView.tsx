@@ -11,11 +11,13 @@ import {
   SearchOutlined,
   StarOutlined
 } from '@ant-design/icons'
+import { Button, Result, Skeleton } from 'antd'
 import type { ComponentType } from 'react'
 import ReadProgress from '@/components/ReadProgress'
 import { RowList } from '@/features/article'
-import { articles, type ArticleItem } from '@/api/mock/articles'
+import type { ArticleItem } from '@/features/article'
 import { useI18n } from '@/i18n'
+import { toArticleItem, useArticleList } from './articleQuery'
 import './ArticleListView.css'
 
 interface CategoryItem {
@@ -27,11 +29,18 @@ interface CategoryItem {
 export default function ArticleListView() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { t, locale } = useI18n()
+  const { t } = useI18n()
   const categoryParam = searchParams.get('category') || 'all'
 
   const [searchQuery, setSearchQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState(() => searchParams.get('category') || 'all')
+
+  // 服务端过滤：分类即时生效，关键词防抖 300ms
+  const { data, isPending, isError, refetch } = useArticleList(activeCategory, searchQuery)
+  const articles = useMemo<ArticleItem[]>(
+    () => (data ?? []).map(dto => toArticleItem(dto, t)),
+    [data, t],
+  )
 
   // 文章分类数据（EP 图标 → AntD 图标映射）
   const categories = useMemo<CategoryItem[]>(() => [
@@ -41,7 +50,7 @@ export default function ArticleListView() {
     { label: t('article.categories.psychology'), key: 'psychology', Icon: ReadOutlined },
     { label: t('article.categories.career'), key: 'career', Icon: ClockCircleOutlined },
     { label: t('article.categories.stories'), key: 'stories', Icon: EyeOutlined }
-  ], [t, locale])
+  ], [t])
 
   // watch(() => route.query.category) 等价：同步分类切换（Navbar 子菜单跳转）
   useEffect(() => {
@@ -57,23 +66,6 @@ export default function ArticleListView() {
     navigate(`/articles/${article.id}`)
   }
 
-  // 过滤文章
-  const filteredArticles = useMemo(() => {
-    let result = articles
-    if (activeCategory !== 'all') {
-      if (activeCategory === 'daily' || activeCategory === 'featured') {
-        result = result.filter(a => a.featured)
-      } else {
-        result = result.filter(a => a.category === activeCategory)
-      }
-    }
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase()
-      result = result.filter(a => a.title.toLowerCase().includes(q) || a.summary.toLowerCase().includes(q))
-    }
-    return result
-  }, [activeCategory, searchQuery])
-
   const setCategory = (key: string) => {
     setActiveCategory(key)
     setSearchQuery('')
@@ -81,6 +73,39 @@ export default function ArticleListView() {
 
   const goBack = () => {
     navigate('/articles')
+  }
+
+  // 首次加载：行列表骨架
+  if (isPending) {
+    return (
+      <div className="article-list-page">
+        <ReadProgress />
+        <div className="article-state">
+          <Skeleton active title={{ width: '45%' }} paragraph={{ rows: 2 }} />
+          <Skeleton active title={false} paragraph={{ rows: 8 }} />
+        </div>
+      </div>
+    )
+  }
+
+  // 加载失败：提示 + 重试
+  if (isError) {
+    return (
+      <div className="article-list-page">
+        <ReadProgress />
+        <div className="article-state">
+          <Result
+            status="error"
+            title={t('common.loadFailed')}
+            extra={
+              <Button type="primary" onClick={() => void refetch()}>
+                {t('common.retry')}
+              </Button>
+            }
+          />
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -91,11 +116,11 @@ export default function ArticleListView() {
         <div className="intro-container">
           <div className="intro-left">
             <span className="intro-eyebrow">— Articles &amp; Stories</span>
-            <h1 className="intro-title">{categories.find(c => c.key === activeCategory)?.label || '全部文章'}</h1>
+            <h1 className="intro-title">{categories.find(c => c.key === activeCategory)?.label || t('article.categories.all')}</h1>
           </div>
           <div className="intro-right">
-            <span className="intro-count">{String(filteredArticles.length).padStart(2, '0')}</span>
-            <span className="intro-count-label">篇 / 文章</span>
+            <span className="intro-count">{String(articles.length).padStart(2, '0')}</span>
+            <span className="intro-count-label">{t('article.stats.count')}</span>
           </div>
         </div>
       </div>
@@ -105,7 +130,7 @@ export default function ArticleListView() {
         <div className="ribbon-container">
           <button className="back-link" onClick={goBack}>
             <ArrowLeftOutlined />
-            <span>返回中心</span>
+            <span>{t('common.back')}</span>
           </button>
           <div className="ribbon-scroll">
             {categories.map(cat => (
@@ -132,7 +157,7 @@ export default function ArticleListView() {
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               type="text"
-              placeholder="搜索文章标题或摘要..."
+              placeholder={t('article.search')}
               className="search-input"
             />
           </div>
@@ -140,7 +165,7 @@ export default function ArticleListView() {
 
         {/* 文章列表：横向编辑式 */}
         <div className="article-list-content">
-          <RowList articles={filteredArticles} onOpen={openArticle} />
+          <RowList articles={articles} onOpen={openArticle} />
         </div>
       </div>
     </div>

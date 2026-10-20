@@ -1,11 +1,23 @@
-// 测评域类型（business 层共用；数据本体见同目录 data.ts）—— 自 Vue 版原样迁移
+// 测评域类型（业务层视图模型，结构对齐 API DTO）
+
+export type AssessmentCategoryKey =
+  | 'all'
+  | 'mental'
+  | 'career'
+  | 'cognitive'
+  | 'esports'
+  | 'learning'
+  | 'social'
+
+export type AssessmentOptionType = 'frequency' | 'agreement' | 'mbti'
+
 export interface ScaleInfo {
   key: string
   name: string
   desc: string
   duration: string
   count: number
-  category: string
+  category: Exclude<AssessmentCategoryKey, 'all'>
   icon: string
   difficulty: string
   available: boolean
@@ -14,6 +26,7 @@ export interface ScaleInfo {
 
 /** 单条测评记录 */
 export interface AssessmentRecord {
+  id: number
   scaleKey: string
   scaleName: string
   date: string
@@ -47,10 +60,26 @@ export interface ScaleResult {
   suggestion: string
 }
 
-export interface ScaleDefinition {
+/** 量表详情（答题页） */
+export interface ScaleDetail {
+  key: string
   name: string
+  category: Exclude<AssessmentCategoryKey, 'all'>
   description: string
-  optionType: 'frequency' | 'agreement' | 'mbti'
+  optionType: AssessmentOptionType
+  options: OptionItem[]
   questions: ScaleQuestion[]
-  calc: (score: number, details: Record<string, number>) => ScaleResult
+}
+
+/** 单题答案 */
+export interface AssessmentAnswerInput {
+  questionId: number
+  value: number | string
+}
+
+/** 提交测评（页面转交 API） */
+export interface AssessmentSubmitInput {
+  scaleKey: string
+  answers: AssessmentAnswerInput[]
+  duration: number
 }

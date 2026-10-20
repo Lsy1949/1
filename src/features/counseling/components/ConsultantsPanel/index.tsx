@@ -1,10 +1,11 @@
 /**
  * 【business】ConsultantsPanel —— 心理老师面板 · 杂志编辑式列表 + 咨询师详情弹窗
+ * 数据由页面注入（counselors / specialties），组件内只做筛选与展示。
  * - v-reveal → useReveal；el-select → Select；el-dialog → Modal；el-empty → Empty
  * - 预约行为经 onBook(id) 上抛（父级负责 prefill + 切到预约页签）
  */
 import { useMemo, useState } from 'react'
-import { Button, Empty, Modal, Select } from 'antd'
+import { Button, Empty, Input, Modal, Select } from 'antd'
 import {
   ArrowRightOutlined,
   BankOutlined,
@@ -12,15 +13,28 @@ import {
   StarOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import { counselors, specialties } from '../data'
-import type { Counselor } from '../types'
+import type { Counselor, CounselorAccentKey } from '../types'
 import { useI18n } from '@/i18n'
 import { useReveal } from '@/hooks/useReveal'
 import styles from './ConsultantsPanel.module.css'
 
 export interface ConsultantsPanelProps {
+  counselors: Counselor[]
+  specialties: string[]
   /** 「预约」点击（行内按钮 / 详情弹窗按钮），父级负责预填并切换页签 */
   onBook: (id: number) => void
+}
+
+/** 语义色 key → CSS Module 类名（颜色只在 CSS 中定义） */
+const ACCENT_CLASS: Record<CounselorAccentKey, string> = {
+  primary: styles.accentPrimary,
+  green: styles.accentGreen,
+  purple: styles.accentPurple,
+  gold: styles.accentGold,
+  red: styles.accentRed,
+  cyan: styles.accentCyan,
+  magenta: styles.accentMagenta,
+  geekblue: styles.accentGeekblue,
 }
 
 interface ConsFilter {
@@ -31,7 +45,7 @@ interface ConsFilter {
 
 const INITIAL_FILTER: ConsFilter = { specialty: '', gender: '', sort: 'rating' }
 
-export function ConsultantsPanel({ onBook }: ConsultantsPanelProps) {
+export function ConsultantsPanel({ counselors, specialties, onBook }: ConsultantsPanelProps) {
   const { t } = useI18n()
 
   const ribbonRef = useReveal<HTMLDivElement>({ delay: 80 })
@@ -60,7 +74,7 @@ export function ConsultantsPanel({ onBook }: ConsultantsPanelProps) {
     else if (consFilter.sort === 'exp') list = list.slice().sort((a, b) => b.exp - a.exp)
     else if (consFilter.sort === 'sessions') list = list.slice().sort((a, b) => b.sessions - a.sessions)
     return list
-  }, [consFilter, consultantSearch])
+  }, [counselors, consFilter, consultantSearch])
 
   // 咨询师详情（visible 与当前对象合一，等价 counselorDetailVisible + currentCounselor）
   const [currentCounselor, setCurrentCounselor] = useState<Counselor | null>(null)
@@ -84,14 +98,15 @@ export function ConsultantsPanel({ onBook }: ConsultantsPanelProps) {
     <>
       {/* 极简搜索 + 筛选 */}
       <div ref={ribbonRef} className={styles.consRibbon}>
-        <div className={styles.ribbonSearch}>
-          <SearchOutlined className={styles.searchIco} />
-          <input
-            value={consultantSearch}
-            placeholder={t('counseling.counselors.searchPlaceholderAlt')}
-            onChange={e => setConsultantSearch(e.target.value)}
-          />
-        </div>
+        <Input
+          className={styles.ribbonSearch}
+          value={consultantSearch}
+          prefix={<SearchOutlined className={styles.searchIco} />}
+          placeholder={t('counseling.counselors.searchPlaceholderAlt')}
+          allowClear
+          variant="borderless"
+          onChange={e => setConsultantSearch(e.target.value)}
+        />
         <div className={styles.consFilters}>
           <Select
             className={styles.consSelect}
@@ -144,7 +159,7 @@ export function ConsultantsPanel({ onBook }: ConsultantsPanelProps) {
             <div className={styles.rowNumber}>
               <span className={styles.num}>{String(i + 1).padStart(2, '0')}</span>
             </div>
-            <div className={styles.rowAvatar} style={{ background: c.color }}>
+            <div className={`${styles.rowAvatar} ${ACCENT_CLASS[c.accentKey]}`}>
               {c.name[0]}
             </div>
             <div className={styles.rowMain}>
@@ -211,7 +226,7 @@ export function ConsultantsPanel({ onBook }: ConsultantsPanelProps) {
         {currentCounselor && (
           <div className={styles.cdContent}>
             <div className={styles.cdHeader}>
-              <div className={styles.cdAvatar} style={{ background: currentCounselor.color }}>
+              <div className={`${styles.cdAvatar} ${ACCENT_CLASS[currentCounselor.accentKey]}`}>
                 {currentCounselor.name[0]}
               </div>
               {/* cd-meta 为无样式语义标记类（全仓与旧构建产物均无定义），保留字面量 */}

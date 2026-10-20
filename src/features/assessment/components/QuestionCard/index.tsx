@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { CheckOutlined } from '@ant-design/icons'
+import { Radio } from 'antd'
 import type { OptionItem, ScaleQuestion } from '../types'
 import styles from './QuestionCard.module.css'
 
@@ -14,7 +14,7 @@ interface Props {
   onSelect: (qid: number, value: number | string) => void
 }
 
-/** 沉浸式答题 · 题目卡片（AssessmentTakeView 使用） */
+/** 沉浸式答题 · 题目卡片（antd Radio.Group，保留原有卡片式外观） */
 export default function QuestionCard({
   index,
   total,
@@ -35,25 +35,28 @@ export default function QuestionCard({
         <h2 className={styles.qText}>{question?.text}</h2>
       </div>
 
-      <div className={styles.qOptionsImmersive}>
+      <Radio.Group
+        className={styles.qOptionsImmersive}
+        value={answer}
+        onChange={(e) => {
+          if (question) onSelect(question.id, e.target.value as number | string)
+        }}
+      >
         {options.map((opt, idx) => (
-          <div
+          <Radio.Button
             key={opt.value}
-            className={`${styles.optCard}${answer === opt.value ? ` ${styles.selected}` : ''}`}
+            value={opt.value}
+            className={styles.optCard}
             // 原 :style="{ '--delay': ... }" —— CSS 自定义属性需类型断言
             style={{ '--delay': `${idx * 0.05}s` } as CSSProperties}
-            onClick={() => question && onSelect(question.id, opt.value)}
           >
             <div className={styles.optContent}>
               <div className={styles.optIndex}>{String.fromCharCode(65 + idx)}</div>
               <span className={styles.optLabel}>{opt.label}</span>
             </div>
-            <div className={styles.optCheck}>
-              {answer === opt.value && <CheckOutlined />}
-            </div>
-          </div>
+          </Radio.Button>
         ))}
-      </div>
+      </Radio.Group>
     </div>
   )
 }

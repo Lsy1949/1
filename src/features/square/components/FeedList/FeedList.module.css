@@ -4,6 +4,21 @@
   min-width: 0;
 }
 
+/* ===== 加载态：与卡片结构对齐的骨架 ===== */
+.feedSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 8px;
+}
+
+.feedSkeletonCard {
+  padding: 24px 24px 28px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 18px;
+}
+
 .filterBar {
   display: flex;
   gap: 8px;

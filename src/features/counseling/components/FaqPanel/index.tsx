@@ -1,5 +1,6 @@
 /**
  * 【business】FaqPanel —— 常见问题面板 · 卡片化侧栏分类 + 手风琴问答
+ * 数据由页面注入（faqs），组件内只做分类/搜索与展示。
  * - el-collapse(accordion) → Collapse items 写法（accordion + activeKey 受控）
  * - el-input(prefix-icon Search + clearable) → Input prefix + allowClear
  * - 「在线咨询」经 onBook() 上抛（父级切到预约页签）
@@ -15,12 +16,13 @@ import {
   SearchOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons'
-import { faqList } from '../data'
+import type { FaqItem } from '../types'
 import { useI18n } from '@/i18n'
 import { useReveal } from '@/hooks/useReveal'
 import styles from './FaqPanel.module.css'
 
 export interface FaqPanelProps {
+  faqs: FaqItem[]
   /** 「在线咨询」点击（父级切换页签） */
   onBook: () => void
 }
@@ -34,7 +36,7 @@ const FAQ_CATEGORIES = [
   { key: 'privacy', nameKey: 'counseling.faq.categories.confidentiality', Icon: LockOutlined },
 ] as const
 
-export function FaqPanel({ onBook }: FaqPanelProps) {
+export function FaqPanel({ faqs, onBook }: FaqPanelProps) {
   const { t } = useI18n()
 
   const layoutRef = useReveal<HTMLDivElement>({ delay: 100 })
@@ -44,22 +46,22 @@ export function FaqPanel({ onBook }: FaqPanelProps) {
   const [faqActive, setFaqActive] = useState<string>('')
 
   function getFaqCount(cat: string) {
-    return cat === 'all' ? faqList.length : faqList.filter(f => f.cat === cat).length
+    return cat === 'all' ? faqs.length : faqs.filter(f => f.cat === cat).length
   }
 
   const filteredFaqs = useMemo(() => {
-    let list = faqList
+    let list = faqs
     if (faqActiveCat !== 'all') list = list.filter(f => f.cat === faqActiveCat)
     if (faqSearch) {
       const q = faqSearch.toLowerCase()
       list = list.filter(f => f.q.toLowerCase().includes(q) || f.a.toLowerCase().includes(q))
     }
     return list
-  }, [faqActiveCat, faqSearch])
+  }, [faqs, faqActiveCat, faqSearch])
 
   // 手风琴受控：accordion 下 onChange 收到单 key，收起时为空串
-  const collapseItems = filteredFaqs.map((item, i) => ({
-    key: String(i),
+  const collapseItems = filteredFaqs.map(item => ({
+    key: String(item.id),
     label: (
       <span className={styles.faqQ}>
         <span className={styles.qMark}>Q</span>

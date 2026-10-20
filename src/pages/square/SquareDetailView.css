@@ -9,6 +9,19 @@
   overflow-x: hidden;
 }
 
+/* 加载 / 错误态容器：与详情栏一致的版式留白 */
+.square-detail-state {
+  position: relative;
+  z-index: 1;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 40px 80px;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
 .square-detail-page::before {
   content: 'SQUARE';
   position: fixed;

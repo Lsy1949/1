@@ -5,6 +5,17 @@
   position: relative;
 }
 
+/* 加载 / 错误态容器：保持与内容区一致的版式留白 */
+.article-state {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 40px;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
 /* 纯排版标题区 · 杂志编辑式 */
 .page-intro {
   max-width: 1400px;

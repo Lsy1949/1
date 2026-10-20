@@ -203,6 +203,101 @@
   cursor: not-allowed;
 }
 
+/* ============ antd Button 适配（保持沉浸式外观） ============ */
+.exit-btn:global(.ant-btn) {
+  height: auto;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  color: var(--neutral-600);
+  font-size: 14px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.exit-btn:global(.ant-btn):hover {
+  color: var(--danger-600);
+  background: var(--danger-50);
+}
+
+.nav-btn:global(.ant-btn) {
+  height: auto;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  color: var(--neutral-600);
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-btn:global(.ant-btn):hover:not(:disabled) {
+  color: var(--neutral-900);
+  background: var(--neutral-050);
+}
+
+.nav-btn-primary:global(.ant-btn) {
+  height: auto;
+  padding: 14px 32px;
+  border: none;
+  background: var(--neutral-900);
+  color: var(--text-inverse, #fff);
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 999px;
+  box-shadow: 0 4px 14px color-mix(in srgb, black 20%, transparent);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-btn-primary:global(.ant-btn):hover:not(:disabled) {
+  background: var(--neutral-900);
+  color: var(--text-inverse, #fff);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px color-mix(in srgb, black 25%, transparent);
+}
+
+.nav-btn-primary:global(.ant-btn):disabled {
+  opacity: 0.4;
+  box-shadow: none;
+}
+
+/* 顶部 antd Progress：细线 + 无圆角 */
+.top-progress {
+  flex: 1;
+}
+
+.top-progress :global(.ant-progress-outer) {
+  padding-inline-end: 0;
+}
+
+.top-progress :global(.ant-progress-bg) {
+  background: var(--neutral-900);
+  border-radius: 0;
+}
+
+.top-progress :global(.ant-progress-inner) {
+  background: var(--neutral-075);
+  border-radius: 0;
+}
+
+/* 加载 / 错误态容器 */
+.take-state {
+  margin: auto;
+  width: min(720px, 90vw);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
 .nav-btn-primary {
   display: inline-flex;
   align-items: center;

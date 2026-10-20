@@ -1,5 +1,10 @@
+/**
+ * 测评中心（页面层）：量表目录与历史记录均由接口提供，三个页签共享三态兜底。
+ * 计分与历史持久化在服务端，页面不再读写 localStorage。
+ */
 import { useEffect, useMemo, useState } from 'react'
-import { App as AntApp, ConfigProvider, Tabs } from 'antd'
+import type { ReactNode } from 'react'
+import { App as AntApp, Button, ConfigProvider, Result, Skeleton, Tabs } from 'antd'
 import { ExclamationCircleFilled } from '@ant-design/icons'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import ModuleCover from '@/components/ModuleCover'
@@ -9,18 +14,30 @@ import {
   ScaleDialog,
   ScalePanel,
 } from '@/features/assessment'
-import { ASSESSMENT_STORAGE_KEY, categories, scaleList, scales } from '@/features/assessment'
-import type { AssessmentRecord, ScaleInfo } from '@/features/assessment'
+import type { AssessmentCategoryKey, AssessmentRecord, ScaleInfo } from '@/features/assessment'
 import { useI18n } from '@/i18n'
+import {
+  useAssessmentHistory,
+  useAssessmentScale,
+  useAssessmentScales,
+  useClearAssessmentHistory,
+} from './assessmentQuery'
 import './AssessmentCenterView.css'
+
+/** 分类导航（名称走 i18n；数量由接口数据派生） */
+const CATEGORY_KEYS: AssessmentCategoryKey[] = [
+  'all',
+  'mental',
+  'career',
+  'cognitive',
+  'esports',
+  'learning',
+  'social',
+]
 
 /**
  * assessment 作用域组件 token：
- * 页签「极简文字」外观（原 AssessmentCenterView.css 的 .ant-tabs-* 覆写）、
- * 历史表格表头（原 AssessmentDashboardPanel.css .ant-table-thead 背景/文字色）、
- * 历史筛选下拉（原 .history-filter .ant-select-selector 覆写）收敛为
- * 嵌套 ConfigProvider 官方注入，仅作用于本页。
- * 字重/字距、表格字体、nav 底线隐藏等无对应 token 的维度仍保留在组件 css。
+ * 页签「极简文字」外观、历史表格表头、历史筛选下拉收敛为嵌套 ConfigProvider 注入，仅作用于本页。
  */
 const assessmentThemeComponents = {
   Tabs: {
@@ -54,27 +71,43 @@ export default function AssessmentCenterView() {
 
   const [mainTab, setMainTab] = useState('scales')
   const [searchQuery, setSearchQuery] = useState('')
-  const [activeCategory, setActiveCategory] = useState('all')
+  const [activeCategory, setActiveCategory] = useState<string>('all')
 
   // 弹窗状态
   const [activeScaleKey, setActiveScaleKey] = useState('')
   const [result, setResult] = useState<AssessmentRecord | null>(null)
-  const [allHistory, setAllHistory] = useState<AssessmentRecord[]>([])
   const [dialogVisible, setDialogVisible] = useState(false)
   const [dialogMode, setDialogMode] = useState<'intro' | 'result'>('intro')
+
+  // 接口数据
+  const {
+    data: scales = [],
+    isPending: scalesPending,
+    isError: scalesError,
+    refetch: refetchScales,
+  } = useAssessmentScales()
+  const {
+    data: history = [],
+    isPending: historyPending,
+    isError: historyError,
+    refetch: refetchHistory,
+  } = useAssessmentHistory()
+  const { data: activeScaleDetail } = useAssessmentScale(activeScaleKey || undefined)
+  const clearHistory = useClearAssessmentHistory()
 
   // 分类导航（附数量）
   const panelCategories = useMemo(
     () =>
-      categories.map((c) => ({
-        ...c,
-        count: c.key === 'all' ? scaleList.length : scaleList.filter((s) => s.category === c.key).length,
+      CATEGORY_KEYS.map((key) => ({
+        key,
+        name: t(`assessment.categories.${key}`),
+        count: key === 'all' ? scales.length : scales.filter((s) => s.category === key).length,
       })),
-    []
+    [scales, t],
   )
 
   const filteredScales = useMemo(() => {
-    return scaleList.filter((scale) => {
+    return scales.filter((scale) => {
       const q = searchQuery.toLowerCase()
       const matchesSearch =
         scale.name.toLowerCase().includes(q) ||
@@ -83,16 +116,19 @@ export default function AssessmentCenterView() {
       const matchesCategory = activeCategory === 'all' || scale.category === activeCategory
       return matchesSearch && matchesCategory
     })
-  }, [searchQuery, activeCategory])
+  }, [scales, searchQuery, activeCategory])
 
-  const completedKeys = useMemo(() => allHistory.map((h) => h.scaleKey), [allHistory])
+  const completedKeys = useMemo(() => history.map((h) => h.scaleKey), [history])
+
+  const activeScaleInfo = useMemo<ScaleInfo | undefined>(
+    () => scales.find((s) => s.key === activeScaleKey),
+    [scales, activeScaleKey],
+  )
 
   // --- 逻辑方法 ---
 
-  // el-tabs @tab-change → antd Tabs onChange
   function handleTabChange(key: string) {
     setMainTab(key)
-    if (key === 'dashboard' || key === 'mine') loadHistory()
   }
 
   function handleScaleClick(scale: ScaleInfo) {
@@ -101,9 +137,9 @@ export default function AssessmentCenterView() {
       return
     }
     setActiveScaleKey(scale.key)
-    // 检查是否有历史结果且路由要求显示结果
+    // 从答题页返回时带 ?view=result：优先展示最近一次结果
     if (searchParams.get('view') === 'result' && searchParams.get('scale') === scale.key) {
-      const lastRecord = allHistory.find((h) => h.scaleKey === scale.key)
+      const lastRecord = history.find((h) => h.scaleKey === scale.key)
       if (lastRecord) {
         setResult(lastRecord)
         setDialogMode('result')
@@ -125,12 +161,7 @@ export default function AssessmentCenterView() {
 
   function startAssessment() {
     setDialogVisible(false)
-    // router.push({ name: 'assessment-take', params }) → navigate 路径跳转
     navigate(`/assessment/take/${activeScaleKey}`)
-  }
-
-  function loadHistory() {
-    setAllHistory(JSON.parse(localStorage.getItem(ASSESSMENT_STORAGE_KEY) || '[]'))
   }
 
   function viewHistory(row: AssessmentRecord) {
@@ -141,7 +172,7 @@ export default function AssessmentCenterView() {
     setDialogVisible(true)
   }
 
-  // 清空历史记录：ElMessageBox.confirm → modal.confirm（来自 AntApp 上下文）
+  // 清空历史记录（接口 + 失效缓存）
   function clearAllHistory() {
     modal.confirm({
       title: t('assessment.history.clearTitle'),
@@ -149,11 +180,7 @@ export default function AssessmentCenterView() {
       okText: t('assessment.history.clearOk'),
       cancelText: t('common.cancel'),
       icon: <ExclamationCircleFilled />,
-      onOk() {
-        localStorage.removeItem(ASSESSMENT_STORAGE_KEY)
-        setAllHistory([])
-        message.success(t('assessment.history.cleared'))
-      },
+      onOk: () => clearHistory.mutate(),
     })
   }
 
@@ -174,34 +201,87 @@ export default function AssessmentCenterView() {
 
   /**
    * 原 onMounted + watch(route.query) 合并为一个 effect：
-   * 首次挂载与 query 变化都会执行，行为等价且去除了 Vue 版的重复逻辑。
+   * 首次挂载与 query 变化都会执行；数据到位后再决定是否弹出结果。
    */
   useEffect(() => {
-    const history: AssessmentRecord[] = JSON.parse(
-      localStorage.getItem(ASSESSMENT_STORAGE_KEY) || '[]'
-    )
-    setAllHistory(history)
+    const scaleKey = searchParams.get('scale')
+    const view = searchParams.get('view')
+    if (!scaleKey || !scales.some((s) => s.key === scaleKey)) return
 
-    const s = searchParams.get('scale')
-    const v = searchParams.get('view')
-    if (s && scales[s]) {
-      setActiveScaleKey(s)
-      if (v === 'result') {
-        const lastRecord = history.find((h) => h.scaleKey === s)
-        if (lastRecord) {
-          setResult(lastRecord)
-          setDialogMode('result')
-          setDialogVisible(true)
-        }
-      } else if (v === 'intro') {
-        setDialogMode('intro')
+    setActiveScaleKey(scaleKey)
+    if (view === 'result' && history.length > 0) {
+      const lastRecord = history.find((h) => h.scaleKey === scaleKey)
+      if (lastRecord) {
+        setResult(lastRecord)
+        setDialogMode('result')
         setDialogVisible(true)
       }
+    } else if (view === 'intro') {
+      setDialogMode('intro')
+      setDialogVisible(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams])
+  }, [searchParams, scales, history])
 
-  // AntD 5 Tabs 推荐 items 写法（替代 el-tabs + el-tab-pane 模板结构）
+  /** 量表目录三态兜底 */
+  function gateScales(children: ReactNode) {
+    if (scalesPending) {
+      return (
+        <div className="assessment-state">
+          <Skeleton active title={{ width: '38%' }} paragraph={{ rows: 2 }} />
+          {[0, 1, 2].map((i) => (
+            <Skeleton key={i} active avatar title={{ width: '30%' }} paragraph={{ rows: 2 }} />
+          ))}
+        </div>
+      )
+    }
+    if (scalesError) {
+      return (
+        <div className="assessment-state">
+          <Result
+            status="error"
+            title={t('common.loadFailed')}
+            extra={
+              <Button type="primary" onClick={() => void refetchScales()}>
+                {t('common.retry')}
+              </Button>
+            }
+          />
+        </div>
+      )
+    }
+    return children
+  }
+
+  /** 历史记录三态兜底 */
+  function gateHistory(children: ReactNode) {
+    if (historyPending) {
+      return (
+        <div className="assessment-state">
+          <Skeleton active title={{ width: '38%' }} paragraph={{ rows: 3 }} />
+          <Skeleton active title={false} paragraph={{ rows: 6 }} />
+        </div>
+      )
+    }
+    if (historyError) {
+      return (
+        <div className="assessment-state">
+          <Result
+            status="error"
+            title={t('common.loadFailed')}
+            extra={
+              <Button type="primary" onClick={() => void refetchHistory()}>
+                {t('common.retry')}
+              </Button>
+            }
+          />
+        </div>
+      )
+    }
+    return children
+  }
+
+  // AntD 5 Tabs 推荐 items 写法
   const tabItems = [
     {
       key: 'scales',
@@ -210,47 +290,49 @@ export default function AssessmentCenterView() {
         <>
           <ModuleCover
             eyebrow="— Assessment"
-            no={`No.${String(scaleList.length).padStart(2, '0')}`}
+            no={`No.${String(scales.length).padStart(2, '0')}`}
             title={t('assessment.cover.scales.title')}
             desc={t('assessment.cover.scales.desc')}
           />
-          <ScalePanel
-            categories={panelCategories}
-            activeCategory={activeCategory}
-            searchQuery={searchQuery}
-            scales={filteredScales}
-            completedKeys={completedKeys}
-            onActiveCategoryChange={setActiveCategory}
-            onSearchQueryChange={setSearchQuery}
-            onSelect={handleScaleClick}
-          />
+          {gateScales(
+            <ScalePanel
+              categories={panelCategories}
+              activeCategory={activeCategory}
+              searchQuery={searchQuery}
+              scales={filteredScales}
+              completedKeys={completedKeys}
+              onActiveCategoryChange={setActiveCategory}
+              onSearchQueryChange={setSearchQuery}
+              onSelect={handleScaleClick}
+            />,
+          )}
         </>
       ),
     },
     {
       key: 'mine',
       label: t('assessment.tabs.mine'),
-      children: (
+      children: gateHistory(
         <MinePanel
-          history={allHistory}
-          scales={scaleList}
+          history={history}
+          scales={scales}
           onView={viewHistory}
           onRetake={retakeAssessment}
           onClearHistory={clearAllHistory}
           onGoAssess={() => setMainTab('scales')}
-        />
+        />,
       ),
     },
     {
       key: 'dashboard',
       label: t('assessment.tabs.dashboard'),
-      children: (
+      children: gateHistory(
         <DashboardPanel
-          history={allHistory}
-          scales={scaleList}
+          history={history}
+          scales={scales}
           onView={viewHistory}
           onOpenScale={openScaleIntro}
-        />
+        />,
       ),
     },
   ]
@@ -258,20 +340,25 @@ export default function AssessmentCenterView() {
   return (
     <ConfigProvider theme={{ components: assessmentThemeComponents }}>
       <div className="assessment-page">
-      {/* 主体功能区：activeKey + onChange 受控（对应 v-model + @tab-change） */}
-      <Tabs activeKey={mainTab} onChange={handleTabChange} items={tabItems} className="main-tabs" />
+        <Tabs
+          className="main-tabs"
+          activeKey={mainTab}
+          onChange={handleTabChange}
+          items={tabItems}
+        />
 
-      {/* 测评介绍 / 结果弹窗：v-model:visible → 受控 open + onClose */}
-      <ScaleDialog
-        open={dialogVisible}
-        mode={dialogMode}
-        scaleKey={activeScaleKey}
-        result={result}
-        onClose={() => setDialogVisible(false)}
-        onStart={startAssessment}
-        onDownload={mockDownload}
-        onShare={mockShare}
-      />
+        {/* 量表弹窗：介绍 / 结果，数据由页面注入 */}
+        <ScaleDialog
+          open={dialogVisible}
+          mode={dialogMode}
+          scaleInfo={activeScaleInfo}
+          scaleDetail={activeScaleDetail}
+          result={result}
+          onClose={() => setDialogVisible(false)}
+          onStart={startAssessment}
+          onDownload={mockDownload}
+          onShare={mockShare}
+        />
       </div>
     </ConfigProvider>
   )

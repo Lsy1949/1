@@ -1,15 +1,26 @@
-// 时光胶囊 · 新建表单（标题/开启时间/开启方式/邮件或手写信/开关/富文本内容/照片/心情 + 提交 + 成功弹窗）
+// 时光胶囊 · 新建表单（antd Form + Input/DatePicker/Segmented/Upload/Radio/Button）
+// 表单状态、校验、草稿均由 Form 统一管理；提交行为经 onSubmit 上抛（页面 useMutation）
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { ChangeEvent, MouseEvent as ReactMouseEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
-import { App as AntApp, Button, DatePicker, Modal, Switch } from 'antd'
-import { CheckCircleFilled, FormOutlined, MailOutlined, PlusOutlined } from '@ant-design/icons'
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Radio,
+  Segmented,
+  Switch,
+  Upload,
+} from 'antd'
+import type { UploadChangeParam, UploadFile } from 'antd/es/upload/interface'
+import { FormOutlined, MailOutlined, PlusOutlined } from '@ant-design/icons'
 import { useI18n } from '@/i18n'
+import type { CapsuleCreateInput } from '../types'
 import styles from './CreateForm.module.css'
 
-// 简化富文本工具栏（@wangeditor 未在 React 项目依赖中，降级为 contentEditable + execCommand）
+// 简化富文本工具栏（@wangeditor 未在 React 项目依赖中，保留 contentEditable + execCommand）
 const TOOLBAR_ITEMS = [
   { cmd: 'bold', label: 'B', title: '加粗' },
   { cmd: 'italic', label: 'I', title: '斜体' },
@@ -27,23 +38,146 @@ const EMOTION_LIST = [
   { id: 'hopeful', emoji: '🌟' }
 ]
 
-export function CreateForm() {
-  const navigate = useNavigate()
+const DRAFT_KEY = 'capsule_draft'
+const MAX_IMAGES = 6
+
+interface CapsuleFormValues {
+  title: string
+  openDate: Dayjs
+  openMethod: 'email' | 'letter'
+  emailRecipient?: string
+  letterName?: string
+  letterPhone?: string
+  letterAddress?: string
+  isAnonymous: boolean
+  isPublic: boolean
+  disableComment: boolean
+  content?: string
+  images?: UploadFile[]
+  emotion: string
+}
+
+/** 草稿只保存可序列化字段（Dayjs 转字符串；图片为 File 对象，不进入草稿） */
+type CapsuleDraft = Omit<CapsuleFormValues, 'openDate' | 'images'> & {
+  openDate: string | null
+}
+
+function createInitialValues(): CapsuleFormValues {
+  return {
+    title: '',
+    openDate: dayjs().add(1, 'day'),
+    openMethod: 'email',
+    emailRecipient: '',
+    letterName: '',
+    letterPhone: '',
+    letterAddress: '',
+    isAnonymous: false,
+    isPublic: false,
+    disableComment: false,
+    content: '',
+    images: [],
+    emotion: 'hopeful',
+  }
+}
+
+function readDraft(): Partial<CapsuleDraft> | null {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY)
+    return raw ? (JSON.parse(raw) as Partial<CapsuleDraft>) : null
+  } catch {
+    return null
+  }
+}
+
+function fileToDataUrl(file: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result ?? ''))
+    reader.onerror = () => reject(reader.error ?? new Error('读取图片失败'))
+    reader.readAsDataURL(file)
+  })
+}
+
+/** 富文本受控组件：Form.Item 会注入 value / onChange */
+interface RichEditorProps {
+  value?: string
+  onChange?: (html: string) => void
+  placeholder?: string
+}
+
+function RichEditor({ value = '', onChange, placeholder }: RichEditorProps) {
+  const editorRef = useRef<HTMLDivElement | null>(null)
+
+  // 仅当外部值与 DOM 不一致时回写（草稿恢复/重置），避免输入过程中重置光标
+  useEffect(() => {
+    const el = editorRef.current
+    if (el && el.innerHTML !== value) el.innerHTML = value
+  }, [value])
+
+  const execFormat = (cmd: string) => {
+    editorRef.current?.focus()
+    document.execCommand(cmd)
+    onChange?.(editorRef.current?.innerHTML ?? '')
+  }
+
+  return (
+    <div className={styles.wangEditorWrap}>
+      <div className={styles.wangToolbar}>
+        {TOOLBAR_ITEMS.map((item) => (
+          <Button
+            key={item.cmd}
+            type="text"
+            size="small"
+            title={item.title}
+            className={styles.wangMenuBtn}
+            onMouseDown={(e) => {
+              // 阻止工具栏按钮抢焦点，保证选区仍在编辑区内
+              e.preventDefault()
+              execFormat(item.cmd)
+            }}
+          >
+            {item.label}
+          </Button>
+        ))}
+      </div>
+      <div
+        ref={editorRef}
+        className={styles.wangEditor}
+        contentEditable
+        suppressContentEditableWarning
+        data-placeholder={placeholder}
+        onInput={(e) => onChange?.((e.target as HTMLDivElement).innerHTML)}
+      />
+    </div>
+  )
+}
+
+export interface CreateFormProps {
+  onSubmit: (values: CapsuleCreateInput) => Promise<unknown>
+  isSubmitting: boolean
+}
+
+export function CreateForm({ onSubmit, isSubmitting }: CreateFormProps) {
   const { t } = useI18n()
-  const { message } = AntApp.useApp() // 替代 ElMessage
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
-  const submitTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [form] = Form.useForm<CapsuleFormValues>()
+  const [initialValues] = useState(createInitialValues)
 
-  // 01. 胶囊标题
-  const [title, setTitle] = useState('')
+  const openMethod = Form.useWatch('openMethod', form) ?? 'email'
+  const isAnonymous = Form.useWatch('isAnonymous', form) ?? false
+  const isPublic = Form.useWatch('isPublic', form) ?? false
+  const disableComment = Form.useWatch('disableComment', form) ?? false
+  const contentValue = Form.useWatch('content', form) ?? ''
+  const imageList = Form.useWatch('images', form) ?? []
 
-  // 02. 开启时间
-  const [openDate, setOpenDate] = useState(() => dayjs().add(1, 'day').format('YYYY-MM-DD'))
-  const [pickerOpen, setPickerOpen] = useState(false)
+  const contentLength = useMemo(
+    () => contentValue.replace(/<[^>]*>/g, '').length,
+    [contentValue],
+  )
 
-  const openDateText = useMemo(() => openDate || t('capsule.create.placeholders.date'), [openDate, t])
+  // 图片预览
+  const [previewVisible, setPreviewVisible] = useState(false)
+  const [previewSrc, setPreviewSrc] = useState('')
 
   const disabledDate = (current: Dayjs): boolean => {
     const tomorrow = dayjs().startOf('day').add(1, 'day')
@@ -51,253 +185,268 @@ export function CreateForm() {
     return current.valueOf() < tomorrow.valueOf() || current.valueOf() > fiveYearsLater.valueOf()
   }
 
-  // 03. 开启方式
-  const [openMethod, setOpenMethod] = useState('email')
-  const methodList = useMemo(() => [
-    { id: 'email', name: t('capsule.create.methods.email'), Icon: MailOutlined },
-    { id: 'letter', name: t('capsule.create.methods.letter'), Icon: FormOutlined }
+  const methodOptions = useMemo(() => [
+    {
+      value: 'email',
+      label: (
+        <span className={styles.methodLabel}>
+          <MailOutlined /> {t('capsule.create.methods.email')}
+        </span>
+      ),
+    },
+    {
+      value: 'letter',
+      label: (
+        <span className={styles.methodLabel}>
+          <FormOutlined /> {t('capsule.create.methods.letter')}
+        </span>
+      ),
+    },
   ], [t])
 
-  // 04. 邮件 / 手写信信息
-  const [emailRecipient, setEmailRecipient] = useState('')
-  const [letterName, setLetterName] = useState('')
-  const [letterPhone, setLetterPhone] = useState('')
-  const [letterAddress, setLetterAddress] = useState('')
+  const emotionOptions = useMemo(
+    () => EMOTION_LIST.map((item) => ({ label: item.emoji, value: item.id })),
+    [],
+  )
 
-  // 05/06. 开关
-  const [isAnonymous, setIsAnonymous] = useState(false)
-  const [isPublic, setIsPublic] = useState(false)
-  const [disableComment, setDisableComment] = useState(false)
-
-  // 07. 胶囊内容（wangEditor 降级：contentEditable div，内容仍为 HTML 字符串）
-  const editorRef = useRef<HTMLDivElement | null>(null)
-  const [richContent, setRichContent] = useState('')
-
-  const contentLength = useMemo(() => richContent.replace(/<[^>]*>/g, '').length, [richContent])
-
-  const execFormat = (e: ReactMouseEvent<HTMLButtonElement>, cmd: string) => {
-    // 阻止工具栏按钮抢焦点，保证选区仍在编辑区内
-    e.preventDefault()
-    editorRef.current?.focus()
-    document.execCommand(cmd)
-    setRichContent(editorRef.current?.innerHTML ?? '')
-  }
-
-  // 08. 添加照片
-  const [imagePaths, setImagePaths] = useState<string[]>([])
-  const fileInputRef = useRef<HTMLInputElement | null>(null)
-
-  const chooseImage = () => {
-    if (imagePaths.length >= 6) {
-      message.warning(t('capsule.create.photo.maxWarning'))
-      return
-    }
-    fileInputRef.current?.click()
-  }
-
-  const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const target = e.target
-    const files = Array.from(target.files || [])
-    const remaining = 6 - imagePaths.length
-    files.slice(0, remaining).forEach((file) => {
-      if (!file.type.startsWith('image/')) return
-      const reader = new FileReader()
-      reader.onload = (ev) => {
-        const result = ev.target?.result
-        if (typeof result === 'string') setImagePaths((prev) => [...prev, result])
-      }
-      reader.readAsDataURL(file)
+  // 草稿恢复（挂载时一次）
+  useEffect(() => {
+    const saved = readDraft()
+    if (!saved) return
+    form.setFieldsValue({
+      ...saved,
+      openDate: saved.openDate ? dayjs(saved.openDate) : initialValues.openDate,
     })
-    target.value = ''
-  }
+  }, [form, initialValues])
 
-  const deleteImage = (index: number) => {
-    setImagePaths(imagePaths.filter((_, i) => i !== index))
-  }
-
-  // 09. 此刻心情
-  const [emotion, setEmotion] = useState('hopeful')
-
-  // 提交（校验逻辑逐字平移）
-  const submitCapsule = () => {
-    if (!title.trim()) {
-      message.warning(t('capsule.create.validation.title'))
-      return
-    }
-    if (!openDate) {
-      message.warning(t('capsule.create.validation.date'))
-      return
-    }
-
-    const hasContent = richContent.replace(/<[^>]*>/g, '').trim()
-    if (!hasContent && imagePaths.length === 0) {
-      message.warning(t('capsule.create.validation.content'))
-      return
-    }
-
-    if (openMethod === 'email') {
-      if (!emailRecipient.trim()) {
-        message.warning(t('capsule.create.validation.email'))
-        return
-      }
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(emailRecipient)) {
-        message.warning(t('capsule.create.validation.emailFormat'))
-        return
-      }
-    } else if (openMethod === 'letter') {
-      if (!letterName.trim()) {
-        message.warning(t('capsule.create.validation.letterName'))
-        return
-      }
-      if (!letterPhone.trim()) {
-        message.warning(t('capsule.create.validation.letterPhone'))
-        return
-      }
-      if (!letterAddress.trim()) {
-        message.warning(t('capsule.create.validation.letterAddress'))
-        return
-      }
-    }
-
-    setIsSubmitting(true)
-    submitTimer.current = setTimeout(() => {
-      setIsSubmitting(false)
-      setShowSuccess(true)
-      localStorage.removeItem('capsule_draft')
-    }, 2000)
-  }
-
-  // 草稿恢复（onMounted → useEffect）
-  useEffect(() => {
-    const draft = localStorage.getItem('capsule_draft')
-    if (draft) {
-      if (editorRef.current) editorRef.current.innerHTML = draft
-      setRichContent(draft)
-    }
-  }, [])
-
-  // 草稿自动保存（watch richContent + 定时器 → useEffect + cleanup，跳过首次挂载）
+  // 草稿自动保存：onValuesChange 触发，1s 防抖
   const draftTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const isFirstRender = useRef(true)
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
-    }
+  const scheduleDraft = (all: CapsuleFormValues) => {
     if (draftTimer.current) clearTimeout(draftTimer.current)
     draftTimer.current = setTimeout(() => {
-      localStorage.setItem('capsule_draft', richContent)
-    }, 1000)
-    return () => {
-      if (draftTimer.current) {
-        clearTimeout(draftTimer.current)
-        draftTimer.current = null
+      try {
+        const draft: CapsuleDraft = {
+          title: all.title ?? '',
+          openDate: all.openDate ? all.openDate.format('YYYY-MM-DD') : null,
+          openMethod: all.openMethod ?? 'email',
+          emailRecipient: all.emailRecipient,
+          letterName: all.letterName,
+          letterPhone: all.letterPhone,
+          letterAddress: all.letterAddress,
+          isAnonymous: Boolean(all.isAnonymous),
+          isPublic: Boolean(all.isPublic),
+          disableComment: Boolean(all.disableComment),
+          content: all.content ?? '',
+          emotion: all.emotion ?? 'hopeful',
+        }
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
+      } catch {
+        /* localStorage 不可用时忽略 */
       }
-    }
-  }, [richContent])
+    }, 1000)
+  }
 
-  // 卸载清理提交定时器（onUnmounted → effect cleanup）
   useEffect(
     () => () => {
-      if (submitTimer.current) {
-        clearTimeout(submitTimer.current)
-        submitTimer.current = null
-      }
+      if (draftTimer.current) clearTimeout(draftTimer.current)
     },
     []
   )
 
+  const handleSubmit = async () => {
+    let values: CapsuleFormValues
+    try {
+      // antd 原生校验：任一条 rules 不通过都会 reject，阻断后续提交
+      values = await form.validateFields()
+    } catch {
+      return
+    }
+
+    try {
+      const images = await Promise.all(
+        (values.images ?? []).map((file) =>
+          file.originFileObj
+            ? fileToDataUrl(file.originFileObj)
+            : Promise.resolve(file.url ?? file.thumbUrl ?? ''),
+        ),
+      )
+
+      const isEmail = values.openMethod === 'email'
+      const payload: CapsuleCreateInput = {
+        title: values.title.trim(),
+        openDate: values.openDate.format('YYYY-MM-DD'),
+        openMethod: values.openMethod,
+        content: values.content ?? '',
+        images: images.filter(Boolean),
+        emotion: values.emotion,
+        isAnonymous: values.isAnonymous,
+        isPublic: values.isPublic,
+        disableComment: values.isPublic ? values.disableComment : false,
+        emailRecipient: isEmail ? values.emailRecipient?.trim() : undefined,
+        letterName: isEmail ? undefined : values.letterName?.trim(),
+        letterPhone: isEmail ? undefined : values.letterPhone?.trim(),
+        letterAddress: isEmail ? undefined : values.letterAddress?.trim(),
+      }
+
+      await onSubmit(payload)
+      // 成功后才清理草稿；失败保留，便于用户修改后重试
+      localStorage.removeItem(DRAFT_KEY)
+    } catch {
+      /* 接口错误由页面 mutation 统一提示，这里只保证不跳转、不清理草稿 */
+    }
+  }
+
   return (
-    <main className={styles.formContainer}>
+    <Form
+      form={form}
+      layout="vertical"
+      requiredMark={false}
+      initialValues={initialValues}
+      onValuesChange={(_changed, all) => scheduleDraft(all)}
+      scrollToFirstError
+      className={styles.formContainer}
+    >
       {/* 01. 胶囊标题 */}
       <section className={styles.formSection}>
-        <div className={styles.sectionTitle}><span className={styles.sectionNum}>01</span><span className={styles.requiredMark}>*</span>{t('capsule.create.sections.title')}</div>
-        <div className={styles.titleRow}>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+        <div className={styles.sectionTitle}>
+          <span className={styles.sectionNum}>01</span>
+          <span className={styles.requiredMark}>*</span>
+          {t('capsule.create.sections.title')}
+        </div>
+        <Form.Item
+          name="title"
+          className={styles.titleItem}
+          rules={[
+            { required: true, whitespace: true, message: t('capsule.create.validation.title') },
+            { max: 30, message: t('capsule.create.validation.title') },
+          ]}
+        >
+          <Input
+            variant="borderless"
             className={styles.titleInput}
             placeholder={t('capsule.create.placeholders.title')}
             maxLength={30}
+            showCount
           />
-          <span className={styles.titleCount}>{title.length}/30</span>
-        </div>
+        </Form.Item>
       </section>
 
       {/* 02. 开启时间 */}
       <section className={styles.formSection}>
-        <div className={styles.sectionTitle}><span className={styles.sectionNum}>02</span><span className={styles.requiredMark}>*</span>{t('capsule.create.sections.openDate')}</div>
-        <div className={styles.datePickerRow} onClick={() => setPickerOpen(true)}>
-          <span className={styles.dateText}>{openDateText}</span>
-          <span className={styles.arrow}>→</span>
+        <div className={styles.sectionTitle}>
+          <span className={styles.sectionNum}>02</span>
+          <span className={styles.requiredMark}>*</span>
+          {t('capsule.create.sections.openDate')}
         </div>
-        <DatePicker
-          open={pickerOpen}
-          onOpenChange={setPickerOpen}
-          value={openDate ? dayjs(openDate) : null}
-          onChange={(d) => setOpenDate(d ? d.format('YYYY-MM-DD') : '')}
-          placeholder={t('capsule.create.placeholders.date')}
-          format="YYYY-MM-DD"
-          disabledDate={disabledDate}
-          className={styles.hiddenDatePicker}
-        />
+        <Form.Item
+          name="openDate"
+          rules={[{ required: true, message: t('capsule.create.validation.date') }]}
+        >
+          <DatePicker
+            variant="borderless"
+            format="YYYY-MM-DD"
+            className={styles.datePicker}
+            placeholder={t('capsule.create.placeholders.date')}
+            disabledDate={disabledDate}
+            suffixIcon={<span className={styles.arrow}>→</span>}
+          />
+        </Form.Item>
         <p className={styles.hint}>{t('capsule.create.hints.dateRange')}</p>
       </section>
 
       {/* 03. 开启方式 */}
       <section className={styles.formSection}>
-        <div className={styles.sectionTitle}><span className={styles.sectionNum}>03</span><span className={styles.requiredMark}>*</span>{t('capsule.create.sections.method')}</div>
-        <div className={styles.methodSelector}>
-          {methodList.map(({ id, name, Icon }) => (
-            <div
-              key={id}
-              className={`${styles.methodOption}${openMethod === id ? ` ${styles.active}` : ''}`}
-              onClick={() => setOpenMethod(id)}
-            >
-              <div className={styles.methodIcon}>
-                <Icon />
-              </div>
-              <div className={styles.methodText}>{name}</div>
-            </div>
-          ))}
+        <div className={styles.sectionTitle}>
+          <span className={styles.sectionNum}>03</span>
+          <span className={styles.requiredMark}>*</span>
+          {t('capsule.create.sections.method')}
         </div>
+        <Form.Item name="openMethod">
+          <Segmented block options={methodOptions} className={styles.methodSelector} />
+        </Form.Item>
       </section>
 
       {/* 04. 邮件信息 */}
       {openMethod === 'email' && (
         <section className={styles.formSection}>
-          <div className={styles.sectionTitle}><span className={styles.sectionNum}>04</span><span className={styles.requiredMark}>*</span>{t('capsule.create.sections.emailInfo')}</div>
-          <input
-            value={emailRecipient}
-            onChange={(e) => setEmailRecipient(e.target.value)}
-            className={styles.infoInput}
-            placeholder={t('capsule.create.placeholders.email')}
-          />
+          <div className={styles.sectionTitle}>
+            <span className={styles.sectionNum}>04</span>
+            <span className={styles.requiredMark}>*</span>
+            {t('capsule.create.sections.emailInfo')}
+          </div>
+          <Form.Item
+            name="emailRecipient"
+            className={styles.infoItem}
+            rules={[
+              { required: true, whitespace: true, message: t('capsule.create.validation.email') },
+              { type: 'email', message: t('capsule.create.validation.emailFormat') },
+            ]}
+          >
+            <Input
+              variant="borderless"
+              className={styles.infoInput}
+              placeholder={t('capsule.create.placeholders.email')}
+            />
+          </Form.Item>
         </section>
       )}
 
       {/* 04. 手写信信息 */}
       {openMethod === 'letter' && (
         <section className={styles.formSection}>
-          <div className={styles.sectionTitle}><span className={styles.sectionNum}>04</span><span className={styles.requiredMark}>*</span>{t('capsule.create.sections.letterInfo')}</div>
-          <input value={letterName} onChange={(e) => setLetterName(e.target.value)} className={styles.infoInput} placeholder={t('capsule.create.placeholders.name')} />
-          <input value={letterPhone} onChange={(e) => setLetterPhone(e.target.value)} className={styles.infoInput} placeholder={t('capsule.create.placeholders.phone')} style={{ marginTop: 12 }} />
-          <textarea
-            value={letterAddress}
-            onChange={(e) => setLetterAddress(e.target.value)}
-            className={`${styles.infoInput} ${styles.addressInput}`}
-            placeholder={t('capsule.create.placeholders.address')}
-            maxLength={50}
-          ></textarea>
+          <div className={styles.sectionTitle}>
+            <span className={styles.sectionNum}>04</span>
+            <span className={styles.requiredMark}>*</span>
+            {t('capsule.create.sections.letterInfo')}
+          </div>
+          <Form.Item
+            name="letterName"
+            className={styles.infoItem}
+            rules={[{ required: true, whitespace: true, message: t('capsule.create.validation.letterName') }]}
+          >
+            <Input
+              variant="borderless"
+              className={styles.infoInput}
+              placeholder={t('capsule.create.placeholders.name')}
+            />
+          </Form.Item>
+          <Form.Item
+            name="letterPhone"
+            className={styles.infoItem}
+            rules={[{ required: true, whitespace: true, message: t('capsule.create.validation.letterPhone') }]}
+          >
+            <Input
+              variant="borderless"
+              className={styles.infoInput}
+              placeholder={t('capsule.create.placeholders.phone')}
+            />
+          </Form.Item>
+          <Form.Item
+            name="letterAddress"
+            className={styles.infoItem}
+            rules={[{ required: true, whitespace: true, message: t('capsule.create.validation.letterAddress') }]}
+          >
+            <Input.TextArea
+              variant="borderless"
+              className={`${styles.infoInput} ${styles.addressInput}`}
+              placeholder={t('capsule.create.placeholders.address')}
+              maxLength={50}
+              autoSize={{ minRows: 2, maxRows: 3 }}
+            />
+          </Form.Item>
         </section>
       )}
 
       {/* 05. 匿名发送 */}
       <section className={styles.formSection}>
         <div className={styles.switchRow}>
-          <span className={`${styles.sectionTitle} ${styles.noMargin}`}><span className={styles.sectionNum}>05</span>{t('capsule.create.sections.anonymous')}</span>
-          <Switch checked={isAnonymous} onChange={setIsAnonymous} className={styles.capsuleSwitch} />
+          <span className={`${styles.sectionTitle} ${styles.noMargin}`}>
+            <span className={styles.sectionNum}>05</span>
+            {t('capsule.create.sections.anonymous')}
+          </span>
+          <Form.Item name="isAnonymous" valuePropName="checked" noStyle>
+            <Switch className={styles.capsuleSwitch} />
+          </Form.Item>
         </div>
         {isAnonymous && <p className={styles.tipText}>{t('capsule.create.tips.anonymous')}</p>}
       </section>
@@ -305,17 +454,28 @@ export function CreateForm() {
       {/* 06. 公开到广场 */}
       <section className={styles.formSection}>
         <div className={styles.switchRow}>
-          <span className={`${styles.sectionTitle} ${styles.noMargin}`}><span className={styles.sectionNum}>06</span>{t('capsule.create.sections.public')}</span>
-          <Switch checked={isPublic} onChange={setIsPublic} className={styles.capsuleSwitch} />
+          <span className={`${styles.sectionTitle} ${styles.noMargin}`}>
+            <span className={styles.sectionNum}>06</span>
+            {t('capsule.create.sections.public')}
+          </span>
+          <Form.Item name="isPublic" valuePropName="checked" noStyle>
+            <Switch className={styles.capsuleSwitch} />
+          </Form.Item>
         </div>
         {isPublic && <p className={styles.tipText}>{t('capsule.create.tips.public')}</p>}
         {isPublic && (
           <div className={styles.commentSetting}>
             <div className={styles.switchRow}>
-              <span className={`${styles.sectionTitle} ${styles.noMargin} ${styles.small}`}>{t('capsule.create.tips.disableComment')}</span>
-              <Switch checked={disableComment} onChange={setDisableComment} className={styles.capsuleSwitch} />
+              <span className={`${styles.sectionTitle} ${styles.noMargin} ${styles.small}`}>
+                {t('capsule.create.tips.disableComment')}
+              </span>
+              <Form.Item name="disableComment" valuePropName="checked" noStyle>
+                <Switch className={styles.capsuleSwitch} />
+              </Form.Item>
             </div>
-            <p className={styles.tipText}>{disableComment ? t('capsule.create.tips.commentOff') : t('capsule.create.tips.commentOn')}</p>
+            <p className={styles.tipText}>
+              {disableComment ? t('capsule.create.tips.commentOff') : t('capsule.create.tips.commentOn')}
+            </p>
           </div>
         )}
       </section>
@@ -323,126 +483,116 @@ export function CreateForm() {
       {/* 07. 胶囊内容 */}
       <section className={styles.formSection}>
         <div className={styles.sectionTitle}>
-          <span className={styles.sectionNum}>07</span><span className={styles.requiredMark}>*</span>{t('capsule.create.sections.content')}
+          <span className={styles.sectionNum}>07</span>
+          <span className={styles.requiredMark}>*</span>
+          {t('capsule.create.sections.content')}
           <span className={styles.optionalHint}>{t('capsule.create.hints.contentOptional')}</span>
         </div>
         <div className={styles.contentWrapper}>
-          <div className={styles.wangEditorWrap}>
-            <div className={styles.wangToolbar}>
-              {TOOLBAR_ITEMS.map((item) => (
-                <button
-                  key={item.cmd}
-                  type="button"
-                  className={styles.wangMenuBtn}
-                  title={item.title}
-                  onMouseDown={(e) => execFormat(e, item.cmd)}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-            <div
-              ref={editorRef}
-              className={styles.wangEditor}
-              contentEditable
-              suppressContentEditableWarning
-              data-placeholder={t('capsule.create.placeholders.editor')}
-              onInput={(e) => setRichContent((e.target as HTMLDivElement).innerHTML)}
-            />
-          </div>
-
+          <Form.Item
+            name="content"
+            dependencies={['images']}
+            className={styles.contentItem}
+            rules={[
+              {
+                validator: (_, value: string) => {
+                  const text = String(value ?? '').replace(/<[^>]*>/g, '').trim()
+                  const files = (form.getFieldValue('images') as UploadFile[] | undefined) ?? []
+                  return text || files.length > 0
+                    ? Promise.resolve()
+                    : Promise.reject(new Error(t('capsule.create.validation.content')))
+                },
+              },
+            ]}
+          >
+            <RichEditor placeholder={t('capsule.create.placeholders.editor')} />
+          </Form.Item>
           <span className={styles.contentCount}>{contentLength}/500</span>
         </div>
       </section>
 
       {/* 08. 添加照片 */}
       <section className={styles.formSection}>
-        <div className={styles.sectionTitle}><span className={styles.sectionNum}>08</span>{t('capsule.create.sections.photo')}</div>
-        {imagePaths.length > 0 ? (
-          <div className={styles.imageGrid}>
-            {imagePaths.map((img, i) => (
-              <div key={i} className={styles.imageItem}>
-                <img src={img} className={styles.uploadedImage} alt={t('capsule.create.photo.alt')} />
-                <div className={styles.deleteBtn} onClick={() => deleteImage(i)}>×</div>
-              </div>
-            ))}
-            {imagePaths.length < 6 && (
-              <div className={`${styles.imageItem} ${styles.addImageBtn}`} onClick={chooseImage}>
-                <div className={styles.addContent}>
-                  <PlusOutlined className={styles.addIcon} />
-                  <span className={styles.addText}>{t('capsule.create.photo.add')}</span>
-                </div>
+        <div className={styles.sectionTitle}>
+          <span className={styles.sectionNum}>08</span>
+          {t('capsule.create.sections.photo')}
+        </div>
+        <Form.Item
+          name="images"
+          valuePropName="fileList"
+          getValueFromEvent={(event: UploadChangeParam) => event?.fileList}
+          className={styles.uploadItem}
+        >
+          <Upload
+            listType="picture-card"
+            accept="image/*"
+            multiple
+            maxCount={MAX_IMAGES}
+            beforeUpload={() => false}
+            onPreview={(file) => {
+              const src = file.url ?? file.thumbUrl ?? ''
+              if (!src) return
+              setPreviewSrc(src)
+              setPreviewVisible(true)
+            }}
+          >
+            {imageList.length >= MAX_IMAGES ? null : (
+              <div className={styles.uploadTrigger}>
+                <PlusOutlined className={styles.uploadIcon} />
+                <span className={styles.uploadText}>{t('capsule.create.photo.add')}</span>
               </div>
             )}
-          </div>
-        ) : (
-          <div className={styles.imageUploader} onClick={chooseImage}>
-            <PlusOutlined className={styles.uploadIcon} />
-            <span className={styles.uploadText}>{t('capsule.create.photo.upload')}</span>
-          </div>
-        )}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          multiple
-          className={styles.hiddenFileInput}
-          onChange={onFileChange}
-        />
+          </Upload>
+        </Form.Item>
       </section>
 
       {/* 09. 此刻心情 */}
       <section className={styles.formSection}>
-        <div className={styles.sectionTitle}><span className={styles.sectionNum}>09</span>{t('capsule.create.sections.mood')}</div>
-        <div className={styles.emotionTags}>
-          {EMOTION_LIST.map((e) => (
-            <div
-              key={e.id}
-              className={`${styles.emotionTag}${emotion === e.id ? ` ${styles.active}` : ''}`}
-              onClick={() => setEmotion(e.id)}
-            >
-              {e.emoji}
-            </div>
-          ))}
+        <div className={styles.sectionTitle}>
+          <span className={styles.sectionNum}>09</span>
+          {t('capsule.create.sections.mood')}
         </div>
+        <Form.Item name="emotion">
+          <Radio.Group
+            optionType="button"
+            buttonStyle="solid"
+            className={styles.emotionTags}
+            options={emotionOptions}
+          />
+        </Form.Item>
       </section>
 
       {/* 提交按钮 */}
       <section className={styles.submitSection}>
-        <button
-          className={styles.submitBtn}
+        <Button
+          type="primary"
+          size="large"
+          block
+          loading={isSubmitting}
           disabled={isSubmitting}
-          onClick={submitCapsule}
+          className={styles.submitBtn}
+          onClick={() => void handleSubmit()}
         >
-          <span>{isSubmitting ? t('capsule.create.submitting') : t('capsule.create.submit')}</span>
-          {!isSubmitting && <span className={styles.submitArrow}>→</span>}
-        </button>
+          {isSubmitting ? t('capsule.create.submitting') : t('capsule.create.submit')}
+        </Button>
       </section>
 
-      {/* 成功弹窗（ElDialog → antd Modal，center → 标题/底栏居中样式） */}
+      {/* 图片预览 */}
       <Modal
-        open={showSuccess}
-        title={t('capsule.create.success.title')}
-        width={440}
+        open={previewVisible}
+        onCancel={() => setPreviewVisible(false)}
+        footer={null}
+        width="auto"
         centered
-        className={styles.successModal}
-        onCancel={() => setShowSuccess(false)}
-        onOk={() => setShowSuccess(false)}
-        /* 原 .success-modal .ant-modal-content/header/footer 结构覆写 token 化 */
         styles={{
-          content: { borderRadius: 16 },
-          header: { borderBottom: '1px solid var(--border-light)', textAlign: 'center' },
-          footer: { textAlign: 'center' },
+          content: { background: 'transparent', boxShadow: 'none' },
         }}
       >
-        <div className={styles.successDialogContent}>
-          <CheckCircleFilled className={styles.successBigIcon} />
-          <h3>{t('capsule.create.success.body')}</h3>
-          <p dangerouslySetInnerHTML={{ __html: t('capsule.create.success.desc', { date: openDateText }) }}></p>
-          <Button type="primary" onClick={() => navigate('/time-capsule')}>{t('capsule.create.success.btn')}</Button>
-        </div>
+        {previewSrc && (
+          <img src={previewSrc} className={styles.previewImage} alt={t('capsule.create.photo.alt')} />
+        )}
       </Modal>
-    </main>
+    </Form>
   )
 }
 

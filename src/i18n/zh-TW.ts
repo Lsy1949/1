@@ -14,6 +14,7 @@ export default {
   common: {
     back: '返回', confirm: '確認', cancel: '取消', submit: '提交', save: '儲存',
     delete: '刪除', edit: '編輯', view: '檢視', loading: '載入中...', noData: '暫無資料',
+    loadFailed: '載入失敗', retry: '重試',
     deleteConfirm: '確定要刪除嗎？刪除後無法恢復。',
     deleteTitle: '刪除確認', deleteOk: '確定刪除',
     searchPlaceholder: '搜尋…',
@@ -95,6 +96,8 @@ export default {
       dashboard: { title: '成長<em>看板</em>', desc: '追蹤身心能量、情緒趨勢與測評分佈，AI 交叉分析為你生成專屬成長洞察。' }
     },
     searchPlaceholder: '搜尋測評…',
+    categories: { all: '全部', mental: '心理健康', career: '生涯發展', cognitive: '認知能力', esports: '電競能力', learning: '學習風格', social: '人際關係' },
+    submitted: '測評已完成！',
     unit: { items: '項', questions: '題', score: '分', minutes: '分鐘' },
     status: { completed: '已完成', comingSoon: '即將上線' },
     empty: '沒有找到匹配的測評',
@@ -151,6 +154,7 @@ export default {
   },
   counseling: {
     tabs: { booking: '預約諮詢', counselors: '心理老師', notice: '諮詢須知', faq: '常見問題', companion: 'AI 伴侶' },
+    types: { individual: '個別諮詢', couple: '伴侶諮詢', family: '家庭諮詢', group: '團體輔導' },
     aiChat: {
       eyebrow: '— AI Counselor',
       title: 'AI<em>諮詢師</em>',
@@ -189,8 +193,8 @@ export default {
     btn: { confirmBooking: '確認預約', online: '視頻', offline: '面對面', book: '預約', onlineConsult: '線上諮詢', close: '關閉', bookThis: '預約此老師' },
     summary: { title: '預約摘要', type: '諮詢類型', counselor: '心理老師', date: '日期', time: '時間', mode: '方式', serviceType: '服務性質', freeTag: '校內免費', onlineValue: '視頻諮詢', offlineValue: '面對面諮詢', empty: '未選擇' },
     myBookings: '我的預約',
-    form: { name: '稱呼', namePlaceholder: '如何稱呼您', contact: '聯繫方式', contactPlaceholder: '手機號或郵箱', description: '問題描述', descPlaceholder: '簡單描述您想探討的話題', optional: '選填', required: '帶 * 為必填', first: '首次', followup: '複診', experience: '諮詢經歷', agreePrefix: '我已閱讀並同意', noticeLink: '《諮詢須知》', and: '與', consentLink: '《知情同意書》' },
-    validation: { nameRequired: '請填寫稱呼', contactRequired: '請填寫聯繫方式', agreeRequired: '請閱讀並同意相關條款', formIncomplete: '請完整填寫必填資訊' },
+    form: { name: '稱呼', namePlaceholder: '如何稱呼您', contact: '聯繫方式', contactPlaceholder: '手機號或郵箱', datePlaceholder: '選擇諮詢日期', description: '問題描述', descPlaceholder: '簡單描述您想探討的話題', optional: '選填', required: '帶 * 為必填', first: '首次', followup: '複診', experience: '諮詢經歷', agreePrefix: '我已閱讀並同意', noticeLink: '《諮詢須知》', and: '與', consentLink: '《知情同意書》' },
+    validation: { nameRequired: '請填寫稱呼', contactRequired: '請填寫聯繫方式', agreeRequired: '請閱讀並同意相關條款', formIncomplete: '請完整填寫必填資訊', typeRequired: '請選擇諮詢類型', counselorRequired: '請選擇心理老師', dateRequired: '請選擇諮詢日期', slotRequired: '請選擇諮詢時段' },
     message: { bookingSuccess: '預約提交成功！心理老師將在24小時內確認', cancelConfirm: '確定取消此預約嗎？', cancelTitle: '提示', cancelled: '已取消預約' },
     counselors: {
       searchPlaceholder: '搜尋姓名 / 專長', searchPlaceholderAlt: '搜尋姓名 / 專長…',
@@ -232,7 +236,7 @@ export default {
       categories: { all: '全部問題', booking: '預約相關', service: '服務說明', effect: '諮詢效果', confidentiality: '保密相關' },
       empty: '沒有找到相關問題'
     },
-    booking: { cancelBtn: '取消', empty: '暫無預約記錄' },
+    booking: { cancelBtn: '取消', empty: '暫無預約記錄', emptyHint: '暫無預約，去預約一位老師吧' },
     empty: { noCounselor: '沒有找到匹配的老師', noBookings: '暫無預約記錄', noFaq: '沒有找到相關問題' },
     freeTag: '校內免費',
     weekdays: { sun: '週日', mon: '週一', tue: '週二', wed: '週三', thu: '週四', fri: '週五', sat: '週六' },
@@ -345,6 +349,8 @@ export default {
       community: {
         online: '人線上',
         todayNew: '今日新帖',
+        emptyMembers: '暫無活躍同學',
+        emptyTopics: '暫無熱門話題',
         dailyPrompt: { label: '今日話題', question: '最近哪件小事，讓你覺得生活還挺值得的？', join: '參與討論' },
         sidebar: {
           activeMembers: '活躍同學',
@@ -353,7 +359,8 @@ export default {
           guidelinesItems: ['尊重每一位分享者', '不評判，多傾聽', '鼓勵比建議更有力量', '遇到困擾請預約諮詢']
         }
       },
-      empty: { title: '廣場還很安靜', hint: '成為第一個分享的人', btn: '發布心得' }
+      empty: { title: '廣場還很安靜', hint: '成為第一個分享的人', btn: '發布心得' },
+      emptyFiltered: '目前分類還沒有動態，換個分類看看吧'
     },
     create: {
       back: '返回廣場',
@@ -382,7 +389,12 @@ export default {
         count: '{n} 條評論',
         placeholder: '寫下你的想法...',
         submit: '發表評論',
-        empty: '還沒有評論，來說點什麼吧'
+        empty: '還沒有評論，來搶沙發吧',
+        reply: '回覆',
+        replyTo: '回覆 {name}',
+        repliedTo: '回覆 @{name}',
+        cancelReply: '取消',
+        submitted: '評論已發布'
       }
     }
   },

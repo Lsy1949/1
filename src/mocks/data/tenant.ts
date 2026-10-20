@@ -9,6 +9,9 @@ import type { TenantConfigDTO } from '@/api/types'
  *  - nist     青野心旅：L1 绿色色板 + L2 覆写（导航底色偏绿、嵌入块底色偏绿）
  *
  * 新增租户只需在此追加一个键，handler 会按 tenantId 自动分发（无需改 handler）。
+ *
+ * 覆写值只允许引用语义 token（`var(--brand-primary-faint)` 等）或 palette 派生的
+ * 表达式，不下发任何十六进制 / rgb 色值 —— 确保主题色始终由 tokens.css + palette.ts 决定。
  */
 export const TENANT_MOCKS: Record<string, TenantConfigDTO> = {
   default: {
@@ -38,9 +41,9 @@ export const TENANT_MOCKS: Record<string, TenantConfigDTO> = {
       fontFamily: '',
       themeOverrides: {
         '--brand-radius': '10px',
-        '--bg-soft': '#faf7fe',
-        '--shadow-soft': '0 2px 8px rgba(107, 58, 200, 0.06)',
-        '--shadow-medium': '0 4px 16px rgba(107, 58, 200, 0.08)',
+        '--bg-soft': 'var(--brand-primary-faint)',
+        '--shadow-soft': '0 2px 8px color-mix(in srgb, var(--brand-primary) 6%, transparent)',
+        '--shadow-medium': '0 4px 16px color-mix(in srgb, var(--brand-primary) 8%, transparent)',
       },
     },
   },
@@ -56,9 +59,9 @@ export const TENANT_MOCKS: Record<string, TenantConfigDTO> = {
       radius: '8px',
       fontFamily: '',
       themeOverrides: {
-        '--navbar-bg': 'rgba(246, 253, 249, 0.98)',
-        '--navbar-bg-blur': 'rgba(246, 253, 249, 0.8)',
-        '--bg-mute': '#ecfbf3',
+        '--navbar-bg': 'color-mix(in srgb, var(--brand-primary-wash) 98%, transparent)',
+        '--navbar-bg-blur': 'color-mix(in srgb, var(--brand-primary-wash) 80%, transparent)',
+        '--bg-mute': 'var(--brand-primary-wash)',
       },
     },
   },

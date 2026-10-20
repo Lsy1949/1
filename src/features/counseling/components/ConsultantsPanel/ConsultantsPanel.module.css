@@ -176,6 +176,16 @@
   letter-spacing: -0.5px;
 }
 
+/* ===== 咨询师主题色：由接口 accentKey 映射，颜色只在此处定义 ===== */
+.accentPrimary { background: var(--brand-primary); }
+.accentGreen { background: var(--cat-green); }
+.accentPurple { background: var(--cat-purple); }
+.accentGold { background: var(--cat-gold); }
+.accentRed { background: var(--cat-red); }
+.accentCyan { background: var(--cat-cyan); }
+.accentMagenta { background: var(--cat-magenta); }
+.accentGeekblue { background: var(--cat-geekblue); }
+
 .rowMain {
   min-width: 0;
 }

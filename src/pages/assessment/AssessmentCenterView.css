@@ -8,6 +8,15 @@
   position: relative;
 }
 
+/* 加载 / 错误态容器：与页签内容区保持一致的留白 */
+.assessment-state {
+  padding: 32px 0;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
 /* 标签页 · 极简文字
    页签外观（字号/颜色/padding/间距/ink-bar/底部外边距）已 token 化为
    AssessmentCenterView.tsx 嵌套 ConfigProvider 的 Tabs 组件注入。

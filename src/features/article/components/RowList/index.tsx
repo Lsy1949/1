@@ -1,6 +1,7 @@
 // 文章列表 · 横向编辑式行（ArticleListView 内容区），点击行上抛 onOpen
 import { ArrowRightOutlined, ClockCircleOutlined, EyeOutlined } from '@ant-design/icons'
 import { Empty } from 'antd'
+import { useI18n } from '@/i18n'
 import type { ArticleItem } from '../types'
 import styles from './RowList.module.css'
 
@@ -10,6 +11,8 @@ interface RowListProps {
 }
 
 export function RowList({ articles, onOpen }: RowListProps) {
+  const { t } = useI18n()
+
   return (
     <>
       <div className={styles.articleRows}>
@@ -45,7 +48,7 @@ export function RowList({ articles, onOpen }: RowListProps) {
 
       {articles.length === 0 && (
         <div className={styles.noResults}>
-          <Empty description="未找到相关文章，尝试换个搜索词吧" />
+          <Empty description={t('article.empty')} />
         </div>
       )}
     </>

@@ -1,30 +1,106 @@
 /**
  * 【business】BookingPanel —— 预约咨询面板 · 四步表单 + 预约摘要 + 我的预约
- * - Vue defineExpose(prefill) → forwardRef + useImperativeHandle（父级跨 tab 预填）
- * - ElMessage / ElMessageBox.confirm → AntApp.useApp().message / modal.confirm
- * - el-input / el-switch / el-checkbox / el-popover → Input / Switch / Checkbox / Popover
+ * - 数据（consultationTypes / counselors / bookings）由页面注入；
+ * - 表单状态与校验由 antd Form 托管；提交 / 取消均经回调上抛（页面 useMutation）；
+ * - 组件内不读写 localStorage，预约列表完全由 React Query 提供。
  */
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
-import type { CSSProperties } from 'react'
-import { App as AntApp, Button, Checkbox, Input, Popover, Switch } from 'antd'
+import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import type { ComponentType, CSSProperties } from 'react'
 import {
+  App as AntApp,
+  Button,
+  Checkbox,
+  DatePicker,
+  Empty,
+  Form,
+  Input,
+  Radio,
+  Result,
+  Select,
+  Skeleton,
+  Switch,
+} from 'antd'
+import {
+  ApartmentOutlined,
   ArrowRightOutlined,
-  BankOutlined,
   ExclamationCircleFilled,
+  HomeOutlined,
   MessageOutlined,
   ProfileOutlined,
-  SearchOutlined,
   StarOutlined,
   UnorderedListOutlined,
+  UserOutlined,
 } from '@ant-design/icons'
-import { consultationTypes, counselors, COUNSELING_STORAGE_KEY } from '../data'
-import type { BookingItem } from '../types'
+import dayjs from 'dayjs'
+import type { Dayjs } from 'dayjs'
+import type {
+  BookingCreateInput,
+  BookingItem,
+  BookingMode,
+  ConsultationType,
+  ConsultationTypeKey,
+  CounselingIconKey,
+  Counselor,
+} from '../types'
 import { useI18n } from '@/i18n'
 import styles from './BookingPanel.module.css'
 
+/** 图标语义 key → antd 图标（接口不下发组件） */
+const TYPE_ICONS: Record<CounselingIconKey, ComponentType> = {
+  user: UserOutlined,
+  apartment: ApartmentOutlined,
+  home: HomeOutlined,
+  message: MessageOutlined,
+}
+
+/** 可预约时段（与后端排班表对齐；disabled 为已约满/不开放） */
+const TIME_SLOTS = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '19:00', '20:00']
+const DISABLED_SLOTS = new Set(['11:00', '16:00'])
+
+interface BookingFormValues {
+  type: ConsultationTypeKey
+  counselorId?: number
+  date?: Dayjs
+  slot: string
+  mode: BookingMode
+  name: string
+  contact: string
+  description?: string
+  isFirst: boolean
+  agree: boolean
+}
+
+function createInitialValues(): BookingFormValues {
+  return {
+    type: 'individual',
+    counselorId: undefined,
+    date: undefined,
+    slot: '',
+    mode: 'online',
+    name: '',
+    contact: '',
+    description: '',
+    isFirst: true,
+    agree: false,
+  }
+}
+
 export interface BookingPanelProps {
+  consultationTypes: ConsultationType[]
+  counselors: Counselor[]
+  /** 我的预约（由页面 useQuery 注入） */
+  bookings: BookingItem[]
+  bookingsLoading?: boolean
+  bookingsError?: boolean
+  /** 预约列表重试 */
+  onReloadBookings: () => void
+  /** 取消预约（页面 useMutation → PATCH） */
+  onCancelBooking: (id: number) => void
   /** 「咨询须知」链接点击（父级切换 tab） */
   onGoNotice: () => void
+  /** 提交预约（页面 useMutation → POST） */
+  onSubmit: (input: BookingCreateInput) => Promise<BookingItem>
+  isSubmitting: boolean
 }
 
 /** 父级经 ref 调用的能力（等价 Vue defineExpose） */
@@ -33,170 +109,36 @@ export interface BookingPanelHandle {
   prefill: (id: number) => void
 }
 
-interface BookingForm {
-  type: string
-  topics: string[]
-  specFilter: string
-  counselorId: number | null
-  dateIdx: number
-  slot: string
-  mode: string
-  name: string
-  contact: string
-  description: string
-  isFirst: boolean
-  agree: boolean
-}
-
-interface BookingErrors {
-  type: boolean
-  counselorId: boolean
-  dateIdx: boolean
-  slot: boolean
-  name: string
-  contact: string
-  agree: string
-}
-
-const INITIAL_ERRORS: BookingErrors = {
-  type: false,
-  counselorId: false,
-  dateIdx: false,
-  slot: false,
-  name: '',
-  contact: '',
-  agree: '',
-}
-
 const BookingPanel = forwardRef<BookingPanelHandle, BookingPanelProps>(
-  function BookingPanel({ onGoNotice }, ref) {
+  function BookingPanel(
+    {
+      consultationTypes,
+      counselors,
+      bookings,
+      bookingsLoading = false,
+      bookingsError = false,
+      onReloadBookings,
+      onCancelBooking,
+      onGoNotice,
+      onSubmit,
+      isSubmitting,
+    },
+    ref,
+  ) {
     const { t } = useI18n()
-    const { message, modal } = AntApp.useApp() // 替代 ElMessage / ElMessageBox
+    const { modal } = AntApp.useApp() // 替代 ElMessageBox
 
-    const secTypeRef = useRef<HTMLElement | null>(null)
-    const secCounselorRef = useRef<HTMLElement | null>(null)
-    const secTimeRef = useRef<HTMLElement | null>(null)
-    const secInfoRef = useRef<HTMLElement | null>(null)
+    const [form] = Form.useForm<BookingFormValues>()
+    const [initialValues] = useState(createInitialValues)
 
-    const [errors, setErrors] = useState<BookingErrors>(INITIAL_ERRORS)
+    const type = Form.useWatch('type', form) ?? 'individual'
+    const counselorId = Form.useWatch('counselorId', form)
+    const date = Form.useWatch('date', form)
+    const slot = Form.useWatch('slot', form)
+    const mode = Form.useWatch('mode', form) ?? 'online'
 
-    const [booking, setBooking] = useState<BookingForm>({
-      type: 'individual',
-      topics: [],
-      specFilter: '',
-      counselorId: null,
-      dateIdx: -1,
-      slot: '',
-      mode: 'online',
-      name: '',
-      contact: '',
-      description: '',
-      isFirst: true,
-      agree: false,
-    })
+    const topRef = useRef<HTMLDivElement | null>(null)
 
-    const [counselorSearch, setCounselorSearch] = useState('')
-
-    function selectCounselor(id: number) {
-      setBooking(b => ({ ...b, counselorId: id }))
-      setErrors(e => ({ ...e, counselorId: false }))
-    }
-
-    const filteredCounselors = useMemo(() => {
-      const type = booking.type
-      const kw = counselorSearch.trim().toLowerCase()
-      const spec = booking.specFilter
-      return counselors.filter(c => {
-        const typeOk = !type || c.types.includes(type)
-        const specOk = !spec || c.specialties.includes(spec)
-        const kwOk =
-          !kw ||
-          c.name.toLowerCase().includes(kw) ||
-          c.specialties.join('').toLowerCase().includes(kw) ||
-          c.title.toLowerCase().includes(kw)
-        return typeOk && specOk && kwOk
-      })
-    }, [booking.type, booking.specFilter, counselorSearch])
-
-    // watch(booking.type)：所选老师不支持新类型时清空选择
-    useEffect(() => {
-      setBooking(b => {
-        if (!b.counselorId) return b
-        const c = counselors.find(x => x.id === b.counselorId)
-        if (c && !c.types.includes(b.type)) return { ...b, counselorId: null }
-        return b
-      })
-    }, [booking.type])
-
-    const weekdays = useMemo(
-      () => [
-        t('counseling.weekdays.sun'), t('counseling.weekdays.mon'), t('counseling.weekdays.tue'),
-        t('counseling.weekdays.wed'), t('counseling.weekdays.thu'), t('counseling.weekdays.fri'),
-        t('counseling.weekdays.sat'),
-      ],
-      [t]
-    )
-
-    const nextDays = useMemo(() => {
-      const days: Array<{ weekday: string; dateStr: string; full: string }> = []
-      const wdays = weekdays
-      const now = new Date()
-      for (let i = 1; i <= 7; i++) {
-        const d = new Date(now.getTime() + i * 24 * 60 * 60 * 1000)
-        days.push({
-          weekday: wdays[d.getDay()],
-          dateStr: `${d.getMonth() + 1}/${d.getDate()}`,
-          full: `${d.getMonth() + 1}月${d.getDate()}日 ${wdays[d.getDay()]}`,
-        })
-      }
-      return days
-    }, [weekdays])
-
-    const timeSlots = useMemo(
-      () => [
-        { label: '09:00', value: '09:00', period: t('counseling.timeSlots.morning'), disabled: false },
-        { label: '10:00', value: '10:00', period: t('counseling.timeSlots.morning'), disabled: false },
-        { label: '11:00', value: '11:00', period: t('counseling.timeSlots.morning'), disabled: true },
-        { label: '14:00', value: '14:00', period: t('counseling.timeSlots.afternoon'), disabled: false },
-        { label: '15:00', value: '15:00', period: t('counseling.timeSlots.afternoon'), disabled: false },
-        { label: '16:00', value: '16:00', period: t('counseling.timeSlots.afternoon'), disabled: true },
-        { label: '19:00', value: '19:00', period: t('counseling.timeSlots.evening'), disabled: false },
-        { label: '20:00', value: '20:00', period: t('counseling.timeSlots.evening'), disabled: false },
-      ],
-      [t]
-    )
-
-    function validateBooking(): boolean {
-      const next: BookingErrors = { ...INITIAL_ERRORS }
-      let valid = true
-      let firstErrorRef: HTMLElement | null = null
-
-      if (!booking.type) { next.type = true; valid = false; if (!firstErrorRef) firstErrorRef = secTypeRef.current }
-      if (!booking.counselorId) { next.counselorId = true; valid = false; if (!firstErrorRef) firstErrorRef = secCounselorRef.current }
-      if (booking.dateIdx < 0) { next.dateIdx = true; valid = false; if (!firstErrorRef) firstErrorRef = secTimeRef.current }
-      if (!booking.slot) { next.slot = true; valid = false; if (!firstErrorRef) firstErrorRef = secTimeRef.current }
-      if (!booking.name) { next.name = t('counseling.validation.nameRequired'); valid = false; if (!firstErrorRef) firstErrorRef = secInfoRef.current }
-      if (!booking.contact) { next.contact = t('counseling.validation.contactRequired'); valid = false; if (!firstErrorRef) firstErrorRef = secInfoRef.current }
-      if (!booking.agree) { next.agree = t('counseling.validation.agreeRequired'); valid = false; if (!firstErrorRef) firstErrorRef = secInfoRef.current }
-
-      setErrors(next)
-
-      if (!valid && firstErrorRef) {
-        firstErrorRef.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        message.warning(t('counseling.validation.formIncomplete'))
-      }
-      return valid
-    }
-
-    function getTypeName(key: string): string {
-      return consultationTypes.find(ct => ct.key === key)?.name || ''
-    }
-    function getCounselor(id: number | null): { name: string } {
-      return counselors.find(c => c.id === id) || { name: '' }
-    }
-
-    // 我的预约
-    const [myBookings, setMyBookings] = useState<BookingItem[]>([])
     const statusMap = useMemo<Record<string, string>>(
       () => ({
         pending: t('counseling.bookingStatus.pending'),
@@ -207,92 +149,142 @@ const BookingPanel = forwardRef<BookingPanelHandle, BookingPanelProps>(
       [t]
     )
 
-    function submitBooking() {
-      if (!validateBooking()) return
-      const c = counselors.find(x => x.id === booking.counselorId)
-      if (!c) return
-      const newBooking: BookingItem = {
-        counselorName: c.name,
-        counselorId: c.id,
-        date: nextDays[booking.dateIdx].full,
-        slot: booking.slot,
-        typeName: getTypeName(booking.type),
-        type: booking.type,
-        mode: booking.mode,
-        topics: [...booking.topics],
-        description: booking.description,
-        isFirst: booking.isFirst,
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-      }
-      const next = [newBooking, ...myBookings]
-      setMyBookings(next)
-      saveBookings(next)
-      message.success(t('counseling.message.bookingSuccess'))
-      // 重置
-      setBooking(b => ({
-        ...b,
-        counselorId: null,
-        dateIdx: -1,
-        slot: '',
-        name: '',
-        contact: '',
-        description: '',
-        agree: false,
-        topics: [],
-      }))
-      // 重置错误
-      setErrors(INITIAL_ERRORS)
-      // 滚动到顶部
-      secTypeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    // 咨询类型 → Radio.Group 选项（名称走 i18n，图标按 iconKey 映射）
+    const typeOptions = useMemo(
+      () =>
+        consultationTypes.map((item) => {
+          const Icon = TYPE_ICONS[item.iconKey] ?? UserOutlined
+          return {
+            value: item.key,
+            label: (
+              <span className={styles.typeOptLabel}>
+                <Icon />
+                <span className={styles.toName}>{t(`counseling.types.${item.key}`)}</span>
+                <span className={styles.toDur}>{item.duration}min</span>
+              </span>
+            ),
+          }
+        }),
+      [consultationTypes, t]
+    )
+
+    // 仅展示支持当前类型的老师
+    const counselorOptions = useMemo(
+      () =>
+        counselors
+          .filter((c) => !type || c.types.includes(type))
+          .map((c) => ({ value: c.id, label: `${c.name} · ${c.title}` })),
+      [counselors, type]
+    )
+
+    const slotOptions = useMemo(
+      () => TIME_SLOTS.map((value) => ({ value, label: value, disabled: DISABLED_SLOTS.has(value) })),
+      []
+    )
+
+    const modeOptions = useMemo(
+      () => [
+        { value: 'online', label: t('counseling.btn.online') },
+        { value: 'offline', label: t('counseling.btn.offline') },
+      ],
+      [t]
+    )
+
+    const disabledDate = (current: Dayjs): boolean => {
+      const tomorrow = dayjs().startOf('day').add(1, 'day')
+      const lastDay = dayjs().startOf('day').add(7, 'day')
+      return current.valueOf() < tomorrow.valueOf() || current.valueOf() > lastDay.valueOf()
     }
 
-    function cancelBooking(idx: number) {
+    // 切换类型后，若当前老师不支持该类型则清空选择
+    function handleValuesChange(changed: Partial<BookingFormValues>) {
+      if (!('type' in changed)) return
+      const nextType = changed.type
+      const currentId = form.getFieldValue('counselorId') as number | undefined
+      if (!nextType || currentId == null) return
+      const current = counselors.find((c) => c.id === currentId)
+      if (!current || !current.types.includes(nextType)) {
+        form.setFieldValue('counselorId', undefined)
+      }
+    }
+
+    async function handleSubmit() {
+      let values: BookingFormValues
+      try {
+        values = await form.validateFields()
+      } catch (err) {
+        const first = (err as { errorFields?: { name: (string | number)[] }[] }).errorFields?.[0]?.name
+        if (first) form.scrollToField(first)
+        return
+      }
+
+      const counselor = counselors.find((c) => c.id === values.counselorId)
+      if (!counselor || !values.date) return
+
+      try {
+        // 成功后由页面 onSuccess 失效 ['counseling','bookings'] 刷新右侧列表
+        await onSubmit({
+          counselorId: counselor.id,
+          date: values.date.format('YYYY-MM-DD'),
+          slot: values.slot,
+          type: values.type,
+          mode: values.mode,
+          name: values.name.trim(),
+          contact: values.contact.trim(),
+          description: values.description?.trim() || undefined,
+          isFirst: values.isFirst,
+        })
+
+        form.resetFields()
+        topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } catch {
+        /* 接口错误由页面 mutation 统一提示 */
+      }
+    }
+
+    function cancelBooking(id: number) {
       modal.confirm({
         title: t('counseling.message.cancelTitle'),
         content: t('counseling.message.cancelConfirm'),
         icon: <ExclamationCircleFilled />,
         onOk() {
-          const next = myBookings.map((b, i) => (i === idx ? { ...b, status: 'cancelled' } : b))
-          setMyBookings(next)
-          saveBookings(next)
-          message.success(t('counseling.message.cancelled'))
+          // 状态变更 + 成功提示 + 缓存失效由页面 useMutation 负责
+          onCancelBooking(id)
         },
       })
     }
-
-    function saveBookings(list: BookingItem[]) {
-      localStorage.setItem(COUNSELING_STORAGE_KEY, JSON.stringify(list))
-    }
-
-    // onMounted：读取本地预约
-    useEffect(() => {
-      const saved = localStorage.getItem(COUNSELING_STORAGE_KEY)
-      if (saved) setMyBookings(JSON.parse(saved) as BookingItem[])
-    }, [])
 
     // 跨面板预约：由列表/弹窗「预约」触发（页面切 tab 后由父级调用）
     useImperativeHandle(
       ref,
       () => ({
         prefill(id: number) {
-          setBooking(b => ({ ...b, type: 'individual', counselorId: id }))
+          const counselor = counselors.find((c) => c.id === id)
+          const nextType: ConsultationTypeKey =
+            counselor && !counselor.types.includes('individual')
+              ? (counselor.types[0] ?? 'individual')
+              : 'individual'
+          form.setFieldsValue({ type: nextType, counselorId: id })
         },
       }),
-      []
+      [form, counselors]
     )
 
     const requiredText = t('counseling.form.required')
+    const counselorName = counselors.find((c) => c.id === counselorId)?.name ?? ''
 
     return (
-      <div className={styles.bookingLayout}>
+      <div className={styles.bookingLayout} ref={topRef}>
         <div className={styles.bookingMain}>
-          <form className={styles.bookingForm} onSubmit={e => e.preventDefault()}>
+          <Form
+            form={form}
+            layout="vertical"
+            initialValues={initialValues}
+            onValuesChange={handleValuesChange}
+            className={styles.bookingForm}
+          >
             {/* 01 咨询类型 */}
-            <section
-              ref={secTypeRef}
-              className={`${styles.stepBlock}${errors.type ? ` ${styles.error}` : ''}`}
-            >
+            <section className={styles.stepBlock}>
               <div className={styles.stepMarker}>
                 <span className={styles.stepNum}>01</span>
               </div>
@@ -301,114 +293,81 @@ const BookingPanel = forwardRef<BookingPanelHandle, BookingPanelProps>(
                   {t('counseling.step.type')}
                   <em>*</em>
                 </h3>
-                <div className={styles.typeOptions}>
-                  {consultationTypes.map(ct => (
-                    <button
-                      key={ct.key}
-                      type="button"
-                      className={`${styles.typeOpt}${booking.type === ct.key ? ` ${styles.active}` : ''}`}
-                      onClick={() => {
-                        setBooking(b => ({ ...b, type: ct.key }))
-                        setErrors(e => ({ ...e, type: false }))
-                      }}
-                    >
-                      <span className={styles.toName}>{ct.name}</span>
-                      <span className={styles.toDur}>{ct.duration}min</span>
-                    </button>
-                  ))}
-                </div>
+                <Form.Item
+                  name="type"
+                  rules={[{ required: true, message: t('counseling.validation.typeRequired') }]}
+                >
+                  <Radio.Group
+                    optionType="button"
+                    className={styles.typeOptions}
+                    options={typeOptions}
+                  />
+                </Form.Item>
               </div>
             </section>
 
             {/* 02 心理老师 */}
-            <section
-              ref={secCounselorRef}
-              className={`${styles.stepBlock}${errors.counselorId ? ` ${styles.error}` : ''}`}
-            >
+            <section className={styles.stepBlock}>
               <div className={styles.stepMarker}>
                 <span className={styles.stepNum}>02</span>
               </div>
               <div className={styles.stepBody}>
-                <div className={styles.stepTitleRow}>
-                  <h3 className={styles.stepTitle}>
-                    {t('counseling.step.counselor')}
-                    <em>*</em>
-                  </h3>
-                  <div className={styles.counselorSearch}>
-                    <SearchOutlined />
-                    <input
-                      value={counselorSearch}
-                      placeholder={t('counseling.counselors.searchPlaceholder')}
-                      onChange={e => setCounselorSearch(e.target.value)}
-                    />
-                    {filteredCounselors.length > 0 && (
-                      <span className={styles.csCount}>
-                        {filteredCounselors.length} {t('counseling.counselors.count')}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {booking.type && (
+                <h3 className={styles.stepTitle}>
+                  {t('counseling.step.counselor')}
+                  <em>*</em>
+                </h3>
+                {type && (
                   <div className={styles.typeHint}>
-                    {t('counseling.counselors.filteredHint', { type: getTypeName(booking.type) })}
+                    {t('counseling.counselors.filteredHint', {
+                      type: t(`counseling.types.${type}`),
+                    })}
                   </div>
                 )}
-
-                {filteredCounselors.length > 0 ? (
-                  <div className={styles.counselorPickList}>
-                    {filteredCounselors.map(c => (
-                      <Popover
-                        key={c.id}
-                        placement="top"
-                        trigger="hover"
-                        mouseEnterDelay={0.2}
-                        overlayClassName="counselor-popover"
-                        overlayStyle={{ width: 280 }}
-                        content={
-                          <div className={styles.popDetail}>
-                            <div className={styles.popHead}>
-                              <div className={styles.popAvatar} style={{ background: c.color }}>
-                                {c.name[0]}
-                              </div>
-                              <div>
-                                <div className={styles.popName}>{c.name}</div>
-                                <div className={styles.popTitle}>{c.title}</div>
-                              </div>
-                            </div>
-                            <div className={styles.popStats}>
-                              <span><StarOutlined /> {c.rating}</span>
-                              <span><BankOutlined /> {c.exp}{t('counseling.counselors.yearsSuffix')}</span>
-                              <span><MessageOutlined /> {c.sessions}{t('counseling.counselors.sessionsUnit')}</span>
-                            </div>
-                            <p className={styles.popIntro}>{c.intro}</p>
-                          </div>
-                        }
-                      >
-                        <div
-                          className={`${styles.counselorPickCard}${booking.counselorId === c.id ? ` ${styles.active}` : ''}`}
-                          onClick={() => selectCounselor(c.id)}
-                        >
-                          <span className={styles.cpName}>{c.name}</span>
-                          <span className={styles.cpMeta}>{c.title}</span>
-                          <span className={styles.cpRating}>★ {c.rating}</span>
+                <Form.Item
+                  name="counselorId"
+                  rules={[{ required: true, message: t('counseling.validation.counselorRequired') }]}
+                >
+                  <Select
+                    className={styles.counselorSelect}
+                    showSearch
+                    allowClear
+                    placeholder={t('counseling.counselors.searchPlaceholder')}
+                    options={counselorOptions}
+                    filterOption={(input, option) => {
+                      const counselor = counselors.find((c) => c.id === option?.value)
+                      if (!counselor) return false
+                      const keyword = input.toLowerCase()
+                      return (
+                        counselor.name.toLowerCase().includes(keyword) ||
+                        counselor.title.toLowerCase().includes(keyword) ||
+                        counselor.specialties.join(' ').toLowerCase().includes(keyword)
+                      )
+                    }}
+                    notFoundContent={
+                      <div className={styles.counselorEmpty}>
+                        {t('counseling.empty.noCounselor')}
+                      </div>
+                    }
+                    optionRender={(option) => {
+                      const counselor = counselors.find((c) => c.id === option.value)
+                      if (!counselor) return option.label
+                      return (
+                        <div className={styles.selectOption}>
+                          <span className={styles.soName}>{counselor.name}</span>
+                          <span className={styles.soMeta}>{counselor.title}</span>
+                          <span className={styles.soRating}>
+                            <StarOutlined /> {counselor.rating}
+                          </span>
                         </div>
-                      </Popover>
-                    ))}
-                  </div>
-                ) : (
-                  <div className={styles.counselorEmpty}>
-                    <span>{t('counseling.empty.noCounselor')}</span>
-                  </div>
-                )}
+                      )
+                    }}
+                  />
+                </Form.Item>
               </div>
             </section>
 
             {/* 03 咨询时间 */}
-            <section
-              ref={secTimeRef}
-              className={`${styles.stepBlock}${errors.dateIdx || errors.slot ? ` ${styles.error}` : ''}`}
-            >
+            <section className={styles.stepBlock}>
               <div className={styles.stepMarker}>
                 <span className={styles.stepNum}>03</span>
               </div>
@@ -417,61 +376,41 @@ const BookingPanel = forwardRef<BookingPanelHandle, BookingPanelProps>(
                   {t('counseling.step.time')}
                   <em>*</em>
                 </h3>
-                <div className={styles.dateRow}>
-                  {nextDays.map((d, i) => (
-                    <div
-                      key={i}
-                      className={`${styles.dateOpt}${booking.dateIdx === i ? ` ${styles.active}` : ''}`}
-                      onClick={() => {
-                        setBooking(b => ({ ...b, dateIdx: i }))
-                        setErrors(e => ({ ...e, dateIdx: false }))
-                      }}
-                    >
-                      <span className={styles.doWeek}>{d.weekday}</span>
-                      <span className={styles.doDate}>{d.dateStr}</span>
-                    </div>
-                  ))}
-                </div>
+                <Form.Item
+                  name="date"
+                  rules={[{ required: true, message: t('counseling.validation.dateRequired') }]}
+                >
+                  <DatePicker
+                    className={styles.datePicker}
+                    format="YYYY-MM-DD"
+                    placeholder={t('counseling.form.datePlaceholder')}
+                    disabledDate={disabledDate}
+                  />
+                </Form.Item>
                 <div className={styles.timeMode}>
-                  <div className={styles.slotRow}>
-                    {timeSlots.map(slot => (
-                      <button
-                        key={slot.value}
-                        type="button"
-                        className={`${styles.slotOpt}${booking.slot === slot.value ? ` ${styles.active}` : ''}${slot.disabled ? ` ${styles.disabled}` : ''}`}
-                        disabled={slot.disabled}
-                        onClick={() => {
-                          if (slot.disabled) return
-                          setBooking(b => ({ ...b, slot: slot.value }))
-                          setErrors(e => ({ ...e, slot: false }))
-                        }}
-                      >
-                        {slot.label}
-                      </button>
-                    ))}
-                  </div>
-                  <div className={styles.modeRow}>
-                    <button
-                      type="button"
-                      className={`${styles.modeOpt}${booking.mode === 'online' ? ` ${styles.active}` : ''}`}
-                      onClick={() => setBooking(b => ({ ...b, mode: 'online' }))}
-                    >
-                      {t('counseling.btn.online')}
-                    </button>
-                    <button
-                      type="button"
-                      className={`${styles.modeOpt}${booking.mode === 'offline' ? ` ${styles.active}` : ''}`}
-                      onClick={() => setBooking(b => ({ ...b, mode: 'offline' }))}
-                    >
-                      {t('counseling.btn.offline')}
-                    </button>
-                  </div>
+                  <Form.Item
+                    name="slot"
+                    rules={[{ required: true, message: t('counseling.validation.slotRequired') }]}
+                  >
+                    <Radio.Group
+                      optionType="button"
+                      className={styles.slotRow}
+                      options={slotOptions}
+                    />
+                  </Form.Item>
+                  <Form.Item name="mode">
+                    <Radio.Group
+                      optionType="button"
+                      className={styles.modeRow}
+                      options={modeOptions}
+                    />
+                  </Form.Item>
                 </div>
               </div>
             </section>
 
             {/* 04 个人信息 */}
-            <section ref={secInfoRef} className={styles.stepBlock}>
+            <section className={styles.stepBlock}>
               <div className={styles.stepMarker}>
                 <span className={styles.stepNum}>04</span>
               </div>
@@ -481,88 +420,77 @@ const BookingPanel = forwardRef<BookingPanelHandle, BookingPanelProps>(
                   <em>*</em>
                 </h3>
                 <div className={styles.formGrid}>
-                  <div className={styles.formField}>
-                    <div className={styles.formLabel}>
-                      {t('counseling.form.name')}
-                      <em className={styles.formRequired}>*</em>
-                    </div>
-                    <Input
-                      value={booking.name}
-                      placeholder={t('counseling.form.namePlaceholder')}
-                      onChange={e => {
-                        setBooking(b => ({ ...b, name: e.target.value }))
-                        setErrors(er => ({ ...er, name: '' }))
-                      }}
-                    />
-                    {errors.name && (
-                      <div className={styles.formError}>{t('counseling.validation.nameRequired')}</div>
-                    )}
-                  </div>
-                  <div className={styles.formField}>
-                    <div className={styles.formLabel}>
-                      {t('counseling.form.contact')}
-                      <em className={styles.formRequired}>*</em>
-                    </div>
-                    <Input
-                      value={booking.contact}
-                      placeholder={t('counseling.form.contactPlaceholder')}
-                      onChange={e => {
-                        setBooking(b => ({ ...b, contact: e.target.value }))
-                        setErrors(er => ({ ...er, contact: '' }))
-                      }}
-                    />
-                    {errors.contact && (
-                      <div className={styles.formError}>{t('counseling.validation.contactRequired')}</div>
-                    )}
-                  </div>
+                  <Form.Item
+                    name="name"
+                    label={t('counseling.form.name')}
+                    rules={[{ required: true, whitespace: true, message: t('counseling.validation.nameRequired') }]}
+                  >
+                    <Input placeholder={t('counseling.form.namePlaceholder')} />
+                  </Form.Item>
+                  <Form.Item
+                    name="contact"
+                    label={t('counseling.form.contact')}
+                    rules={[{ required: true, whitespace: true, message: t('counseling.validation.contactRequired') }]}
+                  >
+                    <Input placeholder={t('counseling.form.contactPlaceholder')} />
+                  </Form.Item>
                 </div>
-                <div className={styles.formField}>
-                  <div className={styles.formLabel}>
-                    {t('counseling.form.description')}{' '}
-                    <span className={styles.optional}>{t('counseling.form.optional')}</span>
-                  </div>
+                <Form.Item
+                  name="description"
+                  label={t('counseling.form.description')}
+                >
                   <Input.TextArea
-                    value={booking.description}
                     rows={3}
                     placeholder={t('counseling.form.descPlaceholder')}
                     maxLength={500}
                     showCount
-                    onChange={e => setBooking(b => ({ ...b, description: e.target.value }))}
                   />
-                </div>
+                </Form.Item>
                 <div className={styles.formInline}>
                   <span className={styles.formInlineLabel}>{t('counseling.form.experience')}</span>
-                  <Switch
-                    checked={booking.isFirst}
-                    checkedChildren={t('counseling.form.first')}
-                    unCheckedChildren={t('counseling.form.followup')}
-                    onChange={v => setBooking(b => ({ ...b, isFirst: v }))}
-                  />
+                  <Form.Item name="isFirst" valuePropName="checked" noStyle>
+                    <Switch
+                      checkedChildren={t('counseling.form.first')}
+                      unCheckedChildren={t('counseling.form.followup')}
+                    />
+                  </Form.Item>
                 </div>
-                <div className={styles.formField}>
-                  <Checkbox
-                    checked={booking.agree}
-                    onChange={e => {
-                      setBooking(b => ({ ...b, agree: e.target.checked }))
-                      setErrors(er => ({ ...er, agree: '' }))
-                    }}
-                  >
+                <Form.Item
+                  name="agree"
+                  valuePropName="checked"
+                  rules={[
+                    {
+                      validator: (_, value: boolean) =>
+                        value
+                          ? Promise.resolve()
+                          : Promise.reject(new Error(t('counseling.validation.agreeRequired'))),
+                    },
+                  ]}
+                >
+                  <Checkbox>
                     {t('counseling.form.agreePrefix')}{' '}
                     <a
                       href="#"
-                      onClick={e => {
+                      onClick={(e) => {
                         e.preventDefault()
+                        e.stopPropagation()
                         onGoNotice()
                       }}
                     >
                       {t('counseling.form.noticeLink')}
                     </a>{' '}
-                    {t('counseling.form.and')} <a href="#">{t('counseling.form.consentLink')}</a>
+                    {t('counseling.form.and')}{' '}
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                      }}
+                    >
+                      {t('counseling.form.consentLink')}
+                    </a>
                   </Checkbox>
-                  {errors.agree && (
-                    <div className={styles.formError}>{t('counseling.validation.agreeRequired')}</div>
-                  )}
-                </div>
+                </Form.Item>
               </div>
             </section>
 
@@ -572,12 +500,18 @@ const BookingPanel = forwardRef<BookingPanelHandle, BookingPanelProps>(
                 <em>*</em>
                 {requiredText.split('*')[1]}
               </span>
-              <Button type="primary" size="large" onClick={submitBooking}>
+              <Button
+                type="primary"
+                size="large"
+                loading={isSubmitting}
+                disabled={isSubmitting}
+                onClick={() => void handleSubmit()}
+              >
                 {t('counseling.btn.confirmBooking')}
-                <ArrowRightOutlined />
+                {!isSubmitting && <ArrowRightOutlined />}
               </Button>
             </div>
-          </form>
+          </Form>
         </div>
 
         {/* 右侧：预约摘要 + 我的预约 */}
@@ -591,27 +525,25 @@ const BookingPanel = forwardRef<BookingPanelHandle, BookingPanelProps>(
             </h4>
             <div className={styles.summaryRow}>
               <span>{t('counseling.summary.type')}</span>
-              <b className={booking.type ? '' : styles.unset}>{getTypeName(booking.type)}</b>
+              <b className={type ? '' : styles.unset}>
+                {type ? t(`counseling.types.${type}`) : ''}
+              </b>
             </div>
             <div className={styles.summaryRow}>
               <span>{t('counseling.summary.counselor')}</span>
-              <b className={booking.counselorId ? '' : styles.unset}>
-                {booking.counselorId ? getCounselor(booking.counselorId).name : ''}
-              </b>
+              <b className={counselorName ? '' : styles.unset}>{counselorName}</b>
             </div>
             <div className={styles.summaryRow}>
               <span>{t('counseling.summary.date')}</span>
-              <b className={booking.dateIdx >= 0 ? '' : styles.unset}>
-                {booking.dateIdx >= 0 ? nextDays[booking.dateIdx].full : ''}
-              </b>
+              <b className={date ? '' : styles.unset}>{date ? date.format('YYYY-MM-DD') : ''}</b>
             </div>
             <div className={styles.summaryRow}>
               <span>{t('counseling.summary.time')}</span>
-              <b className={booking.slot ? '' : styles.unset}>{booking.slot || ''}</b>
+              <b className={slot ? '' : styles.unset}>{slot || ''}</b>
             </div>
             <div className={styles.summaryRow}>
               <span>{t('counseling.summary.mode')}</span>
-              <b>{booking.mode === 'online' ? t('counseling.summary.onlineValue') : t('counseling.summary.offlineValue')}</b>
+              <b>{mode === 'online' ? t('counseling.summary.onlineValue') : t('counseling.summary.offlineValue')}</b>
             </div>
             <div className={styles.summaryDivider} />
             <div className={`${styles.summaryRow} ${styles.total}`}>
@@ -625,22 +557,42 @@ const BookingPanel = forwardRef<BookingPanelHandle, BookingPanelProps>(
               <h4>
                 <UnorderedListOutlined /> {t('counseling.myBookings')}
               </h4>
-              <span className={styles.mbCount}>{myBookings.length}</span>
+              {!bookingsLoading && !bookingsError && (
+                <span className={styles.mbCount}>{bookings.length}</span>
+              )}
             </div>
-            {myBookings.length > 0 ? (
+            {bookingsLoading ? (
+              /* 加载中：与预约条目等高的骨架 */
+              <div className={styles.mbSkeleton}>
+                <Skeleton active title={{ width: '46%' }} paragraph={{ rows: 2 }} />
+                <Skeleton active title={{ width: '46%' }} paragraph={{ rows: 2 }} />
+              </div>
+            ) : bookingsError ? (
+              /* 加载失败：提示 + 重试 */
+              <Result
+                className={styles.mbError}
+                status="error"
+                title={t('common.loadFailed')}
+                extra={
+                  <Button size="small" onClick={onReloadBookings}>
+                    {t('common.retry')}
+                  </Button>
+                }
+              />
+            ) : bookings.length > 0 ? (
               <div className={styles.mbList}>
-                {myBookings.map((b, i) => (
-                  <div key={i} className={`${styles.mbItem} status-${b.status}`}>
+                {bookings.map((b) => (
+                  <div key={b.id} className={`${styles.mbItem} status-${b.status}`}>
                     <div className={styles.mbTop}>
                       <span className={styles.mbCounselor}>{b.counselorName}</span>
                       <span className={`${styles.mbStatus} s-${b.status}`}>{statusMap[b.status]}</span>
                     </div>
                     <div className={styles.mbInfo}>
-                      {b.date} {b.slot} · {b.typeName}
+                      {b.date} {b.slot} · {t(`counseling.types.${b.type}`)}
                     </div>
                     {b.status === 'pending' && (
                       <div className={styles.mbActions}>
-                        <Button size="small" onClick={() => cancelBooking(i)}>
+                        <Button size="small" onClick={() => cancelBooking(b.id)}>
                           {t('counseling.booking.cancelBtn')}
                         </Button>
                       </div>
@@ -649,7 +601,13 @@ const BookingPanel = forwardRef<BookingPanelHandle, BookingPanelProps>(
                 ))}
               </div>
             ) : (
-              <div className={styles.mbEmpty}>{t('counseling.booking.empty')}</div>
+              /* 空状态：引导去预约 */
+              <div className={styles.mbEmpty}>
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description={t('counseling.booking.emptyHint')}
+                />
+              </div>
             )}
           </div>
         </aside>

@@ -1,5 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
-import { App as AntApp } from 'antd'
+/**
+ * 沉浸式答题页（AssessmentTakeView）
+ * - 题目来自 `GET /api/assessment/scales/:id`，选项由接口下发（含分值）
+ * - 提交走 useMutation，计分在服务端完成
+ * - 顶部进度使用 antd Progress；底部导航使用 antd Button
+ */
+import { useEffect, useState } from 'react'
+import { App as AntApp, Button, Progress, Result, Skeleton } from 'antd'
 import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
@@ -9,62 +15,44 @@ import {
   FieldTimeOutlined,
 } from '@ant-design/icons'
 import { useNavigate, useParams } from 'react-router-dom'
-import dayjs from 'dayjs'
 import { QuestionCard } from '@/features/assessment'
-import { ASSESSMENT_STORAGE_KEY, scaleOptions, scales } from '@/features/assessment'
-import type { OptionItem, ScaleResult } from '@/features/assessment'
+import { useI18n } from '@/i18n'
+import { useAssessmentScale, useSubmitAssessment } from './assessmentQuery'
 import './AssessmentTakeView.css'
 
-interface ScaleMeta {
-  key: string
-  name: string
-  color: string
-  category: 'mental' | 'career'
-}
-
-// --- 量表分类元信息（与 Vue 版一致；色值走 --cat-* 分类色，暗色自动切官方暗色档） ---
-const mentalScales: ScaleMeta[] = [
-  { key: 'phq9', name: '抑郁自评 PHQ-9', color: 'var(--brand-primary)', category: 'mental' },
-  { key: 'gad7', name: '焦虑自评 GAD-7', color: 'var(--cat-green)', category: 'mental' },
-  { key: 'pss', name: '压力感知 PSS-10', color: 'var(--cat-gold)', category: 'mental' },
-]
-
-const careerScales: ScaleMeta[] = [
-  { key: 'riasec', name: '职业兴趣 RIASEC', color: 'var(--cat-purple)', category: 'career' },
-  { key: 'mbti', name: '性格倾向 MBTI', color: 'var(--cat-magenta)', category: 'career' },
-]
-
 /**
- * 沉浸式答题页（AssessmentTakeView）
  * Vue → React 映射：
  * - route.params.id → useParams().id
  * - onMounted/onUnmounted 计时器 → useEffect + cleanup
  * - ElMessageBox.confirm → AntApp.useApp().modal.confirm
- * - <transition name="q-slide" mode="out-in"> → key 重挂载 + CSS 入场动画（React 无内置 Transition）
+ * - <transition name="q-slide" mode="out-in"> → key 重挂载 + CSS 入场动画
  */
 export default function AssessmentTakeView() {
-  const { message, modal } = AntApp.useApp()
+  const { modal } = AntApp.useApp()
   const { id } = useParams()
   const navigate = useNavigate()
+  const { t } = useI18n()
 
-  // --- 状态管理 ---
+  const scaleKey = id ? String(id) : undefined
+  const {
+    data: scale,
+    isPending,
+    isError,
+    error,
+    refetch,
+  } = useAssessmentScale(scaleKey)
+  const submit = useSubmitAssessment()
+
+  // --- 作答状态（纯 UI） ---
   const [currentIndex, setCurrentIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number | string>>({})
   const [timeElapsed, setTimeElapsed] = useState(0)
-  const [submitting, setSubmitting] = useState(false)
 
-  // --- 量表元信息（computed → useMemo / 直接派生） ---
-  const currentScaleKey = String(id)
-  const currentScale = scales[currentScaleKey]
-  const currentScaleInfo = useMemo(
-    () => [...mentalScales, ...careerScales].find((s) => s.key === currentScaleKey),
-    [currentScaleKey]
-  )
-  const questions = currentScale?.questions ?? []
-  const currentQuestion = currentScale?.questions[currentIndex]
-  const currentOptions: OptionItem[] = currentScale ? scaleOptions[currentScale.optionType] : []
+  const questions = scale?.questions ?? []
+  const currentQuestion = questions[currentIndex]
+  const currentOptions = scale?.options ?? []
   const currentAnswer = currentQuestion ? answers[currentQuestion.id] : undefined
-  const categoryLabel = currentScaleInfo?.category === 'mental' ? '心理健康' : '生涯发展'
+  const categoryLabel = scale ? t(`assessment.categories.${scale.category}`) : ''
   const isLastQuestion = questions.length > 0 && currentIndex === questions.length - 1
   const progress = questions.length
     ? Math.round(((currentIndex + 1) / questions.length) * 100)
@@ -72,16 +60,18 @@ export default function AssessmentTakeView() {
   const allAnswered =
     questions.length > 0 && questions.every((q) => answers[q.id] !== undefined)
 
-  // --- onMounted 量表校验 + 计时器（onUnmounted 清理）→ 单个 useEffect ---
+  // 计时器（onMounted / onUnmounted）
   useEffect(() => {
-    if (!scales[String(id)]) {
-      message.error('量表不存在')
-      navigate('/assessment')
-      return
-    }
     const timer = setInterval(() => setTimeElapsed((s) => s + 1), 1000)
     return () => clearInterval(timer)
-  }, [id, message, navigate])
+  }, [])
+
+  // 切换量表的 URL 参数时重置作答
+  useEffect(() => {
+    setCurrentIndex(0)
+    setAnswers({})
+    setTimeElapsed(0)
+  }, [scaleKey])
 
   // --- 方法 ---
   function formatTime(seconds: number) {
@@ -92,7 +82,7 @@ export default function AssessmentTakeView() {
 
   function handleSelect(qId: number, val: number | string) {
     setAnswers((prev) => ({ ...prev, [qId]: val }))
-    // 如果不是最后一题，自动跳到下一题（延迟一小会儿增加反馈感）
+    // 非最后一题：稍作停留后自动进入下一题
     if (!isLastQuestion) {
       setTimeout(() => {
         setCurrentIndex((i) => i + 1)
@@ -109,7 +99,6 @@ export default function AssessmentTakeView() {
     setCurrentIndex((i) => (i > 0 ? i - 1 : i))
   }
 
-  // 退出确认：ElMessageBox.confirm → modal.confirm（来自 AntApp 上下文）
   function confirmExit() {
     modal.confirm({
       title: '确认退出',
@@ -123,85 +112,100 @@ export default function AssessmentTakeView() {
     })
   }
 
-  function handleSubmit() {
-    setSubmitting(true)
-    setTimeout(() => {
-      const scale = currentScale
-      if (!scale) {
-        setSubmitting(false)
-        return
-      }
-      let total = 0
-      const details: Record<string, number> = {}
+  async function handleSubmit() {
+    if (!scale || !scaleKey) return
 
-      // 初始化 details
-      if (currentScaleKey === 'riasec') {
-        ;['R', 'I', 'A', 'S', 'E', 'C'].forEach((k) => (details[k] = 0))
-      } else if (currentScaleKey === 'mbti') {
-        ;['E', 'I', 'S', 'N', 'T', 'F', 'J', 'P'].forEach((k) => (details[k] = 0))
-      }
+    const payload = {
+      scaleKey,
+      answers: Object.entries(answers).map(([questionId, value]) => ({
+        questionId: Number(questionId),
+        value,
+      })),
+      duration: timeElapsed,
+    }
 
-      scale.questions.forEach((q) => {
-        const val = answers[q.id]
-        if (val === undefined) return
-        if (currentScaleKey === 'mbti') {
-          if (typeof val !== 'string') return
-          const char = val.charAt(0)
-          const weight = parseInt(val.charAt(1))
-          const dim = q.dim ?? ''
-          const typeChar = char === 'A' ? dim[0] : dim[1]
-          details[typeChar] += weight
-        } else {
-          const numericVal = parseInt(String(val))
-          total += numericVal
-          if (q.type) details[q.type] += numericVal
-        }
-      })
-
-      const res: ScaleResult = scale.calc(total, details)
-      const record = {
-        ...res,
-        score: total,
-        date: dayjs().format('YYYY-MM-DD HH:mm'),
-        scaleKey: currentScaleKey,
-        scaleName: scale.name,
-        details,
-        duration: timeElapsed,
-      }
-
-      // 保存到本地
-      const history = JSON.parse(localStorage.getItem(ASSESSMENT_STORAGE_KEY) || '[]')
-      history.unshift(record)
-      localStorage.setItem(ASSESSMENT_STORAGE_KEY, JSON.stringify(history.slice(0, 30)))
-
-      setSubmitting(false)
-      message.success('测评已完成！')
-      // 命名路由 + query → 路径跳转
-      navigate(`/assessment?scale=${currentScaleKey}&view=result`)
-    }, 1500)
+    try {
+      await submit.mutateAsync(payload)
+      navigate(`/assessment?scale=${scaleKey}&view=result`)
+    } catch {
+      /* 接口错误由页面 mutation 统一提示 */
+    }
   }
+
+  // 加载 / 错误 / 404
+  if (isPending) {
+    return (
+      <div className="immersive-assessment">
+        <div className="take-state">
+          <Skeleton active title={{ width: '42%' }} paragraph={{ rows: 2 }} />
+          <Skeleton active title={false} paragraph={{ rows: 6 }} />
+        </div>
+      </div>
+    )
+  }
+
+  if (isError) {
+    const isNotFound = (error as { status?: number } | null)?.status === 404
+    if (isNotFound) {
+      return (
+        <div className="immersive-assessment">
+          <div className="take-state">
+            <Result
+              status="404"
+              title={t('assessment.empty')}
+              extra={
+                <Button type="primary" onClick={() => navigate('/assessment')}>
+                  {t('assessment.action.goAssess')}
+                </Button>
+              }
+            />
+          </div>
+        </div>
+      )
+    }
+    return (
+      <div className="immersive-assessment">
+        <div className="take-state">
+          <Result
+            status="error"
+            title={t('common.loadFailed')}
+            extra={
+              <Button type="primary" onClick={() => void refetch()}>
+                {t('common.retry')}
+              </Button>
+            }
+          />
+        </div>
+      </div>
+    )
+  }
+
+  if (!scale) return null
 
   return (
     <div className="immersive-assessment">
       {/* 沉浸式顶栏 */}
       <header className="take-header">
         <div className="header-left">
-          <button className="exit-btn" onClick={confirmExit}>
+          <Button type="text" className="exit-btn" onClick={confirmExit}>
             <CloseOutlined />
             <span>退出</span>
-          </button>
+          </Button>
           <div className="divider" />
           <div className="scale-meta">
-            <span className="scale-name">{currentScale?.name}</span>
+            <span className="scale-name">{scale.name}</span>
             <span className="scale-progress-text">
               {currentIndex + 1} / {questions.length}
             </span>
           </div>
         </div>
         <div className="header-center">
-          <div className="top-progress-track">
-            <div className="top-progress-fill" style={{ width: `${progress}%` }} />
-          </div>
+          <Progress
+            percent={progress}
+            showInfo={false}
+            size="small"
+            className="top-progress"
+          />
           <span className="top-progress-pct">{progress}%</span>
         </div>
         <div className="header-right">
@@ -233,10 +237,14 @@ export default function AssessmentTakeView() {
       {/* 沉浸式底栏 */}
       <footer className="take-footer">
         <div className="footer-inner">
-          <button disabled={currentIndex === 0} className="nav-btn" onClick={prevQuestion}>
+          <Button
+            className="nav-btn"
+            disabled={currentIndex === 0}
+            onClick={prevQuestion}
+          >
             <ArrowLeftOutlined />
             <span>上一题</span>
-          </button>
+          </Button>
 
           <div className="step-dots">
             {questions.map((_, idx) => (
@@ -248,29 +256,32 @@ export default function AssessmentTakeView() {
           </div>
 
           {!isLastQuestion ? (
-            <button
-              disabled={currentAnswer === undefined}
+            <Button
+              type="primary"
               className="nav-btn-primary"
+              disabled={currentAnswer === undefined}
               onClick={() => setCurrentIndex((i) => i + 1)}
             >
               <span>下一题</span>
               <ArrowRightOutlined />
-            </button>
+            </Button>
           ) : (
-            <button
-              disabled={!allAnswered}
+            <Button
+              type="primary"
               className="nav-btn-primary"
-              onClick={handleSubmit}
+              disabled={!allAnswered}
+              loading={submit.isPending}
+              onClick={() => void handleSubmit()}
             >
               <span>提交报告</span>
-              <CheckCircleOutlined />
-            </button>
+              {!submit.isPending && <CheckCircleOutlined />}
+            </Button>
           )}
         </div>
       </footer>
 
-      {/* 提交中遮罩（v-if + fade 过渡 → 条件渲染 + 入场动画） */}
-      {submitting && (
+      {/* 提交中遮罩 */}
+      {submit.isPending && (
         <div className="submitting-overlay">
           <div className="loading-box">
             <div className="loading-spinner" />

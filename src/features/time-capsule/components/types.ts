@@ -32,3 +32,32 @@ export interface CapsuleDetailItem {
   remainingDays: number
   emotion: string
 }
+
+/** 列表统计（由页面按接口全量数据计算后下发） */
+export interface CapsuleStats {
+  total: number
+  pending: number
+  opened: number
+  auditing: number
+}
+
+/** 列表筛选页签（与接口 status 参数一一对应） */
+export type CapsuleFilterType = 'all' | 'pending' | 'opened'
+
+/** 新建胶囊表单提交值（页面转交 API；业务层不直接依赖 @/api） */
+export interface CapsuleCreateInput {
+  title: string
+  /** yyyy-MM-dd */
+  openDate: string
+  openMethod: 'email' | 'letter'
+  content: string
+  images: string[]
+  emotion: string
+  isAnonymous: boolean
+  isPublic: boolean
+  disableComment: boolean
+  emailRecipient?: string
+  letterName?: string
+  letterPhone?: string
+  letterAddress?: string
+}

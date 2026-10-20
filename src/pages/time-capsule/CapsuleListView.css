@@ -16,6 +16,19 @@
   overflow-x: hidden;
 }
 
+/* 加载 / 错误态容器：与档案列表同宽同留白 */
+.capsule-state {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 40px 80px;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
 /* 背景水印 */
 .watermark {
   position: absolute;

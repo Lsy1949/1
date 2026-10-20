@@ -56,14 +56,18 @@
   letter-spacing: -0.3px;
 }
 
-/* 选项 */
+/* 选项：antd Radio.Button 承载语义，外观保持沉浸式卡片 */
 .qOptionsImmersive {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
 }
 
-.optCard {
+.optCard:global(.ant-radio-button-wrapper) {
+  height: auto;
+  width: 100%;
+  margin: 0;
   padding: 20px 24px;
   border: 1.5px solid var(--border-regular);
   border-radius: 12px;
@@ -73,27 +77,44 @@
   align-items: center;
   justify-content: space-between;
   background: var(--bg-card);
+  color: var(--text-primary);
+  line-height: normal;
   animation: slide-in 0.4s ease-out backwards;
   animation-delay: var(--delay);
   position: relative;
   overflow: hidden;
 }
 
-.optCard::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--brand-primary);
-  transform: scaleY(0);
-  transform-origin: center;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.optCard:global(.ant-radio-button-wrapper::before) {
+  display: none;
 }
 
-.optCard.selected::before {
-  transform: scaleY(1);
+.optCard:global(.ant-radio-button-wrapper:hover) {
+  border-color: var(--text-heading);
+  color: var(--text-primary);
+  transform: translateX(4px);
+}
+
+.optCard:global(.ant-radio-button-wrapper:hover) .optIndex {
+  border-color: var(--text-heading);
+  color: var(--text-heading);
+}
+
+.optCard:global(.ant-radio-button-wrapper-checked) {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary);
+  box-shadow: var(--shadow-medium);
+  color: var(--text-inverse, #fff);
+}
+
+.optCard:global(.ant-radio-button-wrapper-checked) .optLabel {
+  color: var(--text-inverse, #fff);
+}
+
+.optCard:global(.ant-radio-button-wrapper-checked) .optIndex {
+  background: color-mix(in srgb, var(--text-inverse, #fff) 15%, transparent);
+  border-color: transparent;
+  color: var(--text-inverse, #fff);
 }
 
 .optContent {
@@ -122,51 +143,6 @@
   font-size: 16px;
   color: var(--text-primary);
   font-weight: 500;
-}
-
-.optCheck {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: 2px solid var(--border-strong);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-inverse, #fff);
-  transition: all 0.25s;
-  flex-shrink: 0;
-  font-size: 13px;
-}
-
-.optCard:hover {
-  border-color: var(--text-heading);
-  transform: translateX(4px);
-}
-
-.optCard:hover .optIndex {
-  border-color: var(--text-heading);
-  color: var(--text-heading);
-}
-
-.optCard.selected {
-  border-color: var(--brand-primary);
-  background: var(--brand-primary);
-  box-shadow: var(--shadow-medium);
-}
-
-.optCard.selected .optLabel {
-  color: var(--text-inverse, #fff);
-}
-
-.optCard.selected .optIndex {
-  background: color-mix(in srgb, var(--text-inverse, #fff) 15%, transparent);
-  border-color: transparent;
-  color: var(--text-inverse, #fff);
-}
-
-.optCard.selected .optCheck {
-  border-color: var(--text-inverse, #fff);
-  background: color-mix(in srgb, var(--text-inverse, #fff) 20%, transparent);
 }
 
 @keyframes slide-in {

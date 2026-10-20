@@ -31,6 +31,22 @@ export function setupInterceptors(service: AxiosInstance): void {
   )
 }
 
+/**
+ * 归一化后的请求错误。
+ *
+ * 保留 HTTP 状态码，供调用方区分 404（资源不存在）等分支；
+ * 无响应（超时/断网）场景 status 为空。
+ */
+export class ApiError extends Error {
+  readonly status?: number
+
+  constructor(message: string, status?: number) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+  }
+}
+
 function normalizeError(error: AxiosError): Error {
   if (error.response) {
     const { status, data } = error.response
@@ -41,23 +57,23 @@ function normalizeError(error: AxiosError): Error {
       userStore.reset()
       // 跨模块解耦通知：入口处订阅后 navigate 登录页（SPA 内跳转，不整页刷新）
       emitter.emit('user:logout')
-      return new Error('登录已过期，请重新登录')
+      return new ApiError('登录已过期，请重新登录', status)
     }
 
     if (status >= 500) {
-      return new Error('服务器暂时不可用，请稍后再试')
+      return new ApiError('服务器暂时不可用，请稍后再试', status)
     }
 
-    return new Error(businessMessage || `请求失败 (${status})`)
+    return new ApiError(businessMessage || `请求失败 (${status})`, status)
   }
 
   if (error.code === 'ECONNABORTED') {
-    return new Error('请求超时，请稍后重试')
+    return new ApiError('请求超时，请稍后重试')
   }
 
   if (error.request) {
-    return new Error('网络错误，请检查网络连接')
+    return new ApiError('网络错误，请检查网络连接')
   }
 
-  return new Error('请求配置错误')
+  return new ApiError('请求配置错误')
 }

@@ -1,40 +1,16 @@
-// 文章共享数据（TS 版，供 ArticleCenter / ArticleList / ArticleDetail 使用）
-export interface ArticleItem {
-  id: number
-  title: string
-  summary: string
-  content: string
-  category: string
-  categoryLabel: string
-  author: string
-  authorTitle: string
-  date: string
-  views: number
-  readTime: string
-  image?: string
-  featured: boolean
-}
+import type { ArticleDetailDTO } from '@/api/types'
 
-export interface ArticleCategory {
-  label: string
-  key: string
-}
+/**
+ * 文章 domain mock 数据（模拟后端 `GET /api/articles*` 的返回）。
+ *
+ * 建模约定（同 home）：
+ *  - 只下发结构与业务内容；分类标签由前端拼 `article.categories.{category}`，
+ *    故本文件不出现 categoryLabel，避免中英文案出现两份数据源。
+ *  - 由原 `src/api/mock/articles.ts` 迁移而来，作为唯一数据源；
+ *    id=1 刻意不设封面，保留中心页「今日焦点」的无图排版分支。
+ */
 
-export const categories: ArticleCategory[] = [
-  { label: '精选推荐', key: 'all' },
-  { label: '每日精选', key: 'daily' },
-  { label: '专题报道', key: 'featured' },
-  { label: '心理科普', key: 'psychology' },
-  { label: '生涯导航', key: 'career' },
-  { label: '成长故事', key: 'stories' }
-]
-
-export const categoryLabel = (key: string): string => {
-  const c = categories.find(c => c.key === key)
-  return c ? c.label : key
-}
-
-export const articles: ArticleItem[] = [
+export const ARTICLES: ArticleDetailDTO[] = [
   {
     id: 1,
     title: '在不确定的时代，如何建立内心的秩序？',
@@ -55,13 +31,11 @@ export const articles: ArticleItem[] = [
       <p>内心的秩序不是一蹴而就的，它需要我们在每一个日常里，反复练习回到自己的能力。愿你在纷乱的世界里，依然能听见自己内心的声音。</p>
     `,
     category: 'psychology',
-    categoryLabel: '心理科普',
     author: '陈默老师',
     authorTitle: '资深心理咨询师',
     date: '2026-01-05',
     views: 4520,
     readTime: '12 min',
-    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=1200',
     featured: true
   },
   {
@@ -78,7 +52,6 @@ export const articles: ArticleItem[] = [
       <p>了解自己的类型，不是为了被标签定义，而是为了更好地认识自己的优势与盲区，从而做出更明智的选择。</p>
     `,
     category: 'career',
-    categoryLabel: '生涯导航',
     author: '王悦',
     authorTitle: '职业规划专家',
     date: '2026-01-04',
@@ -100,7 +73,6 @@ export const articles: ArticleItem[] = [
       <p>最终收到录取通知的那一刻，我没有想象中那么激动。因为我知道，真正让我成长的，不是那个结果，而是那个全力以赴的过程。愿每一个迷茫中的你，都能勇敢迈出第一步。</p>
     `,
     category: 'stories',
-    categoryLabel: '成长故事',
     author: '李华',
     authorTitle: '优秀学长',
     date: '2026-01-03',
@@ -123,7 +95,6 @@ export const articles: ArticleItem[] = [
       <p>不要把日程排得太满。给自己留出思考、休息和应对突发事件的时间。时间管理的终极目标不是做更多的事，而是做更对的事。</p>
     `,
     category: 'career',
-    categoryLabel: '生涯导航',
     author: '周琳',
     authorTitle: '效率管理专家',
     date: '2026-01-02',
@@ -145,7 +116,6 @@ export const articles: ArticleItem[] = [
       <p>今晚，不妨放下手机，给自己半小时的阅读时光。让文字带你去一个更广阔、更温柔的世界。</p>
     `,
     category: 'daily',
-    categoryLabel: '每日精选',
     author: '苏小北',
     authorTitle: '专栏作家',
     date: '2026-01-01',
@@ -168,7 +138,6 @@ export const articles: ArticleItem[] = [
       <p>真正的成长，发生在你开始觉察自己的思维过程的那一刻。当你能观察自己的情绪而不被它控制，你就已经迈出了觉醒的第一步。</p>
     `,
     category: 'psychology',
-    categoryLabel: '心理科普',
     author: '阿何',
     authorTitle: '知名博主',
     date: '2025-12-30',
@@ -195,7 +164,6 @@ export const articles: ArticleItem[] = [
       <p>最打动人的，永远是真诚。不要试图扮演一个"完美候选人"，展示真实的自己，包括你的热情与不足。</p>
     `,
     category: 'career',
-    categoryLabel: '生涯导航',
     author: '李经理',
     authorTitle: '大厂HRBP',
     date: '2025-12-28',
@@ -218,7 +186,6 @@ export const articles: ArticleItem[] = [
       <p>真正的自由，是有被讨厌的勇气。这不是鼓励你做一个讨人厌的人，而是说：不要为了不被讨厌而委屈自己。当你不再依赖他人的认可，你才真正属于自己。</p>
     `,
     category: 'psychology',
-    categoryLabel: '心理科普',
     author: '哲学家',
     authorTitle: '特约作者',
     date: '2025-12-25',
@@ -241,7 +208,6 @@ export const articles: ArticleItem[] = [
       <p>第一，不要爱上你的方案，要爱上你的问题。第二，最快的学习方式是发布。第三，活下去，比什么都重要。献给每一个正在路上的你。</p>
     `,
     category: 'stories',
-    categoryLabel: '成长故事',
     author: '小明',
     authorTitle: '连续创业者',
     date: '2025-12-20',
@@ -264,7 +230,6 @@ export const articles: ArticleItem[] = [
       <p>极简的终极目的，是为重要的事留出空间——为阅读、为思考、为与爱的人相处。少即是多，因为剩下的，都是你真正珍视的。</p>
     `,
     category: 'daily',
-    categoryLabel: '每日精选',
     author: '林溪',
     authorTitle: '生活方式博主',
     date: '2025-12-15',
@@ -274,19 +239,3 @@ export const articles: ArticleItem[] = [
     featured: false
   }
 ]
-
-export const getArticleById = (id: string | number | string[]): ArticleItem | null => {
-  const numId = Number(id)
-  return articles.find(a => a.id === numId) || null
-}
-
-export const getRelatedArticles = (article: ArticleItem | null, limit = 3): ArticleItem[] => {
-  if (!article) return []
-  return articles
-    .filter(a => a.id !== article.id && a.category === article.category)
-    .slice(0, limit)
-    .concat(
-      articles.filter(a => a.id !== article.id && a.category !== article.category).slice(0, limit)
-    )
-    .slice(0, limit)
-}

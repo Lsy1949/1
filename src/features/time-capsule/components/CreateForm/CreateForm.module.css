@@ -124,7 +124,7 @@
 .addressInput {
   height: 80px;
   resize: none;
-  margin-top: 12px;
+  margin-top: 0;
   line-height: 1.6;
 }
 
@@ -170,9 +170,48 @@
   overflow: hidden;
 }
 
+/* 可见的 antd DatePicker：下划线编辑式外观 */
+.datePicker {
+  width: 100%;
+  padding: 4px 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--mist-050);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.datePicker :global(.ant-picker-input > input) {
+  font-size: 15px;
+  color: var(--ink-800);
+  letter-spacing: 0.3px;
+}
+
+.datePicker :global(.ant-picker-input > input::placeholder) {
+  color: var(--ink-400);
+}
+
+.datePicker :global(.ant-picker-suffix) {
+  color: var(--ink-400);
+}
+
 .methodSelector {
+  width: 100%;
+}
+
+.methodSelector :global(.ant-segmented-item-label) {
   display: flex;
-  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.methodLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  letter-spacing: 0.3px;
 }
 
 .methodOption {
@@ -425,7 +464,24 @@
 .emotionTags {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 12px;
+}
+
+.emotionTags :global(.ant-radio-button-wrapper) {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border-inline-start-width: 1px;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.emotionTags :global(.ant-radio-button-wrapper::before) {
+  display: none;
 }
 
 .emotionTag {
@@ -458,8 +514,92 @@
   padding: 36px 0 12px;
 }
 
+/* ============================================================
+   antd Form 适配：Form.Item 间距 / 下划线输入 / 上传触发器
+   ============================================================ */
+.formContainer :global(.ant-form-item) {
+  margin-bottom: 14px;
+}
+
+.formContainer :global(.ant-form-item:last-child) {
+  margin-bottom: 0;
+}
+
+.formContainer :global(.ant-form-item-explain-error) {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.formContainer .titleItem,
+.formContainer .contentItem,
+.formContainer .uploadItem {
+  margin-bottom: 0;
+}
+
+.formContainer .infoItem {
+  margin-bottom: 12px;
+}
+
+.formContainer .infoItem:last-child {
+  margin-bottom: 0;
+}
+
+/* 标题 / 信息输入：去掉 antd 描边，保留下划线编辑式外观 */
+.titleItem :global(.ant-input-affix-wrapper),
+.titleItem :global(.ant-input),
+.infoItem :global(.ant-input) {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--mist-050);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 8px 0;
+  font-size: 15px;
+  color: var(--ink-800);
+}
+
+.titleItem :global(.ant-input-affix-wrapper-focused),
+.infoItem :global(.ant-input:focus) {
+  border-bottom-color: var(--brand-primary);
+  box-shadow: none;
+}
+
+.titleItem :global(.ant-input::placeholder),
+.infoItem :global(.ant-input::placeholder) {
+  color: var(--ink-400);
+}
+
+.titleItem :global(.ant-input-show-count-suffix) {
+  font-size: 12px;
+  color: var(--ink-400);
+}
+
+/* Upload 触发器与图片预览 */
+.uploadTrigger {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--ink-400);
+}
+
+.uploadTrigger .uploadIcon {
+  margin-bottom: 0;
+}
+
+.uploadItem :global(.ant-upload-list-picture-card) {
+  margin-bottom: 0;
+}
+
+.previewImage {
+  max-width: 80vw;
+  max-height: 80vh;
+  display: block;
+}
+
 .submitBtn {
   width: 100%;
+  height: auto;
   background: linear-gradient(135deg, var(--brand-primary), var(--color-info));
   color: var(--text-inverse, #fff);
   font-size: 13px;

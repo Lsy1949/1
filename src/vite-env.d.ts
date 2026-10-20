@@ -9,8 +9,6 @@
 interface ImportMetaEnv {
   /** 后端接口根地址（空 = 同源相对路径，配合 vite proxy） */
   readonly VITE_API_BASE_URL?: string
-  /** 登录是否走本地 mock 分支（VITE_USE_MOCK_LOGIN==='true'） */
-  readonly VITE_USE_MOCK_LOGIN?: string
   /**
    * MSW（Mock Service Worker）开关。
    * DEV 默认开启，置 '0' 关闭以联调真实后端；非 DEV 需显式 '1' 才开启。

@@ -6,5 +6,10 @@
  */
 
 export * from './contract'
+export * from './article'
+export * from './assessment'
+export * from './capsule'
+export * from './counseling'
 export * from './home'
+export * from './square'
 export * from './tenant'

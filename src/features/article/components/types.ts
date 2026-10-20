@@ -1,10 +1,11 @@
-// 文章条目结构（与 @/api/mock/articles 的 ArticleItem 保持一致）。
-// business 层禁止 import @/api（ESLint 分层边界），故以结构化类型复制；页面传入的 ArticleItem 天然兼容。
+// 文章条目结构（页面层把接口 DTO 映射为该视图模型）。
+// business 层禁止 import @/api（ESLint 分层边界），故以结构化类型复制；
+// 列表接口不返回正文，故 content 可选，仅详情页映射后一定有值。
 export interface ArticleItem {
   id: number
   title: string
   summary: string
-  content: string
+  content?: string
   category: string
   categoryLabel: string
   author: string

@@ -9,3 +9,10 @@ export { default as DetailHeader } from './components/DetailHeader'
 export { default as ListArchive } from './components/ListArchive'
 export { default as ListHeader } from './components/ListHeader'
 export type { ListArchiveRef } from './components/ListArchive'
+export type {
+  CapsuleCreateInput,
+  CapsuleDetailItem,
+  CapsuleFilterType,
+  CapsuleItem,
+  CapsuleStats,
+} from './components/types'

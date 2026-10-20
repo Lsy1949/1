@@ -11,15 +11,17 @@ import {
   StarFilled,
 } from '@ant-design/icons'
 import { useI18n } from '@/i18n'
-import { getCategoryName, scaleList, scales } from '../data'
-import type { AssessmentRecord } from '../types'
+import type { AssessmentRecord, ScaleDetail, ScaleInfo } from '../types'
 import styles from './ScaleDialog.module.css'
 
 interface Props {
   /** v-model:visible → 受控 open（AntD 5 的 Modal 用 open 而非 visible） */
   open: boolean
   mode: 'intro' | 'result'
-  scaleKey: string
+  /** 目录项（页面注入） */
+  scaleInfo?: ScaleInfo
+  /** 量表详情（介绍弹窗展示描述；缺失时仅显示目录信息） */
+  scaleDetail?: ScaleDetail
   result: AssessmentRecord | null
   /** 原 update:visible → 单向 onClose 回调 */
   onClose: () => void
@@ -32,7 +34,8 @@ interface Props {
 export default function ScaleDialog({
   open,
   mode,
-  scaleKey,
+  scaleInfo,
+  scaleDetail,
   result,
   onClose,
   onStart,
@@ -41,12 +44,9 @@ export default function ScaleDialog({
 }: Props) {
   const { t } = useI18n()
 
-  // 介绍模式数据（来自量表定义与列表元信息）
-  const currentScale = useMemo(() => scales[scaleKey] || null, [scaleKey])
-  const currentScaleInfo = useMemo(
-    () => scaleList.find((s) => s.key === scaleKey),
-    [scaleKey]
-  )
+  // 介绍模式数据（详情优先，缺失时回退目录项）
+  const currentScale = useMemo(() => scaleDetail ?? null, [scaleDetail])
+  const currentScaleInfo = useMemo(() => scaleInfo ?? null, [scaleInfo])
 
   // 分数单位：MBTI 显示「类型」，其余显示「分」
   const scoreUnit = useMemo(
@@ -121,7 +121,7 @@ export default function ScaleDialog({
           <div className={styles.introHeader}>
             {/* cat- 为运行时动态分类类（协议类，保留字面量） */}
             <div className={`${styles.scaleTypeTag} cat-${currentScaleInfo?.category}`}>
-              {getCategoryName(currentScaleInfo?.category)}
+              {currentScaleInfo ? t(`assessment.categories.${currentScaleInfo.category}`) : ''}
             </div>
             <h2>{currentScale.name}</h2>
             <p className={styles.scaleDesc}>{currentScale.description}</p>

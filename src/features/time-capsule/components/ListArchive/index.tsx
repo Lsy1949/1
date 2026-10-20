@@ -1,17 +1,22 @@
 // 时光胶囊 · 统计栏 + 筛选导航 + 档案列表（左滑删除手势）+ 空状态
-import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react'
+// 纯展示组件：数据由页面下发，删除行为经 onDelete 上抛（页面负责 mutation）
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent } from 'react'
 import { App as AntApp } from 'antd'
 import { DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons'
 import { useReveal } from '@/hooks/useReveal'
 import { useI18n } from '@/i18n'
-import type { CapsuleItem } from '../types'
-import { capsulesSeed } from '../data'
+import type { CapsuleFilterType, CapsuleItem, CapsuleStats } from '../types'
 import styles from './ListArchive.module.css'
 
 export interface ListArchiveProps {
+  capsules: CapsuleItem[]
+  stats: CapsuleStats
+  filterType: CapsuleFilterType
+  onFilterChange: (type: CapsuleFilterType) => void
   onOpen: (id: number) => void
   onCreate: () => void
+  onDelete: (id: number) => void
 }
 
 export interface ListArchiveRef {
@@ -134,17 +139,15 @@ function ArchiveEntry({
 }
 
 export const ListArchive = forwardRef<ListArchiveRef, ListArchiveProps>(
-  function ListArchive({ onOpen, onCreate }, ref) {
+  function ListArchive(
+    { capsules, stats, filterType, onFilterChange, onOpen, onCreate, onDelete },
+    ref,
+  ) {
     const { t } = useI18n()
-    const { modal, message } = AntApp.useApp() // 替代 ElMessageBox / ElMessage
+    const { modal } = AntApp.useApp() // 替代 ElMessageBox
 
     const statsBarRef = useReveal<HTMLDivElement>({ delay: 140 })
     const filterNavRef = useReveal<HTMLElement>({ delay: 160 })
-
-    const [filterType, setFilterType] = useState('all')
-
-    // 浅拷贝种子数据，保持每次进入页面状态重置的原有行为
-    const [capsules, setCapsules] = useState<CapsuleItem[]>(capsulesSeed.map((c) => ({ ...c })))
 
     // 左滑偏移：state 驱动渲染 + ref 镜像保证手势读写同步
     const [offsets, setOffsets] = useState<Record<number, number>>({})
@@ -161,29 +164,21 @@ export const ListArchive = forwardRef<ListArchiveRef, ListArchiveProps>(
     const [activeDragId, setActiveDragId] = useState<number | null>(null)
     const wasDragged = useRef(false)
 
-    const filterTabs = [
+    const filterTabs: { type: CapsuleFilterType; label: string }[] = [
       { type: 'all', label: t('capsule.list.filter.all') },
       { type: 'pending', label: t('capsule.list.filter.pending') },
       { type: 'opened', label: t('capsule.list.filter.opened') },
     ]
 
-    const totalCount = capsules.length
-    const pendingCount = useMemo(() => capsules.filter((c) => c.status === 'pending' && c.auditStatus === 1).length, [capsules])
-    const openedCount = useMemo(() => capsules.filter((c) => c.status === 'opened').length, [capsules])
-    const auditingCount = useMemo(() => capsules.filter((c) => c.auditStatus === 0).length, [capsules])
-
-    const filteredCapsules = useMemo(() => {
-      if (filterType === 'all') return capsules
-      if (filterType === 'pending') {
-        return capsules.filter((c) => c.status === 'pending')
-      }
-      return capsules.filter((c) => c.status === 'opened')
-    }, [filterType, capsules])
+    const totalCount = stats.total
+    const pendingCount = stats.pending
+    const openedCount = stats.opened
+    const auditingCount = stats.auditing
 
     const getTabCount = (type: string) => {
-      if (type === 'all') return capsules.length
-      if (type === 'pending') return capsules.filter((c) => c.status === 'pending').length
-      return capsules.filter((c) => c.status === 'opened').length
+      if (type === 'all') return stats.total
+      if (type === 'pending') return stats.pending
+      return stats.opened
     }
 
     // --- 左滑删除手势 ---
@@ -280,9 +275,9 @@ export const ListArchive = forwardRef<ListArchiveRef, ListArchiveProps>(
         icon: <ExclamationCircleFilled />,
         okButtonProps: { danger: true },
         onOk: () => {
-          setCapsules((prev) => prev.filter((c) => c.id !== id))
+          // 数据变更与反馈由页面（useMutation）负责，这里只上抛意图
+          onDelete(id)
           updateOffset(id, 0)
-          message.success(t('capsule.list.deleteSuccess'))
         },
         onCancel: () => {
           updateOffset(id, 0)
@@ -321,7 +316,7 @@ export const ListArchive = forwardRef<ListArchiveRef, ListArchiveProps>(
             <div
               key={tab.type}
               className={`${styles.navItem}${filterType === tab.type ? ` ${styles.active}` : ''}`}
-              onClick={() => setFilterType(tab.type)}
+              onClick={() => onFilterChange(tab.type)}
             >
               <span className={styles.navLabel}>{tab.label}</span>
               <span className={styles.navCount}>({getTabCount(tab.type)})</span>
@@ -329,11 +324,11 @@ export const ListArchive = forwardRef<ListArchiveRef, ListArchiveProps>(
           ))}
         </nav>
 
-        {/* 胶囊档案列表 */}
-        {filteredCapsules.length > 0 ? (
+        {/* 胶囊档案列表（页面已按 status 过滤，组件只负责渲染） */}
+        {capsules.length > 0 ? (
           <main className={styles.capsuleArchive}>
             <div className={styles.archiveList}>
-              {filteredCapsules.map((item, idx) => (
+              {capsules.map((item, idx) => (
                 <ArchiveEntry
                   key={item.id}
                   item={item}

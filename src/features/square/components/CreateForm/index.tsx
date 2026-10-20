@@ -1,278 +1,262 @@
-// 发布页 · 表单整体：心情/内容/话题/照片/开关 + 提交 + 成功弹窗
-import { useEffect, useMemo, useRef, useState } from 'react'
-import type { ChangeEvent } from 'react'
-import { App as AntApp, Button, Modal, Switch } from 'antd'
-import { CheckCircleFilled, PlusOutlined } from '@ant-design/icons'
+// 发布页 · 表单整体（antd Form：心情 / 内容 / 话题 / 照片 / 开关）
+// 提交行为经 onSubmit 上抛（页面 useMutation → POST /api/square/feed）
+import { useMemo, useState } from 'react'
+import {
+  Form,
+  Input,
+  Radio,
+  Select,
+  Switch,
+  Upload,
+  Button,
+} from 'antd'
+import type { UploadChangeParam, UploadFile } from 'antd/es/upload/interface'
+import { PlusOutlined } from '@ant-design/icons'
 import { useI18n } from '@/i18n'
+import type { SquareCreateInput, SquareMood } from '../types'
 import styles from './CreateForm.module.css'
-
-export interface CreateFormProps {
-  onPublished?: () => void
-}
 
 const MAX_CONTENT = 500
 const MAX_PHOTOS = 6
 const MAX_TOPICS = 3
 
-export function CreateForm({ onPublished }: CreateFormProps) {
+interface SquareFormValues {
+  mood: SquareMood
+  content?: string
+  topics?: string[]
+  photos?: UploadFile[]
+  isAnonymous: boolean
+  allowComment: boolean
+}
+
+function createInitialValues(): SquareFormValues {
+  return {
+    mood: 'hopeful',
+    content: '',
+    topics: [],
+    photos: [],
+    isAnonymous: false,
+    allowComment: true,
+  }
+}
+
+function fileToDataUrl(file: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result ?? ''))
+    reader.onerror = () => reject(reader.error ?? new Error('读取图片失败'))
+    reader.readAsDataURL(file)
+  })
+}
+
+export interface CreateFormProps {
+  onSubmit: (values: SquareCreateInput) => Promise<unknown>
+  isSubmitting: boolean
+}
+
+export function CreateForm({ onSubmit, isSubmitting }: CreateFormProps) {
   const { t } = useI18n()
-  const { message } = AntApp.useApp() // 替代 ElMessage
 
-  // 01 此刻心情
-  const [emotion, setEmotion] = useState('hopeful')
-  const emotionList = useMemo(
+  const [form] = Form.useForm<SquareFormValues>()
+  const [initialValues] = useState(createInitialValues)
+
+  const contentValue = Form.useWatch('content', form) ?? ''
+  const photoList = Form.useWatch('photos', form) ?? []
+  const contentCount = contentValue.length
+
+  const emotionOptions = useMemo(
     () => [
-      { id: 'happy', emoji: '😊', label: t('square.create.moods.happy') },
-      { id: 'excited', emoji: '🤩', label: t('square.create.moods.excited') },
-      { id: 'calm', emoji: '😌', label: t('square.create.moods.calm') },
-      { id: 'sad', emoji: '😢', label: t('square.create.moods.sad') },
-      { id: 'hopeful', emoji: '🌟', label: t('square.create.moods.hopeful') }
+      { value: 'happy', label: `😊 ${t('square.create.moods.happy')}` },
+      { value: 'excited', label: `🤩 ${t('square.create.moods.excited')}` },
+      { value: 'calm', label: `😌 ${t('square.create.moods.calm')}` },
+      { value: 'sad', label: `😢 ${t('square.create.moods.sad')}` },
+      { value: 'hopeful', label: `🌟 ${t('square.create.moods.hopeful')}` },
     ],
-    [t]
+    [t],
   )
 
-  // 02 心得内容
-  const [content, setContent] = useState('')
-  const contentCount = content.length
-
-  // 03 话题标签
-  const [topics, setTopics] = useState<string[]>([])
-  const [topicInput, setTopicInput] = useState('')
-
-  const addTopic = () => {
-    const tag = topicInput.trim().replace(/^#/, '')
-    if (!tag) return
-    if (topics.length >= MAX_TOPICS) {
-      message.warning(t('square.create.topicMaxTip'))
+  const handleSubmit = async () => {
+    let values: SquareFormValues
+    try {
+      values = await form.validateFields()
+    } catch {
       return
     }
-    if (topics.includes(tag)) {
-      setTopicInput('')
-      return
-    }
-    setTopics([...topics, tag])
-    setTopicInput('')
-  }
 
-  const removeTopic = (index: number) => {
-    setTopics(topics.filter((_, i) => i !== index))
-  }
+    try {
+      const photos = await Promise.all(
+        (values.photos ?? []).map((file) =>
+          file.originFileObj
+            ? fileToDataUrl(file.originFileObj)
+            : Promise.resolve(file.url ?? file.thumbUrl ?? ''),
+        ),
+      )
 
-  // 04 添加照片
-  const [imagePaths, setImagePaths] = useState<string[]>([])
-  const fileInputRef = useRef<HTMLInputElement | null>(null)
-
-  // 05 匿名发布 / 06 允许评论
-  const [isAnonymous, setIsAnonymous] = useState(false)
-  const [allowComment, setAllowComment] = useState(true)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
-  const submitTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const chooseImage = () => {
-    if (imagePaths.length >= MAX_PHOTOS) {
-      message.warning(t('square.create.photo.maxWarning'))
-      return
-    }
-    fileInputRef.current?.click()
-  }
-
-  const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const target = e.target
-    const files = Array.from(target.files || [])
-    const remaining = MAX_PHOTOS - imagePaths.length
-    files.slice(0, remaining).forEach((file) => {
-      if (!file.type.startsWith('image/')) return
-      const reader = new FileReader()
-      reader.onload = (ev) => {
-        const result = ev.target?.result
-        if (typeof result === 'string') setImagePaths((prev) => [...prev, result])
+      const payload: SquareCreateInput = {
+        mood: values.mood,
+        content: (values.content ?? '').trim(),
+        topics: values.topics ?? [],
+        photos: photos.filter(Boolean),
+        isAnonymous: values.isAnonymous,
+        allowComment: values.allowComment,
       }
-      reader.readAsDataURL(file)
-    })
-    target.value = ''
-  }
 
-  const deleteImage = (index: number) => {
-    setImagePaths(imagePaths.filter((_, i) => i !== index))
-  }
-
-  const canSubmit = content.trim().length > 0 || imagePaths.length > 0
-
-  const submitPost = () => {
-    if (!canSubmit) {
-      message.warning(t('square.create.validation.content'))
-      return
+      await onSubmit(payload)
+    } catch {
+      /* 接口错误由页面 mutation 统一提示 */
     }
-    setIsSubmitting(true)
-    submitTimer.current = setTimeout(() => {
-      setIsSubmitting(false)
-      setShowSuccess(true)
-    }, 1500)
   }
-
-  const backToSquare = () => {
-    setShowSuccess(false)
-    onPublished?.()
-  }
-
-  // 组件卸载前清理定时器，避免内存泄漏（原 onBeforeUnmount → useEffect cleanup）
-  useEffect(
-    () => () => {
-      if (submitTimer.current) {
-        clearTimeout(submitTimer.current)
-        submitTimer.current = null
-      }
-    },
-    []
-  )
 
   return (
-    <main className={styles.formContainer}>
+    <Form
+      form={form}
+      layout="vertical"
+      requiredMark={false}
+      initialValues={initialValues}
+      scrollToFirstError
+      className={styles.formContainer}
+    >
       {/* 01. 此刻心情 */}
       <section className={styles.formCard}>
-        <div className={styles.sectionTitle}><span className={styles.sectionNum}>01</span>{t('square.create.sections.mood')}</div>
-        <div className={styles.emotionTags}>
-          {emotionList.map((e) => (
-            <div
-              key={e.id}
-              className={`${styles.emotionTag}${emotion === e.id ? ` ${styles.active}` : ''}`}
-              onClick={() => setEmotion(e.id)}
-            >
-              <span className={styles.emotionEmoji}>{e.emoji}</span>
-              <span className={styles.emotionLabel}>{e.label}</span>
-            </div>
-          ))}
+        <div className={styles.sectionTitle}>
+          <span className={styles.sectionNum}>01</span>
+          {t('square.create.sections.mood')}
         </div>
+        <Form.Item name="mood" className={styles.moodItem}>
+          <Radio.Group
+            optionType="button"
+            buttonStyle="solid"
+            className={styles.emotionTags}
+            options={emotionOptions}
+          />
+        </Form.Item>
       </section>
 
       {/* 02. 心得内容 */}
       <section className={styles.formCard}>
         <div className={styles.sectionTitle}>
-          <span className={styles.sectionNum}>02</span>{t('square.create.sections.content')}
+          <span className={styles.sectionNum}>02</span>
+          {t('square.create.sections.content')}
           <span className={styles.optionalHint}>{t('square.create.hints.contentOptional')}</span>
         </div>
         <div className={styles.contentWrapper}>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className={styles.contentTextarea}
-            placeholder={t('square.create.placeholders.content')}
-            maxLength={MAX_CONTENT}
-            rows={6}
-          ></textarea>
+          <Form.Item
+            name="content"
+            dependencies={['photos']}
+            className={styles.contentItem}
+            rules={[
+              {
+                validator: (_, value?: string) => {
+                  const text = String(value ?? '').trim()
+                  const photos = (form.getFieldValue('photos') as UploadFile[] | undefined) ?? []
+                  return text || photos.length > 0
+                    ? Promise.resolve()
+                    : Promise.reject(new Error(t('square.create.validation.content')))
+                },
+              },
+            ]}
+          >
+            <Input.TextArea
+              rows={6}
+              maxLength={MAX_CONTENT}
+              placeholder={t('square.create.placeholders.content')}
+              className={styles.contentTextarea}
+            />
+          </Form.Item>
           <span className={styles.contentCount}>{contentCount}/{MAX_CONTENT}</span>
         </div>
       </section>
 
       {/* 03. 话题标签 */}
       <section className={styles.formCard}>
-        <div className={styles.sectionTitle}><span className={styles.sectionNum}>03</span>{t('square.create.sections.topic')}</div>
-        <div className={styles.topicInputWrap}>
-          <div className={styles.topicTags}>
-            {topics.map((tag, i) => (
-              <span key={i} className={styles.topicTag}>
-                #{tag}
-                <button className={styles.topicRemove} onClick={() => removeTopic(i)}>×</button>
-              </span>
-            ))}
-          </div>
-          {topics.length < MAX_TOPICS && (
-            <input
-              value={topicInput}
-              onChange={(e) => setTopicInput(e.target.value)}
-              className={styles.topicInput}
-              placeholder={t('square.create.topicPlaceholder')}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault()
-                  addTopic()
-                }
-              }}
-            />
-          )}
+        <div className={styles.sectionTitle}>
+          <span className={styles.sectionNum}>03</span>
+          {t('square.create.sections.topic')}
         </div>
+        <Form.Item name="topics" className={styles.topicItem}>
+          <Select
+            mode="tags"
+            maxCount={MAX_TOPICS}
+            tokenSeparators={[' ', ',', '，', '#']}
+            placeholder={t('square.create.topicPlaceholder')}
+            className={styles.topicSelect}
+            onChange={(value: string[]) => {
+              // 去掉用户输入的前导 # 与空白，避免出现 ##标签
+              const normalized = value
+                .map((tag) => tag.trim().replace(/^#+/, ''))
+                .filter(Boolean)
+              form.setFieldValue('topics', normalized)
+            }}
+          />
+        </Form.Item>
       </section>
 
       {/* 04. 添加照片 */}
       <section className={styles.formCard}>
-        <div className={styles.sectionTitle}><span className={styles.sectionNum}>04</span>{t('square.create.sections.photo')}</div>
-        {imagePaths.length > 0 ? (
-          <div className={styles.imageGrid}>
-            {imagePaths.map((img, i) => (
-              <div key={i} className={styles.imageItem}>
-                <img src={img} className={styles.uploadedImage} alt={t('square.create.photo.alt')} />
-                <div className={styles.deleteBtn} onClick={() => deleteImage(i)}>×</div>
-              </div>
-            ))}
-            {imagePaths.length < MAX_PHOTOS && (
-              <div className={`${styles.imageItem} ${styles.addImageBtn}`} onClick={chooseImage}>
-                <div className={styles.addContent}>
-                  <PlusOutlined className={styles.addIcon} />
-                  <span className={styles.addText}>{t('square.create.photo.add')}</span>
-                </div>
+        <div className={styles.sectionTitle}>
+          <span className={styles.sectionNum}>04</span>
+          {t('square.create.sections.photo')}
+        </div>
+        <Form.Item
+          name="photos"
+          valuePropName="fileList"
+          getValueFromEvent={(event: UploadChangeParam) => event?.fileList}
+          className={styles.uploadItem}
+        >
+          <Upload
+            listType="picture-card"
+            accept="image/*"
+            multiple
+            maxCount={MAX_PHOTOS}
+            beforeUpload={() => false}
+          >
+            {photoList.length >= MAX_PHOTOS ? null : (
+              <div className={styles.uploadTrigger}>
+                <PlusOutlined className={styles.uploadIcon} />
+                <span className={styles.uploadText}>{t('square.create.photo.add')}</span>
               </div>
             )}
-          </div>
-        ) : (
-          <div className={styles.imageUploader} onClick={chooseImage}>
-            <PlusOutlined className={styles.uploadIcon} />
-            <span className={styles.uploadText}>{t('square.create.photo.upload')}</span>
-          </div>
-        )}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          multiple
-          className={styles.hiddenFileInput}
-          onChange={onFileChange}
-        />
+          </Upload>
+        </Form.Item>
       </section>
 
       {/* 05. 匿名发布 */}
       <section className={`${styles.formCard} ${styles.formCardRow}`}>
-        <div className={`${styles.sectionTitle} ${styles.noMargin}`}><span className={styles.sectionNum}>05</span>{t('square.create.sections.anonymous')}</div>
-        {/* square-switch 原 antd 锚点覆写类 → module hash 类 + :global 选中态组合 */}
-        <Switch checked={isAnonymous} onChange={setIsAnonymous} className={styles.squareSwitch} />
+        <div className={`${styles.sectionTitle} ${styles.noMargin}`}>
+          <span className={styles.sectionNum}>05</span>
+          {t('square.create.sections.anonymous')}
+        </div>
+        <Form.Item name="isAnonymous" valuePropName="checked" noStyle>
+          <Switch className={styles.squareSwitch} />
+        </Form.Item>
       </section>
 
       {/* 06. 允许评论 */}
       <section className={`${styles.formCard} ${styles.formCardRow}`}>
-        <div className={`${styles.sectionTitle} ${styles.noMargin}`}><span className={styles.sectionNum}>06</span>{t('square.create.sections.comment')}</div>
-        <Switch checked={allowComment} onChange={setAllowComment} className={styles.squareSwitch} />
+        <div className={`${styles.sectionTitle} ${styles.noMargin}`}>
+          <span className={styles.sectionNum}>06</span>
+          {t('square.create.sections.comment')}
+        </div>
+        <Form.Item name="allowComment" valuePropName="checked" noStyle>
+          <Switch className={styles.squareSwitch} />
+        </Form.Item>
       </section>
 
       {/* 提交按钮 */}
       <section className={styles.submitSection}>
-        <button className={styles.submitBtn} disabled={!canSubmit || isSubmitting} onClick={submitPost}>
-          <span>{isSubmitting ? t('square.create.submitting') : t('square.create.submit')}</span>
-          {!isSubmitting && canSubmit && <span className={styles.submitArrow}>→</span>}
-        </button>
+        <Button
+          type="primary"
+          size="large"
+          block
+          loading={isSubmitting}
+          disabled={isSubmitting}
+          className={styles.submitBtn}
+          onClick={() => void handleSubmit()}
+        >
+          {isSubmitting ? t('square.create.submitting') : t('square.create.submit')}
+        </Button>
       </section>
-
-      {/* 成功弹窗（ElDialog → antd Modal；footer 与 Vue 版同为默认按钮，点确定/取消仅关闭不回跳） */}
-      <Modal
-        open={showSuccess}
-        title={t('square.create.success.title')}
-        width={440}
-        centered
-        className={styles.successModal}
-        onCancel={() => setShowSuccess(false)}
-        onOk={() => setShowSuccess(false)}
-        /* 原 .success-modal .ant-modal-content/header 结构覆写 token 化 */
-        styles={{
-          content: { borderRadius: 16 },
-          header: { borderBottom: '1px solid var(--border-light)', paddingBottom: 16 },
-        }}
-      >
-        <div className={styles.successDialogContent}>
-          <CheckCircleFilled className={styles.successBigIcon} />
-          <h3>{t('square.create.success.body')}</h3>
-          <Button type="primary" onClick={backToSquare}>{t('square.create.success.btn')}</Button>
-        </div>
-      </Modal>
-    </main>
+    </Form>
   )
 }
 

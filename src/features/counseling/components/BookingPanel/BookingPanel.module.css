@@ -90,108 +90,9 @@
   margin-left: 4px;
 }
 
-.stepTitleRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-.stepTitleRow .stepTitle { margin: 0; }
-
-.optional {
-  font-size: 11px;
-  color: var(--text-faint);
-  font-weight: 500;
-  margin-left: 8px;
-  letter-spacing: 0.3px;
-  padding: 2px 8px;
-  background: var(--bg-mute);
-  border-radius: 6px;
-}
-
-/* 咨询类型 · 卡片化大号文字 */
-.typeOptions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.typeOpt {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  padding: 14px 20px;
-  border: 1.5px solid var(--border-strong);
-  border-radius: 12px;
-  background: var(--bg-card);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.typeOpt:hover {
-  border-color: var(--brand-primary);
-  background: var(--brand-primary-faint);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 8%, transparent);
-}
-.typeOpt:hover .toName { color: var(--brand-primary); }
-
-.typeOpt.active {
-  border-color: var(--brand-primary);
-  background: var(--brand-primary);
-  box-shadow: 0 8px 20px color-mix(in srgb, var(--brand-primary) 20%, transparent);
-}
-.typeOpt.active .toName { color: var(--text-inverse, #fff); font-weight: 700; }
-.typeOpt.active .toDur { color: color-mix(in srgb, var(--text-inverse, #fff) 85%, transparent); }
-
+/* 咨询类型 · 卡片化选择（容器与按钮样式见文件末尾 antd 适配） */
 .toName { font-size: 16px; color: var(--text-primary); font-weight: 600; transition: all 0.2s; letter-spacing: -0.2px; }
 .toDur { font-size: 11px; color: var(--text-faint); font-variant-numeric: tabular-nums; letter-spacing: 0.3px; }
-
-/* 心理老师 · 搜索框 */
-.counselorSearch {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 14px;
-  border: 1px solid var(--border-strong);
-  border-radius: 24px;
-  background: var(--bg-card);
-  transition: all 0.25s ease;
-  width: 280px;
-  box-shadow: 0 1px 4px rgb(0 0 0 / 0.03);
-}
-
-.counselorSearch:focus-within {
-  border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 10%, transparent);
-}
-.counselorSearch :global(.anticon) { color: var(--text-faint); font-size: 14px; }
-
-.counselorSearch input {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 13px;
-  color: var(--text-primary);
-  font-family: inherit;
-}
-.counselorSearch input::placeholder { color: var(--text-faint); }
-
-.csCount {
-  font-size: 11px;
-  color: var(--brand-primary);
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  background: var(--brand-primary-faint);
-  padding: 2px 8px;
-  border-radius: 8px;
-}
 
 .typeHint {
   font-size: 12px;
@@ -213,6 +114,7 @@
   color: var(--brand-primary);
 }
 
+/* 心理老师 · 空态提示（Select notFoundContent） */
 .counselorEmpty {
   padding: 32px;
   text-align: center;
@@ -223,175 +125,8 @@
   border: 1px dashed var(--border-strong);
 }
 
-/* 心理老师 · 列表（卡片化） */
-.counselorPickList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.counselorPickCard {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 16px;
-  align-items: center;
-  padding: 14px 18px;
-  cursor: pointer;
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-  background: var(--bg-card);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-}
-
-.counselorPickCard:hover {
-  border-color: var(--brand-primary);
-  background: var(--brand-primary-faint);
-  transform: translateX(4px);
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 6%, transparent);
-}
-
-.counselorPickCard.active {
-  border-color: var(--brand-primary);
-  background: var(--brand-primary-faint);
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 10%, transparent);
-}
-.counselorPickCard.active .cpName { color: var(--brand-primary); font-weight: 700; }
-
-.counselorPickCard.active .cpRating {
-  color: var(--brand-primary);
-  position: relative;
-  padding-right: 28px;
-}
-
-.counselorPickCard.active .cpRating::after {
-  content: '✓';
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--brand-primary);
-}
-
-.cpName { font-size: 15px; font-weight: 600; color: var(--text-primary); transition: color 0.2s; letter-spacing: -0.2px; }
-.cpMeta { font-size: 12px; color: var(--text-faint); letter-spacing: 0.2px; }
-.cpRating { font-size: 13px; color: var(--status-warning); font-weight: 600; font-variant-numeric: tabular-nums; }
-
-/* 日期 · 卡片化横向 */
-.dateRow {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  margin-bottom: 24px;
-  padding: 4px 0 8px;
-}
-
-.dateOpt {
-  flex-shrink: 0;
-  min-width: 76px;
-  padding: 12px 14px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1.5px solid var(--border-strong);
-  border-radius: 12px;
-  background: var(--bg-card);
-}
-
-.dateOpt:hover {
-  border-color: var(--brand-primary);
-  background: var(--brand-primary-faint);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 8%, transparent);
-}
-.dateOpt:hover .doDate { color: var(--brand-primary); }
-
-.dateOpt.active {
-  border-color: var(--brand-primary);
-  background: var(--brand-primary);
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 20%, transparent);
-}
-.dateOpt.active .doWeek { color: color-mix(in srgb, var(--text-inverse, #fff) 85%, transparent); }
-.dateOpt.active .doDate { color: var(--text-inverse, #fff); font-weight: 700; }
-
-.doWeek { display: block; font-size: 11px; color: var(--text-faint); margin-bottom: 4px; letter-spacing: 0.5px; }
-.doDate { display: block; font-size: 17px; font-weight: 600; color: var(--text-primary); font-variant-numeric: tabular-nums; transition: all 0.2s; letter-spacing: -0.3px; }
-
 /* 时段 + 方式 */
 .timeMode { display: flex; flex-direction: column; gap: 20px; }
-
-.slotRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.slotOpt {
-  padding: 8px 16px;
-  border: 1px solid var(--border-strong);
-  background: var(--bg-card);
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s;
-  border-radius: 8px;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.3px;
-}
-
-.slotOpt:hover:not(.disabled) {
-  color: var(--brand-primary);
-  border-color: var(--brand-primary);
-  background: var(--brand-primary-faint);
-}
-
-.slotOpt.active {
-  color: var(--text-inverse, #fff);
-  background: var(--brand-primary);
-  border-color: var(--brand-primary);
-  font-weight: 600;
-  box-shadow: 0 4px 10px color-mix(in srgb, var(--brand-primary) 20%, transparent);
-}
-
-.slotOpt.disabled {
-  color: var(--text-faint);
-  cursor: not-allowed;
-  text-decoration: line-through;
-  background: var(--bg-soft);
-}
-
-.modeRow {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.modeOpt {
-  padding: 8px 18px;
-  border: 1px solid var(--border-strong);
-  background: var(--bg-card);
-  font-family: inherit;
-  font-size: 13px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s;
-  border-radius: 20px;
-  letter-spacing: 0.2px;
-  font-weight: 500;
-}
-.modeOpt:hover { color: var(--brand-primary); border-color: var(--brand-primary); background: var(--brand-primary-faint); }
-
-.modeOpt.active {
-  color: var(--text-inverse, #fff);
-  background: var(--brand-primary);
-  border-color: var(--brand-primary);
-  font-weight: 600;
-  box-shadow: 0 4px 10px color-mix(in srgb, var(--brand-primary) 20%, transparent);
-}
 
 /* 内联表单项 */
 .formInline {
@@ -412,34 +147,7 @@
   letter-spacing: 0.2px;
 }
 
-/* 表单字段（等价 el-form-item + label 顶置） */
-.formField { margin-bottom: 22px; }
-
-.formLabel {
-  font-size: 13px;
-  color: var(--text-primary);
-  font-weight: 600;
-  padding-bottom: 8px;
-  line-height: 1.4;
-  letter-spacing: 0.2px;
-  display: flex;
-  align-items: center;
-}
-
-.formRequired {
-  font-style: normal;
-  color: var(--danger-500);
-  margin-left: 4px;
-  font-size: 13px;
-}
-
-.formError {
-  font-size: 12px;
-  padding-top: 4px;
-  color: var(--danger-500);
-}
-
-/* el-row/el-col 双栏 → 等宽栅格 */
+/* 表单字段：label / 错误提示由 antd Form.Item 承担 */
 .formGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -665,7 +373,14 @@
 .mbInfo { font-size: 12px; color: var(--text-faint); letter-spacing: 0.2px; }
 .mbActions { margin-top: 10px; }
 .mbActions :global(.ant-btn) { border-radius: 8px; }
-.mbEmpty { font-size: 13px; color: var(--text-faint); text-align: center; padding: 24px 0; letter-spacing: 0.3px; }
+.mbEmpty { text-align: center; padding: 16px 0; letter-spacing: 0.3px; }
+.mbEmpty :global(.ant-empty-description) { font-size: 13px; color: var(--text-faint); }
+
+/* 我的预约 · 加载 / 错误态 */
+.mbSkeleton { display: flex; flex-direction: column; gap: 20px; padding: 8px 0; }
+.mbError { padding: 8px 0; }
+.mbError :global(.ant-result-title) { font-size: 15px; }
+.mbError :global(.ant-result-extra) { margin-top: 8px; }
 
 @media (width <= 1200px) {
   .bookingLayout { grid-template-columns: 1fr 280px; gap: 48px; }
@@ -690,25 +405,21 @@
   .formFooter { flex-direction: column-reverse; gap: 16px; align-items: stretch; }
   .formFooter :global(.ant-btn-primary) { width: 100%; min-width: 0; }
   .typeOptions { gap: 8px; }
-  .typeOpt { padding: 10px 14px; }
   .toName { font-size: 14px; }
 }
 
 /* ============================================================
    暗色主题：背景/文字/边框换色已由语义变量自动跟随；仅保留暗色下的
-   玻璃态（半透明白描边）、品牌强调色与第三方（antd Popover/Input）覆盖
+   玻璃态（半透明白描边）、品牌强调色与第三方组件覆盖
    ============================================================ */
-:global(html.dark) .counselorSearch,
 :global(html.dark) .summaryCard,
-:global(html.dark) .myBookings,
-:global(html.dark) .counselorPickCard {
+:global(html.dark) .myBookings {
   background: var(--bg-card) !important;
   border-color: var(--border-regular) !important;
   box-shadow: 0 2px 12px rgb(0 0 0 / 0.3) !important;
 }
 
-:global(html.dark) .typeHint,
-:global(html.dark) .csCount {
+:global(html.dark) .typeHint {
   background: color-mix(in srgb, var(--brand-primary) 15%, transparent) !important;
   border-color: color-mix(in srgb, var(--brand-primary) 25%, transparent) !important;
 }
@@ -732,32 +443,20 @@
   color: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .counseling-page) .typeOpt,
-:global(html.dark .counseling-page) .dateOpt,
-:global(html.dark .counseling-page) .slotOpt,
-:global(html.dark .counseling-page) .modeOpt {
+:global(html.dark .counseling-page) .typeOptions :global(.ant-radio-button-wrapper),
+:global(html.dark .counseling-page) .slotRow :global(.ant-radio-button-wrapper),
+:global(html.dark .counseling-page) .modeRow :global(.ant-radio-button-wrapper) {
   background: rgb(255 255 255 / 0.03) !important;
   border-color: rgb(255 255 255 / 0.08) !important;
   color: var(--text-regular) !important;
 }
 
-:global(html.dark .counseling-page) .typeOpt:hover,
-:global(html.dark .counseling-page) .typeOpt.active,
-:global(html.dark .counseling-page) .dateOpt:hover,
-:global(html.dark .counseling-page) .dateOpt.active,
-:global(html.dark .counseling-page) .slotOpt:hover,
-:global(html.dark .counseling-page) .slotOpt.active,
-:global(html.dark .counseling-page) .modeOpt:hover,
-:global(html.dark .counseling-page) .modeOpt.active {
+:global(html.dark .counseling-page) .typeOptions :global(.ant-radio-button-wrapper-checked),
+:global(html.dark .counseling-page) .slotRow :global(.ant-radio-button-wrapper-checked),
+:global(html.dark .counseling-page) .modeRow :global(.ant-radio-button-wrapper-checked) {
   background: var(--brand-primary-bright-bg) !important;
   border-color: color-mix(in srgb, var(--brand-primary-bright) 30%, transparent) !important;
   color: var(--brand-primary-bright) !important;
-}
-
-:global(html.dark .counseling-page) .slotOpt.disabled {
-  opacity: 0.4 !important;
-  background: var(--bg-page) !important;
-  color: var(--text-faint) !important;
 }
 
 :global(html.dark .counseling-page) .mbItem {
@@ -765,41 +464,71 @@
   border-color: rgb(255 255 255 / 0.06) !important;
 }
 
-/* ============ counselor-popover：antd Popover 挂载于 body，浮层根类为字面量 ============ */
-:global(.counselor-popover .ant-popover-inner) {
-  padding: 18px 20px;
-  border-radius: 14px;
-  border: 1px solid var(--border-light);
-  box-shadow: 0 12px 32px rgb(0 0 0 / 0.1);
-  background: var(--bg-card);
-}
+/* ============================================================
+   antd Form 控件适配（本批次迁移：类型/老师/日期/时段/方式）
+   ============================================================ */
+.stepBody :global(.ant-form-item) { margin-bottom: 16px; }
+.stepBody :global(.ant-form-item:last-child) { margin-bottom: 0; }
+.stepBody :global(.ant-form-item-explain-error) { font-size: 12px; margin-top: 4px; }
 
-.popDetail { font-size: 13px; }
-
-.popHead {
+.typeOptions {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 14px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border-light);
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.popAvatar {
-  width: 44px; height: 44px; border-radius: 12px;
-  color: var(--text-inverse, #fff); display: flex; align-items: center; justify-content: center;
-  font-size: 18px; font-weight: 700;
-  box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
-}
-.popName { font-size: 16px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.2px; }
-.popTitle { font-size: 12px; color: var(--text-faint); margin-top: 4px; letter-spacing: 0.2px; }
-.popStats { display: flex; gap: 14px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-light); }
-.popStats span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
-.popStats :global(.anticon) { color: var(--brand-primary); font-size: 13px; }
-.popIntro { font-size: 13px; color: var(--text-secondary); line-height: 1.75; margin: 0; }
-
-/* ============ counselor-popover：antd Popover 挂载于 body（第三方覆盖） ============ */
-:global(html.dark .counselor-popover) :global(.ant-popover-inner) {
+.typeOptions :global(.ant-radio-button-wrapper) {
+  height: auto;
+  padding: 12px 20px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 12px !important;
   background: var(--bg-card);
-  border-color: var(--border-regular);
+  line-height: normal;
 }
+
+.typeOptions :global(.ant-radio-button-wrapper::before) { display: none; }
+
+.typeOptions :global(.ant-radio-button-wrapper-checked) {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary);
+  color: var(--text-inverse, #fff);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--brand-primary) 20%, transparent);
+}
+
+.typeOptions :global(.ant-radio-button-wrapper-checked) .toName,
+.typeOptions :global(.ant-radio-button-wrapper-checked) .toDur {
+  color: var(--text-inverse, #fff);
+}
+
+.typeOptLabel { display: inline-flex; align-items: center; gap: 8px; }
+.typeOptLabel :global(.anticon) { font-size: 16px; }
+
+.counselorSelect { width: 100%; }
+
+.counselorSelect :global(.ant-select-selector) {
+  border-radius: 12px !important;
+  background: var(--bg-card) !important;
+}
+
+.selectOption { display: flex; align-items: center; gap: 10px; }
+.soName { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.soMeta { font-size: 12px; color: var(--text-faint); }
+.soRating { margin-left: auto; font-size: 12px; color: var(--status-warning); font-variant-numeric: tabular-nums; }
+
+.datePicker { width: 100%; max-width: 280px; margin-bottom: 20px; }
+.datePicker :global(.ant-picker-input > input) { font-size: 15px; color: var(--text-primary); }
+
+.slotRow,
+.modeRow { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.slotRow :global(.ant-radio-button-wrapper),
+.modeRow :global(.ant-radio-button-wrapper) {
+  height: auto;
+  padding: 8px 16px;
+  border-radius: 999px !important;
+  border-inline-start-width: 1px;
+  margin: 0;
+}
+
+.slotRow :global(.ant-radio-button-wrapper::before),
+.modeRow :global(.ant-radio-button-wrapper::before) { display: none; }

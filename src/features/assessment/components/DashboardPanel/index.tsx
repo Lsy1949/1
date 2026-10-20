@@ -25,7 +25,6 @@ import { useReveal } from '@/hooks/useReveal'
 import { useI18n } from '@/i18n'
 import ScaleIcon from '@/components/ScaleIcon'
 import { TAG_COLOR } from '../MinePanel'
-import { getCategoryName } from '../data'
 import type { AssessmentRecord, ScaleInfo } from '../types'
 import styles from './DashboardPanel.module.css'
 
@@ -103,8 +102,8 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
     })
     const sorted = Object.entries(catCount).sort((a, b) => b[1] - a[1])
     if (sorted.length === 0) return '尚未探索'
-    return getCategoryName(sorted[0][0])
-  }, [history, scales])
+    return t(`assessment.categories.${sorted[0][0]}`)
+  }, [history, scales, t])
 
   // 月度目标
   const monthlyGoal = useMemo(() => {
@@ -209,7 +208,7 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
     history.forEach((h) => {
       const scale = scales.find((s) => s.key === h.scaleKey)
       if (scale) {
-        const name = getCategoryName(scale.category)
+        const name = t(`assessment.categories.${scale.category}`)
         catCount[name] = (catCount[name] || 0) + 1
       }
     })

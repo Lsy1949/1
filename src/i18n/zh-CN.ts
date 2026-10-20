@@ -48,6 +48,7 @@ export default {
   common: {
     back: '返回', confirm: '确认', cancel: '取消', submit: '提交', save: '保存',
     delete: '删除', edit: '编辑', view: '查看', loading: '加载中...', noData: '暂无数据',
+    loadFailed: '加载失败', retry: '重试',
     deleteConfirm: '确定要删除吗？删除后无法恢复。',
     deleteTitle: '删除确认', deleteOk: '确定删除',
     searchPlaceholder: '搜索…',
@@ -129,6 +130,8 @@ export default {
       dashboard: { title: '成长<em>看板</em>', desc: '追踪身心能量、情绪趋势与测评分布，AI 交叉分析为你生成专属成长洞察。' }
     },
     searchPlaceholder: '搜索测评…',
+    categories: { all: '全部', mental: '心理健康', career: '生涯发展', cognitive: '认知能力', esports: '电竞能力', learning: '学习风格', social: '人际关系' },
+    submitted: '测评已完成！',
     unit: { items: '项', questions: '题', score: '分', minutes: '分钟' },
     status: { completed: '已完成', comingSoon: '即将上线' },
     empty: '没有找到匹配的测评',
@@ -185,6 +188,7 @@ export default {
   },
   counseling: {
     tabs: { booking: '预约咨询', counselors: '心理老师', notice: '咨询须知', faq: '常见问题', companion: 'AI 伴侣' },
+    types: { individual: '个体咨询', couple: '伴侣咨询', family: '家庭咨询', group: '团体辅导' },
     aiChat: {
       eyebrow: '— AI Counselor',
       title: 'AI<em>咨询师</em>',
@@ -223,8 +227,8 @@ export default {
     btn: { confirmBooking: '确认预约', online: '视频', offline: '面对面', book: '预约', onlineConsult: '在线咨询', close: '关闭', bookThis: '预约此老师' },
     summary: { title: '预约摘要', type: '咨询类型', counselor: '心理老师', date: '日期', time: '时间', mode: '方式', serviceType: '服务性质', freeTag: '校内免费', onlineValue: '视频咨询', offlineValue: '面对面咨询', empty: '未选择' },
     myBookings: '我的预约',
-    form: { name: '称呼', namePlaceholder: '如何称呼您', contact: '联系方式', contactPlaceholder: '手机号或邮箱', description: '问题描述', descPlaceholder: '简单描述您想探讨的话题', optional: '选填', required: '带 * 为必填', first: '首次', followup: '复诊', experience: '咨询经历', agreePrefix: '我已阅读并同意', noticeLink: '《咨询须知》', and: '与', consentLink: '《知情同意书》' },
-    validation: { nameRequired: '请填写称呼', contactRequired: '请填写联系方式', agreeRequired: '请阅读并同意相关条款', formIncomplete: '请完整填写必填信息' },
+    form: { name: '称呼', namePlaceholder: '如何称呼您', contact: '联系方式', contactPlaceholder: '手机号或邮箱', datePlaceholder: '选择咨询日期', description: '问题描述', descPlaceholder: '简单描述您想探讨的话题', optional: '选填', required: '带 * 为必填', first: '首次', followup: '复诊', experience: '咨询经历', agreePrefix: '我已阅读并同意', noticeLink: '《咨询须知》', and: '与', consentLink: '《知情同意书》' },
+    validation: { nameRequired: '请填写称呼', contactRequired: '请填写联系方式', agreeRequired: '请阅读并同意相关条款', formIncomplete: '请完整填写必填信息', typeRequired: '请选择咨询类型', counselorRequired: '请选择心理老师', dateRequired: '请选择咨询日期', slotRequired: '请选择咨询时段' },
     message: { bookingSuccess: '预约提交成功！心理老师将在24小时内确认', cancelConfirm: '确定取消此预约吗？', cancelTitle: '提示', cancelled: '已取消预约' },
     counselors: {
       searchPlaceholder: '搜索姓名 / 专长', searchPlaceholderAlt: '搜索姓名 / 专长…',
@@ -266,7 +270,7 @@ export default {
       categories: { all: '全部问题', booking: '预约相关', service: '服务说明', effect: '咨询效果', confidentiality: '保密相关' },
       empty: '没有找到相关问题'
     },
-    booking: { cancelBtn: '取消', empty: '暂无预约记录' },
+    booking: { cancelBtn: '取消', empty: '暂无预约记录', emptyHint: '暂无预约，去预约一位老师吧' },
     empty: { noCounselor: '没有找到匹配的老师', noBookings: '暂无预约记录', noFaq: '没有找到相关问题' },
     freeTag: '校内免费',
     weekdays: { sun: '周日', mon: '周一', tue: '周二', wed: '周三', thu: '周四', fri: '周五', sat: '周六' },
@@ -379,6 +383,8 @@ export default {
       community: {
         online: '人在线',
         todayNew: '今日新帖',
+        emptyMembers: '暂无活跃同学',
+        emptyTopics: '暂无热门话题',
         dailyPrompt: { label: '今日话题', question: '最近哪件小事，让你觉得生活还挺值得的？', join: '参与讨论' },
         sidebar: {
           activeMembers: '活跃同学',
@@ -387,7 +393,8 @@ export default {
           guidelinesItems: ['尊重每一位分享者', '不评判，多倾听', '鼓励比建议更有力量', '遇到困扰请预约咨询']
         }
       },
-      empty: { title: '广场还很安静', hint: '成为第一个分享的人', btn: '发布心得' }
+      empty: { title: '广场还很安静', hint: '成为第一个分享的人', btn: '发布心得' },
+      emptyFiltered: '当前分类还没有动态，换个分类看看吧'
     },
     create: {
       back: '返回广场',
@@ -416,7 +423,12 @@ export default {
         count: '{n} 条评论',
         placeholder: '写下你的想法...',
         submit: '发表评论',
-        empty: '还没有评论，来说点什么吧'
+        empty: '还没有评论，来抢沙发吧',
+        reply: '回复',
+        replyTo: '回复 {name}',
+        repliedTo: '回复 @{name}',
+        cancelReply: '取消',
+        submitted: '评论已发布'
       }
     }
   },

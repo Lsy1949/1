@@ -1,18 +1,25 @@
-// 广场列表页 · Feed 双栏左栏：筛选栏 + 动态列表 + 空状态
-import { useEffect, useMemo, useState } from 'react'
-import { App as AntApp } from 'antd'
+// 广场列表页 · Feed 双栏左栏：筛选栏 + 动态列表 + 加载/错误/空状态
+// 纯展示组件：数据与点赞/分享/话题行为均由页面注入
+import { useMemo, useState } from 'react'
+import { Button, Empty, Result, Skeleton } from 'antd'
 import { MessageOutlined, ShareAltOutlined, StarOutlined } from '@ant-design/icons'
 import InitialAvatar from '@/components/InitialAvatar'
 import { useReveal } from '@/hooks/useReveal'
 import { useI18n } from '@/i18n'
-import { moodMap, feedItemsSeed } from '../data'
 import type { FeedItem } from '../types'
+import { moodMap } from '../moods'
 import styles from './FeedList.module.css'
 
 export interface FeedListProps {
+  items: FeedItem[]
+  isLoading: boolean
+  isError: boolean
+  onRetry: () => void
+  onLike: (id: number) => void
   onOpen: (id: number) => void
   onCreate: () => void
-  onStatsChange: (interactions: number) => void
+  onShare: (item: FeedItem) => void
+  onTopic: (tag: string) => void
 }
 
 /** 单张 Feed 卡片：v-reveal 指令 → 在子组件内调用 useReveal（Hooks 不能在循环/map 中调用） */
@@ -20,7 +27,7 @@ interface FeedCardProps {
   item: FeedItem
   index: number
   onOpen: (id: number) => void
-  onLike: (item: FeedItem) => void
+  onLike: (id: number) => void
   onShare: (item: FeedItem) => void
   onTopic: (tag: string) => void
 }
@@ -99,7 +106,7 @@ function FeedCard({ item, index, onOpen, onLike, onShare, onTopic }: FeedCardPro
           className={`${styles.interactBtn}${item.liked ? ` ${styles.liked}` : ''}`}
           onClick={(e) => {
             e.stopPropagation()
-            onLike(item)
+            onLike(item.id)
           }}
         >
           <StarOutlined />
@@ -130,33 +137,30 @@ function FeedCard({ item, index, onOpen, onLike, onShare, onTopic }: FeedCardPro
   )
 }
 
-export function FeedList({ onOpen, onCreate, onStatsChange }: FeedListProps) {
+export function FeedList({
+  items,
+  isLoading,
+  isError,
+  onRetry,
+  onLike,
+  onOpen,
+  onCreate,
+  onShare,
+  onTopic,
+}: FeedListProps) {
   const { t } = useI18n()
-  const { message } = AntApp.useApp() // 替代 ElMessage
 
+  // 筛选页签是纯 UI 状态，数据本身由页面注入
   const [activeFilter, setActiveFilter] = useState('all')
-
-  // 浅拷贝种子数据，保证每次进入页面点赞等状态重置
-  const [feedItems, setFeedItems] = useState<FeedItem[]>(() => feedItemsSeed.map((i) => ({ ...i })))
 
   const counts = useMemo(
     () => ({
-      all: feedItems.length,
-      moment: feedItems.filter((i) => i.type === 'moment').length,
-      capsule: feedItems.filter((i) => i.type === 'capsule').length
+      all: items.length,
+      moment: items.filter((i) => i.type === 'moment').length,
+      capsule: items.filter((i) => i.type === 'capsule').length
     }),
-    [feedItems]
+    [items]
   )
-
-  const stats = useMemo(() => {
-    const totalLikes = feedItems.reduce((sum, i) => sum + i.likes, 0)
-    const totalComments = feedItems.reduce((sum, i) => sum + i.commentCount, 0)
-    return {
-      moments: counts.moment,
-      capsules: counts.capsule,
-      interactions: totalLikes + totalComments
-    }
-  }, [feedItems, counts])
 
   const filters = useMemo(
     () => [
@@ -168,29 +172,41 @@ export function FeedList({ onOpen, onCreate, onStatsChange }: FeedListProps) {
   )
 
   const filteredItems = useMemo(
-    () => (activeFilter === 'all' ? feedItems : feedItems.filter((item) => item.type === activeFilter)),
-    [feedItems, activeFilter]
+    () => (activeFilter === 'all' ? items : items.filter((item) => item.type === activeFilter)),
+    [items, activeFilter]
   )
 
-  // 原 watch(stats, immediate) → useEffect（挂载即触发一次，语义等价）
-  useEffect(() => {
-    onStatsChange(stats.interactions)
-  }, [stats.interactions, onStatsChange])
-
-  const toggleLike = (item: FeedItem) => {
-    setFeedItems((prev) =>
-      prev.map((i) =>
-        i.id === item.id ? { ...i, liked: !i.liked, likes: i.likes + (i.liked ? 1 : -1) } : i
-      )
+  // 首次加载：与卡片结构对齐的骨架
+  if (isLoading) {
+    return (
+      <main className={styles.feedColumn}>
+        <div className={styles.feedSkeleton}>
+          <Skeleton active title={{ width: '30%' }} paragraph={{ rows: 1 }} />
+          {[0, 1, 2].map((i) => (
+            <div key={i} className={styles.feedSkeletonCard}>
+              <Skeleton active avatar title={{ width: '26%' }} paragraph={{ rows: 3 }} />
+            </div>
+          ))}
+        </div>
+      </main>
     )
   }
 
-  const handleShare = (item: FeedItem) => {
-    message.success(t('square.list.share') + ' · ' + (item.isAnonymous ? t('square.list.anonymous') : item.author))
-  }
-
-  const filterByTopic = (tag: string) => {
-    message.info('#' + tag)
+  // 加载失败：提示 + 重试
+  if (isError) {
+    return (
+      <main className={styles.feedColumn}>
+        <Result
+          status="error"
+          title={t('common.loadFailed')}
+          extra={
+            <Button type="primary" onClick={onRetry}>
+              {t('common.retry')}
+            </Button>
+          }
+        />
+      </main>
+    )
   }
 
   return (
@@ -219,14 +235,19 @@ export function FeedList({ onOpen, onCreate, onStatsChange }: FeedListProps) {
               item={item}
               index={i}
               onOpen={onOpen}
-              onLike={toggleLike}
-              onShare={handleShare}
-              onTopic={filterByTopic}
+              onLike={onLike}
+              onShare={onShare}
+              onTopic={onTopic}
             />
           ))}
         </div>
+      ) : activeFilter !== 'all' ? (
+        /* 筛选后无数据 */
+        <div className={styles.emptyState}>
+          <Empty description={t('square.list.emptyFiltered')} />
+        </div>
       ) : (
-        /* 空状态 */
+        /* 全站空状态 */
         <div className={styles.emptyState}>
           <h3 className={styles.emptyTitle}>{t('square.list.empty.title')}</h3>
           <p className={styles.emptyHint}>{t('square.list.empty.hint')}</p>

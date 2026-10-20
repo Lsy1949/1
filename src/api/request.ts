@@ -47,3 +47,25 @@ export async function post<T>(
   })
   return unwrap<T>(res.data)
 }
+
+/** DELETE（泛型即出参 data 类型） */
+export async function del<T>(url: string, options?: RequestOptions): Promise<T> {
+  const res = await http.delete(url, {
+    params: options?.params,
+    signal: options?.signal,
+  })
+  return unwrap<T>(res.data)
+}
+
+/** PATCH：用于状态变更类接口（如取消预约），body 走 JSON */
+export async function patch<T>(
+  url: string,
+  body?: unknown,
+  options?: RequestOptions,
+): Promise<T> {
+  const res = await http.patch(url, body, {
+    params: options?.params,
+    signal: options?.signal,
+  })
+  return unwrap<T>(res.data)
+}

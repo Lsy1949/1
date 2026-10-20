@@ -1,17 +1,21 @@
 /**
  * 首页（页面层）：仅负责数据组装与跨区块跳转/滚动。
  * 区块实现见 features/home/components/*（数据 props 入、行为回调出）。
+ *
+ * 轮播数据来自统一接口 `GET /api/home/carousel`（DEV 下由 MSW 拦截）：
+ * 接口只下发结构 `{ key, image, ctaRoute }`，文案在本页用 useI18n() 按 key 组装，
+ * 保证语言切换即时生效、且接口不成为第二份文案来源。
  */
 import { useEffect, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { App } from 'antd'
+import { useQuery } from '@tanstack/react-query'
+import { App, Skeleton } from 'antd'
 import { useI18n } from '@/i18n'
+import { get, type CarouselSlideDTO } from '@/api'
 import { Carousel, Marquee, NewsSection, AboutSection, ContactSection, BackTop } from '@/features/home'
 // AI 客服悬浮窗（Vue 版 <AiAssistantFab />，全局浮动于首页）
 import { AssistantFab } from '@/features/ai'
 import type { CarouselSlide } from '@/features/home'
-import imgNist from '@/assets/images/nist-bg.jpg'
-import imgTsinghua from '@/assets/images/tsinghua-bg.jpg'
 import './HomePageView.css'
 
 // Vue 命名路由 → react-router 路径（home→'/'、articles→'/articles'、assessment→'/assessment'、
@@ -25,41 +29,33 @@ export function HomePageView() {
   const { t } = useI18n()
   const { message } = App.useApp()
 
-  // 轮播图数据（useMemo 以支持语言切换时实时更新文案）
-  const carouselSlides = useMemo<CarouselSlide[]>(() => [
-    {
-      title: t('home.carousel.slide1.title'),
-      tag: t('home.carousel.slide1.tag'),
-      description: t('home.carousel.slide1.desc'),
-      buttonText: t('home.carousel.slide1.btn'),
-      image: imgNist
-    },
-    {
-      title: t('home.carousel.slide2.title'),
-      tag: t('home.carousel.slide2.tag'),
-      description: t('home.carousel.slide2.desc'),
-      buttonText: t('home.carousel.slide2.btn'),
-      image: imgTsinghua
-    },
-    {
-      title: t('home.carousel.slide3.title'),
-      tag: t('home.carousel.slide3.tag'),
-      description: t('home.carousel.slide3.desc'),
-      buttonText: t('home.carousel.slide3.btn'),
-      image: imgNist
-    }
-  ], [t])
+  // 轮播数据：统一请求封装 get()（自动解包 { code, data, message } 信封）
+  // 请求进行中 → Skeleton 占位；失败 → 居中错误提示 + 重试
+  const { data: carouselDtos, isError, refetch } = useQuery({
+    queryKey: ['home', 'carousel'],
+    queryFn: () => get<CarouselSlideDTO[]>('/api/home/carousel')
+  })
 
-  // 轮播主按钮：按文案映射路由（slide1 → 测评中心, slide2 → 时光胶囊, slide3 → 心理咨询）
+  // 接口结构（key/image/ctaRoute）+ i18n → 渲染用 CarouselSlide
+  // useMemo 依赖 t：语言切换时按同一 key 重新取文案
+  const carouselSlides = useMemo<CarouselSlide[]>(
+    () =>
+      (carouselDtos ?? []).map(slide => ({
+        key: slide.key,
+        image: slide.image,
+        ctaRoute: slide.ctaRoute,
+        title: t(`home.carousel.${slide.key}.title`),
+        tag: t(`home.carousel.${slide.key}.tag`),
+        description: t(`home.carousel.${slide.key}.desc`),
+        buttonText: t(`home.carousel.${slide.key}.btn`)
+      })),
+    [carouselDtos, t]
+  )
+
+  // 轮播主按钮：直接消费接口下发的 ctaRoute（为空表示该入口未配置，给出提示）
   const onSlideAction = (slide: CarouselSlide) => {
-    const routeMap: Record<string, string> = {
-      [t('home.carousel.slide1.btn')]: '/assessment',
-      [t('home.carousel.slide2.btn')]: '/time-capsule',
-      [t('home.carousel.slide3.btn')]: '/counseling'
-    }
-    const path = routeMap[slide.buttonText]
-    if (path) {
-      navigate(path)
+    if (slide.ctaRoute) {
+      navigate(slide.ctaRoute)
     } else {
       message.success(t('home.carousel.preparing', { text: slide.buttonText }))
     }
@@ -128,13 +124,31 @@ export function HomePageView() {
 
   return (
     <div className="animated-homepage">
-      {/* 轮播图区域 */}
-      <Carousel
-        slides={carouselSlides}
-        onSlideAction={onSlideAction}
-        onLearnMore={onLearnMore}
-        onScrollDown={onScrollDown}
-      />
+      {/* 轮播图区域：接口数据就绪前用 Skeleton 占位（保持首屏高度，避免内容到位时跳动）；
+          请求失败且无数据时展示错误提示与重试 */}
+      {carouselSlides.length > 0 ? (
+        <Carousel
+          slides={carouselSlides}
+          onSlideAction={onSlideAction}
+          onLearnMore={onLearnMore}
+          onScrollDown={onScrollDown}
+        />
+      ) : (
+        <section className="home-carousel-skeleton">
+          <div className="home-carousel-skeleton-inner">
+            {isError ? (
+              <div className="home-carousel-error">
+                <p>{t('common.loadFailed')}</p>
+                <button type="button" onClick={() => void refetch()}>
+                  {t('common.retry')}
+                </button>
+              </div>
+            ) : (
+              <Skeleton active title={{ width: '42%' }} paragraph={{ rows: 2 }} />
+            )}
+          </div>
+        </section>
+      )}
 
       {/* 跑马灯 · 滚动信息条 */}
       <Marquee />

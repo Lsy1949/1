@@ -1,42 +1,19 @@
-import { useCallback, useRef, useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import { getUserStore } from '@/stores/useUserStore'
 import { emitter } from '@/events'
 import { start, stop } from '@/realtime/connection'
 import * as authApi from '@/api/modules/auth'
 import type { LoginParams, LoginResult, SendEmailCodeParams, UserInfo } from '@/api/modules/types'
-import { mockForgotPassword, mockLogin, mockRegister } from '@/api/mock/auth'
 
 /**
- * 认证 composables（React 版）：server 层与组件之间的请求态桥接。
- * 等价迁移自 Vue 版（vue-request useRequest）——去第三方请求库，
- * 用 useState + useCallback + useRef 手写最小 manual 请求 hook。
+ * 认证 hooks：server 层与组件之间的请求态桥接。
  *
- * - mock 开关（Q1）：VITE_USE_MOCK_LOGIN==='true' 走 mock 分支（复刻旧
- *   stores/auth.js 行为），否则走真实接口；组件层无感，切后端只改环境变量
- * - 成功后统一写【新】userStore（persisted）并广播 user:login
- * - 组件内用法：const { run, loading, error, result } = useAuthLogin()
+ * - 登录 / 注册 / 找回密码统一用 useMutation 管理 pending 与 error；
+ * - 开发期 mock 由 MSW 拦截（src/mocks/handlers/auth.ts），本文件不再感知 mock 开关；
+ * - 成功后统一写【新】userStore（persisted）并广播 user:login。
+ *
+ * 组件内用法保持原契约：const { run, loading, error, result } = useAuthLogin()
  */
-
-const USE_MOCK = import.meta.env.VITE_USE_MOCK_LOGIN === 'true'
-
-/** 登录服务（mock/真实自动切换） */
-function loginService(params: LoginParams): Promise<LoginResult> {
-  return USE_MOCK ? mockLogin(params) : authApi.login(params)
-}
-
-/**
- * 注册 / 忘记密码：真实后端契约未提供（Q1），
- * 真实分支当前抛出明确错误，后端就绪后替换为对应 API。
- */
-async function registerService(data: Record<string, unknown>): Promise<{ message: string }> {
-  if (USE_MOCK) return mockRegister(data)
-  throw new Error('注册接口后端契约未提供（阶段5 接入）')
-}
-
-async function forgotPasswordService(data: Record<string, unknown>): Promise<{ message: string }> {
-  if (USE_MOCK) return mockForgotPassword(data)
-  throw new Error('忘记密码接口后端契约未提供（阶段5 接入）')
-}
 
 /** 登录成功：写 store + 广播 + 建立实时连接 */
 function applyLoginSuccess(result: LoginResult): LoginResult {
@@ -54,70 +31,74 @@ function applyLoginSuccess(result: LoginResult): LoginResult {
   return result
 }
 
-/** 注册/登出 hooks：成功消息与页面切换由组件侧回调完成 */
 interface AsyncActionHooks<T> {
   onSuccess?: (result: T) => void
   onError?: (error: Error) => void
 }
 
 /**
- * 等价 vue-request manual useRequest 的最小实现（无第三方依赖）：
- * - run(params) 触发请求；loading / error / data 为响应式 state
- * - 错误统一归一化为 Error，rejection 已在内部消化（无 unhandled rejection）
- * - hooks 经 ref 转发：run 引用稳定，成功/失败回调闭包永远最新
+ * 适配层：把 useMutation 包装成组件既有的 { run, loading, error, result } 契约。
+ * run 不会 reject（与原手写 hook 行为一致），错误通过 error + onError 暴露。
  */
-function useManualRequest<P, R>(service: (params: P) => Promise<R>, hooks?: AsyncActionHooks<R>) {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<Error>()
-  const [data, setData] = useState<R>()
-  const hooksRef = useRef(hooks)
-  hooksRef.current = hooks
+function useMutationAdapter<P, R>(
+  mutationFn: (params: P) => Promise<R>,
+  hooks?: AsyncActionHooks<R>,
+) {
+  const mutation = useMutation({
+    mutationFn,
+    onSuccess: (result) => hooks?.onSuccess?.(result),
+    onError: (error: Error) => hooks?.onError?.(error),
+  })
 
-  const run = useCallback(
-    (params: P): Promise<void> => {
-      setLoading(true)
-      setError(undefined)
-      return service(params)
-        .then((result) => {
-          setData(result)
-          setLoading(false)
-          hooksRef.current?.onSuccess?.(result)
-        })
-        .catch((err: unknown) => {
-          const normalized = err instanceof Error ? err : new Error(String(err))
-          setError(normalized)
-          setLoading(false)
-          hooksRef.current?.onError?.(normalized)
-        })
-    },
-    [service],
-  )
+  const run = async (params: P): Promise<void> => {
+    try {
+      await mutation.mutateAsync(params)
+    } catch {
+      /* 错误已由 onError 与 error 暴露 */
+    }
+  }
 
-  return { run, loading, error, data }
+  return {
+    run,
+    loading: mutation.isPending,
+    error: mutation.error ?? undefined,
+    data: mutation.data,
+  }
 }
 
-/** 登录（manual 请求：由表单触发；成功写 store + 建立实时通道） */
+/** 登录（成功写 store + 建立实时通道） */
 export function useAuthLogin(hooks?: {
   onSuccess?: (result: LoginResult) => void
   onError?: (error: Error) => void
 }) {
-  const { run, loading, error, data } = useManualRequest(loginService, {
-    onSuccess: (result) => {
-      applyLoginSuccess(result)
-      hooks?.onSuccess?.(result)
+  const { run, loading, error, data } = useMutationAdapter<LoginParams, LoginResult>(
+    (params) => authApi.login(params),
+    {
+      onSuccess: (result) => {
+        applyLoginSuccess(result)
+        hooks?.onSuccess?.(result)
+      },
+      onError: (err) => hooks?.onError?.(err),
     },
-    onError: (err) => hooks?.onError?.(err),
-  })
+  )
 
   return { run, loading, error, result: data }
 }
 
 export function useRegister(hooks?: AsyncActionHooks<{ message: string }>) {
-  return useManualRequest(registerService, hooks)
+  const { run, loading, error, data } = useMutationAdapter<Record<string, unknown>, { message: string }>(
+    (data) => authApi.register(data),
+    hooks,
+  )
+  return { run, loading, error, result: data }
 }
 
 export function useForgotPassword(hooks?: AsyncActionHooks<{ message: string }>) {
-  return useManualRequest(forgotPasswordService, hooks)
+  const { run, loading, error, data } = useMutationAdapter<Record<string, unknown>, { message: string }>(
+    (data) => authApi.forgotPassword(data),
+    hooks,
+  )
+  return { run, loading, error, result: data }
 }
 
 /** 发送邮箱验证码（无状态动作，直接调 server 层） */

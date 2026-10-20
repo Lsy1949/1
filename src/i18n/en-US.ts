@@ -14,6 +14,7 @@ export default {
   common: {
     back: 'Back', confirm: 'Confirm', cancel: 'Cancel', submit: 'Submit', save: 'Save',
     delete: 'Delete', edit: 'Edit', view: 'View', loading: 'Loading...', noData: 'No data',
+    loadFailed: 'Failed to load', retry: 'Retry',
     deleteConfirm: 'Are you sure you want to delete? This cannot be undone.',
     deleteTitle: 'Delete Confirmation', deleteOk: 'Delete',
     searchPlaceholder: 'Search...',
@@ -95,6 +96,8 @@ export default {
       dashboard: { title: 'Growth <em>Board</em>', desc: 'Track mind-body energy, mood trends and assessment distribution. AI cross-analysis generates your personalized growth insights.' }
     },
     searchPlaceholder: 'Search assessments...',
+    categories: { all: 'All', mental: 'Mental Health', career: 'Career', cognitive: 'Cognitive', esports: 'Esports', learning: 'Learning Style', social: 'Relationships' },
+    submitted: 'Assessment completed!',
     unit: { items: 'items', questions: 'Q', score: 'pts', minutes: 'min' },
     status: { completed: 'Completed', comingSoon: 'Coming Soon' },
     empty: 'No matching assessments found',
@@ -151,6 +154,7 @@ export default {
   },
   counseling: {
     tabs: { booking: 'Book a Session', counselors: 'Counselors', notice: 'Counseling Guide', faq: 'FAQ', companion: 'AI Companion' },
+    types: { individual: 'Individual', couple: 'Couples', family: 'Family', group: 'Group' },
     aiChat: {
       eyebrow: '— AI Counselor',
       title: 'AI <em>Counselor</em>',
@@ -189,8 +193,8 @@ export default {
     btn: { confirmBooking: 'Confirm Booking', online: 'Video', offline: 'In-person', book: 'Book', onlineConsult: 'Online Consult', close: 'Close', bookThis: 'Book This Counselor' },
     summary: { title: 'Booking Summary', type: 'Session Type', counselor: 'Counselor', date: 'Date', time: 'Time', mode: 'Mode', serviceType: 'Service Type', freeTag: 'Campus Free', onlineValue: 'Video Session', offlineValue: 'In-person Session', empty: 'Not Selected' },
     myBookings: 'My Bookings',
-    form: { name: 'Name', namePlaceholder: 'How should we address you', contact: 'Contact', contactPlaceholder: 'Phone or email', description: 'Issue Description', descPlaceholder: 'Briefly describe topics you\'d like to explore', optional: 'Optional', required: '* Required', first: 'First Visit', followup: 'Follow-up', experience: 'Counseling History', agreePrefix: 'I have read and agree to', noticeLink: 'Counseling Guide', and: 'and', consentLink: 'Informed Consent' },
-    validation: { nameRequired: 'Please enter your name', contactRequired: 'Please enter your contact', agreeRequired: 'Please read and agree to the terms', formIncomplete: 'Please complete all required fields' },
+    form: { name: 'Name', namePlaceholder: 'How should we address you', contact: 'Contact', contactPlaceholder: 'Phone or email', datePlaceholder: 'Select a date', description: 'Issue Description', descPlaceholder: 'Briefly describe topics you\'d like to explore', optional: 'Optional', required: '* Required', first: 'First Visit', followup: 'Follow-up', experience: 'Counseling History', agreePrefix: 'I have read and agree to', noticeLink: 'Counseling Guide', and: 'and', consentLink: 'Informed Consent' },
+    validation: { nameRequired: 'Please enter your name', contactRequired: 'Please enter your contact', agreeRequired: 'Please read and agree to the terms', formIncomplete: 'Please complete all required fields', typeRequired: 'Please select a session type', counselorRequired: 'Please select a counselor', dateRequired: 'Please select a date', slotRequired: 'Please select a time slot' },
     message: { bookingSuccess: 'Booking submitted! The counselor will confirm within 24 hours', cancelConfirm: 'Are you sure you want to cancel this booking?', cancelTitle: 'Notice', cancelled: 'Booking cancelled' },
     counselors: {
       searchPlaceholder: 'Search name / specialty', searchPlaceholderAlt: 'Search name / specialty...',
@@ -232,7 +236,7 @@ export default {
       categories: { all: 'All Questions', booking: 'Booking', service: 'Service', effect: 'Effectiveness', confidentiality: 'Confidentiality' },
       empty: 'No matching questions found'
     },
-    booking: { cancelBtn: 'Cancel', empty: 'No booking records yet' },
+    booking: { cancelBtn: 'Cancel', empty: 'No booking records yet', emptyHint: 'No bookings yet. Book a counselor now.' },
     empty: { noCounselor: 'No matching counselors found', noBookings: 'No booking records yet', noFaq: 'No matching questions found' },
     freeTag: 'Campus Free',
     weekdays: { sun: 'Sun', mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat' },
@@ -345,6 +349,8 @@ export default {
       community: {
         online: 'online',
         todayNew: 'posts today',
+        emptyMembers: 'No active members yet',
+        emptyTopics: 'No trending topics yet',
         dailyPrompt: { label: 'Daily Prompt', question: 'What small thing lately made you feel life is worthwhile?', join: 'Join the talk' },
         sidebar: {
           activeMembers: 'Active Members',
@@ -353,7 +359,8 @@ export default {
           guidelinesItems: ['Respect every sharer', 'Listen more, judge less', 'Encouragement beats advice', 'Seek counseling when needed']
         }
       },
-      empty: { title: 'The square is quiet', hint: 'Be the first to share', btn: 'Share' }
+      empty: { title: 'The square is quiet', hint: 'Be the first to share', btn: 'Share' },
+      emptyFiltered: 'No posts in this category yet. Try another one.'
     },
     create: {
       back: 'Back to Square',
@@ -382,7 +389,12 @@ export default {
         count: '{n} Comments',
         placeholder: 'Share your thoughts...',
         submit: 'Post Comment',
-        empty: 'No comments yet. Be the first to say something.'
+        empty: 'No comments yet. Grab the first seat!',
+        reply: 'Reply',
+        replyTo: 'Replying to {name}',
+        repliedTo: 'Reply to @{name}',
+        cancelReply: 'Cancel',
+        submitted: 'Comment posted'
       }
     }
   },

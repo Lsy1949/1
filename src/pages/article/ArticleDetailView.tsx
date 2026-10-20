@@ -1,13 +1,16 @@
 // 文章详情页（/articles/:id）· 页面层负责取数与跳转，正文/推荐/评论区拆至 RichBody/RelatedSidebar/Comments
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getArticleById, getRelatedArticles, type ArticleItem } from '@/api/mock/articles'
+import { useQuery } from '@tanstack/react-query'
+import { Button, Result, Skeleton } from 'antd'
 import { ArrowLeftOutlined, ClockCircleOutlined, EyeOutlined } from '@ant-design/icons'
+import { ApiError, articleApi } from '@/api'
 import ReadProgress from '@/components/ReadProgress'
 import InitialAvatar from '@/components/InitialAvatar'
 import { Comments, RelatedSidebar, RichBody } from '@/features/article'
 import { useReveal } from '@/hooks/useReveal'
 import { useI18n } from '@/i18n'
+import { toArticleItem } from './articleQuery'
 import './ArticleDetailView.css'
 
 const formatViews = (n: number) => {
@@ -20,8 +23,6 @@ export default function ArticleDetailView() {
   const navigate = useNavigate()
   const { t } = useI18n()
 
-  const [article, setArticle] = useState<ArticleItem | null>(null)
-  const [related, setRelated] = useState<ArticleItem[]>([])
   const [liked, setLiked] = useState(false)
   const [bookmarked, setBookmarked] = useState(false)
 
@@ -30,28 +31,81 @@ export default function ArticleDetailView() {
   const summaryRef = useReveal<HTMLParagraphElement>({ delay: 120 })
   const authorRowRef = useReveal<HTMLDivElement>({ delay: 200 })
 
-  const loadArticle = (articleId: string) => {
-    const data = getArticleById(articleId)
-    if (!data) {
-      // 原命名路由 articles → '/articles'
-      navigate('/articles', { replace: true })
-      return
-    }
-    setArticle(data)
-    setRelated(getRelatedArticles(data, 4))
+  // 详情：404 走「资源不存在」分支，其余错误展示重试；不重试 404
+  const { data: detail, isPending, isError, error, refetch } = useQuery({
+    queryKey: ['article', id],
+    queryFn: ({ signal }) => articleApi.fetchArticleDetail(id!, signal),
+    enabled: Boolean(id),
+    retry: false,
+  })
+
+  // 相关推荐：详情就绪后再取，避免无效请求
+  const { data: relatedData } = useQuery({
+    queryKey: ['article', id, 'related'],
+    queryFn: ({ signal }) => articleApi.fetchRelatedArticles(id!, 4, signal),
+    enabled: Boolean(id) && Boolean(detail),
+  })
+
+  const article = useMemo(() => (detail ? toArticleItem(detail, t) : null), [detail, t])
+  const related = useMemo(
+    () => (relatedData ?? []).map(dto => toArticleItem(dto, t)),
+    [relatedData, t],
+  )
+
+  const isNotFound = isError && error instanceof ApiError && error.status === 404
+
+  // 文章不存在：保持原行为回文章中心
+  useEffect(() => {
+    if (isNotFound) navigate('/articles', { replace: true })
+  }, [isNotFound, navigate])
+
+  // 切换文章：重置互动状态并回到顶部（等价原 loadArticle 中的处理）
+  useEffect(() => {
     setLiked(false)
     setBookmarked(false)
-    window.scrollTo({ top: 0, behavior: 'instant' })
-  }
-
-  // 原 onMounted + watch(route.params.id) 合并为 id 变化的 effect（挂载执行一次 + 参数变化重载）
-  useEffect(() => {
-    if (id) loadArticle(id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
+
+  useEffect(() => {
+    if (detail) window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [detail])
 
   const goToList = () => navigate('/articles/list')
   const openRelated = (relatedId: number) => navigate(`/articles/${relatedId}`)
+
+  if (!id || isNotFound) return null
+
+  // 首次加载：详情版式骨架
+  if (isPending) {
+    return (
+      <div className="article-detail-page">
+        <ReadProgress />
+        <div className="article-state">
+          <Skeleton active title={{ width: '72%' }} paragraph={{ rows: 2 }} />
+          <Skeleton active title={false} paragraph={{ rows: 8 }} />
+        </div>
+      </div>
+    )
+  }
+
+  // 加载失败：提示 + 重试
+  if (isError) {
+    return (
+      <div className="article-detail-page">
+        <ReadProgress />
+        <div className="article-state">
+          <Result
+            status="error"
+            title={t('common.loadFailed')}
+            extra={
+              <Button type="primary" onClick={() => void refetch()}>
+                {t('common.retry')}
+              </Button>
+            }
+          />
+        </div>
+      </div>
+    )
+  }
 
   if (!article) return null
 

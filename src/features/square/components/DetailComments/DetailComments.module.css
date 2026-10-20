@@ -63,6 +63,56 @@
   outline: none;
 }
 
+/* antd Input.TextArea 适配：沿用编辑式柔和底色 */
+.commentInputArea :global(.ant-input) {
+  padding: 14px 16px;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-regular);
+  background: var(--brand-primary-wash);
+}
+
+.commentInputArea :global(.ant-input:hover),
+.commentInputArea :global(.ant-input:focus) {
+  border-color: var(--brand-primary);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 8%, transparent);
+}
+
+.commentInputArea :global(.ant-input::placeholder) {
+  color: var(--text-faint);
+}
+
+/* 回复目标提示条 */
+.replyChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--brand-primary-faint);
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  font-size: 12px;
+  color: var(--brand-primary);
+}
+
+.replyCancel {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.replyCancel:hover {
+  color: var(--brand-primary);
+}
+
 .commentTextarea:focus {
   border-color: var(--brand-primary);
   background: var(--bg-card);
@@ -181,6 +231,49 @@
   font-size: 14px;
 }
 
+/* 评论加载骨架 */
+.commentsSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-top: 8px;
+}
+
+/* 评论操作行：点赞 / 回复 / 回复标记 */
+.commentActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.commentReplyBtn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.2s ease;
+}
+
+.commentReplyBtn:hover {
+  color: var(--brand-primary);
+}
+
+.replyMark {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+/* 回复层级：略微缩进 + 左侧细线 */
+.commentItem.isReply {
+  margin-left: 54px;
+  padding-left: 16px;
+  border-left: 2px solid var(--border-light);
+}
+
 @media (width <= 768px) {
   .commentsSection {
     padding-left: 20px;
@@ -190,6 +283,10 @@
   .commentInputWrap {
     flex-direction: column;
     gap: 10px;
+  }
+
+  .commentItem.isReply {
+    margin-left: 20px;
   }
 }
 
