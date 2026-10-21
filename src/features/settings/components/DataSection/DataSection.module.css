@@ -99,7 +99,7 @@
   text-transform: uppercase;
   color: var(--text-heading);
 }
-.colTitleDanger { color: var(--danger-600); }
+.colTitleDanger { color: var(--status-danger); }
 
 .colDeck {
   margin: 0 0 18px;
@@ -159,8 +159,8 @@
 }
 
 .editorialBtnDanger {
-  background: var(--danger-600);
-  border-color: var(--danger-600);
+  background: var(--status-danger);
+  border-color: var(--status-danger);
 }
 
 .editorialBtnDanger:hover {
@@ -233,13 +233,14 @@
   border-color: var(--brand-primary-dark) !important;
 }
 
+/* 暗色下改为描边样式（避免大面积高饱和色块）；色值本体由 --status-danger 双态切换 */
 :global(html.dark .settings-page) .editorialBtnDanger {
   background: transparent !important;
   color: var(--status-danger) !important;
-  border-color: color-mix(in srgb, var(--danger-500) 40%, transparent) !important;
+  border-color: color-mix(in srgb, var(--status-danger) 40%, transparent) !important;
 }
 
 :global(html.dark .settings-page) .editorialBtnDanger:hover {
-  background: color-mix(in srgb, var(--danger-500) 12%, transparent) !important;
-  border-color: var(--danger-500) !important;
+  background: color-mix(in srgb, var(--status-danger) 12%, transparent) !important;
+  border-color: var(--status-danger) !important;
 }

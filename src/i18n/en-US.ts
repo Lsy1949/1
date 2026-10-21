@@ -7,6 +7,7 @@ export default {
     group: { mentalScales: 'Mental Scales', careerScales: 'Career Scales', hotPicks: 'Hot Picks', browseByCategory: 'Browse by Category', featuredActivities: 'Featured Activities', professionalService: 'Professional Service', aiColumn: 'AI Zone', counselingSupport: 'Counseling Support' },
     item: { phq9: 'Depression (PHQ-9)', gad7: 'Anxiety (GAD-7)', pss: 'Perceived Stress (PSS)', riasec: 'Holland Interest (RIASEC)', mbti: 'Personality (MBTI)', daily: 'Daily Picks', featured: 'Featured Stories', articleList: 'All Articles', psychology: 'Mental Health', career: 'Career Guide', stories: 'Growth Stories', timeCapsule: 'Time Capsule', square: 'Community Square', booking: 'Book a Session', aiConsult: 'AI Counselor', aiCompanion: 'AI Companion', consultants: 'Our Counselors', notice: 'Counseling Guide', faq: 'FAQ' },
     search: 'Search',
+    documentTitle: 'Career Journey - Mental Health & Career Planning Platform',
     theme: { light: 'Light', dark: 'Dark', auto: 'System' },
     user: { login: 'Log in', guest: 'Guest', profile: 'Profile', settings: 'Settings', logout: 'Log out' },
     mobile: { menuTitle: 'Menu', enterCenter: 'Go to Assessment Home', appearance: 'Appearance', language: 'Language' }
@@ -21,11 +22,16 @@ export default {
     optional: 'Optional', required: '* Required',
     detail: 'Details', close: 'Close', all: 'All'
   },
+  a11y: {
+    themeSwitched: 'Theme switched to {theme}',
+    langSwitched: 'Language switched to {lang}'
+  },
   home: {
     carousel: {
       exploreTag: 'Discover',
       learnMore: 'Learn More',
       scrollDown: 'Scroll Down',
+      gotoSlide: 'Go to slide {index}',
       preparing: 'Preparing: {text}',
       slide1: { title: 'Professional Mental Health Services', tag: 'Mind Care', desc: 'We provide professional mental health services to help with emotional distress, relationships, and stress management', btn: 'Learn More' },
       slide2: { title: 'Vibrant Activity Center', tag: 'Experience', desc: 'Join psychology salons, lectures and group counseling. Explore yourself through interaction and grow through exchange', btn: 'View Activities' },
@@ -653,6 +659,7 @@ export default {
       forgotDesc: 'Verify your identity to set a new password'
     },
     tabs: { account: 'Account', phone: 'Phone', email: 'Email' },
+    captcha: { refresh: 'Refresh captcha' },
     form: {
       schoolPlaceholder: 'Select school',
       userIdPlaceholder: 'Enter student ID',

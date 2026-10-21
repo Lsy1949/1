@@ -1,7 +1,7 @@
 // 时光胶囊 · 统计栏 + 筛选导航 + 档案列表（左滑删除手势）+ 空状态
 // 纯展示组件：数据由页面下发，删除行为经 onDelete 上抛（页面负责 mutation）
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
-import type { PointerEvent as ReactPointerEvent } from 'react'
+import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react'
 import { App as AntApp } from 'antd'
 import { DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons'
 import { useReveal } from '@/hooks/useReveal'
@@ -76,6 +76,19 @@ function ArchiveEntry({
   const { t } = useI18n()
   const revealRef = useReveal<HTMLDivElement>({ delay: index * 50 })
 
+  // 键盘路径：Enter/Space 等价点击（展开/收起），Delete/Backspace 直接走删除二次确认
+  const handleKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      e.preventDefault()
+      onDelete(item.id)
+      return
+    }
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      onCardClick(item)
+    }
+  }
+
   return (
     <div ref={revealRef} className={styles.archiveEntry}>
       {/* 大号背景编号 */}
@@ -86,10 +99,13 @@ function ArchiveEntry({
         className={`${styles.swipeTrack}${noTransition ? ` ${styles.noTransition}` : ''}`}
         style={{ transform: `translateX(${offset}px)` }}
       >
-        {/* 信封式卡片 */}
+        {/* 信封式卡片：role/tabIndex/onKeyDown 提供键盘路径（Enter/Space 打开，Delete/Backspace 删除） */}
         <div
           className={`${styles.envelope} env-${statusKey(item)}`}
+          role="button"
+          tabIndex={0}
           onClick={() => onCardClick(item)}
+          onKeyDown={handleKeyDown}
           onPointerDown={(e) => onPointerDown(e, item)}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
@@ -129,11 +145,19 @@ function ArchiveEntry({
         </div>
       </div>
 
-      {/* 滑出删除面板（delete-panel 为字符串协议类：onPointerDown 中 closest('.delete-panel') 依赖字面量匹配） */}
-      <div className="delete-panel" onClick={() => onDelete(item.id)}>
+      {/* 滑出删除面板（delete-panel 为字符串协议类：onPointerDown 中 closest('.delete-panel') 依赖字面量匹配）
+          原生 button 键盘可达；收起时移出 Tab 序列（面板被卡片遮盖），展开后可聚焦，
+          Enter/Space 触发 click → 父级 deleteCapsule 的 modal.confirm 二次确认 */}
+      <button
+        type="button"
+        className="delete-panel"
+        tabIndex={offset <= -REVEAL_THRESHOLD ? 0 : -1}
+        aria-label={t('capsule.list.delete')}
+        onClick={() => onDelete(item.id)}
+      >
         <DeleteOutlined className={styles.deleteIcon} />
         <span className={styles.deleteText}>{t('capsule.list.delete')}</span>
-      </div>
+      </button>
     </div>
   )
 }

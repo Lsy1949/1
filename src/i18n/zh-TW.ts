@@ -7,6 +7,7 @@ export default {
     group: { mentalScales: '心理量表', careerScales: '職業量表', hotPicks: '熱門推薦', browseByCategory: '分類瀏覽', featuredActivities: '特色活動', professionalService: '專業服務', aiColumn: 'AI 專欄', counselingSupport: '諮詢輔助' },
     item: { phq9: '抑鬱自評 (PHQ-9)', gad7: '焦慮自評 (GAD-7)', pss: '壓力感量表 (PSS)', riasec: '霍蘭德興趣 (RIASEC)', mbti: '性格測試 (MBTI)', daily: '每日精選', featured: '專題報導', articleList: '全部文章', psychology: '心理健康', career: '生涯導航', stories: '成長故事', timeCapsule: '時光膠囊', square: '交流廣場', booking: '預約諮詢', aiConsult: 'AI 諮詢師', aiCompanion: 'AI 伴侶', consultants: '諮詢師簡介', notice: '諮詢須知', faq: '常見問題' },
     search: '搜尋',
+    documentTitle: '生涯心旅 - 心理健康與生涯規劃服務平台',
     theme: { light: '淺色', dark: '深色', auto: '跟隨系統' },
     user: { login: '登入', guest: '訪客', profile: '個人中心', settings: '帳號設定', logout: '退出登入' },
     mobile: { menuTitle: '選單導航', enterCenter: '進入測評中心首頁', appearance: '外觀主題', language: '語言設定' }
@@ -21,11 +22,16 @@ export default {
     optional: '選填', required: '帶 * 為必填',
     detail: '詳情', close: '關閉', all: '全部'
   },
+  a11y: {
+    themeSwitched: '已切換到{theme}主題',
+    langSwitched: '介面語言已切換為{lang}'
+  },
   home: {
     carousel: {
       exploreTag: '探索發現',
       learnMore: '了解詳情',
       scrollDown: 'Scroll Down',
+      gotoSlide: '跳轉到第 {index} 張',
       preparing: '準備：{text}',
       slide1: { title: '專業心理健康服務', tag: '心靈呵護', desc: '我們提供專業的心理健康服務，幫助您解決情緒困擾、人際關係、壓力管理等問題', btn: '了解更多' },
       slide2: { title: '豐富多彩活動中心', tag: '精彩體驗', desc: '參與心理沙龍、講座與團輔活動，在互動中探索自我，在交流中收穫成長', btn: '查看活動' },
@@ -653,6 +659,7 @@ export default {
       forgotDesc: '驗證身份後即可設定新密碼'
     },
     tabs: { account: '帳號密碼', phone: '手機號', email: '郵箱' },
+    captcha: { refresh: '重新整理驗證碼' },
     form: {
       schoolPlaceholder: '請選擇學校',
       userIdPlaceholder: '請輸入學號',

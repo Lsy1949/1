@@ -4,6 +4,7 @@ import { EnvironmentOutlined, MailOutlined, PhoneOutlined, ShareAltOutlined } fr
 import Navbar from '../Navbar'
 import { useLayoutMeta } from '../useLayoutMeta'
 import { AppCommandPalette } from '@/features/command-palette'
+import { LiveAnnouncer } from '@/components/LiveAnnouncer'
 import './AppShell.css'
 
 /**
@@ -25,6 +26,8 @@ export default function AppShell({ children }: { children?: ReactNode }) {
   return (
     <div className="main-layout">
       <div className="grain-overlay" aria-hidden="true" />
+      {/* 读屏播报区（aria-live）：主题/语言等无焦点变化的状态切换由这里播报 */}
+      <LiveAnnouncer />
       {/* 命令面板自行处理选中跳转（等价 Vue 版 @navigate → router.push） */}
       <AppCommandPalette />
       {!hideNavbar && <Navbar />}

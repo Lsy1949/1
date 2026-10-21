@@ -302,11 +302,14 @@ export function Carousel({ slides, onSlideAction, onLearnMore, onScrollDown }: C
         {/* 轮播图导航点 */}
         <div className={styles.carouselIndicators}>
           {slides.map((_slide, index) => (
-            <span
+            <button
+              type="button"
               key={index}
-              className={realIndex === index ? styles.active : ''}
+              className={`${styles.carouselIndicator}${realIndex === index ? ` ${styles.active}` : ''} btn-reset`}
+              aria-label={t('home.carousel.gotoSlide', { index: index + 1 })}
+              aria-current={realIndex === index ? 'true' : undefined}
               onClick={() => goToSlide(index)}
-            ></span>
+            />
           ))}
         </div>
         {/* 轮播图左右箭头 */}
@@ -318,10 +321,15 @@ export function Carousel({ slides, onSlideAction, onLearnMore, onScrollDown }: C
         </button>
 
         {/* 向下滚动指示器 */}
-        <div className={styles.scrollDownIndicator} onClick={onScrollDown}>
+        <button
+          type="button"
+          className={`${styles.scrollDownIndicator} btn-reset`}
+          aria-label={t('home.carousel.scrollDown')}
+          onClick={onScrollDown}
+        >
           <span className={styles.scrollText}>{t('home.carousel.scrollDown')}</span>
           <DownOutlined className={styles.scrollIcon} />
-        </div>
+        </button>
       </div>
     </section>
   )

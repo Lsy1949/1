@@ -4,6 +4,12 @@
  * ============================================================ */
 
 :root {
+  /* ----- 动效 token（design-language.md §3.1） ----- */
+  --ease-standard: cubic-bezier(0.32, 0.72, 0, 1);
+  --duration-fast: 160ms;
+  --duration-base: 280ms;
+  --duration-slow: 360ms;
+
   /* ----- 信息蓝 ----- */
   --color-info: #1890ff;
   --blue-025: #e6f7ff;

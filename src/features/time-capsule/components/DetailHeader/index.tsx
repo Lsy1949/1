@@ -12,10 +12,10 @@ export function DetailHeader({ onBack }: DetailHeaderProps) {
 
   return (
     <header className={styles.pageHeader}>
-      <div className={styles.headerBack} onClick={onBack}>
+      <button type="button" className={`${styles.headerBack} btn-reset`} onClick={onBack}>
         <ArrowLeftOutlined />
         <span>{t('capsule.detail.back')}</span>
-      </div>
+      </button>
       <span className={styles.headerEyebrow}>— Capsule Detail</span>
       <h1 className={styles.headerTitle} dangerouslySetInnerHTML={{ __html: t('capsule.detail.title') }}></h1>
     </header>

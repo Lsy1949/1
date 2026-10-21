@@ -241,8 +241,8 @@
 }
 
 .linkBtnDanger {
-  color: var(--danger-600);
-  border-bottom-color: var(--danger-600);
+  color: var(--status-danger);
+  border-bottom-color: var(--status-danger);
 }
 
 .linkBtnDanger:hover {
@@ -542,14 +542,14 @@
   border-color: var(--brand-primary-bright) !important;
 }
 
+/* 暗色下仅提升边框/底 tint 强度（色值本体由 --status-danger 双态 token 自动切换） */
 :global(html.dark .settings-page) .linkBtnDanger {
-  color: var(--status-danger) !important;
-  border-color: color-mix(in srgb, var(--danger-500) 40%, transparent) !important;
+  border-color: color-mix(in srgb, var(--status-danger) 40%, transparent) !important;
 }
 
 :global(html.dark .settings-page) .linkBtnDanger:hover {
-  background: color-mix(in srgb, var(--danger-500) 12%, transparent) !important;
-  border-color: var(--danger-500) !important;
+  background: color-mix(in srgb, var(--status-danger) 12%, transparent) !important;
+  border-color: var(--status-danger) !important;
 }
 
 :global(html.dark .settings-page) .deviceRow.current {

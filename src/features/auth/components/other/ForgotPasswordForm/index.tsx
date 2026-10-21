@@ -16,6 +16,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons'
 import { useForgotPassword } from '@/features/auth/hooks/useAuth'
+import { useI18n } from '@/i18n'
 import styles from './ForgotPasswordForm.module.css'
 
 interface ForgotPasswordFormProps {
@@ -64,6 +65,7 @@ interface CaptchaFieldProps {
 }
 
 function CaptchaField({ value, onChange, placeholder, canvasRef, onRefresh }: CaptchaFieldProps) {
+  const { t } = useI18n()
   return (
     <div className={styles.captchaInputContainer}>
       <Input
@@ -73,9 +75,14 @@ function CaptchaField({ value, onChange, placeholder, canvasRef, onRefresh }: Ca
         size="large"
         maxLength={4}
       />
-      <div className={styles.captchaImage} onClick={onRefresh}>
+      <button
+        type="button"
+        className={`${styles.captchaImage} btn-reset`}
+        aria-label={t('auth.captcha.refresh')}
+        onClick={onRefresh}
+      >
         <canvas ref={canvasRef} width={100} height={40} />
-      </div>
+      </button>
     </div>
   )
 }

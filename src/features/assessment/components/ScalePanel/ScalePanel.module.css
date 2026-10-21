@@ -92,6 +92,11 @@
   color: var(--text-muted);
 }
 
+/* A3 焦点替代：下划线式输入框聚焦时容器底边变品牌色 */
+.ribbonSearch:focus-within {
+  border-bottom-color: var(--brand-primary);
+}
+
 /* 当前分类小标题 */
 .rowsHeading {
   display: flex;

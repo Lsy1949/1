@@ -12,10 +12,10 @@ export function CreateHeader({ onBack }: CreateHeaderProps) {
 
   return (
     <header className={styles.pageHeader}>
-      <div className={styles.headerBack} onClick={onBack}>
+      <button type="button" className={`${styles.headerBack} btn-reset`} onClick={onBack}>
         <ArrowLeftOutlined />
         <span>{t('capsule.create.back')}</span>
-      </div>
+      </button>
       <span className={styles.headerEyebrow}>{t('capsule.create.eyebrow')}</span>
       <h1 className={styles.headerTitle} dangerouslySetInnerHTML={{ __html: t('capsule.create.title') }}></h1>
       <p className={styles.headerSubtitle}>{t('capsule.create.subtitle')}</p>

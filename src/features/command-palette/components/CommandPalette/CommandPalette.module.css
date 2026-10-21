@@ -66,6 +66,11 @@
   color: var(--text-faint); /* stylelint-disable-line color-no-hex, function-allowed-list */
 }
 
+/* A3 焦点替代：命令面板输入行聚焦时底边变品牌色 */
+.cmdInputRow:focus-within {
+  border-bottom-color: var(--brand-primary);
+}
+
 .cmdEsc {
   font-size: 10px;
   font-weight: 700;

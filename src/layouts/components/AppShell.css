@@ -9,7 +9,7 @@
   width: 100%;
   padding-top: var(--navbar-h, 30px);
   min-height: 100vh;
-  transition: padding-top 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: padding-top var(--duration-base) var(--ease-standard);
 }
 
 .main-content.no-padding {
@@ -69,6 +69,18 @@
   color: var(--brand-primary);
   transition: all 0.3s ease;
   text-decoration: none;
+  position: relative;
+}
+
+/* B3：44×44 命中区（透明伪元素扩展，视觉仍为 36×36） */
+.social-icon::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
 }
 
 .social-icon:hover {

@@ -30,7 +30,7 @@
 }
 
 .secNum.danger {
-  color: var(--danger-500);
+  color: var(--status-danger);
 }
 
 .secTitles {
@@ -57,7 +57,7 @@
 
 /* ============ 危险区 ============ */
 .dangerSection {
-  border-top-color: color-mix(in srgb, var(--danger-500) 20%, transparent);
+  border-top-color: color-mix(in srgb, var(--status-danger) 20%, transparent);
 }
 
 .dangerSection .secTitle {
@@ -78,15 +78,15 @@
 /* Element Plus `plain` 危险按钮的等价视觉（antd danger 默认为实心） */
 .dangerBtn:global(.ant-btn-dangerous) {
   background: transparent;
-  border-color: var(--danger-500);
-  color: var(--danger-500);
+  border-color: var(--status-danger);
+  color: var(--status-danger);
   box-shadow: none;
 }
 
 .dangerBtn:global(.ant-btn-dangerous):hover:not(:disabled),
 .dangerBtn:global(.ant-btn-dangerous):focus-visible {
-  background: var(--danger-500);
-  border-color: var(--danger-500);
+  background: var(--status-danger);
+  border-color: var(--status-danger);
   color: var(--text-inverse, #fff);
 }
 
@@ -127,6 +127,6 @@
 }
 
 :global(html.dark) .dangerSection {
-  border-color: color-mix(in srgb, var(--danger-500) 30%, transparent) !important;
-  background: color-mix(in srgb, var(--danger-500) 5%, transparent) !important;
+  border-color: color-mix(in srgb, var(--status-danger) 30%, transparent) !important;
+  background: color-mix(in srgb, var(--status-danger) 5%, transparent) !important;
 }

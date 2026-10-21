@@ -10,7 +10,7 @@
   align-items: center;
   opacity: 0;
   pointer-events: none;
-  transition: all 0.3s ease;
+  transition: opacity var(--duration-fast) var(--ease-standard);
 }
 
 .backToTopContainer.visible {
@@ -30,7 +30,6 @@
   align-items: center;
   box-shadow: 0 4px 16px color-mix(in srgb, var(--brand-primary) 30%, transparent);
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   overflow: hidden;
 }
@@ -42,7 +41,6 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  transition: transform 0.3s ease;
 }
 
 .mainIcon {
@@ -69,20 +67,14 @@
 }
 
 .dot {
+  display: block;
   width: 3px;
   height: 3px;
   background: var(--text-inverse, #fff);
   border-radius: 50%;
 }
 
-.backToTopBtn:hover {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-primary) 40%, transparent);
-}
-
-.backToTopBtn:hover .btnContent {
-  transform: translateY(-2px);
-}
+/* 触发器外观恒定：不再提供 hover 位移/阴影变化（A4） */
 
 .navMenu {
   position: absolute;
@@ -97,17 +89,26 @@
   min-width: 160px;
   border: 1px solid var(--border-light);
   transform-origin: bottom right;
-  /* <transition name="fade-slide"> → is-open 类切换（等价 enter-from/leave-to 隐藏态） */
+  /* 非模态菜单：显隐完全由 open 状态驱动（对齐 §3.1 交互反馈 fast） */
   opacity: 0;
-  transform: translateY(20px) scale(0.8);
+  transform: translateY(8px) scale(0.96);
+  visibility: hidden;
   pointer-events: none;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard),
+    visibility 0s linear var(--duration-fast);
 }
 
 .navMenu.isOpen {
   opacity: 1;
   transform: translateY(0) scale(1);
+  visibility: visible;
   pointer-events: auto;
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard),
+    visibility 0s linear 0s;
 }
 
 .navMenuTitle {
@@ -120,13 +121,50 @@
   text-transform: uppercase;
 }
 
+.menuList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* 入场 stagger：6 项依次淡入上移，每项 30ms（reduced-motion 由全局兜底清零 delay） */
+.menuList > li {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+  transition-delay: 0ms;
+}
+
+.navMenu.isOpen .menuList > li {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: var(--item-delay, 0ms);
+}
+
+.navMenu.isOpen .menuList > li:nth-child(1) { --item-delay: 0ms; }
+.navMenu.isOpen .menuList > li:nth-child(2) { --item-delay: 30ms; }
+.navMenu.isOpen .menuList > li:nth-child(3) { --item-delay: 60ms; }
+.navMenu.isOpen .menuList > li:nth-child(4) { --item-delay: 90ms; }
+.navMenu.isOpen .menuList > li:nth-child(5) { --item-delay: 120ms; }
+.navMenu.isOpen .menuList > li:nth-child(6) { --item-delay: 150ms; }
+
 .menuItem {
+  width: 100%;
   padding: 10px 16px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
   font-size: 14px;
   font-weight: 500;
   color: var(--text-regular);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    padding-left var(--duration-fast) var(--ease-standard);
   text-align: left;
   white-space: nowrap;
   border-radius: 12px;
@@ -136,18 +174,22 @@
   margin-bottom: 2px;
 }
 
-.menuItem:last-child {
+.menuList > li:last-child .menuItem {
   margin-bottom: 0;
 }
 
 .itemDot {
+  display: block;
+  flex-shrink: 0;
   width: 5px;
   height: 5px;
   background: var(--brand-primary);
   border-radius: 50%;
   opacity: 0;
   transform: scale(0);
-  transition: all 0.3s ease;
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
 }
 
 .menuItem:hover {

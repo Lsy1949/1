@@ -27,7 +27,7 @@
 .sectionTitle {
   font-size: 13px;
   font-weight: 700;
-  color: var(--ink-900);
+  color: var(--text-heading);
   margin-bottom: 18px;
   display: flex;
   align-items: baseline;
@@ -55,7 +55,7 @@
 }
 
 .requiredMark {
-  color: var(--danger-500);
+  color: var(--status-danger);
   font-size: 16px;
   margin-right: 4px;
   font-weight: bold;
@@ -96,8 +96,8 @@
   background: transparent;
   border-radius: 0;
   border: none;
-  border-bottom: 1px solid var(--mist-050);
-  color: var(--ink-800);
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
   outline: none;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
@@ -135,7 +135,7 @@
   padding: 10px 0;
   background: transparent;
   border-radius: 0;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
   cursor: pointer;
   transition: border-color 0.3s ease;
 }
@@ -146,7 +146,7 @@
 
 .dateText {
   font-size: 15px;
-  color: var(--ink-800);
+  color: var(--text-primary);
   letter-spacing: 0.3px;
 }
 
@@ -176,14 +176,14 @@
   padding: 4px 0;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
   border-radius: 0;
   box-shadow: none;
 }
 
 .datePicker :global(.ant-picker-input > input) {
   font-size: 15px;
-  color: var(--ink-800);
+  color: var(--text-primary);
   letter-spacing: 0.3px;
 }
 
@@ -222,7 +222,7 @@
   padding: 20px 16px;
   background: transparent;
   border-radius: 12px;
-  border: 1px solid var(--mist-050);
+  border: 1px solid var(--border-light);
   transition: all 0.3s ease;
   cursor: pointer;
 }
@@ -240,7 +240,7 @@
 
 .methodIcon {
   font-size: 28px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
   margin-bottom: 8px;
 }
 
@@ -250,7 +250,7 @@
 
 .methodText {
   font-size: 14px;
-  color: var(--ink-500);
+  color: var(--text-secondary);
   letter-spacing: 0.3px;
 }
 
@@ -268,7 +268,7 @@
 .commentSetting {
   margin-top: 16px;
   padding-left: 16px;
-  border-left: 2px solid var(--mist-050);
+  border-left: 2px solid var(--border-light);
 }
 
 .contentWrapper {
@@ -306,7 +306,7 @@
   font-size: 13px;
   font-weight: 600;
   line-height: 1;
-  color: var(--ink-600);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
@@ -322,9 +322,15 @@
   padding: 12px 16px !important;
   font-size: 15px;
   line-height: 1.8;
-  color: var(--ink-800);
+  color: var(--text-primary);
   outline: none;
   overflow-y: auto;
+}
+
+/* A3 焦点替代：contentEditable 富文本聚焦时给出品牌色焦环 */
+.wangEditor:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
 }
 
 /* contentEditable 空态占位（原 wangEditor 的 w-e-text-placeholder 视觉等价实现） */
@@ -388,7 +394,7 @@
   padding-bottom: 100%;
   border-radius: 12px;
   overflow: hidden;
-  background: var(--slate-50);
+  background: var(--bg-mute);
 }
 
 .uploadedImage {
@@ -550,12 +556,12 @@
 .infoItem :global(.ant-input) {
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--mist-050);
+  border-bottom: 1px solid var(--border-light);
   border-radius: 0;
   box-shadow: none;
   padding: 8px 0;
   font-size: 15px;
-  color: var(--ink-800);
+  color: var(--text-primary);
 }
 
 .titleItem :global(.ant-input-affix-wrapper-focused),
@@ -648,18 +654,18 @@
 
 .successBigIcon {
   font-size: 56px;
-  color: var(--green-800);
+  color: var(--status-success);
   margin-bottom: 16px;
 }
 
 .successDialogContent h3 {
   font-size: 22px;
   margin-bottom: 10px;
-  color: var(--ink-800);
+  color: var(--text-heading);
 }
 
 .successDialogContent p {
-  color: var(--ink-600);
+  color: var(--text-secondary);
   margin-bottom: 24px;
   line-height: 1.6;
   font-size: 14px;

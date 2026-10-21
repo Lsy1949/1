@@ -5,6 +5,7 @@ import { SettingOutlined } from '@ant-design/icons'
 import { useI18n, type AppLocale } from '@/i18n'
 import { useTheme, type ThemeMode } from '@/hooks/useTheme'
 import { useLocale } from '@/hooks/useLocale'
+import { announce } from '@/components/LiveAnnouncer'
 import styles from './PreferencesSection.module.css'
 
 interface HomeOption {
@@ -26,15 +27,23 @@ export function PreferencesSection() {
     { value: 'articles', label: t('settings.card.preferences.articlesPage') }
   ], [t])
 
+  const localeLabelKeys: Record<AppLocale, string> = {
+    'zh-CN': 'settings.card.preferences.zhCN',
+    'zh-TW': 'settings.card.preferences.zhTW',
+    'en-US': 'settings.card.preferences.enUS'
+  }
+
   // Vue 版 langModel/themeModel 中间 ref 简化：直接受控绑定 locale/themeMode
   function onLangChange(val: AppLocale) {
     setLocale(val)
     message.success(t('settings.card.preferences.languageChanged'))
+    announce(t('a11y.langSwitched', { lang: t(localeLabelKeys[val]) }))
   }
 
   function onThemeChange(val: ThemeMode | 'auto') {
     setThemeMode(val)
     message.success(t('settings.card.preferences.themeChanged'))
+    announce(t('a11y.themeSwitched', { theme: t(`nav.theme.${val}`) }))
   }
 
   return (

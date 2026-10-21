@@ -170,6 +170,11 @@
   font-style: italic;
 }
 
+/* A3 焦点替代：透明输入框聚焦时容器底边变品牌色 */
+.nf-write-box:focus-within {
+  border-bottom-color: var(--brand-primary);
+}
+
 .nf-write-submit {
   background: none;
   border: none;

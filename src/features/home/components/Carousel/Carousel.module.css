@@ -224,7 +224,8 @@
   z-index: 10;
 }
 
-.carouselIndicators span {
+.carouselIndicator {
+  position: relative;
   width: 40px;
   height: 4px;
   border-radius: 2px;
@@ -233,7 +234,23 @@
   transition: all 0.3s ease;
 }
 
-.carouselIndicators span.active {
+/* 44×44 最小命中区：透明伪元素扩展，不改变 40×4 的视觉尺寸 */
+.carouselIndicator::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+}
+
+.carouselIndicator:focus-visible {
+  outline: 2px solid var(--text-inverse, #fff);
+  outline-offset: 6px;
+}
+
+.carouselIndicator.active {
   background: var(--brand-primary);
   width: 60px;
 }

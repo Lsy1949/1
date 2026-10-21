@@ -17,12 +17,13 @@
 
 .registerButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px color-mix(in srgb, var(--blue-400) 45%, transparent);
+  /* 品牌色光晕（原 blue-400 45% 硬值；走 var 保证跟租户色板，透明度纳入阴影预算） */
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--brand-primary) 12%, transparent);
 }
 
 .registerButton:active {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--blue-400) 40%, transparent);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 12%, transparent);
 }
 
 .backToLogin {
@@ -63,7 +64,7 @@
 .captchaImage:hover {
   transform: scale(1.03);
   border-color: var(--blue-400);
-  box-shadow: 0 0 15px color-mix(in srgb, var(--blue-400) 30%, transparent);
+  box-shadow: 0 0 15px color-mix(in srgb, var(--brand-primary) 12%, transparent);
   background: var(--blue-025);
 }
 

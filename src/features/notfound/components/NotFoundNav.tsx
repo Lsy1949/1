@@ -1,7 +1,8 @@
 /**
  * 【business】NotFoundNav —— 404 固定导航栏（品牌 logo + 链接）
- * 链接点击交由父级统一 router.push（等价 emit('navigate', route)）
+ * 导航链接用 react-router <Link> 恢复链接语义；logo 由父级 onNavigate 处理
  */
+import { Link } from 'react-router-dom'
 import { useI18n } from '@/i18n'
 import './NotFoundNav.css'
 
@@ -26,16 +27,14 @@ export function NotFoundNav({ scrolled, dark, onNavigate }: NotFoundNavProps) {
   return (
     <nav className={`nf-nav${scrolled ? ' scrolled' : ''}${dark ? ' is-dark-slide' : ''}`}>
       <div className="nf-nav-inner">
-        <span className="nf-nav-logo" onClick={() => onNavigate?.('/')}>生涯心旅</span>
+        <button type="button" className="nf-nav-logo btn-reset" onClick={() => onNavigate?.('/')}>
+          生涯心旅
+        </button>
         <div className="nf-nav-links">
           {navLinks.map((link) => (
-            <a
-              key={link.key}
-              className="nf-nav-link"
-              onClick={() => onNavigate?.(link.route)}
-            >
+            <Link key={link.key} className="nf-nav-link" to={link.route}>
               {t('notFound.nav.' + link.key)}
-            </a>
+            </Link>
           ))}
         </div>
       </div>

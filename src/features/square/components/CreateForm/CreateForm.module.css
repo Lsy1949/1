@@ -510,7 +510,7 @@
 }
 
 :global(html.dark .square-create-page) .deleteBtn {
-  background: var(--danger-500) !important;
+  background: var(--status-danger) !important;
   color: var(--text-inverse, #fff) !important;
 }
 

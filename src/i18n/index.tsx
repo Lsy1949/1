@@ -68,9 +68,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     setLocaleState(next)
   }, [])
 
-  // 等价 Vue 版挂载时同步 <html lang> 的副作用
+  // 等价 Vue 版挂载时同步 <html lang> 的副作用；顺带同步 document.title（初挂载 + 切换）
   useEffect(() => {
     document.documentElement.setAttribute('lang', locale)
+    document.title = createT(locale)('nav.documentTitle')
   }, [locale])
 
   const value = useMemo<I18nContextValue>(

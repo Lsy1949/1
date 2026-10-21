@@ -12,6 +12,54 @@
   border: none;
 }
 
+/* ============================================================
+   prefers-reduced-motion 全局兜底（design-language.md §3.3）
+   用户开启「减少动态效果」时：所有动画/过渡瞬时完成、
+   平滑滚动退化为瞬时跳转。JS 侧滚动另见 utils/motion.ts。
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   div → button 迁移工具类（design-language.md §4.2）
+   抹掉 UA 默认样式，保留布局/字体继承，视觉与迁移前一致。
+   用 :where() 把选择器特异度压到 0：组件原有 .mobile-grid-item /
+   .mobile-center-link 等规则（特异度 0,1,0）仍可覆盖 border/background。
+   ============================================================ */
+button:where(.btn-reset) {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+
+/* 读屏专用隐藏容器（aria-live 播报区）：不可用 display:none / visibility:hidden */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 body {
   margin: 0;
   padding: 0;

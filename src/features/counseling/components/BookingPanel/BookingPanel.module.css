@@ -52,8 +52,8 @@
   box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-primary) 6%, transparent);
 }
 .stepBlock:hover::before { height: 60%; }
-.stepBlock.error { background: color-mix(in srgb, var(--danger-500) 3%, transparent); }
-.stepBlock.error::before { background: var(--danger-500); height: 60%; }
+.stepBlock.error { background: color-mix(in srgb, var(--status-danger) 3%, transparent); }
+.stepBlock.error::before { background: var(--status-danger); height: 60%; }
 
 .stepMarker { position: relative; }
 
@@ -67,7 +67,7 @@
   display: block;
   opacity: 0.85;
 }
-.stepBlock.error .stepNum { color: var(--danger-500); opacity: 1; }
+.stepBlock.error .stepNum { color: var(--status-danger); opacity: 1; }
 
 .stepBody { min-width: 0; }
 
@@ -81,11 +81,11 @@
   align-items: center;
   gap: 4px;
 }
-.stepBlock.error .stepTitle { color: var(--danger-500); }
+.stepBlock.error .stepTitle { color: var(--status-danger); }
 
 .stepTitle em {
   font-style: normal;
-  color: var(--danger-500);
+  color: var(--status-danger);
   font-size: 16px;
   margin-left: 4px;
 }
@@ -222,7 +222,7 @@
 }
 
 .formHint em {
-  color: var(--danger-500);
+  color: var(--status-danger);
   font-style: normal;
   font-weight: 700;
 }
@@ -368,7 +368,7 @@
 .mbStatus:global(.s-pending) { color: var(--status-warning); background: color-mix(in srgb, var(--status-warning) 10%, transparent); }
 .mbStatus:global(.s-confirmed) { color: var(--brand-primary); background: color-mix(in srgb, var(--brand-primary) 10%, transparent); }
 .mbStatus:global(.s-completed) { color: var(--text-muted); background: var(--bg-mute); }
-.mbStatus:global(.s-cancelled) { color: var(--danger-500); background: color-mix(in srgb, var(--danger-500) 10%, transparent); }
+.mbStatus:global(.s-cancelled) { color: var(--status-danger); background: color-mix(in srgb, var(--status-danger) 10%, transparent); }
 
 .mbInfo { font-size: 12px; color: var(--text-faint); letter-spacing: 0.2px; }
 .mbActions { margin-top: 10px; }

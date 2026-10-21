@@ -33,7 +33,7 @@
   --border-blue: #d0e7ff;
   --shadow-soft: 0 2px 8px color-mix(in srgb, var(--brand-primary) 6%, transparent);
   --shadow-medium: 0 4px 16px color-mix(in srgb, var(--brand-primary) 8%, transparent);
-  --shadow-hover: 0 20px 40px color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  --shadow-hover: 0 20px 40px color-mix(in srgb, var(--brand-primary) 8%, transparent);
   --navbar-bg: rgb(255, 255, 255, 0.98);
   --navbar-bg-blur: rgb(255, 255, 255, 0.8);
 

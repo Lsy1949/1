@@ -79,7 +79,7 @@
   padding: 16px 20px 16px 0;
   cursor: pointer;
   position: relative;
-  transition: opacity 0.25s ease;
+  transition: opacity var(--duration-fast) var(--ease-standard);
   opacity: 0.4;
 }
 
@@ -99,7 +99,7 @@
   width: 0;
   height: 2px;
   background: var(--brand-primary);
-  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: width var(--duration-base) var(--ease-standard);
 }
 
 .navItem.active::after {
@@ -145,7 +145,7 @@
   position: relative;
   border-bottom: 1px solid var(--border-light);
   overflow: hidden;
-  transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--duration-slow) var(--ease-standard);
 }
 
 /* 大号背景编号 */
@@ -164,7 +164,7 @@
   user-select: none;
   z-index: 0;
   font-family: Georgia, serif;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--duration-fast) var(--ease-standard);
 }
 
 .archiveEntry:hover .entryBgNum {
@@ -176,7 +176,7 @@
   position: relative;
   z-index: 2;
   background: var(--brand-primary-wash);
-  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform var(--duration-slow) var(--ease-standard);
 }
 
 .swipeTrack.noTransition {
@@ -191,11 +191,17 @@
   padding: 24px 8px 24px 0;
   cursor: pointer;
   position: relative;
-  transition: padding 0.3s ease;
+  transition: padding var(--duration-base) var(--ease-standard);
 }
 
 .envelope:hover {
   padding-left: 16px;
+}
+
+/* 键盘聚焦环（仅 :focus-visible，鼠标点击不出现） */
+.envelope:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
 }
 
 /* 信封顶部虚线 */
@@ -209,7 +215,7 @@
   background-size: 8px 1px;
   background-repeat: repeat-x;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--duration-fast) var(--ease-standard);
 }
 
 .envelope:hover .envFlap {
@@ -233,7 +239,7 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.5px;
   font-family: Georgia, serif;
-  transition: color 0.3s ease;
+  transition: color var(--duration-fast) var(--ease-standard);
 }
 
 .envelope:hover .envSerial {
@@ -264,7 +270,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: transform 0.3s ease;
+  transition: transform var(--duration-fast) var(--ease-standard);
 }
 
 .envelope:hover .envTitle {
@@ -358,14 +364,17 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  background: var(--danger-500);
+  background: var(--status-danger);
   color: var(--text-inverse, #fff);
   cursor: pointer;
-  transition: background 0.2s ease;
+  /* button 化后抹平 UA 字体差异，视觉零变化 */
+  font: inherit;
+  transition: background var(--duration-fast) var(--ease-standard);
 }
 
+/* hover 压暗一档保持反馈层级：用 --text-heading（近黑）混色，不引入字面色值 */
 :global(.delete-panel:hover) {
-  background: var(--danger-600);
+  background: color-mix(in srgb, var(--status-danger) 85%, var(--text-heading));
 }
 
 .deleteIcon {
@@ -471,7 +480,7 @@
   letter-spacing: 2px;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--duration-fast) var(--ease-standard);
   font-family: inherit;
   box-shadow: 0 6px 18px color-mix(in srgb, var(--brand-primary) 22%, transparent);
 }
@@ -485,7 +494,7 @@
 }
 
 .btnArrow {
-  transition: transform 0.3s ease;
+  transition: transform var(--duration-fast) var(--ease-standard);
 }
 
 .emptyBtn:hover .btnArrow {

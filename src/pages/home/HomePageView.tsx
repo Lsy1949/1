@@ -16,6 +16,7 @@ import { Carousel, Marquee, NewsSection, AboutSection, ContactSection, BackTop }
 // AI 客服悬浮窗（Vue 版 <AiAssistantFab />，全局浮动于首页）
 import { AssistantFab } from '@/features/ai'
 import type { CarouselSlide } from '@/features/home'
+import { scrollBehavior } from '@/utils/motion'
 import './HomePageView.css'
 
 // Vue 命名路由 → react-router 路径（home→'/'、articles→'/articles'、assessment→'/assessment'、
@@ -63,12 +64,12 @@ export function HomePageView() {
 
   // 「了解我们」→ 滚动到关于区块
   const onLearnMore = () => {
-    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })
+    document.getElementById('about')?.scrollIntoView({ behavior: scrollBehavior() })
   }
 
   // 下滚指示 → 滚动到最新动态
   const onScrollDown = () => {
-    document.getElementById('news')?.scrollIntoView({ behavior: 'smooth' })
+    document.getElementById('news')?.scrollIntoView({ behavior: scrollBehavior() })
   }
 
   // 阅读动态 → 文章中心（保持原跳转行为）
@@ -87,7 +88,7 @@ export function HomePageView() {
       // 只有在顶部区域且向下滚动时触发
       if (window.scrollY < 10 && e.deltaY > 0) {
         wheelLockRef.current = true
-        document.getElementById('news')?.scrollIntoView({ behavior: 'smooth' })
+        document.getElementById('news')?.scrollIntoView({ behavior: scrollBehavior() })
         lockTimer = setTimeout(() => { wheelLockRef.current = false }, 800)
       }
     }

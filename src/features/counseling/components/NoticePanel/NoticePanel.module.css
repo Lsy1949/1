@@ -271,15 +271,15 @@
   gap: 12px;
   margin-top: 18px;
   padding: 12px 16px;
-  background: color-mix(in srgb, var(--danger-500) 5%, transparent);
-  border: 1px solid color-mix(in srgb, var(--danger-500) 15%, transparent);
-  border-left: 3px solid var(--danger-500);
+  background: color-mix(in srgb, var(--status-danger) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--status-danger) 15%, transparent);
+  border-left: 3px solid var(--status-danger);
   border-radius: 10px;
   font-size: 12.5px;
   color: var(--status-danger);
   line-height: 1.65;
 }
-.noticeWarn :global(.anticon) { flex-shrink: 0; color: var(--danger-500); font-size: 16px; margin-top: 2px; }
+.noticeWarn :global(.anticon) { flex-shrink: 0; color: var(--status-danger); font-size: 16px; margin-top: 2px; }
 
 .noticeWarn.info {
   background: color-mix(in srgb, var(--brand-primary) 5%, transparent);
@@ -449,8 +449,8 @@
 }
 
 :global(html.dark) .noticeWarn {
-  background: color-mix(in srgb, var(--danger-500) 12%, transparent) !important;
-  border-color: color-mix(in srgb, var(--danger-500) 25%, transparent) !important;
+  background: color-mix(in srgb, var(--status-danger) 12%, transparent) !important;
+  border-color: color-mix(in srgb, var(--status-danger) 25%, transparent) !important;
 }
 
 :global(html.dark) .noticeGrid .noticeSection,

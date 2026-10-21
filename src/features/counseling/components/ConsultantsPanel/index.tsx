@@ -155,28 +155,42 @@ export function ConsultantsPanel({ counselors, specialties, onBook }: Consultant
       {/* 心理老师列表：横向编辑式行 */}
       <div ref={rowsRef} className={styles.counselorRows}>
         {filteredConsultants.map((c, i) => (
-          <div key={c.id} className={styles.counselorRow} onClick={() => openCounselorDetail(c)}>
+          <div
+            key={c.id}
+            className={styles.counselorRow}
+            onClick={(e) => {
+              // 整行鼠标点击打开详情；按钮内部（rowMain/rowBook）自行处理，不重复触发
+              if ((e.target as HTMLElement).closest('button')) return
+              openCounselorDetail(c)
+            }}
+          >
             <div className={styles.rowNumber}>
               <span className={styles.num}>{String(i + 1).padStart(2, '0')}</span>
             </div>
             <div className={`${styles.rowAvatar} ${ACCENT_CLASS[c.accentKey]}`}>
               {c.name[0]}
             </div>
-            <div className={styles.rowMain}>
-              <div className={styles.rowTitleWrap}>
-                <h3 className={styles.rowTitle}>{c.name}</h3>
+            {/* 行主按钮：承接原 rowMain 内容，原生 button 自带键盘与焦点语义（A2 修复）。
+                <button> 内容模型只允许 phrasing content，内部块级一律用 span + CSS display 控制（视觉 1:1） */}
+            <button
+              type="button"
+              className={`${styles.rowMain} btn-reset`}
+              onClick={() => openCounselorDetail(c)}
+            >
+              <span className={styles.rowTitleWrap}>
+                <span className={styles.rowTitle}>{c.name}</span>
                 <span className={styles.rowTitleSub}>{c.title}</span>
                 <span className={styles.rowFree}>{t('counseling.freeTag')}</span>
-              </div>
-              <p className={styles.rowDesc}>{c.intro}</p>
-              <div className={styles.rowTags}>
+              </span>
+              <span className={styles.rowDesc}>{c.intro}</span>
+              <span className={styles.rowTags}>
                 {c.specialties.map(sp => (
                   <span key={sp} className={styles.rowTag}>
                     {sp}
                   </span>
                 ))}
-              </div>
-            </div>
+              </span>
+            </button>
             <div className={styles.rowMeta}>
               <span className={styles.metaRating}>
                 <StarOutlined />

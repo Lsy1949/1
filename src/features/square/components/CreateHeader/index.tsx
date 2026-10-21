@@ -12,10 +12,10 @@ export function CreateHeader({ onBack }: CreateHeaderProps) {
 
   return (
     <header className={styles.pageHeader}>
-      <div className={styles.headerBack} onClick={onBack}>
+      <button type="button" className={`${styles.headerBack} btn-reset`} onClick={onBack}>
         <ArrowLeftOutlined />
         <span>{t('square.create.back')}</span>
-      </div>
+      </button>
       <span className={styles.headerEyebrow}>{t('square.create.eyebrow')}</span>
       {/* 原 v-html($t('square.create.title'))，title 含 <em> 标签、来自本地 i18n，内容可信 */}
       <h1 className={styles.headerTitle} dangerouslySetInnerHTML={{ __html: t('square.create.title') }}></h1>

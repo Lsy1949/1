@@ -116,7 +116,7 @@
   color: var(--brand-primary);
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--duration-fast) var(--ease-standard);
   padding: 8px 16px;
   border-radius: 12px;
   white-space: nowrap;
@@ -147,7 +147,7 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--duration-fast) var(--ease-standard);
   position: relative;
   padding: 8px 0;
   opacity: 0.5;
@@ -173,7 +173,7 @@
   height: 2px;
   background: var(--brand-primary);
   transform: scaleX(0);
-  transition: transform 0.3s ease;
+  transition: transform var(--duration-base) var(--ease-standard);
 }
 
 .ribbon-item:hover {
@@ -216,7 +216,7 @@
   gap: 12px;
   width: 100%;
   max-width: 360px;
-  transition: border-color 0.3s ease;
+  transition: border-color var(--duration-fast) var(--ease-standard);
 }
 
 .search-box:focus-within {

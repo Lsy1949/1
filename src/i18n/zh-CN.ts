@@ -41,6 +41,7 @@ export default {
       faq: '常见问题'
     },
     search: '搜索',
+    documentTitle: '生涯心旅 - 心理健康与生涯规划服务平台',
     theme: { light: '浅色', dark: '深色', auto: '跟随系统' },
     user: { login: '登录', guest: '游客', profile: '个人中心', settings: '账号设置', logout: '退出登录' },
     mobile: { menuTitle: '菜单导航', enterCenter: '进入测评中心首页', appearance: '外观主题', language: '语言设置' }
@@ -55,11 +56,16 @@ export default {
     optional: '选填', required: '带 * 为必填',
     detail: '详情', close: '关闭', all: '全部'
   },
+  a11y: {
+    themeSwitched: '已切换到{theme}主题',
+    langSwitched: '界面语言已切换为{lang}'
+  },
   home: {
     carousel: {
       exploreTag: '探索发现',
       learnMore: '了解详情',
       scrollDown: 'Scroll Down',
+      gotoSlide: '跳转到第 {index} 张',
       preparing: '准备：{text}',
       slide1: { title: '专业心理健康服务', tag: '心灵呵护', desc: '我们提供专业的心理健康服务，帮助您解决情绪困扰、人际关系、压力管理等问题', btn: '了解更多' },
       slide2: { title: '丰富多彩活动中心', tag: '精彩体验', desc: '参与心理沙龙、讲座与团辅活动，在互动中探索自我，在交流中收获成长', btn: '查看活动' },
@@ -687,6 +693,7 @@ export default {
       forgotDesc: '验证身份后即可设置新密码'
     },
     tabs: { account: '账号密码', phone: '手机号', email: '邮箱' },
+    captcha: { refresh: '刷新验证码' },
     form: {
       schoolPlaceholder: '请选择学校',
       userIdPlaceholder: '请输入学号',
