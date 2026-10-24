@@ -9,20 +9,20 @@ import type { BookingCreateDTO, BookingDTO, CounselingInfoDTO } from '../types'
 
 /** 咨询中心只读数据（类型 / 专长 / 老师 / FAQ） */
 export function fetchCounselingInfo(signal?: AbortSignal): Promise<CounselingInfoDTO> {
-  return get<CounselingInfoDTO>('/api/counseling/info', { signal })
+  return get<CounselingInfoDTO>('counseling/info', { signal })
 }
 
 /** 我的预约列表（按创建时间倒序） */
 export function fetchMyBookings(signal?: AbortSignal): Promise<BookingDTO[]> {
-  return get<BookingDTO[]>('/api/counseling/bookings', { signal })
+  return get<BookingDTO[]>('counseling/bookings', { signal })
 }
 
 /** 提交预约 */
 export function createBooking(input: BookingCreateDTO): Promise<BookingDTO> {
-  return post<BookingDTO>('/api/counseling/bookings', input)
+  return post<BookingDTO>('counseling/bookings', input)
 }
 
 /** 取消预约（返回更新后的实体） */
 export function cancelBooking(id: number): Promise<BookingDTO> {
-  return patch<BookingDTO>(`/api/counseling/bookings/${id}/cancel`)
+  return patch<BookingDTO>(`counseling/bookings/${id}/cancel`)
 }

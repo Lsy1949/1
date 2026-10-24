@@ -22,7 +22,7 @@ export function fetchCapsules(
   if (query.openDateFrom) params.openDateFrom = query.openDateFrom
   if (query.openDateTo) params.openDateTo = query.openDateTo
 
-  return get<CapsuleListItemDTO[]>('/api/capsules', { params, signal })
+  return get<CapsuleListItemDTO[]>('capsules', { params, signal })
 }
 
 /** 胶囊详情（不存在时后端返回 404） */
@@ -30,15 +30,15 @@ export function fetchCapsuleDetail(
   id: number | string,
   signal?: AbortSignal,
 ): Promise<CapsuleDetailDTO> {
-  return get<CapsuleDetailDTO>(`/api/capsules/${id}`, { signal })
+  return get<CapsuleDetailDTO>(`capsules/${id}`, { signal })
 }
 
 /** 删除胶囊（成功返回 null） */
 export function deleteCapsule(id: number | string): Promise<null> {
-  return del<null>(`/api/capsules/${id}`)
+  return del<null>(`capsules/${id}`)
 }
 
 /** 新建胶囊（返回创建成功的完整实体） */
 export function createCapsule(input: CapsuleCreateDTO): Promise<CapsuleDetailDTO> {
-  return post<CapsuleDetailDTO>('/api/capsules', input)
+  return post<CapsuleDetailDTO>('capsules', input)
 }

@@ -585,7 +585,7 @@ export function CreateForm({ onSubmit, isSubmitting }: CreateFormProps) {
         width="auto"
         centered
         styles={{
-          content: { background: 'transparent', boxShadow: 'none' },
+          container: { background: 'transparent', boxShadow: 'none' },
         }}
       >
         {previewSrc && (

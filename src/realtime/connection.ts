@@ -10,7 +10,7 @@ import type { RealtimeEnvelope, ServerEventMap, ServerEventName } from './events
  * 全局唯一 HubConnection 工厂（禁止组件内 new HubConnectionBuilder）。
  *
  * - 自动重连：withAutomaticReconnect([0, 2000, 5000, 10000])，四次失败后停止
- * - 鉴权：accessTokenFactory 惰性读取 userStore.token（重连时取最新值）
+ * - 鉴权：cookie 自动携带（withCredentials 语义，契约 §0.1）；不再注入 accessToken
  * - 状态：全部同步到 realtime store；连接/断开同时经 emitter 广播
  * - 推送：按 ServerEventMap 统一注册 → 更新 store + 广播信封
  */
@@ -78,9 +78,10 @@ export function getConnection(): HubConnection {
   // 未配置时传入空串，signalr 会给出与传 undefined 相同的 "Url cannot be empty" 报错
   const hubUrl = import.meta.env.VITE_SIGNALR_HUB_URL ?? ''
   connection = new HubConnectionBuilder()
-    .withUrl(hubUrl, {
-      accessTokenFactory: () => getUserStore().token,
-    })
+    // withCredentials: true = cookie 会话凭证随协商请求/升级请求自动携带。
+    // 注意：@microsoft/signalr 用自己的 HTTP 客户端，不读 axios 配置——
+    // axios 的 withCredentials 对此无效，必须在此显式开启（S3 漏配点）。
+    .withUrl(hubUrl, { withCredentials: true })
     .withAutomaticReconnect([0, 2000, 5000, 10000])
     .configureLogging(import.meta.env.DEV ? LogLevel.Information : LogLevel.Warning)
     .build()
@@ -96,6 +97,9 @@ export function getConnection(): HubConnection {
 
 /** 建立连接（幂等：连接中/已连接时复用同一个 start） */
 export async function start(): Promise<void> {
+  // 空值降级：未配置 Hub URL（mock 开发/未启用实时推送）时静默跳过，
+  // 否则 withUrl('') 会在构建时抛 "url should not be empty"（注释见 getConnection）
+  if (!import.meta.env.VITE_SIGNALR_HUB_URL) return
   const conn = getConnection()
   if (conn.state === 'Connected') return
   if (startingPromise) return startingPromise

@@ -26,111 +26,12 @@ import { announce } from '@/components/LiveAnnouncer'
 import './Navbar.css'
 import logoUrl from '@/assets/logo.svg'
 
-// 导航菜单数据结构（key 与旧路由 name 对应，跳转规则见 handleNav）
-interface NavItem {
-  key: string
-  labelKey: string
-}
+// 导航项：来自后端菜单 DTO（useMenu 已完成 path 校验 + feature 过滤 + 失败 fallback）
+import type { MenuItemDTO } from '@/api'
+import { useMenu } from '@/hooks/useMenu'
 
-interface MenuGroup {
-  titleKey: string
-  items: NavItem[]
-}
-
-interface MenuEntry {
-  labelKey: string
-  key: string
-  children: MenuGroup[]
-}
-
-const menuData: MenuEntry[] = [
-  {
-    labelKey: 'nav.menu.evaluation',
-    key: 'evaluation',
-    children: [
-      {
-        titleKey: 'nav.group.mentalScales',
-        items: [
-          { labelKey: 'nav.item.phq9', key: 'phq9' },
-          { labelKey: 'nav.item.gad7', key: 'gad7' },
-          { labelKey: 'nav.item.pss', key: 'pss' }
-        ]
-      },
-      {
-        titleKey: 'nav.group.careerScales',
-        items: [
-          { labelKey: 'nav.item.riasec', key: 'riasec' },
-          { labelKey: 'nav.item.mbti', key: 'mbti' }
-        ]
-      }
-    ]
-  },
-  {
-    labelKey: 'nav.menu.articles',
-    key: 'articles',
-    children: [
-      {
-        titleKey: 'nav.group.hotPicks',
-        items: [
-          { labelKey: 'nav.item.daily', key: 'daily' },
-          { labelKey: 'nav.item.featured', key: 'featured' }
-        ]
-      },
-      {
-        titleKey: 'nav.group.browseByCategory',
-        items: [
-          { labelKey: 'nav.item.articleList', key: 'article-list' },
-          { labelKey: 'nav.item.psychology', key: 'psychology' },
-          { labelKey: 'nav.item.career', key: 'career' },
-          { labelKey: 'nav.item.stories', key: 'stories' }
-        ]
-      }
-    ]
-  },
-  {
-    labelKey: 'nav.menu.activities',
-    key: 'activities',
-    children: [
-      {
-        titleKey: 'nav.group.featuredActivities',
-        items: [
-          { labelKey: 'nav.item.timeCapsule', key: 'time-capsule' },
-          { labelKey: 'nav.item.square', key: 'square' }
-        ]
-      }
-    ]
-  },
-  {
-    labelKey: 'nav.menu.counseling',
-    key: 'counseling',
-    children: [
-      {
-        titleKey: 'nav.group.professionalService',
-        items: [
-          { labelKey: 'nav.item.booking', key: 'booking' }
-        ]
-      },
-      {
-        titleKey: 'nav.group.aiColumn',
-        items: [
-          { labelKey: 'nav.item.aiConsult', key: 'ai-consult' },
-          { labelKey: 'nav.item.aiCompanion', key: 'ai-companion' }
-        ]
-      },
-      {
-        titleKey: 'nav.group.counselingSupport',
-        items: [
-          { labelKey: 'nav.item.consultants', key: 'consultants' },
-          { labelKey: 'nav.item.notice', key: 'notice' },
-          { labelKey: 'nav.item.faq', key: 'faq' }
-        ]
-      }
-    ]
-  }
-]
-
-/** 旧命名路由 → React Router 路径（对应 Vue router/pc.ts 的 name 映射） */
-function handleNav(navigate: ReturnType<typeof useNavigate>, item: NavItem): void {
+/** 旧命名路由 → React Router 路径（按 key 附加查询参数；默认跳节点 path） */
+function handleNav(navigate: ReturnType<typeof useNavigate>, item: MenuItemDTO): void {
   // 处理时光胶囊跳转（活动中心父菜单与子项都进入胶囊广场）
   if (item.key === 'time-capsule' || item.key === 'activities') {
     navigate('/time-capsule')
@@ -187,13 +88,15 @@ function handleNav(navigate: ReturnType<typeof useNavigate>, item: NavItem): voi
     return
   }
 
-  // 兜底：跳转首页
-  navigate('/')
+  // 兜底：按节点 path 跳转（菜单 DTO 的 path 已通过前端路由表校验）
+  navigate(item.path)
 }
 
 export default function Navbar() {
   const navigate = useNavigate()
   const userStore = useUserStore()
+  // 菜单来自后端（useMenu 内含 path 校验 + feature 过滤 + 失败 fallback）
+  const { items: menuItems } = useMenu()
   const { themeMode, setThemeMode } = useTheme()
   const { locale, setLocale } = useLocale()
   const { t } = useI18n()
@@ -249,7 +152,7 @@ export default function Navbar() {
     }
   }
 
-  const onNavClick = (item: NavItem) => () => {
+  const onNavClick = (item: MenuItemDTO) => () => {
     setShowMobileMenu(false)
     handleNav(navigate, item)
   }
@@ -358,10 +261,10 @@ export default function Navbar() {
     { key: 'logout', icon: <LogoutOutlined />, label: t('nav.user.logout') },
   ]
 
-  // ---------- 移动端抽屉折叠面板（等价 el-collapse accordion） ----------
-  const mobileMenuItems: CollapseProps['items'] = menuData.map((menu) => ({
+  // ---------- 移动端抽屉折叠面板（等价 el-collapse accordion；菜单来自 useMenu，子项为 DTO 扁平列表） ----------
+  const mobileMenuItems: CollapseProps['items'] = menuItems.map((menu) => ({
     key: menu.key,
-    label: <span className="mobile-collapse-title">{t(menu.labelKey)}</span>,
+    label: <span className="mobile-collapse-title">{t(menu.i18nKey)}</span>,
     children: (
       <>
         {/* 增加跳转到中心页面的入口 */}
@@ -370,17 +273,14 @@ export default function Navbar() {
             <DesktopOutlined /> {t('nav.mobile.enterCenter')}
           </button>
         )}
-        {menu.children.map((group) => (
-          <div key={group.titleKey} className="mobile-group">
-            <p className="mobile-group-title">{t(group.titleKey)}</p>
-            {group.items.map((item) => (
-              <button type="button" key={item.key} className="mobile-item btn-reset" onClick={onNavClick(item)}>
-                <span className="mobile-item-dot" />
-                {t(item.labelKey)}
-              </button>
-            ))}
-          </div>
-        ))}
+        <div key={`${menu.key}-group`} className="mobile-group">
+          {(menu.children ?? []).map((item) => (
+            <button type="button" key={item.key} className="mobile-item btn-reset" onClick={onNavClick(item)}>
+              <span className="mobile-item-dot" />
+              {t(item.i18nKey)}
+            </button>
+          ))}
+        </div>
       </>
     ),
   }))
@@ -403,31 +303,28 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <nav className="nav-center desktop-only">
-            {menuData.map((menu) => (
+            {menuItems.map((menu) => (
               <div key={menu.key} className="menu-item-group">
                 <div className="menu-item" onClick={onNavClick(menu)}>
-                  {t(menu.labelKey)}
+                  {t(menu.i18nKey)}
                   <DownOutlined className="arrow-icon" />
                 </div>
-                {/* Mega Menu */}
+                {/* Mega Menu（子项为 DTO 扁平列表，单列渲染） */}
                 <div className="mega-menu">
                   <div className="mega-menu-inner">
-                    {menu.children.map((group) => (
-                      <div key={group.titleKey} className="mega-column">
-                        <h4 className="mega-title">{t(group.titleKey)}</h4>
-                        <ul className="mega-list">
-                          {group.items.map((item) => (
-                            <li
-                              key={item.key}
-                              className="mega-item"
-                              onClick={onNavClick(item)}
-                            >
-                              {t(item.labelKey)}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
+                    <div key={`${menu.key}-column`} className="mega-column">
+                      <ul className="mega-list">
+                        {(menu.children ?? []).map((item) => (
+                          <li
+                            key={item.key}
+                            className="mega-item"
+                            onClick={onNavClick(item)}
+                          >
+                            {t(item.i18nKey)}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -450,7 +347,7 @@ export default function Navbar() {
               {/* Theme Toggle Dropdown */}
               <Dropdown
                 trigger={['click']}
-                overlayClassName="nav-dropdown-popper"
+                classNames={{ root: 'nav-dropdown-popper' }}
                 menu={{
                   items: themeMenuItems,
                   selectable: true,
@@ -466,7 +363,7 @@ export default function Navbar() {
               {/* Locale Toggle Dropdown */}
               <Dropdown
                 trigger={['click']}
-                overlayClassName="nav-dropdown-popper"
+                classNames={{ root: 'nav-dropdown-popper' }}
                 menu={{
                   items: localeMenuItems,
                   selectable: true,
@@ -482,7 +379,7 @@ export default function Navbar() {
               {userStore.isLoggedIn ? (
                 <Dropdown
                   trigger={['click']}
-                  overlayClassName="user-dropdown-popper"
+                  classNames={{ root: 'user-dropdown-popper' }}
                   menu={{ items: userMenuItems, onClick: ({ key }) => handleCommand(key) }}
                 >
                   {/* 键盘可达性（tabIndex/键盘开合）留阶段 3 统一处理 */}
@@ -520,11 +417,14 @@ export default function Navbar() {
         open={showMobileMenu}
         onClose={() => setShowMobileMenu(false)}
         placement="right"
-        width="85%"
         title={t('nav.mobile.menuTitle')}
         className="mobile-drawer"
-        /* 原 .mobile-drawer .ant-drawer-body 结构覆写 token 化为 styles prop */
-        styles={{ body: { padding: 0, display: 'flex', flexDirection: 'column' } }}
+        /* 原 .mobile-drawer .ant-drawer-body 结构覆写 token 化为 styles prop；
+           百分比宽度走 styles.wrapper（width prop 在 antd 6 已 deprecated） */
+        styles={{
+          wrapper: { width: '85%' },
+          body: { padding: 0, display: 'flex', flexDirection: 'column' },
+        }}
       >
         <div className="mobile-nav">
           <div className="mobile-menu-content">

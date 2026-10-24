@@ -8,13 +8,16 @@
  * - 验证码行「输入框 + canvas」需整体作为 Form.Item 受控子树，
  *   故封装 CaptchaField 接收 value/onChange（模块级定义，避免重挂载丢焦点）
  */
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent, RefObject } from 'react'
 import { App as AntApp, Button, Checkbox, Form, Input, Select } from 'antd'
 import { BankOutlined, LockOutlined, UserOutlined } from '@ant-design/icons'
 import { useI18n } from '@/i18n'
 import { readCssColor } from '@/utils/cssVar'
 import { useAuthLogin } from '@/features/auth/hooks/useAuth'
+import { fetchPublicTenants } from '@/api/modules/auth'
+import { resolveTenantId } from '@/config/tenant/resolve'
+import { DEFAULT_TENANT_ID } from '@/config/tenant/default'
 import styles from './AccountPasswordLogin.module.css'
 
 interface AccountPasswordLoginProps {
@@ -39,15 +42,17 @@ interface SchoolOption {
   label: string
 }
 
-const schools: SchoolOption[] = [
-  { value: 'tsinghua', label: '清华大学' },
-  { value: 'pku', label: '北京大学' },
-  { value: 'fudan', label: '复旦大学' },
-  { value: 'sjtu', label: '上海交通大学' },
-  { value: 'zju', label: '浙江大学' },
-]
+/**
+ * 主域判定：resolveTenantId() === 主域租户 且非私有化构建。
+ * 覆盖 localhost（→主域 显示选择器）、nist.localhost（→nist 隐藏）、
+ * www.psy.com（www 在子域排除规则内 → 主域 显示）三种输入；
+ * 私有化构建（VITE_PRIVATE_TENANT 锁定）永远不显示选择器。
+ */
+const IS_MAIN_SITE =
+  resolveTenantId() === DEFAULT_TENANT_ID && !import.meta.env.VITE_PRIVATE_TENANT
 
 const initialValues: Partial<LoginFormState> = {
+  // school 不预填：主域等 /api/tenants/public 返回后默认选中列表第一项（后端驱动）
   school: '',
   userId: '',
   password: '',
@@ -95,6 +100,30 @@ export function AccountPasswordLogin({
   const { message } = AntApp.useApp() // 替代 ElMessage
 
   const [form] = Form.useForm<LoginFormState>()
+
+  // 学校选择器数据源：仅主域拉取 /api/tenants/public，完全后端驱动——
+  // 不塞前端兜底项、不预填默认值；成功后默认选中列表第一项（后端契约
+  // 保证第一项为 default 主站，前端不假设其内容）；失败明示（空列表 + 提示）
+  const [schools, setSchools] = useState<SchoolOption[]>([])
+  const [schoolsFailed, setSchoolsFailed] = useState(false)
+  useEffect(() => {
+    if (!IS_MAIN_SITE) return
+    fetchPublicTenants()
+      .then((list) => {
+        if (Array.isArray(list) && list.length > 0) {
+          const options = list.map((opt) => ({ value: opt.tenantId, label: opt.name }))
+          setSchools(options)
+          // 默认选中第一项（最常见登录路径）；列表回来前用户无从选择，直接 set 安全
+          form.setFieldsValue({ school: options[0].value })
+          setSchoolsFailed(false)
+        }
+      })
+      .catch((err) => {
+        // 后端返回为主：失败不伪造兜底数据，明示失败等用户刷新重试
+        setSchoolsFailed(true)
+        console.warn('[Login] /api/tenants/public 拉取失败', err)
+      })
+  }, [form])
 
   // 验证码 Canvas 引用
   const captchaCanvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -196,13 +225,25 @@ export function AccountPasswordLogin({
   // 登录处理函数（沿用旧语义：暂跳过前端校验）
   const handleLogin = () => {
     const { school, userId, password } = form.getFieldsValue()
+    // 主域选择器为空（列表未返回/加载失败）时拦截：不提交空 tenantId
+    if (IS_MAIN_SITE && !school) {
+      message.warning(t('login.form.schoolLoadFailed'))
+      return
+    }
     runLogin({
       roleId: 'student',
       loginType: 'account',
-      school,
+      // 主域由选择器提交；子域显式带站点 tenantId（接口形态一致，不依赖后端按 header 猜）
+      tenantId: IS_MAIN_SITE ? school : resolveTenantId(),
       userId,
       password,
     })
+  }
+
+  // 切换学校：清空账号/密码 + 提示（不同学校账号体系隔离，留着会误导）
+  const handleSchoolChange = () => {
+    form.setFieldsValue({ userId: '', password: '' })
+    message.info('已切换学校，请重新输入账号')
   }
 
   // 等价 el-form 的 @keyup.enter
@@ -223,21 +264,26 @@ export function AccountPasswordLogin({
       initialValues={initialValues}
       onKeyDown={handleEnterKey}
     >
-      <Form.Item
-        name="school"
-        validateTrigger="onChange"
-        rules={[{ required: true, message: t('login.form.schoolRequired'), validateTrigger: 'onChange' }]}
-      >
-        <Select
-          placeholder={t('login.form.schoolPlaceholder')}
-          size="large"
-          allowClear
-          showSearch
-          optionFilterProp="label"
-          prefix={<BankOutlined />}
-          options={schools}
-        />
-      </Form.Item>
+      {/* 学校选择器：仅主域（default 站）显示；子域/私有化租户由站点注入，隐藏 */}
+      {IS_MAIN_SITE && (
+        <Form.Item
+          name="school"
+          validateTrigger="onChange"
+          rules={[{ required: true, message: t('login.form.schoolRequired'), validateTrigger: 'onChange' }]}
+        >
+          <Select
+            placeholder={t('login.form.schoolPlaceholder')}
+            size="large"
+            showSearch
+            optionFilterProp="label"
+            prefix={<BankOutlined />}
+            options={schools}
+            loading={IS_MAIN_SITE && schools.length === 0 && !schoolsFailed}
+            notFoundContent={t('login.form.schoolLoadFailed')}
+            onChange={handleSchoolChange}
+          />
+        </Form.Item>
+      )}
 
       <Form.Item
         name="userId"

@@ -15,47 +15,57 @@
          - 读取失败 / 缺失时静默走 palettes.css 的 :root fallback（blue）
          - 与 src/hooks/useTheme.ts 的键位严格保持一致 -->
     <script>
-      ;(function () {
+      (function () {
+        // ============ 防 FOUC 关键路径：JS 加载前定下主题与租户主题色 ============
+        // 落地属性 / localStorage 键位与 src/hooks/useTheme.ts 严格同源：
+        //   mode    → localStorage 'theme:mode'，html.dark class
+        //   palette → localStorage 'theme:palette:{tenantId}'，html data-palette
         try {
-          var root = document.documentElement
-
-          // 1) 解析当前租户（与 src/config/tenant/resolve.ts 同序）：
-          //    子域名 > VITE_TENANT_ID（构建期，本脚本不可见） > ?tenant=xxx > 'default'
-          //    内联脚本只能覆盖 ?tenant=xxx 与默认；子域名 / env 由运行时补齐
-          var tenantId = 'default'
-          var urlTid = new URLSearchParams(location.search).get('tenant')
-          if (urlTid && /^[a-z0-9][a-z0-9_-]*$/i.test(urlTid)) tenantId = urlTid
-          else {
-            var sub = location.hostname.split('.')[0]
-            if (sub && sub !== 'www' && /^[a-z0-9][a-z0-9_-]*$/i.test(sub)) tenantId = sub
-          }
-
-          // 2) palette：用户偏好 > 品牌色缓存兜底
-          var palette = localStorage.getItem('theme:palette:' + tenantId)
-          if (palette && /^(blue|green|purple|orange)$/.test(palette)) {
-            root.dataset.palette = palette
-          } else {
-            root.dataset.palette = 'blue'
-          }
-
-          // 3) mode：light | dark | system
+          // 1. 主题模式（system/light/dark）：localStorage 'theme:mode'，与 useTheme MODE_KEY 一致
           var mode = localStorage.getItem('theme:mode') || 'system'
           var dark =
             mode === 'dark' ||
-            (mode === 'system' &&
-              window.matchMedia &&
-              window.matchMedia('(prefers-color-scheme: dark)').matches)
-          if (dark) root.classList.add('dark')
-          root.style.colorScheme = dark ? 'dark' : 'light'
+            (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
 
-          // 4) 品牌色兜底：palette 派生前先用上一次缓存的 brand-primary
-          var brandPrimary = localStorage.getItem('tenant:brand-primary')
-          if (brandPrimary) root.style.setProperty('--brand-primary', brandPrimary)
-        } catch (e) {
-          /* localStorage 不可用（隐私模式）时静默走 fallback */
-        }
+          // 2. 租户解析（与 resolve.ts 同规则表）
+          var privateTenant = '%VITE_PRIVATE_TENANT%'
+          var appDomain = '%VITE_APP_DOMAIN%'
+          var tid = null
+          if (privateTenant && privateTenant.charAt(0) !== '%') {
+            tid = privateTenant // 优先级 1：私有化锁定
+          } else if (appDomain && appDomain.charAt(0) !== '%') {
+            var hostname = window.location.hostname.toLowerCase()
+            var suffix = '.' + appDomain.toLowerCase()
+            if (hostname.slice(-suffix.length) === suffix) {
+              var sub = hostname.slice(0, hostname.length - suffix.length)
+              if (sub && sub !== 'www' && sub.indexOf('.') === -1) tid = sub // 优先级 2：子域名
+            }
+          }
+          tid = tid || 'default' // 优先级 3：兜底
+
+          // 3. 落地：dark class + color-scheme + palette + 预置品牌色
+          var root = document.documentElement
+          if (dark) root.classList.add('dark') // 与 useTheme L59 一致
+          root.style.colorScheme = dark ? 'dark' : 'light'
+          // 用户 palette 偏好（useTheme L65 消费 data-palette；非法值静默走 palettes.css fallback）
+          var palette = null
+          try { palette = localStorage.getItem('theme:palette:' + tid) } catch (e) {}
+          if (palette && /^(blue|green|purple|orange)$/.test(palette)) {
+            root.setAttribute('data-palette', palette)
+          }
+          if (tid === 'tsinghua') root.style.setProperty('--brand-primary', '#5C1F31')
+          else if (tid === 'nist') root.style.setProperty('--brand-primary', '#2E6B34')
+        } catch (e) {}
       })()
     </script>
+    <!-- 暗色 FOUC 预置：全局 CSS 加载完成前，暗色用户首帧即见黑底（与 semantic.css
+         暗色 --bg-page #000 一致），避免白闪。必须置于上方脚本之后（依赖 html.dark
+         已挂上）；租户若覆写 --bg-page，仅影响 CSS 生效后的取值，首帧仍以黑底兜底。 -->
+    <style>
+      html.dark {
+        background-color: #000;
+      }
+    </style>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="生涯心旅 - 为大学生提供专业的心理健康服务、生涯规划指导与活动中心，结合 AI 技术与专业咨询，用心呵护每一份成长。" />

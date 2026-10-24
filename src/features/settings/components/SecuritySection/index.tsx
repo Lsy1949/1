@@ -359,7 +359,8 @@ export function SecuritySection() {
         maskClosable={false}
         className={styles.contactDialog}
         styles={{
-          content: { borderRadius: 0, border: '1px solid var(--border-strong)', padding: 0 },
+          // v6：content 面板层改名 container
+          container: { borderRadius: 0, border: '1px solid var(--border-strong)', padding: 0 },
           header: {
             margin: 0,
             padding: '20px 24px',

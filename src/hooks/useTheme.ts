@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { DEFAULT_PALETTE, isPaletteKey, type PaletteKey } from '@/styles/palette'
+import { DEFAULT_PALETTE, isPresetPaletteKey, type PaletteKey, type PresetKey } from '@/styles/palette'
+import { DEFAULT_TENANT_ID } from '@/config/tenant/default'
 
 /**
  * 主题管理（palette + mode 两维）
@@ -28,15 +29,15 @@ function paletteKey(tenantId: string): string {
 
 function readMode(): ThemeMode {
   const v = localStorage.getItem(MODE_KEY)
-  // 'auto' 为旧值，统一规约到 'system'
-  if (v === 'auto') return 'system'
   return v === 'light' || v === 'dark' || v === 'system' ? v : 'system'
 }
 
-/** 读用户偏好；无则返回 null（调用方决定 fallback 到租户默认或全局默认） */
-function readUserPalette(tenantId: string): PaletteKey | null {
+/** 读用户偏好；无则返回 null（调用方决定 fallback 到租户默认或全局默认）。
+ *  只接受预置 key：localStorage 只可能由用户 UI 写入（预设），'custom' 仅存在
+ *  于后端配置——残留的 'custom' 在此被拒绝，避免压过租户默认色板后静默回退 blue */
+function readUserPalette(tenantId: string): PresetKey | null {
   const v = localStorage.getItem(paletteKey(tenantId))
-  return isPaletteKey(v) ? v : null
+  return isPresetPaletteKey(v) ? v : null
 }
 
 // ---------- 系统暗色监听 ----------
@@ -70,7 +71,7 @@ function applyPaletteDom(palette: PaletteKey): void {
 // ---------- 模块级共享状态 ----------
 
 let currentMode: ThemeMode = readMode()
-let currentTenantId = 'default'
+let currentTenantId = DEFAULT_TENANT_ID
 let currentPalette: PaletteKey = readUserPalette(currentTenantId) ?? DEFAULT_PALETTE
 
 function applyAllDom(): void {
@@ -125,11 +126,12 @@ export function setMode(mode: ThemeMode): void {
 }
 
 /**
- * 用户主动切换 palette（UI 操作）。
+ * 用户主动切换 palette（UI 操作）。只接受预置 key —— 'custom' 属租户配置，
+ * 用户 UI 选不到，也不写入 localStorage。
  *  - 写入 localStorage（按 tenantId 隔离）
  *  - 更新 DOM 与 antd token（通过 emit 通知 AntdThemeBridge）
  */
-export function setUserPalette(palette: PaletteKey, tenantId?: string): void {
+export function setUserPalette(palette: PresetKey, tenantId?: string): void {
   const tid = tenantId ?? currentTenantId
   if (tid === currentTenantId && currentPalette === palette) return
 
@@ -168,7 +170,7 @@ export interface ThemeState {
   palette: PaletteKey
   isDark: boolean
   setMode: (mode: ThemeMode) => void
-  setPalette: (palette: PaletteKey) => void
+  setPalette: (palette: PresetKey) => void
   /** @deprecated 兼容旧 API，使用 mode 代替。当前 mode === 'system' 时返回 'auto' 保持业务兼容 */
   themeMode: ThemeMode | 'auto'
   /** @deprecated 兼容旧 API，使用 setMode 代替。'auto' 自动规约到 'system' */
@@ -191,7 +193,7 @@ export function useTheme(): ThemeState {
     palette: currentPalette,
     isDark: isDarkNow(currentMode),
     setMode,
-    setPalette: (p: PaletteKey) => setUserPalette(p),
+    setPalette: (p: PresetKey) => setUserPalette(p),
     themeMode: currentMode === 'system' ? 'auto' : currentMode,
     setThemeMode: (m) => setMode(m === 'auto' ? 'system' : m),
   }

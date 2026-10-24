@@ -1,7 +1,10 @@
 import type { TenantConfig, TenantFeatures } from './types'
+import { APP_ROUTE_PATHS, isKnownRoutePath } from '@/config/routes'
 import {
   DEFAULT_PALETTE,
   PALETTES,
+  deriveShades,
+  isHexColor,
   isPaletteKey,
   sanitizeOverrides,
   type PaletteKey,
@@ -12,23 +15,17 @@ export const DEFAULT_TENANT_ID = 'default'
 
 /**
  * 保底品牌色（来自 palette.ts 的默认色板 primary）。
- * 项目里只有这一处业务硬编码默认色； palettes.css 的 :root fallback
+ * 项目里只有这一处业务硬编码默认色； palettes.css 的 :root seed fallback
  * 与 PALETTES[DEFAULT_PALETTE] 必须保持一致。
  */
 export const DEFAULT_BRAND_PRIMARY = PALETTES[DEFAULT_PALETTE].primary
 
 /**
- * 品牌深浅阶保底值（派生自默认 palette，与 palettes.css 一一对应）。
- * 租户通过 theme.defaultPalette 切换整套；如需单独覆写走 themeOverrides 白名单。
+ * 品牌深浅阶保底值（由默认 seed 经 deriveShades 派生，与 palettes.css
+ * 的 color-mix 公式同源）。租户通过 theme.defaultPalette 切换整套；
+ * 如需单独覆写走 themeOverrides 白名单。
  */
-export const DEFAULT_BRAND_SHADES = {
-  dark: PALETTES[DEFAULT_PALETTE].primaryDark,
-  deep: PALETTES[DEFAULT_PALETTE].primaryDeep,
-  deeper: PALETTES[DEFAULT_PALETTE].primaryDeeper,
-  soft: PALETTES[DEFAULT_PALETTE].primarySoft,
-  faint: PALETTES[DEFAULT_PALETTE].primaryFaint,
-  wash: PALETTES[DEFAULT_PALETTE].primaryWash,
-} as const
+export const DEFAULT_BRAND_SHADES = deriveShades(DEFAULT_BRAND_PRIMARY)
 
 /** 完整保底配置：后端不可用 / 超时 / 字段缺失时的兜底，应用照常可用 */
 export function getDefaultConfig(): TenantConfig {
@@ -53,6 +50,8 @@ export function getDefaultConfig(): TenantConfig {
       defaultPalette: DEFAULT_PALETTE,
       themeOverrides: {},
     },
+    /* 路由默认全量启用（保底配置不裁剪任何路由） */
+    routes: [...APP_ROUTE_PATHS],
     assets: {
       loginBackground: '',
       homeBanner: '',
@@ -100,9 +99,12 @@ function coerceFeatures(patch: TenantFeatures | undefined, base: TenantFeatures)
  * 与默认配置合并后一定得到完整 TenantConfig。
  *
  * 主题合并策略：
- *  1. defaultPalette 决定七档派生色（如未显式给 primaryColor 等字段时）
- *  2. 后端如显式给 primaryColor 等字段，则覆盖派生值（向后兼容旧接口）
+ *  1. defaultPalette 决定 seed（预置 key → PALETTES[key].primary；
+ *     'custom' + 合法 customPrimaryColor(6 位 hex) → 该 hex），
+ *     七档由 deriveShades() 派生（与 palettes.css 同公式）
+ *  2. 后端如显式给 primaryColor 等七档字段，则覆盖派生值（向后兼容旧接口）
  *  3. themeOverrides 走白名单过滤，非法 key / 值静默丢弃
+ *  4. 'custom' 但 seed 非法/缺失 → 整体回退默认色板，绝不白屏或串色
  *
  * tenantId 始终以解析结果为准（而非后端回显）。
  */
@@ -111,29 +113,50 @@ export function mergeTenantConfig(partial: unknown, tenantId: string = DEFAULT_T
   const p =
     partial && typeof partial === 'object' ? (partial as Partial<TenantConfig>) : {}
 
-  // 1. 决定本租户使用的 palette（默认 + 后端指定）
-  const paletteKey: PaletteKey = isPaletteKey(p.theme?.defaultPalette)
-    ? (p.theme!.defaultPalette as PaletteKey)
+  // 1. 决定本租户使用的 palette 与 seed
+  const rawKey = isPaletteKey(p.theme?.defaultPalette)
+    ? p.theme!.defaultPalette
     : DEFAULT_PALETTE
-  const palette = PALETTES[paletteKey]
+  // custom seed 只接受 6 位 hex（isHexColor 与 deriveShades 同源，避免两处正则漂移）
+  const customSeed =
+    typeof p.theme?.customPrimaryColor === 'string' &&
+    isHexColor(p.theme.customPrimaryColor.trim())
+      ? p.theme.customPrimaryColor.trim().toLowerCase()
+      : ''
+  const useCustom = rawKey === 'custom' && customSeed !== ''
+  // 'custom' 但 seed 非法 → 回退默认预置色板
+  const paletteKey: PaletteKey = useCustom ? 'custom' : rawKey === 'custom' ? DEFAULT_PALETTE : rawKey
+  const seed = useCustom ? customSeed : PALETTES[paletteKey as Exclude<PaletteKey, 'custom'>].primary
+  const shades = deriveShades(seed)
+
+  // 路由裁剪：仅接受前端注册表内的 path（防下发前端不存在的页面，非法值静默丢弃）；
+  // 缺省 / 过滤后为空 → 全量启用（保底绝不误杀路由）
+  const rawRoutes = Array.isArray(p.routes)
+    ? Array.from(
+        new Set(p.routes.filter((x): x is string => typeof x === 'string' && isKnownRoutePath(x))),
+      )
+    : []
+  const routes = rawRoutes.length > 0 ? rawRoutes : [...APP_ROUTE_PATHS]
 
   return {
     tenantId,
     brand: { ...base.brand, ...stripUndefined(p.brand) },
     theme: {
-      // 七档优先用后端显式值；缺省时回退到 palette 派生
-      primaryColor: normalizeColor(p.theme?.primaryColor, palette.primary),
-      darkColor: normalizeColor(p.theme?.darkColor, palette.primaryDark),
-      deepColor: normalizeColor(p.theme?.deepColor, palette.primaryDeep),
-      deeperColor: normalizeColor(p.theme?.deeperColor, palette.primaryDeeper),
-      softColor: normalizeColor(p.theme?.softColor, palette.primarySoft),
-      faintColor: normalizeColor(p.theme?.faintColor, palette.primaryFaint),
-      washColor: normalizeColor(p.theme?.washColor, palette.primaryWash),
+      // 七档优先用后端显式值；缺省时回退到 seed 派生
+      primaryColor: normalizeColor(p.theme?.primaryColor, seed),
+      darkColor: normalizeColor(p.theme?.darkColor, shades.dark),
+      deepColor: normalizeColor(p.theme?.deepColor, shades.deep),
+      deeperColor: normalizeColor(p.theme?.deeperColor, shades.deeper),
+      softColor: normalizeColor(p.theme?.softColor, shades.soft),
+      faintColor: normalizeColor(p.theme?.faintColor, shades.faint),
+      washColor: normalizeColor(p.theme?.washColor, shades.wash),
       radius: typeof p.theme?.radius === 'string' && p.theme.radius ? p.theme.radius : base.theme.radius,
       fontFamily: typeof p.theme?.fontFamily === 'string' ? p.theme.fontFamily : base.theme.fontFamily,
       defaultPalette: paletteKey,
+      customPrimaryColor: useCustom ? customSeed : undefined,
       themeOverrides: sanitizeOverrides(p.theme?.themeOverrides),
     },
+    routes,
     assets: { ...base.assets, ...stripUndefined(p.assets) },
     features: coerceFeatures(p.features, base.features),
   }

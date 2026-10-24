@@ -18,30 +18,45 @@ export type RoleId = 'student' | 'teacher' | 'admin'
 /** 登录方式 */
 export type LoginType = 'account' | 'phone' | 'email'
 
-/** 登录请求参数（旧 loginApi 的 data，按 loginType 取舍字段） */
+/**
+ * 登录请求参数（契约 §1.1）。
+ * - username/password 必填（缺失后端 400；前端表单应提前拦截）
+ * - tenantId：主域（psy.com）登录页由学校选择器提交；子域登录省略（由 X-Tenant-Id 头表达）
+ * - phone/email/code/loginType 为旧多登录方式残留字段，契约未覆盖，待后端对齐后清理
+ */
 export interface LoginParams {
   roleId: RoleId
   loginType?: LoginType
-  /** 账号登录：学号/工号 */
+  /** 账号：学号/工号/用户名 */
   userId?: string
-  /** 账号登录：密码 */
+  /** 密码 */
   password?: string
+  /** 目标租户（主域选择器提交；子域省略） */
+  tenantId?: string
   /** 手机登录 */
   phone?: string
   /** 邮箱登录 */
   email?: string
   /** 短信/邮箱验证码 */
   code?: string
-  /** 所属学校（租户多校场景下的冗余标识，后端确认后可能移除） */
+  /** 所属学校（旧冗余字段，等同于 tenantId，待清理） */
   school?: string
 }
 
-/** 登录成功响应 */
+/** 登录成功响应（cookie 会话：无 token，登录态由 /api/me 探测） */
 export interface LoginResult {
-  token: string
   userInfo: UserInfo
   roleId: RoleId
   message?: string
+}
+
+/** 公开租户信息（主域登录页学校选择器数据源，契约 §2.3） */
+export interface PublicTenant {
+  tenantId: string
+  /** 站点身份标识（校名/站名），后端直出，前端不做 i18n */
+  name: string
+  /** 校徽/站徽 URL；可空——选择器当前只消费 label，不渲染 img，空值不破图 */
+  logo?: string
 }
 
 /** 用户信息（后端字段未定，最小集 + 可选扩展位） */

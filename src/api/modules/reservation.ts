@@ -8,7 +8,7 @@ import type { Reservation } from './lab'
 
 /** 获取所有预约 */
 export async function getAllReservations(): Promise<Reservation[]> {
-  const res = await http.get<Reservation[]>('/reservations/all')
+  const res = await http.get<Reservation[]>('reservations/all')
   return res.data
 }
 
@@ -17,10 +17,10 @@ export async function updateReservationStatus(
   reservationId: string,
   status: string,
 ): Promise<void> {
-  await http.put('/reservations/status', null, { params: { reservationId, status } })
+  await http.put('reservations/status', null, { params: { reservationId, status } })
 }
 
 /** 删除预约 */
 export async function deleteReservation(reservationId: string): Promise<void> {
-  await http.delete('/deleteReservation', { params: { reservationId } })
+  await http.delete('deleteReservation', { params: { reservationId } })
 }

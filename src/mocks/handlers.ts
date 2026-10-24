@@ -7,6 +7,9 @@ import { counselingHandlers } from './handlers/counseling'
 import { squareHandlers } from './handlers/square'
 import { assessmentHandlers } from './handlers/assessment'
 import { authHandlers } from './handlers/auth'
+import { menuHandlers } from './handlers/menu'
+import { siteHandlers } from './handlers/site'
+import { legacyHandlers } from './handlers/legacy'
 
 /**
  * 全部 mock handler 汇总。
@@ -22,4 +25,7 @@ export const handlers: AnyHandler[] = [
   ...squareHandlers,
   ...assessmentHandlers,
   ...authHandlers,
+  ...menuHandlers,
+  ...siteHandlers,
+  ...legacyHandlers,
 ]

@@ -73,7 +73,8 @@ function applyConfig(c: TenantConfig): void {
 
     const root = document.documentElement
 
-    // 清掉上一次租户注入的 inline brand-*，避免串色（palette 已接管七档）
+    // 清掉上一次租户注入的 inline brand-*，避免串色（档位已全部由
+    // palettes.css 的 color-mix 从 seed 派生，inline 只承担 custom seed）
     const legacyKeys = [
       '--brand-primary',
       '--brand-primary-dark',
@@ -86,6 +87,14 @@ function applyConfig(c: TenantConfig): void {
       '--brand-font-family',
     ]
     for (const k of legacyKeys) root.style.removeProperty(k)
+
+    // L1 · custom 色板：seed 以 inline style 注入。
+    // inline 优先级高于任何 @layer 与 [data-palette] 选择器，palettes.css
+    // 的派生公式引用 var(--brand-primary)，全部档位自动跟随；
+    // index.html 防闪烁脚本用 localStorage 缓存达成同一效果（首帧）。
+    if (c.theme.defaultPalette === 'custom' && c.theme.customPrimaryColor) {
+      root.style.setProperty('--brand-primary', c.theme.customPrimaryColor)
+    }
 
     // L2 · 租户白名单语义 token 覆写（sanitizeOverrides 已在 merge 时过滤）
     applyOverrides(c.theme.themeOverrides ?? {})

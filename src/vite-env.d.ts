@@ -22,10 +22,10 @@ interface ImportMetaEnv {
   readonly VITE_SIGNALR_HUB_URL?: string
   /** 应用标题 */
   readonly VITE_APP_TITLE?: string
-  /** 按子域名解析租户用 */
+  /** 按子域名解析租户用（公网=主域如 psy.com；dev=localhost） */
   readonly VITE_APP_DOMAIN?: string
-  /** 指定租户 ID（单校私有部署） */
-  readonly VITE_TENANT_ID?: string
+  /** 私有化部署构建期锁定租户（公网构建留空） */
+  readonly VITE_PRIVATE_TENANT?: string
   /** vite dev proxy 目标（未配置时回落 http://127.0.0.1:8080） */
   readonly VITE_PROXY_TARGET?: string
 }

@@ -34,7 +34,7 @@ export function HomePageView() {
   // 请求进行中 → Skeleton 占位；失败 → 居中错误提示 + 重试
   const { data: carouselDtos, isError, refetch } = useQuery({
     queryKey: ['home', 'carousel'],
-    queryFn: () => get<CarouselSlideDTO[]>('/api/home/carousel')
+    queryFn: () => get<CarouselSlideDTO[]>('home/carousel')
   })
 
   // 接口结构（key/image/ctaRoute）+ i18n → 渲染用 CarouselSlide

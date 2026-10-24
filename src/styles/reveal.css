@@ -1,8 +1,12 @@
 /* ============================================================
- * reveal 入场动画 —— 自 Vue 版 styles/main.css 的 .reveal 段迁移。
- * 对应 hooks/useReveal.ts（原 directives/reveal.ts 的 React 等价物）。
+ * reveal 入场动画协议类（全局唯一定义）
+ *  - .reveal 系列：由 hooks/useReveal.ts 驱动（滚动/挂载入场）
+ *  - .scroll-reveal：首页区块 IntersectionObserver 驱动
+ *    （querySelectorAll('.scroll-reveal') + classList.add('is-visible')）
+ * 历史上散落在 home 各区块 css 的重复副本已收敛于此，禁止再散落定义。
  * ============================================================ */
 
+@layer reveal {
 .reveal {
   opacity: 0;
   transform: translateY(28px);
@@ -43,4 +47,5 @@
 .scroll-reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
 }

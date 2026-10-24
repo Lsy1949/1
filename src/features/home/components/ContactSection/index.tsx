@@ -97,7 +97,7 @@ export function ContactSection() {
                   type="primary"
                   className={styles.submitBtn}
                   icon={<RightOutlined />}
-                  iconPosition="end"
+                  iconPlacement="end"
                   onClick={submitContactForm}
                 >
                   {t('home.contact.submit')}

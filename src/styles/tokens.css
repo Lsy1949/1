@@ -1,100 +1,125 @@
 /* ============================================================
- * 语义色板 token —— 自 Vue 版 styles/tokens.css 原样迁移
- * （React 组件与原 Vue 组件引用同一批 CSS 变量，保证视觉等价）
+ * 原子色阶 token（L0）
+ *
+ * 职责：只定义「原料」（色阶 / 功能色 / 动效时长曲线），不消费其他变量，
+ * 也不被租户覆写（覆写底层色阶会破坏对比度系统性，见 palette.ts 白名单原则）。
+ * 业务样式禁止直接引用本层，应引用 semantic.css 的语义变量；
+ * 仅图表配色、ECharts 实色等场景允许经语义层中转后取用分类色。
  * ============================================================ */
 
-:root {
-  /* ----- 动效 token（design-language.md §3.1） ----- */
-  --ease-standard: cubic-bezier(0.32, 0.72, 0, 1);
-  --duration-fast: 160ms;
-  --duration-base: 280ms;
-  --duration-slow: 360ms;
+/* ------------------------------------------------------------
+ * 全局 @layer 层级声明（唯一一处，本文件是 main.tsx 首个样式 import）
+ *
+ * 作用：层叠优先级由该列表一次性决定（后者覆盖前者），
+ * 不再依赖 import 顺序；文件内部再各自 @layer 归层。
+ *
+ * 顺序含义（弱 → 强）：
+ *   tokens 色阶原料 → semantic 业务语义 → palettes 品牌档位
+ *   → base 元素基线 → reveal 动效 → main 全局样式 → dark-mode 暗色覆写
+ *
+ * 注意：semantic 在 palettes 之前，是因为 --bg-blue-tint 的暗色值
+ * 由 palettes 的 :root.dark 派生覆写（跨层重定义必须让 palettes 更强）。
+ *
+ * ⚠️ 未分层样式（antd 运行时 cssVar、组件 CSS Modules、租户覆写样式表、
+ *    inline style）天然压过所有 @layer —— 组件级覆写因此仍需
+ *    特异度 + !important，与改造前行为一致（见 dark-mode.css 文件头）。
+ * ------------------------------------------------------------ */
+@layer tokens, semantic, palettes, base, reveal, main, dark-mode;
 
-  /* ----- 信息蓝 ----- */
-  --color-info: #1890ff;
-  --blue-025: #e6f7ff;
-  --blue-050: #e0efff;
-  --blue-100: #dbeafe;
-  --blue-300: #93c5fd;
-  --blue-400: #409eff;
-  --blue-500: #3b82f6;
-  --blue-600: #0077e6;
+@layer tokens {
+  :root {
+    /* ----- 动效 token ----- */
+    --ease-standard: cubic-bezier(0.32, 0.72, 0, 1);
+    --duration-fast: 160ms;
+    --duration-base: 280ms;
+    --duration-slow: 360ms;
 
-  /* ----- ink 灰 ----- */
-  --ink-50: #f9fafb;
-  --ink-100: #f3f4f6;
-  --ink-200: #e5e7eb;
-  --ink-300: #d1d5db;
-  --ink-400: #9ca3af;
-  --ink-500: #6b7280;
-  --ink-600: #4b5563;
-  --ink-700: #374151;
-  --ink-800: #1f2937;
-  --ink-900: #111827;
+    /* ----- 信息蓝 ----- */
+    --color-info: #1890ff;
+    --blue-025: #e6f7ff;
+    --blue-050: #e0efff;
+    --blue-100: #dbeafe;
+    --blue-300: #93c5fd;
+    --blue-400: #409eff;
+    --blue-500: #3b82f6;
+    --blue-600: #0077e6;
 
-  /* ----- slate 灰 ----- */
-  --slate-50: #f8fafc;
-  --slate-100: #f1f5f9;
-  --slate-200: #e2e8f0;
-  --slate-300: #cbd5e1;
-  --slate-400: #94a3b8;
-  --slate-500: #64748b;
-  --slate-600: #475569;
-  --slate-700: #334155;
-  --slate-800: #1e293b;
-  --slate-900: #0f172a;
+    /* ----- ink 灰 ----- */
+    --ink-50: #f9fafb;
+    --ink-100: #f3f4f6;
+    --ink-200: #e5e7eb;
+    --ink-300: #d1d5db;
+    --ink-400: #9ca3af;
+    --ink-500: #6b7280;
+    --ink-600: #4b5563;
+    --ink-700: #374151;
+    --ink-800: #1f2937;
+    --ink-900: #111827;
 
-  /* ----- navy 深底蓝 ----- */
-  --navy-950: #0a0f1a;
-  --navy-900: #182234;
-  --navy-800: #0a2a6b;
+    /* ----- slate 灰 ----- */
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
 
-  /* ----- neutral 灰 ----- */
-  --neutral-025: #fafafa;
-  --neutral-050: #f5f5f5;
-  --neutral-075: #f0f0f0;
-  --neutral-100: #eeeeee;
-  --neutral-150: #e5e5e5;
-  --neutral-300: #aaaaaa;
-  --neutral-400: #999999;
-  --neutral-450: #888888;
-  --neutral-500: #777777;
-  --neutral-600: #666666;
-  --neutral-700: #555555;
-  --neutral-800: #333333;
-  --neutral-900: #111111;
+    /* ----- navy 深底蓝 ----- */
+    --navy-950: #0a0f1a;
+    --navy-900: #182234;
+    --navy-800: #0a2a6b;
 
-  /* ----- mist 冷灰 ----- */
-  --mist-025: #fafbfc;
-  --mist-050: #eef2f6;
-  --mist-075: #f0f2f5;
-  --mist-100: #e8ecf0;
-  --mist-200: #dcdfe6;
-  --mist-300: #d0d5dd;
-  --mist-350: #c1c8d0;
-  --mist-400: #c3cad4;
+    /* ----- neutral 灰 ----- */
+    --neutral-025: #fafafa;
+    --neutral-050: #f5f5f5;
+    --neutral-075: #f0f0f0;
+    --neutral-100: #eeeeee;
+    --neutral-150: #e5e5e5;
+    --neutral-300: #aaaaaa;
+    --neutral-400: #999999;
+    --neutral-450: #888888;
+    --neutral-500: #777777;
+    --neutral-600: #666666;
+    --neutral-700: #555555;
+    --neutral-800: #333333;
+    --neutral-900: #111111;
 
-  /* ----- 功能色 ----- */
-  --success-500: #10b981;
-  --success-600: #059669;
-  --success-700: #15803d;
-  --success-800: #166534;
-  --green-800: #2e7d32;
-  --warning-100: #fef3c7;
-  --warning-400: #fbbf24;
-  --warning-500: #f59e0b;
-  --warning-600: #d97706;
-  --warning-700: #b45309;
-  --warning-800: #92400e;
-  --danger-50: #fef2f2;
-  --danger-100: #fee2e2;
-  --danger-200: #fecaca;
-  --danger-500: #ef4444;
-  --danger-600: #dc2626;
-  --danger-700: #b91c1c;
-  --danger-800: #991b1b;
-  --orange-600: #ea580c;
-  --violet-100: #ede9fe;
-  --violet-600: #7c3aed;
-  --purple-600: #722ed1;
+    /* ----- mist 冷灰 ----- */
+    --mist-025: #fafbfc;
+    --mist-050: #eef2f6;
+    --mist-075: #f0f2f5;
+    --mist-100: #e8ecf0;
+    --mist-200: #dcdfe6;
+    --mist-300: #d0d5dd;
+    --mist-350: #c1c8d0;
+    --mist-400: #c3cad4;
+
+    /* ----- 功能色 ----- */
+    --success-500: #10b981;
+    --success-600: #059669;
+    --success-700: #15803d;
+    --success-800: #166534;
+    --green-800: #2e7d32;
+    --warning-100: #fef3c7;
+    --warning-400: #fbbf24;
+    --warning-500: #f59e0b;
+    --warning-600: #d97706;
+    --warning-700: #b45309;
+    --warning-800: #92400e;
+    --danger-50: #fef2f2;
+    --danger-100: #fee2e2;
+    --danger-200: #fecaca;
+    --danger-500: #ef4444;
+    --danger-600: #dc2626;
+    --danger-700: #b91c1c;
+    --danger-800: #991b1b;
+    --orange-600: #ea580c;
+    --violet-100: #ede9fe;
+    --violet-600: #7c3aed;
+    --purple-600: #722ed1;
+  }
 }

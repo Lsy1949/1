@@ -187,7 +187,7 @@ export function DetailBody({ capsule, onDelete }: DetailBodyProps) {
            关闭按钮颜色走 closeIcon 官方 prop */
         closeIcon={<CloseOutlined style={{ color: 'var(--text-muted)' }} />}
         styles={{
-          content: { background: 'transparent', boxShadow: 'none', borderRadius: 16 },
+          container: { background: 'transparent', boxShadow: 'none', borderRadius: 16 },
           header: { display: 'none' },
         }}
       >

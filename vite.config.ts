@@ -10,6 +10,24 @@ export default defineConfig(({ mode, command }) => {
     // GitHub Pages 项目站点部署在 /101/ 子路径下；仅构建时启用
     base: command === 'build' ? '/101/' : '/',
     plugins: [react()],
+    build: {
+      // vendor-antd ~1.06MB（gzip 341kB）是 antd 6 全量固有体量，无法再拆
+      // （按 rc- 组件强拆会破坏内部依赖）；提高警告线消除无效噪音
+      chunkSizeWarningLimit: 1200,
+      rollupOptions: {
+        output: {
+          // 拆分大依赖：antd 系与 react 系各自成 chunk，
+          // 主业务 chunk 不再超 500kB 警戒线（且两者版本独立缓存）
+          manualChunks(id) {
+            if (!id.includes('node_modules')) return
+            if (/[\\/]node_modules[\\/](antd|@ant-design|rc-[^\\/]+)[\\/]/.test(id)) return 'vendor-antd'
+            if (/[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|@tanstack)[\\/]/.test(id)) {
+              return 'vendor-react'
+            }
+          },
+        },
+      },
+    },
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),

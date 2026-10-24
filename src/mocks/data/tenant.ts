@@ -46,6 +46,27 @@ export const TENANT_MOCKS: Record<string, TenantConfigDTO> = {
         '--shadow-medium': '0 4px 16px color-mix(in srgb, var(--brand-primary) 8%, transparent)',
       },
     },
+    // 路由裁剪示例：该租户未开通心事广场（/square* 3 条需登录）+ /counseling/companion（公共页）。
+    // 后者专门用于验证守卫矩阵「匿名 + 不需登录 + 未开通 → 403」这一行，
+    // 选 companion 因其为边缘模块、无内容接口依赖，不影响内容隔离验证（验证 5）。
+    // 其余租户不下发 routes = 全量启用；path 必须在前端注册表内，非法值被 merge 丢弃
+    routes: [
+      '/',
+      '/time-capsule',
+      '/time-capsule/create',
+      '/time-capsule/:id',
+      '/assessment',
+      '/assessment/take/:id',
+      '/articles',
+      '/articles/list',
+      '/articles/:id',
+      '/counseling',
+      '/counseling/ai-chat',
+      '/profile',
+      '/settings',
+      '/login',
+      '/403',
+    ],
   },
   nist: {
     brand: {

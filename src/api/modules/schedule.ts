@@ -27,12 +27,12 @@ export interface TermInfo {
 
 /** 获取课表（按角色） */
 export async function getSchedule(roleId: 'student' | 'teacher', userId: string): Promise<Course[]> {
-  const res = await http.get<Course[]>('/user/courses', { params: { roleId, userId } })
+  const res = await http.get<Course[]>('user/courses', { params: { roleId, userId } })
   return res.data
 }
 
 /** 获取当前学期信息 */
 export async function getCurrentTerm(): Promise<TermInfo> {
-  const res = await http.get<TermInfo>('/current_term')
+  const res = await http.get<TermInfo>('current_term')
   return res.data
 }

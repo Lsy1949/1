@@ -112,8 +112,8 @@ export default function ScaleDialog({
       closable
       closeIcon={<CloseOutlined />}
       className={styles.scaleDialog}
-      // 原 :deep() 隐藏 header / body padding 0 → AntD 5 styles API
-      styles={{ content: { padding: 0, borderRadius: 24, overflow: 'hidden' }, body: { padding: 0 } }}
+      // 原 :deep() 隐藏 header / body padding 0 → AntD 5 styles API；v6 content 改名 container
+      styles={{ container: { padding: 0, borderRadius: 24, overflow: 'hidden' }, body: { padding: 0 } }}
     >
       {/* 介绍模式 */}
       {mode === 'intro' && currentScale && (

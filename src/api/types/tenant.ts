@@ -36,6 +36,8 @@ export interface TenantConfigDTO {
   tenantId?: string
   brand?: Partial<TenantBrand>
   theme?: Partial<TenantTheme>
+  /** 该租户启用的路由清单（缺省 = 全量；path 须在前端注册表内，非法值丢弃） */
+  routes?: string[]
   assets?: Partial<TenantAssets>
   features?: Partial<TenantFeatures>
 }

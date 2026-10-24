@@ -1,0 +1,126 @@
+/* ============================================================
+ * 业务语义 token 层（L2）
+ *
+ * 职责：定义「业务在说什么」的语义变量（背景 / 文字 / 边框 / 阴影 /
+ * 导航底 / 状态色 / 分类色），明暗两套值在本文件内成对出现，
+ * 切换 html.dark 即整体换值，业务组件无需感知明暗。
+ *
+ *  - 原料色阶见 tokens.css（L0）；品牌色（--brand-*）见 palettes.css（L1），
+ *    本层只做「引用与取值」，不定义品牌档位。
+ *  - 取值全部来自设计基线或 antd 官方派生值，注释保留对比度计算依据，
+ *    修改任何取值前先读对应注释。
+ *  - 租户覆写白名单即本层变量子集（见 palette.ts TENANT_TOKEN_WHITELIST），
+ *    以 html:not(.dark) 样式表注入（未分层），仅影响浅色态。
+ * ============================================================ */
+
+@layer semantic {
+/* ---------- 语义化 CSS 变量 · 浅色态 ---------- */
+:root {
+  --bg-page: #ffffff;
+  --bg-soft: #f8fafc;
+  --bg-mute: #f1f5f9;
+  /* 品牌浅底：随色板派生（原固定 #f0f7ff 恰为 blue 的 faint 值，green/purple/
+     orange 浅色态偏蓝属视觉 bug，已修）；暗色值由 palettes.css :root.dark
+     按品牌 wash 档派生，明暗两态均随色板 */
+  --bg-blue-tint: var(--brand-primary-faint);
+  --bg-card: #ffffff;
+  --bg-overlay: rgb(255, 255, 255, 0.95);
+  --text-heading: #0a0f1a;
+  --text-primary: #111827;
+  --text-regular: #1f2937;
+  --text-secondary: #4b5563;
+  /* muted/faint 三层级下压：原 faint #9ca3af 对白底仅 2.54:1 不达 WCAG AA。
+     为避免「faint 达标后与 muted 压扁成同色」，整条尾巴一并下压，保住三层视觉层级：
+       secondary #4b5563 = 7.90:1 / muted #59616e = 6.24:1 / faint #6b7280 = 4.83:1
+     三者均 ≥ 4.5:1（AA）。#59616e 为定制的过渡灰 —— 现有色阶里 #475569(7.47) 会与
+     secondary 撞层级、#6b7280(4.83) 会与 faint 撞层级，故不取现成档。 */
+  --text-muted: #59616e;
+  --text-faint: #6b7280;
+  --border-light: #eef2f6;
+  --border-regular: #f1f5f9;
+  --border-strong: #e2e8f0;
+  --border-blue: #d0e7ff;
+  --shadow-soft: 0 2px 8px color-mix(in srgb, var(--brand-primary) 6%, transparent);
+  --shadow-medium: 0 4px 16px color-mix(in srgb, var(--brand-primary) 8%, transparent);
+  --shadow-hover: 0 20px 40px color-mix(in srgb, var(--brand-primary) 8%, transparent);
+  --navbar-bg: rgb(255, 255, 255, 0.98);
+  --navbar-bg-blur: rgb(255, 255, 255, 0.8);
+
+  /* 反色文字：用于主色实底 / 深色插画之上，明暗两态统一为白 */
+  --text-inverse: #fff;
+
+  /* 状态语义色（明暗两态各自保持可读对比度，供各业务页复用） */
+  --status-warning: var(--warning-700);
+  --status-success: var(--success-800);
+  --status-info: var(--violet-600);
+  --status-danger: var(--danger-800);
+
+  /* 分类/标识色：图表（ECharts/SVG/canvas）、量表、头像等"身份色"。
+     明色取 antd 官方色板第 6 档、暗色取第 8 档，色相一一对齐。
+     注意：官方第 6 档定位是"填充色"（与白底对比度约 2–6:1），
+     用于头像/图表填充；若需在浅色底上作正文文字，请改用 --status-* 或品牌色。 */
+  --cat-blue: #1677ff;
+  --cat-geekblue: #2f54eb;
+  --cat-cyan: #13c2c2;
+  --cat-green: #52c41a;
+  --cat-gold: #faad14;
+  --cat-red: #f5222d;
+  --cat-magenta: #eb2f96;
+  --cat-purple: #722ed1;
+  --cat-gray: #666666;
+}
+
+/* ---------- 语义化 CSS 变量 · 暗色态 ---------- */
+:root.dark {
+  /* ============================================================
+     全盘对齐 antd 官方暗色派生值（theme.darkAlgorithm 输出）
+     ------------------------------------------------------------
+     · 背景三层 = colorBgLayout / colorBgContainer / colorBgElevated
+     · 文字 = colorText(0.85) / colorTextSecondary(0.65) / colorTextTertiary(0.45→0.5)，
+       0.95 / 0.75 / 0.55 为同一天梯细分以保留业务层级；
+       末档取 0.5 而非官方 0.45，是为在纯黑底上满足 WCAG AA（0.45 实测约 4.3:1）
+     · 边框 = colorBorderSecondary(#303030) / colorBorder(#424242)，
+       强边框取官方 gray 暗色档 #5a5a5a
+     · 阴影：暗色下官方做法为纯黑投影
+     · 状态 / 分类色 = 各语义色相官方色板暗色第 8 档（#000 底 ≥ 5.9:1）
+     ============================================================ */
+  --bg-page: #000000;
+  --bg-soft: #141414;
+  --bg-mute: #1f1f1f;
+  /* 暗色值不在本层定义：由 palettes.css :root.dark 按品牌 wash 派生（随色板/自定义色变化） */
+  --bg-card: #141414;
+  --bg-overlay: rgb(31 31 31 / 0.95);
+  --text-heading: rgb(255 255 255 / 0.95);
+  --text-primary: rgb(255 255 255 / 0.85);
+  --text-regular: rgb(255 255 255 / 0.75);
+  --text-secondary: rgb(255 255 255 / 0.65);
+  --text-muted: rgb(255 255 255 / 0.55);
+  --text-faint: rgb(255 255 255 / 0.5);
+  --border-light: #303030;
+  --border-regular: #424242;
+  --border-strong: #5a5a5a;
+  --border-blue: #0b306d;
+  --shadow-soft: 0 2px 8px rgb(0 0 0 / 0.3);
+  --shadow-medium: 0 4px 16px rgb(0 0 0 / 0.4);
+  --shadow-hover: 0 20px 40px rgb(0 0 0 / 0.5);
+  --navbar-bg: rgb(20 20 20 / 0.98);
+  --navbar-bg-blur: rgb(20 20 20 / 0.85);
+
+  /* 状态语义色：antd 官方语义色相（gold / green / geekblue / red）暗色第 8 档 */
+  --status-warning: #f3cc62;
+  --status-success: #8fd460;
+  --status-info: #7f9ef3;
+  --status-danger: #f37370;
+
+  /* 分类/标识色：antd 官方色板暗色第 8 档（gray 取第 9 档以保证对比度） */
+  --cat-blue: #65a9f3;
+  --cat-geekblue: #7f9ef3;
+  --cat-cyan: #58d1c9;
+  --cat-green: #8fd460;
+  --cat-gold: #f3cc62;
+  --cat-red: #f37370;
+  --cat-magenta: #f37fb7;
+  --cat-purple: #ab7ae0;
+  --cat-gray: #888888;
+}
+}

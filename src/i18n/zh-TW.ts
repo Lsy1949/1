@@ -662,6 +662,8 @@ export default {
     captcha: { refresh: '重新整理驗證碼' },
     form: {
       schoolPlaceholder: '請選擇學校',
+      /** 學校列表未返回 / 載入失敗時的提示（後端返回為主，前端不塞兜底資料） */
+      schoolLoadFailed: '學校列表載入失敗，請重新整理重試',
       userIdPlaceholder: '請輸入學號',
       passwordPlaceholder: '請輸入密碼',
       captchaPlaceholder: '請輸入驗證碼',
@@ -743,6 +745,13 @@ export default {
       slogan: '每一次迷路，都是探索的開始',
       hotline: '求助熱線',
       copyright: '© 2026 生涯心旅 · 迷途驛站特別專題'
+    }
+  },
+  error: {
+    forbidden: {
+      title: '該功能暫未開放',
+      desc: '當前學校尚未啟用此功能模組，請聯繫管理員了解詳情。',
+      back: '返回首頁'
     }
   }
 }

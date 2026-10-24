@@ -662,6 +662,8 @@ export default {
     captcha: { refresh: 'Refresh captcha' },
     form: {
       schoolPlaceholder: 'Select school',
+      /** Shown when the tenants list has not loaded or failed (backend-driven, no frontend fallback data) */
+      schoolLoadFailed: 'Failed to load schools, please refresh',
       userIdPlaceholder: 'Enter student ID',
       passwordPlaceholder: 'Enter password',
       captchaPlaceholder: 'Enter captcha',
@@ -743,6 +745,13 @@ export default {
       slogan: 'Every time you get lost, it is the start of exploration',
       hotline: 'Hotline',
       copyright: '© 2026 Career Heart Journey · Lost & Found Special Feature'
+    }
+  },
+  error: {
+    forbidden: {
+      title: 'Feature Not Available',
+      desc: 'This feature module is not enabled for your institution. Please contact your administrator for details.',
+      back: 'Back to Home'
     }
   }
 }

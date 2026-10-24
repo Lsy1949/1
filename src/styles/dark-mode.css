@@ -1,129 +1,30 @@
 /* ============================================================
-   生涯心旅 · 自主深色模式
-   通过 html.dark class + CSS 变量实现，替代 DarkReader
+ * 暗色覆写层（仅本文件负责暗色的「样式覆写」）
+ *
+ * 通过 html.dark class 生效。职责边界：
+ *  - 语义变量的明/暗取值 → semantic.css（L2）
+ *  - 品牌档位的明/暗派生 → palettes.css（L1）
+ *  - 本文件只做元素级 / 组件级的暗色样式覆写（导航、排版、
+ *    滚动条、各业务区块的融入背景等）。
+ *
+ * 关于 `transparent !important`（全仓 70 处，均在本文件与各组件暗色块内）：
+ * 暗色模式的目标是让卡片「融入背景」。组件自身与 antd 运行时都会写上
+ * 底色/描边，普通选择器优先级不足，必须用 !important 覆盖；
+ * 逐条移除会导致深色下卡片重新显形，因此保留并在此集中说明。
+ *
+ * ⚠️ @layer 层序两条规则（易错，改前必读）：
+ *  1. 普通声明：层序"后者强"——本层（dark-mode）排最后，层内最强；
+ *     但 antd 运行时样式 / 组件 CSS Modules / 租户覆写样式表未分层
+ *     （unlayered 天然压过所有 @layer），组件级覆写仍需 html.dark 前缀
+ *     + !important，与 @layer 改造前行为一致。
+ *  2. !important 声明：层序**反向**——越早的层 !important 越强。
+ *     即 main.css（层 main）里的 !important 会压过本层的 !important。
+ *     当前全局层中 !important 仅 main.css 的 prefers-reduced-motion 兜底
+ *     （只写 motion 属性，与本层无交集），暂无实际冲突；后续若在其他
+ *     更早的层新增 !important 且可能与本层相撞，须先按此规则核对。
+ * ============================================================ */
 
-   关于 `transparent !important`（全仓 70 处，均在本文件与各组件暗色块内）：
-   暗色模式的目标是让卡片「融入背景」。组件自身与 antd 运行时都会写上
-   底色/描边，普通选择器优先级不足，必须用 !important 覆盖；
-   逐条移除会导致深色下卡片重新显形，因此保留并在此集中说明。
-   ============================================================ */
-
-/* ---------- 语义化 CSS 变量 ---------- */
-:root {
-  --bg-page: #ffffff;
-  --bg-soft: #f8fafc;
-  --bg-mute: #f1f5f9;
-  --bg-blue-tint: #f0f7ff;
-  --bg-card: #ffffff;
-  --bg-overlay: rgb(255, 255, 255, 0.95);
-  --text-heading: #0a0f1a;
-  --text-primary: #111827;
-  --text-regular: #1f2937;
-  --text-secondary: #4b5563;
-  /* muted/faint 三层级下压：原 faint #9ca3af 对白底仅 2.54:1 不达 WCAG AA。
-     为避免「faint 达标后与 muted 压扁成同色」，整条尾巴一并下压，保住三层视觉层级：
-       secondary #4b5563 = 7.90:1 / muted #59616e = 6.24:1 / faint #6b7280 = 4.83:1
-     三者均 ≥ 4.5:1（AA）。#59616e 为定制的过渡灰 —— 现有色阶里 #475569(7.47) 会与
-     secondary 撞层级、#6b7280(4.83) 会与 faint 撞层级，故不取现成档。 */
-  --text-muted: #59616e;
-  --text-faint: #6b7280;
-  --border-light: #eef2f6;
-  --border-regular: #f1f5f9;
-  --border-strong: #e2e8f0;
-  --border-blue: #d0e7ff;
-  --shadow-soft: 0 2px 8px color-mix(in srgb, var(--brand-primary) 6%, transparent);
-  --shadow-medium: 0 4px 16px color-mix(in srgb, var(--brand-primary) 8%, transparent);
-  --shadow-hover: 0 20px 40px color-mix(in srgb, var(--brand-primary) 8%, transparent);
-  --navbar-bg: rgb(255, 255, 255, 0.98);
-  --navbar-bg-blur: rgb(255, 255, 255, 0.8);
-
-  /* 反色文字：用于主色实底 / 深色插画之上，明暗两态统一为白 */
-  --text-inverse: #fff;
-
-  /* 状态语义色（明暗两态各自保持可读对比度，供各业务页复用） */
-  --status-warning: var(--warning-700);
-  --status-success: var(--success-800);
-  --status-info: var(--violet-600);
-  --status-danger: var(--danger-800);
-
-  /* 分类/标识色：图表（ECharts/SVG/canvas）、量表、头像等"身份色"。
-     明色取 antd 官方色板第 6 档、暗色取第 8 档，色相一一对齐。
-     注意：官方第 6 档定位是"填充色"（与白底对比度约 2–6:1），
-     用于头像/图表填充；若需在浅色底上作正文文字，请改用 --status-* 或品牌色。 */
-  --cat-blue: #1677ff;
-  --cat-geekblue: #2f54eb;
-  --cat-cyan: #13c2c2;
-  --cat-green: #52c41a;
-  --cat-gold: #faad14;
-  --cat-red: #f5222d;
-  --cat-magenta: #eb2f96;
-  --cat-purple: #722ed1;
-  --cat-gray: #666666;
-
-  /* 浅色模式：bright 变体等于主色本身 */
-  --brand-primary-bright: var(--brand-primary);
-  --brand-primary-bright-bg: color-mix(in srgb, var(--brand-primary) 10%, transparent);
-}
-
-:root.dark {
-  /* ============================================================
-     全盘对齐 antd 官方暗色派生值（theme.darkAlgorithm 输出）
-     ------------------------------------------------------------
-     · 背景三层 = colorBgLayout / colorBgContainer / colorBgElevated
-     · 文字 = colorText(0.85) / colorTextSecondary(0.65) / colorTextTertiary(0.45→0.5)，
-       0.95 / 0.75 / 0.55 为同一天梯细分以保留业务层级；
-       末档取 0.5 而非官方 0.45，是为在纯黑底上满足 WCAG AA（0.45 实测约 4.3:1）
-     · 边框 = colorBorderSecondary(#303030) / colorBorder(#424242)，
-       强边框取官方 gray 暗色档 #5a5a5a
-     · 阴影：暗色下官方做法为纯黑投影
-     · 状态 / 分类色 = 各语义色相官方色板暗色第 8 档（#000 底 ≥ 5.9:1）
-     ============================================================ */
-  --bg-page: #000000;
-  --bg-soft: #141414;
-  --bg-mute: #1f1f1f;
-  --bg-blue-tint: #111826;
-  --bg-card: #141414;
-  --bg-overlay: rgb(31 31 31 / 0.95);
-  --text-heading: rgb(255 255 255 / 0.95);
-  --text-primary: rgb(255 255 255 / 0.85);
-  --text-regular: rgb(255 255 255 / 0.75);
-  --text-secondary: rgb(255 255 255 / 0.65);
-  --text-muted: rgb(255 255 255 / 0.55);
-  --text-faint: rgb(255 255 255 / 0.5);
-  --border-light: #303030;
-  --border-regular: #424242;
-  --border-strong: #5a5a5a;
-  --border-blue: #0b306d;
-  --shadow-soft: 0 2px 8px rgb(0 0 0 / 0.3);
-  --shadow-medium: 0 4px 16px rgb(0 0 0 / 0.4);
-  --shadow-hover: 0 20px 40px rgb(0 0 0 / 0.5);
-  --navbar-bg: rgb(20 20 20 / 0.98);
-  --navbar-bg-blur: rgb(20 20 20 / 0.85);
-
-  /* 状态语义色：antd 官方语义色相（gold / green / geekblue / red）暗色第 8 档 */
-  --status-warning: #f3cc62;
-  --status-success: #8fd460;
-  --status-info: #7f9ef3;
-  --status-danger: #f37370;
-
-  /* 分类/标识色：antd 官方色板暗色第 8 档（gray 取第 9 档以保证对比度） */
-  --cat-blue: #65a9f3;
-  --cat-geekblue: #7f9ef3;
-  --cat-cyan: #58d1c9;
-  --cat-green: #8fd460;
-  --cat-gold: #f3cc62;
-  --cat-red: #f37370;
-  --cat-magenta: #f37fb7;
-  --cat-purple: #ab7ae0;
-  --cat-gray: #888888;
-
-  /* 暗色模式专用：主色的高亮变体（用于深色底上的文字 / hover 强调色，
-     保持与浅色模式下 --brand-primary 在白色底上相同的视觉权重）。
-     各 palette 在 [data-palette] 下覆写为各自 seed 的官方 dark-8 档。 */
-  --brand-primary-bright: #4b91e7;
-  --brand-primary-bright-bg: color-mix(in srgb, var(--brand-primary-bright) 12%, transparent);
-}
-
+@layer dark-mode {
 /* ---------- 基础元素 ---------- */
 html.dark body {
   background-color: var(--bg-page) !important;
@@ -632,5 +533,6 @@ html.dark .article-list-page .search-box {
 html.dark .article-list-page .back-link {
   background: var(--brand-primary-bright-bg) !important;
   border-color: color-mix(in srgb, var(--brand-primary-bright) 15%, transparent) !important;
+}
 }
 

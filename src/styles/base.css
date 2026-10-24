@@ -1,5 +1,7 @@
-/* 基础重置（测评模块所需的最小集；全站 base.css 随全量迁移引入） */
+/* 元素基线：main.css 全量 reset 之前的保底重置。
+   body 的色值/字体挂语义变量，随明暗与品牌自动切换。 */
 
+@layer base {
 html,
 body {
   margin: 0;
@@ -15,4 +17,5 @@ body {
 
 * {
   box-sizing: border-box;
+}
 }

@@ -1,104 +1,95 @@
 /* ============================================================
- * 主题色板 · CSS 变量层
+ * 主题色板 · seed 派生层（L1 品牌色）
  *
  * 设计：
- *  - 唯一数据源在 src/styles/palette.ts（PALETTES 常量）；
- *    本文件仅提供 :root fallback 与 [data-palette] 覆写规则，
- *    任何调色都改 palette.ts，然后同步本文件对应段落。
- *  - 注入顺序：:root fallback → [data-palette] → tenant overrides → dark
+ *  - 每套色板只保留一个 seed（--brand-primary），其余档位全部由
+ *    color-mix 从 seed 派生 —— 新增色板 / 租户自定义色只需一个 hex。
+ *  - 预设 seed 的唯一数据源在 src/styles/palette.ts（PALETTES），
+ *    本文件仅提供 :root fallback 与 [data-palette] 覆写规则。
+ *  - 'custom' 色板没有静态规则：seed 由 JS 以 <html> inline style 注入
+ *    （inline 优先级高于任何 @layer 与选择器，派生档位自动跟随）。
+ *  - 注入顺序：:root fallback → [data-palette] / custom inline seed
+ *    → 租户 L2 覆写（html:not(.dark) 样式表，仅浅色）→ dark 重定义。
+ *  - ⚠️ 派生配比与 palette.ts 的 BRAND_SHADE_RATIOS / deriveShades()
+ *    严格同步：antd token 桥需要实色（算法要解析颜色），无法直接
+ *    引用 color-mix 表达式，TS 侧用同公式算出实色喂给 antd。
  * ============================================================ */
 
-/* ---------- 默认色板（blue）fallback：防 JS 加载前 FOUC ---------- */
+@layer palettes {
+/* ---------- 明色档派生 ----------
+   配比按原手写色阶目视校准（以 blue 为基准：
+   soft≈原 #d0e7ff / faint≈原 #f0f7ff / wash≈原 #f8fbff，
+   dark≈原 #0040b0），替换色板时不需要重新逐档取值。 */
 :root {
+  /* blue seed 兜底：防 JS 加载前 FOUC（与 palette.ts PALETTES.blue.primary 一致） */
   --brand-primary: #0052d9;
-  --brand-primary-dark: #0040b0;
-  --brand-primary-deep: #0040a8;
-  --brand-primary-deeper: #003bb3;
-  --brand-primary-soft: #d0e7ff;
-  --brand-primary-faint: #f0f7ff;
-  --brand-primary-wash: #f8fbff;
+
+  /* 深阶三档：hover / active / 渐变端点，逐档加深 */
+  --brand-primary-dark: color-mix(in srgb, var(--brand-primary) 85%, #000);
+  --brand-primary-deep: color-mix(in srgb, var(--brand-primary) 74%, #000);
+  --brand-primary-deeper: color-mix(in srgb, var(--brand-primary) 64%, #000);
+
+  /* 浅底三档：高亮底 / 极浅底 / 页面浅底 */
+  --brand-primary-soft: color-mix(in srgb, var(--brand-primary) 18%, #fff);
+  --brand-primary-faint: color-mix(in srgb, var(--brand-primary) 8%, #fff);
+  --brand-primary-wash: color-mix(in srgb, var(--brand-primary) 4%, #fff);
+
+  /* 浅色模式：bright 变体即 seed 本身（供浅底强调色统一引用） */
+  --brand-primary-bright: var(--brand-primary);
+  --brand-primary-bright-bg: color-mix(in srgb, var(--brand-primary) 10%, transparent);
 
   --brand-radius: 6px;
   --brand-font-family: -apple-system, blinkmacsystemfont, 'Segoe UI', 'PingFang SC',
     'Microsoft YaHei', sans-serif;
 }
 
-/* ---------- blue（与 :root 相同；显式声明便于脚本切回） ---------- */
-:root[data-palette='blue'] {
-  --brand-primary: #0052d9;
-  --brand-primary-dark: #0040b0;
-  --brand-primary-deep: #0040a8;
-  --brand-primary-deeper: #003bb3;
-  --brand-primary-soft: #d0e7ff;
-  --brand-primary-faint: #f0f7ff;
-  --brand-primary-wash: #f8fbff;
-}
-
-/* ---------- green ---------- */
+/* ---------- 预设色板：只覆写 seed，档位随公式自动派生 ----------
+   blue 即 :root 默认值，无需单独规则（显式写一份等值规则无收益）；
+   'custom' 由 inline seed 接管，见文件头注释。 */
 :root[data-palette='green'] {
   --brand-primary: #0e8a5f;
-  --brand-primary-dark: #0a6e4b;
-  --brand-primary-deep: #0a6847;
-  --brand-primary-deeper: #086144;
-  --brand-primary-soft: #c8ecd9;
-  --brand-primary-faint: #ecfbf3;
-  --brand-primary-wash: #f6fdf9;
 }
 
-/* ---------- purple ---------- */
 :root[data-palette='purple'] {
   --brand-primary: #6b3ac8;
-  --brand-primary-dark: #552ba3;
-  --brand-primary-deep: #51289c;
-  --brand-primary-deeper: #4a2591;
-  --brand-primary-soft: #e0d3f5;
-  --brand-primary-faint: #f5effc;
-  --brand-primary-wash: #faf7fe;
 }
 
-/* ---------- orange ---------- */
 :root[data-palette='orange'] {
   --brand-primary: #c2520a;
-  --brand-primary-dark: #9e4107;
-  --brand-primary-deep: #973e07;
-  --brand-primary-deeper: #8f3b06;
-  --brand-primary-soft: #fadfc8;
-  --brand-primary-faint: #fdf1e6;
-  --brand-primary-wash: #fef9f3;
 }
 
-/* ---------- 暗色模式下的品牌档位：全部取该 seed 的 antd 官方暗色色板档位
-   （soft = 第 3 档 / faint = 第 2 档 / wash = 第 1 档，
-    bright = 第 8 档用于深色底强调，对 #000 底对比度 ≥ 5.5:1）。
-   --brand-primary-bright-bg 由 bright 统一派生，无需逐色板覆写。 ---------- */
-:root.dark[data-palette='blue'] {
-  --brand-primary-soft: #0e274f;
-  --brand-primary-faint: #0f1f3c;
-  --brand-primary-wash: #111826;
-  --brand-primary-bright: #4b91e7;
-  --bg-blue-tint: #111826;
+/* ---------- 暗色档派生 ----------
+   原实现按 antd 官方暗色色板逐档取值（soft = 第 3 档 / faint = 第 2 档 /
+   wash = 第 1 档，bright = 第 8 档用于深色底强调，对 #000 底对比度 ≥ 5.5:1）。
+   改为公式派生后按同一对比度目标校准配比：bright = seed 65% + 白 35%
+   （green 色相单配 75%，见下方），四套预设对 #000 实测均 ≥ 6:1。
+   soft/faint/wash 掺入 #141414（= 暗色 --bg-card 卡片底色）：
+   对账原手写档，最大 ΔE76 从 11.1（navy-950 版 orange faint）
+   降至 5.0（#141414 版 blue/purple faint），wash 四色相全部改善。
+   自定义 seed 请给足深度的颜色，上深底前先校验对比度。 */
+:root.dark {
+  --brand-primary-soft: color-mix(in srgb, var(--brand-primary) 26%, #141414);
+  --brand-primary-faint: color-mix(in srgb, var(--brand-primary) 16%, #141414);
+  --brand-primary-wash: color-mix(in srgb, var(--brand-primary) 8%, #141414);
+
+  /* 暗色强调色：保持与浅色 --brand-primary 在白底上相近的视觉权重。
+     各预设的实测替代值（原 antd 第 8 档 → 公式值）：
+     blue #4b91e7→≈#598ee6 / green #439c77→≈#62b397 /
+     purple #a583d6→≈#9f7fdb / orange #d1894e→≈#d78e60 */
+  --brand-primary-bright: color-mix(in srgb, var(--brand-primary) 65%, #fff);
+  --brand-primary-bright-bg: color-mix(in srgb, var(--brand-primary-bright) 12%, transparent);
+
+  /* 页面品牌浅底：暗色下跟随品牌 wash（原为各色板 [data-palette] 暗色块手写值）。
+     本规则位于 semantic 层之后（层级声明序），暗色下压过浅色固定值。 */
+  --bg-blue-tint: var(--brand-primary-wash);
 }
 
+/* ---------- green 暗色 bright 单配 ----------
+   antd green dark-8 档（原手写 #439c77）比"混白"公式更暗更饱和，universal
+   65% 对 green 离群（ΔE76≈11.1），按 75% 单配降到 ≈5.2，对 #000 底
+   对比度 7.17:1（≥5.5 达标）。仅该色相的派生配比不同，seed 仍只有
+   一个；custom 色板不经过本规则（走 universal 65%）。 */
 :root.dark[data-palette='green'] {
-  --brand-primary-soft: #12372b;
-  --brand-primary-faint: #102821;
-  --brand-primary-wash: #111a18;
-  --brand-primary-bright: #439c77;
-  --bg-blue-tint: #111a18;
+  --brand-primary-bright: color-mix(in srgb, var(--brand-primary) 75%, #fff);
 }
-
-:root.dark[data-palette='purple'] {
-  --brand-primary-soft: #2e1f4a;
-  --brand-primary-faint: #221937;
-  --brand-primary-wash: #191423;
-  --brand-primary-bright: #a583d6;
-  --bg-blue-tint: #191423;
-}
-
-:root.dark[data-palette='orange'] {
-  --brand-primary-soft: #482711;
-  --brand-primary-faint: #361d0f;
-  --brand-primary-wash: #231711;
-  --brand-primary-bright: #d1894e;
-  --bg-blue-tint: #231711;
 }

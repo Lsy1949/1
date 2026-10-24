@@ -696,6 +696,8 @@ export default {
     captcha: { refresh: '刷新验证码' },
     form: {
       schoolPlaceholder: '请选择学校',
+      /** 学校列表未返回 / 加载失败时的提示（后端返回为主，前端不塞兜底数据） */
+      schoolLoadFailed: '学校列表加载失败，请刷新重试',
       userIdPlaceholder: '请输入学号',
       passwordPlaceholder: '请输入密码',
       captchaPlaceholder: '请输入验证码',
@@ -777,6 +779,13 @@ export default {
       slogan: '每一次迷路，都是探索的开始',
       hotline: '求助热线',
       copyright: '© 2026 生涯心旅 · 迷途驿站特别专题'
+    }
+  },
+  error: {
+    forbidden: {
+      title: '该功能暂未开放',
+      desc: '当前学校尚未启用此功能模块，请联系管理员了解详情。',
+      back: '返回首页'
     }
   }
 }

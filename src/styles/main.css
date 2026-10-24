@@ -1,9 +1,10 @@
 /* ============================================================
    生涯心旅 - 全局样式
    主色：#0052d9（生涯蓝）
-   （base.css / dark-mode.css 由 main.tsx 显式引入，等价 Vue 版 @import）
+   全局排版、reset、无障碍与工具类；各文件均由 main.tsx 显式引入。
    ============================================================ */
 
+@layer main {
 /* 全局重置 */
 * {
   box-sizing: border-box;
@@ -63,12 +64,14 @@ button:where(.btn-reset) {
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  /* 品牌字体变量（可被租户 --brand-font-family 覆写）——此前此处硬编码
+     系统字体栈且层序靠后，静默屏蔽了租户字体定制，属 bug 修复；
+     与 base.css 的 body 同值，保留作为层 main 的显式声明 */
+  font-family: var(--brand-font-family);
   transition: background-color 0.3s, color 0.3s;
   border: none;
-  color: var(--color-text);
-  background-color: var(--color-background);
+  /* 文字色/背景色由 base.css 的 body 规则承担（--text-primary / --bg-page）；
+     这里不重复声明，避免与品牌字体变量体系脱节的两套取值 */
 }
 
 #root {
@@ -131,33 +134,7 @@ html.dark,
   background-color: var(--bg-page);
   color: var(--text-primary);
 }
-/* ============================================================
-   滚动揭示动画 (v-reveal 指令)
-   ============================================================ */
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
-}
-
-.reveal.reveal-left {
-  transform: translateX(-32px);
-}
-
-.reveal.reveal-right {
-  transform: translateX(32px);
-}
-
-.reveal.reveal-scale {
-  transform: scale(0.94);
-}
-
-.reveal.is-revealed {
-  opacity: 1;
-  transform: none;
-}
+/* 滚动揭示动画（.reveal / .scroll-reveal）统一定义在 reveal.css，此处不再重复 */
 
 /* ============================================================
    印刷质感 · 噪点纹理叠加
@@ -207,4 +184,5 @@ html.dark,
   background: var(--brand-primary);
   z-index: 1001;
   transition: width 0.1s linear;
+}
 }

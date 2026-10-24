@@ -239,3 +239,81 @@ export const ARTICLES: ArticleDetailDTO[] = [
     featured: false
   }
 ]
+
+/**
+ * 【租户差异化】（mock 即契约：后端按 X-Tenant-Id 过滤，前端不传租户参数）。
+ * 按租户返回不同文章集合（id 段隔离避免跨租户串文）：
+ *  - default（1-10）：面向社会人士的公共内容（现有 ARTICLES）
+ *  - nist（101+）：南信院校内文章
+ *  - tsinghua（201+）：清华校内文章
+ * 列表/详情/相关推荐均先按租户过滤再作 category/keyword 筛选。
+ */
+const NIST_ARTICLES: ArticleDetailDTO[] = [
+  {
+    id: 101,
+    title: '南信院心理月：把「情绪急救箱」带进每一间宿舍',
+    summary: '青野心旅联合学生处推出宿舍情绪急救箱，含呼吸卡、倾诉热线与自助手册。',
+    content: '<p>本月起，每间宿舍将配备「情绪急救箱」，内含呼吸训练卡、24 小时倾诉热线贴纸与心理自助手册，帮助同学在情绪低谷时第一时间获得支持。</p>',
+    category: 'daily',
+    author: '南信院心理中心',
+    authorTitle: '校心理发展中心',
+    date: '2026-10-20',
+    views: 320,
+    readTime: '4 min',
+    image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=800',
+    featured: true,
+  },
+  {
+    id: 102,
+    title: '实训周压力管理：给工科生的三个「降载」技巧',
+    summary: '实训密集期如何用微休息、任务切片与同伴打卡降低 burnout 风险。',
+    content: '<p>实训周任务密集，建议采用「25+5 微休息」「任务切片到 30 分钟粒度」「三人同伴打卡」三个技巧，避免连续高压导致的效率崩塌。</p>',
+    category: 'psychology',
+    author: '周老师',
+    authorTitle: '驻校心理咨询师',
+    date: '2026-10-15',
+    views: 210,
+    readTime: '6 min',
+    featured: false,
+  },
+]
+
+const TSINGHUA_ARTICLES: ArticleDetailDTO[] = [
+  {
+    id: 201,
+    title: '紫荆心旅：期中季「树洞之夜」活动回顾',
+    summary: '线下匿名倾诉墙 + 驻场咨询师，累计收到 400+ 条心声。',
+    content: '<p>期中季「树洞之夜」在紫荆操场举行，匿名倾诉墙累计收到 400 余条心声，驻场咨询师现场回应高频困扰，后续将整理为 FAQ 发布。</p>',
+    category: 'daily',
+    author: '清华心理中心',
+    authorTitle: '学生心理发展指导中心',
+    date: '2026-10-18',
+    views: 860,
+    readTime: '5 min',
+    image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800',
+    featured: true,
+  },
+  {
+    id: 202,
+    title: '科研卡壳时怎么办：研究生专场工作坊报名',
+    summary: '面向研究生的「卡壳重启」工作坊，限额 30 人，含一对一咨询绿色通道。',
+    content: '<p>针对科研瓶颈期的焦虑与自我怀疑，中心开设「卡壳重启」工作坊，包含团体辅导与一对一咨询绿色通道，限额 30 人。</p>',
+    category: 'psychology',
+    author: '紫荆心旅团队',
+    authorTitle: '心理中心教研组',
+    date: '2026-10-10',
+    views: 540,
+    readTime: '7 min',
+    featured: false,
+  },
+]
+
+export const ARTICLES_BY_TENANT: Record<string, ArticleDetailDTO[]> = {
+  default: ARTICLES,
+  nist: NIST_ARTICLES,
+  tsinghua: TSINGHUA_ARTICLES,
+}
+
+export function articlesFor(tenantId: string): ArticleDetailDTO[] {
+  return ARTICLES_BY_TENANT[tenantId] ?? ARTICLES_BY_TENANT.default
+}
