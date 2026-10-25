@@ -1,8 +1,6 @@
 /**
  * 【business】AccountPasswordLogin —— 账号密码登录方式
- * - 沿用旧语义：提交暂跳过前端校验（回车 / 按钮直调 runLogin）
- * - rules 保留失焦/变更时的即时校验展示（等价 Element Plus trigger 行为：
- *   输入类 blur、下拉 change）
+ * - 提交前统一 validateFields（回车 / 按钮同一入口），rules 的 blur/change 仅做即时提示
  * - ElForm/ElInput/ElSelect → AntD Form/Input/Select；loading/成功写 store/
  *   实时通道均由 useAuthLogin 统一管理
  * - 验证码行「输入框 + canvas」需整体作为 Form.Item 受控子树，
@@ -110,13 +108,16 @@ export function AccountPasswordLogin({
     if (!IS_MAIN_SITE) return
     fetchPublicTenants()
       .then((list) => {
-        if (Array.isArray(list) && list.length > 0) {
-          const options = list.map((opt) => ({ value: opt.tenantId, label: opt.name }))
-          setSchools(options)
-          // 默认选中第一项（最常见登录路径）；列表回来前用户无从选择，直接 set 安全
-          form.setFieldsValue({ school: options[0].value })
-          setSchoolsFailed(false)
+        if (!Array.isArray(list) || list.length === 0) {
+          // 空列表同样视为失败，否则选择器会一直停留在 loading
+          setSchoolsFailed(true)
+          return
         }
+        const options = list.map((opt) => ({ value: opt.tenantId, label: opt.name }))
+        setSchools(options)
+        // 默认选中第一项（最常见登录路径）；列表回来前用户无从选择，直接 set 安全
+        form.setFieldsValue({ school: options[0].value })
+        setSchoolsFailed(false)
       })
       .catch((err) => {
         // 后端返回为主：失败不伪造兜底数据，明示失败等用户刷新重试
@@ -222,9 +223,11 @@ export function AccountPasswordLogin({
     },
   })
 
-  // 登录处理函数（沿用旧语义：暂跳过前端校验）
-  const handleLogin = () => {
-    const { school, userId, password } = form.getFieldsValue()
+  // 登录处理函数：提交前统一校验（validateFields 会校验全部字段，不受 validateTrigger 限制）
+  const handleLogin = async () => {
+    const values = await form.validateFields().catch(() => null)
+    if (!values) return
+    const { school, userId, password } = values
     // 主域选择器为空（列表未返回/加载失败）时拦截：不提交空 tenantId
     if (IS_MAIN_SITE && !school) {
       message.warning(t('login.form.schoolLoadFailed'))
@@ -238,12 +241,6 @@ export function AccountPasswordLogin({
       userId,
       password,
     })
-  }
-
-  // 切换学校：清空账号/密码 + 提示（不同学校账号体系隔离，留着会误导）
-  const handleSchoolChange = () => {
-    form.setFieldsValue({ userId: '', password: '' })
-    message.info('已切换学校，请重新输入账号')
   }
 
   // 等价 el-form 的 @keyup.enter
@@ -280,7 +277,6 @@ export function AccountPasswordLogin({
             options={schools}
             loading={IS_MAIN_SITE && schools.length === 0 && !schoolsFailed}
             notFoundContent={t('login.form.schoolLoadFailed')}
-            onChange={handleSchoolChange}
           />
         </Form.Item>
       )}

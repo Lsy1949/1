@@ -121,11 +121,11 @@
 
 | 租户 | 用户名 | 密码 | userId |
 |---|---|---|---|
-| default | `social001` | `123456` | `u-social-001` |
-| nist | `nist001` | `123456` | `u-nist-001` |
-| tsinghua | `thu001` | `123456` | `u-thu-001` |
+| default | `social001` | `111111` | `u-social-001` |
+| nist | `nist001` | `111111` | `u-nist-001` |
+| tsinghua | `thu001` | `111111` | `u-thu-001` |
 
-**交叉验证**：nist001 在 tsinghua 租户下登录 → `401 INVALID_CREDENTIALS`。
+**Mock 校验规则**（`src/mocks/data/users.ts`）：密码统一为 `111111`，**任意用户名均可登录**（上表账号返回真实身份，未登记账号按请求租户生成临时身份）。真实后端仍需按账号表校验账号存在性与归属租户，失败统一返回 `INVALID_CREDENTIALS`（如 nist001 在 tsinghua 租户下登录 → `401`）。
 
 ### 1.2 登出
 
@@ -160,8 +160,9 @@
 | 项 | 内容 |
 |---|---|
 | Method / Path | `GET /api/tenant/config?tenantId={id}` |
-| 成功响应 | `200 { code: 200, data: TenantConfigDTO }`（含 `tenantId` 回填、`theme`、`features`、`routes?` 等） |
+| 成功响应 | `200 { code: 200, data: TenantConfigDTO }`（含 `tenantId` 回填、`theme`、`features`、`routes?`、`assets?` 等） |
 | 未知租户 | 回退 `default` 配置（`tenantId` 仍回填请求值） |
+| 登录页背景 | `assets.loginBackground`：登录页背景图 URL（绝对 URL 或站内绝对路径 `/xxx`），**按租户下发**；缺省 / 空串 = 前端内置默认图。前端在登录页消费该字段，配置到达/刷新后热更新 |
 
 ### 2.2 站点路由快照（A 方案契约）
 

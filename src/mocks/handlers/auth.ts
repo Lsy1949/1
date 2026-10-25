@@ -24,6 +24,7 @@ import { DEFAULT_TENANT_ID } from '@/config/tenant/default'
  * 契约要点：
  * - 登录成功（真实环境）：Set-Cookie: session=...; Domain=.{主域}; HttpOnly; Secure; SameSite=Lax
  * - 登录失败：统一 INVALID_CREDENTIALS，不区分账号不存在/密码错误/不属该校（防枚举）
+ * - mock 演示规则：密码统一为 111111，任意用户名均可登录（真实后端按账号表校验）
  * - /api/me：会话租户与 X-Tenant-Id 不一致 → 401（跨租户 cookie 视为未登录）
  */
 
@@ -91,11 +92,11 @@ export const authHandlers = [
         return fail(API_CODE.UNAUTHORIZED, '未登录')
       }
       const user = findMockUser(session)
-      if (!user) return fail(API_CODE.UNAUTHORIZED, '未登录')
+      // 未登记账号（mock 临时身份）不在账号表里，回退到会话中的用户名
       return ok({
-        userId: user.userId,
-        name: user.name,
-        tenantId: user.tenantId,
+        userId: session.userId,
+        name: user?.name ?? session.username,
+        tenantId: session.tenantId,
         roleId: 'student',
       })
     }),

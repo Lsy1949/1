@@ -1,4 +1,6 @@
 import type { TenantConfigDTO } from '@/api/types'
+import imgNist from '@/assets/images/nist-bg.jpg'
+import imgTsinghua from '@/assets/images/tsinghua-bg.jpg'
 
 /**
  * 租户配置 mock（模拟后端 `GET /api/tenant/config` 的返回）。
@@ -12,6 +14,9 @@ import type { TenantConfigDTO } from '@/api/types'
  *
  * 覆写值只允许引用语义 token（`var(--brand-primary-faint)` 等）或 palette 派生的
  * 表达式，不下发任何十六进制 / rgb 色值 —— 确保主题色始终由 tokens.css + palette.ts 决定。
+ *
+ * assets.loginBackground：登录页背景图，按租户下发（生产为后端 CDN 绝对 URL，
+ * mock 用 Vite 资源导入）。空串 / 缺省 = 前端内置默认图。
  */
 export const TENANT_MOCKS: Record<string, TenantConfigDTO> = {
   default: {
@@ -45,6 +50,10 @@ export const TENANT_MOCKS: Record<string, TenantConfigDTO> = {
         '--shadow-soft': '0 2px 8px color-mix(in srgb, var(--brand-primary) 6%, transparent)',
         '--shadow-medium': '0 4px 16px color-mix(in srgb, var(--brand-primary) 8%, transparent)',
       },
+    },
+    // 登录页背景：紫荆校景（default 不配置 = 走前端内置默认图，验证回退分支）
+    assets: {
+      loginBackground: imgTsinghua,
     },
     // 路由裁剪示例：该租户未开通心事广场（/square* 3 条需登录）+ /counseling/companion（公共页）。
     // 后者专门用于验证守卫矩阵「匿名 + 不需登录 + 未开通 → 403」这一行，
@@ -84,6 +93,10 @@ export const TENANT_MOCKS: Record<string, TenantConfigDTO> = {
         '--navbar-bg-blur': 'color-mix(in srgb, var(--brand-primary-wash) 80%, transparent)',
         '--bg-mute': 'var(--brand-primary-wash)',
       },
+    },
+    // 登录页背景：南信院实景
+    assets: {
+      loginBackground: imgNist,
     },
   },
 }

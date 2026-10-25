@@ -33,13 +33,10 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
   const [showForgotPasswordForm, setShowForgotPasswordForm] = useState(false)
   const [activeLoginType, setActiveLoginType] = useState<LoginType>('account')
 
-  // 登录方式标签
+  // 登录方式标签：后端契约（api-contract §1.1）目前只支持账号密码，
+  // 手机/邮箱组件与分支保留，契约就绪后把对应项加回本数组即可
   const loginTabs = useMemo<{ name: LoginType; label: string }[]>(
-    () => [
-      { name: 'account', label: t('login.tabs.account') },
-      { name: 'phone', label: t('login.tabs.phone') },
-      { name: 'email', label: t('login.tabs.email') },
-    ],
+    () => [{ name: 'account', label: t('login.tabs.account') }],
     [t],
   )
 

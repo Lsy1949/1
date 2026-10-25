@@ -7,8 +7,9 @@
  * 真实 HttpOnly cookie 行为（Domain=.psy.com / Secure / SameSite=Lax）
  * 由后端实现保证，前端代码不因 mock 妥协（withCredentials 照写）。
  *
- * 跨租户规则：账号归属单一租户；
- * nist001 在 tsinghua 租户下登录 → INVALID_CREDENTIALS（不提示归属，防枚举）。
+ * 跨租户规则：真实后端按账号归属租户校验（nist001 在 tsinghua 登录 → INVALID_CREDENTIALS）；
+ * mock 为联调便利放开用户名限制 —— 密码统一为 MOCK_DEMO_PASSWORD，任意用户名均可登录，
+ * 未登记的账号按「请求租户」生成临时身份。
  */
 
 import { DEFAULT_TENANT_ID } from '@/config/tenant/default'
@@ -22,16 +23,19 @@ export interface MockUser {
   tenantId: string
 }
 
+/** 演示密码：mock 校验规则 —— 任意用户名 + 该密码即可登录 */
+export const MOCK_DEMO_PASSWORD = '111111'
+
 /** key = 归属租户 ID */
 export const MOCK_USERS: Record<string, MockUser[]> = {
   [DEFAULT_TENANT_ID]: [
-    { userId: 'u-social-001', username: 'social001', password: '123456', name: '社会人士·体验账号', tenantId: DEFAULT_TENANT_ID },
+    { userId: 'u-social-001', username: 'social001', password: '111111', name: '社会人士·体验账号', tenantId: DEFAULT_TENANT_ID },
   ],
   nist: [
-    { userId: 'u-nist-001', username: 'nist001', password: '123456', name: '南理工·测试学生', tenantId: 'nist' },
+    { userId: 'u-nist-001', username: 'nist001', password: '111111', name: '南理工·测试学生', tenantId: 'nist' },
   ],
   tsinghua: [
-    { userId: 'u-thu-001', username: 'thu001', password: '123456', name: '清华·测试学生', tenantId: 'tsinghua' },
+    { userId: 'u-thu-001', username: 'thu001', password: '111111', name: '清华·测试学生', tenantId: 'tsinghua' },
   ],
 }
 
@@ -66,12 +70,24 @@ export function clearMockSession(): void {
 }
 
 /**
- * 校验账号：按「请求租户」+ 用户名 + 密码匹配。
- * 账号不属于该租户时也返回 null（与密码错误同处理，防归属枚举）。
+ * 校验账号（mock 演示规则）：
+ * 1. 密码必须是 MOCK_DEMO_PASSWORD，否则视为密码错误；
+ * 2. 用户名不做限制：已登记的账号返回真实身份，未登记的按请求租户生成临时身份。
+ * 真实后端仍应校验账号存在性 + 归属租户，并统一返回 INVALID_CREDENTIALS。
  */
 export function verifyMockUser(tenantId: string, username: string, password: string): MockUser | null {
+  if (password !== MOCK_DEMO_PASSWORD) return null
   const users = MOCK_USERS[tenantId] ?? []
-  return users.find(u => u.username === username && u.password === password) ?? null
+  const known = users.find(u => u.username === username)
+  if (known) return known
+  // 临时身份：userId 由租户 + 用户名派生，保证同一账号多次登录稳定
+  return {
+    userId: `u-${tenantId}-${username}`,
+    username,
+    password,
+    name: username,
+    tenantId,
+  }
 }
 
 /** 按会话找回完整账号（/api/me 用） */

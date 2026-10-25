@@ -17,15 +17,25 @@
   box-sizing: border-box;
 }
 
-/* 背景图层：nist-bg.jpg 实景图 + 品牌蓝渐变兜底（图片加载失败时显示蓝底） */
+/* 背景图层：内置实景图 + 品牌蓝渐变兜底（图片加载失败时显示蓝底） */
 .bg-layer {
+  /* 渐变兜底始终垫在图片下层；提到变量里避免两条规则重复声明 */
+  --login-bg-gradient: linear-gradient(135deg, var(--navy-800) 0%, var(--brand-primary) 50%, var(--color-info) 100%);
+
   position: fixed;
   inset: 0;
-  background-image: url('../assets/images/nist-bg.jpg'), linear-gradient(135deg, var(--navy-800) 0%, var(--brand-primary) 50%, var(--color-info) 100%);
+  background-image: url('../../assets/images/nist-bg.jpg'), var(--login-bg-gradient);
   background-size: cover, cover;
   background-position: center, center;
   background-repeat: no-repeat, no-repeat;
   z-index: 0;
+}
+
+/* 租户自定义背景：--login-bg-image 由登录页按后端 assets.loginBackground 注入。
+   注意：url() 必须由 JS 写入变量（Vite 只改写样式表内的字面量 url()，
+   自定义属性里的相对路径不会被打包解析），因此这里不能再声明默认 url()。 */
+.bg-layer--custom {
+  background-image: var(--login-bg-image), var(--login-bg-gradient);
 }
 
 /* 光晕装饰层：营造空间感与品牌氛围 */
