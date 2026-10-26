@@ -202,7 +202,6 @@ export function PhoneLogin({ onLoginSuccess }: PhoneLoginProps) {
           type="primary"
           size="large"
           block
-          shape="round"
           className={styles.loginButton}
           loading={loading}
           icon={<MobileOutlined />}

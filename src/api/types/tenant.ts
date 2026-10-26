@@ -15,6 +15,7 @@ import type {
   TenantAssets,
   TenantBrand,
   TenantFeatures,
+  TenantPropaganda,
   TenantTheme,
 } from '@/config/tenant/types'
 
@@ -23,6 +24,8 @@ export type {
   TenantBrand,
   TenantConfig,
   TenantFeatures,
+  TenantPropaganda,
+  TenantPropagandaFeature,
   TenantTheme,
 } from '@/config/tenant/types'
 
@@ -36,6 +39,8 @@ export interface TenantConfigDTO {
   tenantId?: string
   brand?: Partial<TenantBrand>
   theme?: Partial<TenantTheme>
+  /** 登录页宣传区文案（缺省字段由前端内置文案保底） */
+  propaganda?: Partial<TenantPropaganda>
   /** 该租户启用的路由清单（缺省 = 全量；path 须在前端注册表内，非法值丢弃） */
   routes?: string[]
   assets?: Partial<TenantAssets>

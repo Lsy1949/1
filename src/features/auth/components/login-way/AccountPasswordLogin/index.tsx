@@ -201,7 +201,6 @@ export function AccountPasswordLogin({
           type="primary"
           size="large"
           block
-          shape="round"
           className={styles.loginButton}
           loading={loading}
           icon={<UserOutlined />}

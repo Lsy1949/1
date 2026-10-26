@@ -1,4 +1,4 @@
-import type { TenantConfig, TenantFeatures } from './types'
+import type { TenantConfig, TenantFeatures, TenantPropaganda } from './types'
 import { APP_ROUTE_PATHS, isKnownRoutePath } from '@/config/routes'
 import {
   DEFAULT_PALETTE,
@@ -27,6 +27,20 @@ export const DEFAULT_BRAND_PRIMARY = PALETTES[DEFAULT_PALETTE].primary
  */
 export const DEFAULT_BRAND_SHADES = deriveShades(DEFAULT_BRAND_PRIMARY)
 
+/**
+ * 登录页宣传区保底文案（后端未下发 propaganda / 字段非法时的兜底）。
+ * 与组件旧硬编码内容一致，保证降级时视觉不变。
+ */
+const DEFAULT_PROPAGANDA: TenantPropaganda = {
+  subtitle: '专为大学生打造的\n职业规划与心理减压平台',
+  quote: '在这里，每一步成长都被看见，\n每一份焦虑都被温柔以待。',
+  features: [
+    { title: '职业规划指导', description: '专业职业规划师提供个性化指导' },
+    { title: '心理压力缓解', description: '专业心理支持帮助缓解职业焦虑' },
+    { title: '成长路径规划', description: '科学的技能提升路径助你成长' },
+  ],
+}
+
 /** 完整保底配置：后端不可用 / 超时 / 字段缺失时的兜底，应用照常可用 */
 export function getDefaultConfig(): TenantConfig {
   return {
@@ -52,6 +66,7 @@ export function getDefaultConfig(): TenantConfig {
     },
     /* 路由默认全量启用（保底配置不裁剪任何路由） */
     routes: [...APP_ROUTE_PATHS],
+    propaganda: DEFAULT_PROPAGANDA,
     assets: {
       loginBackground: '',
       homeBanner: '',
@@ -92,6 +107,39 @@ function coerceFeatures(patch: TenantFeatures | undefined, base: TenantFeatures)
     if (typeof value === 'boolean') out[key] = value
   }
   return out
+}
+
+/** 宣传文案：非空字符串才采纳，否则保底 */
+function coerceText(value: unknown, fallback: string): string {
+  return typeof value === 'string' && value.trim() ? value : fallback
+}
+
+/**
+ * 宣传区合并：字段级保底。
+ * - subtitle / quote：非空字符串才生效
+ * - features：只保留 title/description 均为字符串的条目（非法项静默丢弃）；
+ *   未下发 / 非数组 → 保底清单；下发空数组 = 明确不要特性列表（保留空，不兜底）
+ */
+function coercePropaganda(
+  patch: Partial<TenantPropaganda> | undefined,
+  base: TenantPropaganda,
+): TenantPropaganda {
+  if (!patch) return base
+  const features = Array.isArray(patch.features)
+    ? patch.features.filter(
+        (f): f is TenantPropaganda['features'][number] =>
+          !!f &&
+          typeof f === 'object' &&
+          typeof f.title === 'string' &&
+          f.title.trim() !== '' &&
+          typeof f.description === 'string',
+      )
+    : base.features
+  return {
+    subtitle: coerceText(patch.subtitle, base.subtitle),
+    quote: coerceText(patch.quote, base.quote),
+    features,
+  }
 }
 
 /**
@@ -157,6 +205,7 @@ export function mergeTenantConfig(partial: unknown, tenantId: string = DEFAULT_T
       themeOverrides: sanitizeOverrides(p.theme?.themeOverrides),
     },
     routes,
+    propaganda: coercePropaganda(p.propaganda, base.propaganda),
     assets: { ...base.assets, ...stripUndefined(p.assets) },
     features: coerceFeatures(p.features, base.features),
   }

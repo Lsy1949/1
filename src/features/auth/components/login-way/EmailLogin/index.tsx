@@ -201,7 +201,6 @@ export function EmailLogin({ onLoginSuccess }: EmailLoginProps) {
           type="primary"
           size="large"
           block
-          shape="round"
           className={styles.loginButton}
           loading={loading}
           icon={<MailOutlined />}

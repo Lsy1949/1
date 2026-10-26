@@ -76,7 +76,7 @@ function CaptchaField({ value, onChange, placeholder, canvasRef, onRefresh }: Ca
       <button
         type="button"
         className={`${styles.captchaImage} btn-reset`}
-        aria-label={t('auth.captcha.refresh')}
+        aria-label={t('login.captcha.refresh')}
         onClick={onRefresh}
       >
         <canvas ref={canvasRef} width={100} height={40} />
