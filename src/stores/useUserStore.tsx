@@ -151,9 +151,12 @@ store.subscribe(() => {
 /**
  * 组件内使用（调用形态与 Pinia 版一致）：const userStore = useUserStore()
  * 字段名逐一对应 state / getters / actions。
+ * 传 selector 时只订阅选中值：useUserStore((s) => s.isLoggedIn)
  */
-export function useUserStore(): UserStoreValue {
-  return store.useStore()
+export function useUserStore<T = UserStoreValue>(
+  selector?: (value: UserStoreValue) => T,
+): T {
+  return store.useStore(selector)
 }
 
 /** 非 React 基础设施层（axios 拦截器 / SignalR 连接）读取入口 */

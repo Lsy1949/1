@@ -176,8 +176,10 @@
   }
 }
 
-/* 响应式：< 1200px 隐藏品牌区 */
-@media (width <= 1199px) {
+/* 响应式：< 1200px 隐藏品牌区。
+   与 LoginView 的 antd screens.xl（min-width: 1200px）严格互补，
+   避免 1199.x px 这类小数视口下「显示品牌区但不分屏」的错位 */
+@media (width < 1200px) {
   .presentationBox {
     display: none !important;
   }

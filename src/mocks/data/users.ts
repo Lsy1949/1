@@ -29,13 +29,13 @@ export const MOCK_DEMO_PASSWORD = '111111'
 /** key = 归属租户 ID */
 export const MOCK_USERS: Record<string, MockUser[]> = {
   [DEFAULT_TENANT_ID]: [
-    { userId: 'u-social-001', username: 'social001', password: '111111', name: '社会人士·体验账号', tenantId: DEFAULT_TENANT_ID },
+    { userId: 'u-social-001', username: 'admin001', password: '111111', name: '社会人士·体验账号', tenantId: DEFAULT_TENANT_ID },
   ],
   nist: [
-    { userId: 'u-nist-001', username: 'nist001', password: '111111', name: '南理工·测试学生', tenantId: 'nist' },
+    { userId: 'u-nist-001', username: 'admin002', password: '111111', name: '南理工·测试学生', tenantId: 'nist' },
   ],
   tsinghua: [
-    { userId: 'u-thu-001', username: 'thu001', password: '111111', name: '清华·测试学生', tenantId: 'tsinghua' },
+    { userId: 'u-thu-001', username: 'admin003', password: '111111', name: '清华·测试学生', tenantId: 'tsinghua' },
   ],
 }
 

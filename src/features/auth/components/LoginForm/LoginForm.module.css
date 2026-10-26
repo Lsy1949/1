@@ -3,7 +3,9 @@
 
 .loginBox {
   width: 100%;
-  max-width: 420px;
+
+  /* 宽度来源与 LoginView 的 loading 占位共用（变量定义在 .content-wrapper） */
+  max-width: var(--login-card-max-width, 420px);
   flex-shrink: 0;
   padding: 28px 32px;
   background: color-mix(in srgb, var(--text-inverse, #fff) 96%, transparent);
@@ -27,7 +29,8 @@
 
 .headerBadge {
   display: inline-block;
-  font-size: 12px;
+  /* 字号统一用 em 继承 .login-container 的流式基准字号（15~20px），大屏同步放大 */
+  font-size: 0.8em;
   font-weight: 600;
   letter-spacing: 1.5px;
   color: var(--text-muted);
@@ -39,7 +42,7 @@
 
 .loginHeader h2 {
   margin: 0 0 6px;
-  font-size: 24px;
+  font-size: 1.6em;
   color: var(--text-heading);
   font-weight: 800;
   letter-spacing: -0.5px;
@@ -49,7 +52,7 @@
 .loginHeader p {
   margin: 0;
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 0.9333em;
   letter-spacing: 0.3px;
 }
 
@@ -67,7 +70,7 @@
   flex: 1;
   text-align: center;
   padding: 8px 0;
-  font-size: 13px;
+  font-size: 0.8667em;
   color: var(--text-muted);
   font-weight: 600;
   cursor: pointer;
@@ -130,7 +133,7 @@
 
 .socialLoginText {
   color: var(--text-faint);
-  font-size: 12px;
+  font-size: 0.8em;
   padding: 0 14px;
   white-space: nowrap;
   font-weight: 500;
@@ -182,7 +185,7 @@
 .registerLink {
   text-align: center;
   margin-top: 12px;
-  font-size: 14px;
+  font-size: 0.9333em;
   color: var(--text-muted);
 }
 
@@ -191,7 +194,8 @@
   background: none;
   border: none;
   color: var(--brand-primary);
-  font-size: 14px;
+  /* 1em：跟随 .registerLink 的已缩放字号，避免 em 逐层复合变小 */
+  font-size: 1em;
   font-weight: 700;
   cursor: pointer;
   padding: 0;
@@ -217,11 +221,13 @@
 @media (width <= 480px) {
   .loginBox {
     padding: 28px 22px;
+    /* 必须写在基础规则 max-width: var(--login-card-max-width, 420px) 之后：
+       CSS Module 同样靠书写顺序覆盖，窄屏才吃得到 100% */
     max-width: 100%;
   }
 
   .loginHeader h2 {
-    font-size: 24px;
+    font-size: 1.6em;
   }
 
   .socialLoginButtons {

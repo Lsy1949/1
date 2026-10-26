@@ -203,9 +203,12 @@ const store = createStore<TenantState, TenantStoreValue>(
 /**
  * 组件内使用（调用形态与 Pinia 版一致）：const tenantStore = useTenantStore()
  * （Vue 导出名即 useTenantStore，defineStore id 为 'tenant'，此处沿用导出名）
+ * 传 selector 时只订阅选中值：useTenantStore((s) => s.config.routes)
  */
-export function useTenantStore(): TenantStoreValue {
-  return store.useStore()
+export function useTenantStore<T = TenantStoreValue>(
+  selector?: (value: TenantStoreValue) => T,
+): T {
+  return store.useStore(selector)
 }
 
 /** 非 React 基础设施层（axios 拦截器 / SignalR 连接）读取入口 */

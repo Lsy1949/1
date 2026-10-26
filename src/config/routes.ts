@@ -15,6 +15,7 @@
  *    （:id）记录为模板形式，不作为菜单入口。
  */
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
+import { matchPath } from 'react-router-dom'
 import type { TenantFeatures } from './tenant/types'
 
 export interface AppRouteConfig {
@@ -118,4 +119,19 @@ export const APP_ROUTE_PATHS: readonly string[] = APP_ROUTES.filter(
 /** path 是否存在于前端路由表（用于菜单渲染前校验，防 404） */
 export function isKnownRoutePath(path: string): boolean {
   return APP_ROUTE_PATHS.includes(path)
+}
+
+/**
+ * 实际 pathname 是否命中路由清单（支持 :id 动态段，与 <Route> 同语义 end: true）。
+ *
+ * 与 isKnownRoutePath 的分工：后者校验「模板 path 是否登记」，只做精确匹配；
+ * 本函数校验「用户实际访问的 URL 能否被某条模板匹配」，必须走 matchPath，
+ * 否则 /square/:id 这类动态路由会被误判为不可达。
+ *
+ * ⚠️ 必须在 store selector 中安全调用：保持纯函数（只依赖入参，不读
+ * window.location / 时间 / 外部可变状态），否则 selector 返回值不稳定，
+ * 会导致重复渲染或漏更新。
+ */
+export function isRouteReachable(pathname: string, routes: readonly string[]): boolean {
+  return routes.some((route) => matchPath({ path: route, end: true }, pathname) !== null)
 }

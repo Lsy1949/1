@@ -72,8 +72,11 @@ function GlobalEvents() {
 
   useEffect(() => {
     const onLogout = () => {
-      // 恢复窗口内 /api/me 401 → reset+广播时，用户可能已在 /login，防重复 navigate
-      if (window.location.pathname !== '/login') {
+      // 恢复窗口内 /api/me 401 → reset+广播时，用户可能已在 /login，防重复 navigate。
+      // 必须用 BASE_URL 拼登录页真实路径：GitHub Pages 子路径部署（/1/）下
+      // window.location.pathname 是 '/1/login'，直接比 '/login' 永远不相等
+      const loginPath = `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/login`
+      if (window.location.pathname !== loginPath) {
         navigate('/login', { replace: true })
       }
     }

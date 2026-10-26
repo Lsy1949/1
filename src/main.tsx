@@ -122,8 +122,12 @@ enableMocking()
                 <I18nProvider>
                   {/* 权限在路由之外：路由守卫依赖权限数据 */}
                   <PermissionProvider>
-                    {/* 路由：只包页面部分，导航/布局由 App 内部自理 */}
-                    <BrowserRouter>
+                    {/* 路由：只包页面部分，导航/布局由 App 内部自理。
+                        basename 取 Vite base 并去掉结尾斜杠：GitHub Pages 项目站点
+                        部署在 /1/ 下，react-router 的 stripBasename 遇到 '/1/' 这类
+                        带尾斜杠的 basename 会判定不匹配（'/1/login' 被切出 'login'），
+                        必须传 '/1'；dev 的 '/' 去尾斜杠后为空，回退 '/' */}
+                    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/+$/, '') || '/'}>
                       {/* 内层：页面级兜底，导航还在 */}
                       <RouteErrorBoundary
                         onError={(err, info, ctx) => {

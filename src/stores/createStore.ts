@@ -42,9 +42,17 @@ export function createStore<S extends object, V = S>(
 
   return {
     ...store,
-    /** 组件内订阅入口（与 Pinia 调用形态一致的 useXxxStore 底座） */
-    useStore(): V {
-      return useSyncExternalStore(store.subscribe, store.getSnapshot)
+    /**
+     * 组件内订阅入口（与 Pinia 调用形态一致的 useXxxStore 底座）。
+     *
+     * 传 selector 时只订阅选中值，避免无关字段变更引发重渲染；
+     * selector 必须返回**稳定值**（原始值或稳定引用），
+     * 每次渲染新建对象/数组会导致 useSyncExternalStore 反复判定变更。
+     */
+    useStore<T = V>(selector?: (value: V) => T): T {
+      const getSelected = (): T =>
+        selector ? selector(store.getSnapshot()) : (store.getSnapshot() as unknown as T)
+      return useSyncExternalStore(store.subscribe, getSelected, getSelected)
     },
   }
 }

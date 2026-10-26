@@ -1,0 +1,54 @@
+name: Deploy to GitHub Pages
+
+# 纯静态发布：只产出 dist（接口请求在 Pages 上会 404，属预期）
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Pages 官方要求的权限组合
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只保留一次发布，避免并发部署互相覆盖
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 版本由 package.json 的 packageManager 字段决定，这里不能再写 version
+      # （同时指定会报 "Multiple versions of pnpm specified"）
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # 内含 tsc --noEmit：类型不过则不发布
+      - run: pnpm build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>生涯心旅</title>
+    <!--
+      GitHub Pages 的 SPA 深链兜底（spa-github-pages 方案）。
+      静态托管对磁盘上不存在的路径（如 /1/course/123）会直接返回本页，
+      这里把原路径编码进 query 重定向到 /1/?/course/123，
+      再由 index.html 中的还原脚本改写回真实 URL，React Router 才能正常匹配。
+      pathSegmentsToKeep = 1：保留仓库名这一段（/1/）；
+      仓库改名 / 换成用户主页站点 / 绑定自定义域时，需同步改这里与 vite.config.ts 的 base。
+    -->
+    <script>
+      var pathSegmentsToKeep = 1
+      var l = window.location
+      l.replace(
+        l.protocol +
+          '//' +
+          l.hostname +
+          (l.port ? ':' + l.port : '') +
+          l.pathname
+            .split('/')
+            .slice(0, 1 + pathSegmentsToKeep)
+            .join('/') +
+          '/?/' +
+          l.pathname
+            .slice(1)
+            .split('/')
+            .slice(pathSegmentsToKeep)
+            .join('/')
+            .replace(/&/g, '~and~') +
+          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+          l.hash,
+      )
+    </script>
+  </head>
+  <body></body>
+</html>

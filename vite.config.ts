@@ -7,8 +7,9 @@ export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
   return {
-    // GitHub Pages 项目站点部署在 /101/ 子路径下；仅构建时启用
-    base: command === 'build' ? '/101/' : '/',
+    // GitHub Pages 项目站点部署在 /1/ 子路径下（仓库名即 '1'）；仅构建时启用。
+    // 仓库改名 / 换自定义域时，需同步改这里、public/404.html 的 pathSegmentsToKeep。
+    base: command === 'build' ? '/1/' : '/',
     plugins: [react()],
     build: {
       // vendor-antd ~1.06MB（gzip 341kB）是 antd 6 全量固有体量，无法再拆

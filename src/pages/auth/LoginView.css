@@ -1,20 +1,22 @@
+/* 页面外壳：定位与整屏高度（居中由本文件接管，JS 不再下发内联样式） */
 .login-container {
   position: relative;
-  width: 100%;
 
   /* 固定整屏高度：登录内容页恰好占满一屏，页脚展示在下一屏 */
   height: 100vh;
-  margin: 0;
-
-  /* 避开顶部 80px 高的透明导航栏，防止内容被覆盖 */
-  padding-top: 80px;
-  padding-bottom: 0;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* /login 走 noPadding + 透明导航：Navbar 是 fixed 80px，这里自己让出导航高度
+     （原先是 LoginView.tsx 的 inline paddingTop: 80，改为 CSS 单一来源） */
+  padding-top: var(--navbar-h, 80px);
+
+  /* 页面基准字号：1366→15px、1920→15.8px、2560→17.4px、3840→18px（≥3840 覆盖为 20px）。
+     卡片内部字号统一用 em 继承这里，避免大屏上「px 字号视觉变小」。 */
+  font-size: clamp(15px, 0.25vw + 11px, 18px);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  box-sizing: border-box;
 }
 
 /* 背景图层：内置实景图 + 品牌蓝渐变兜底（图片加载失败时显示蓝底） */
@@ -49,19 +51,59 @@
   z-index: 1;
 }
 
-/* 左右分屏内容容器 */
+/* 左右分屏内容容器：宽度随视口流式增长（不再是死板的 1280 上限）。
+   基础态（<1200）单栏居中：品牌区被 Propaganda 自身媒体查询隐藏，卡片居中。 */
 .content-wrapper {
+  /* 登录卡片宽度唯一来源：LoginForm 卡片与已登录时的 loading 占位共用 */
+  --login-card-max-width: clamp(400px, 24vw, 480px);
+
   position: relative;
   z-index: 2;
-  width: 100%;
-  max-width: 1280px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 80px;
-  padding: 32px 48px 32px 32px;
-  box-sizing: border-box;
+  justify-content: center;
+  width: 100%;
+
+  /* 1366→1280（84vw=1147 触底）、1920→1612.8、2560→1920（≥2560 覆盖为 1996.8） */
+  max-width: clamp(1280px, 84vw, 1920px);
+  min-height: clamp(560px, 70vh, 760px);
+  padding: clamp(24px, 2vw, 48px);
   animation: contentRise 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* ≥1200：左右分屏（与 Propaganda 的隐藏断点 width < 1200px 严格互补） */
+@media (min-width: 1200px) {
+  .content-wrapper {
+    justify-content: space-between;
+    gap: clamp(48px, 5vw, 120px);
+  }
+}
+
+/* ≥1920：左侧宣传区可增长（表单侧仍受 --login-card-max-width 约束，不会变宽）。
+   第一个子元素固定是 Propaganda，其类名来自 CSS Module（哈希），这里按位置选中。 */
+@media (min-width: 1920px) {
+  .content-wrapper > :first-child {
+    flex: 1 1 auto;
+    max-width: 960px;
+  }
+}
+
+/* ≥2560：容器继续放宽，但不超过 78vw，避免超宽屏两侧出现大片空白 */
+@media (min-width: 2560px) {
+  .content-wrapper {
+    max-width: min(2400px, 78vw);
+  }
+}
+
+/* ≥3840（4K@200% / 8K@100%）：容器与基准字号各再上一档 */
+@media (min-width: 3840px) {
+  .content-wrapper {
+    max-width: 3200px;
+  }
+
+  .login-container {
+    font-size: 20px;
+  }
 }
 
 @keyframes contentRise {
@@ -73,25 +115,5 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-/* 响应式：< 1200px 隐藏品牌区，表单居中 */
-@media (width <= 1199px) {
-  .content-wrapper {
-    justify-content: center;
-    gap: 0;
-    padding: 32px 24px;
-  }
-}
-
-/* 响应式：< 768px 调整内边距 */
-@media (width <= 768px) {
-  .login-container {
-    padding-top: 64px;
-  }
-
-  .content-wrapper {
-    padding: 24px 16px;
   }
 }
