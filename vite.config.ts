@@ -8,7 +8,7 @@ export default defineConfig(({ mode, command }) => {
 
   return {
     // GitHub Pages 项目站点部署在 /101/ 子路径下；仅构建时启用
-    base: command === 'build' ? '/101/' : '/',
+    base: command === 'build' ? '/1/' : '/',
     plugins: [react()],
     resolve: {
       alias: {
