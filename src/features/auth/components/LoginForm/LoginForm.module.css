@@ -51,17 +51,34 @@
   font-size: 0.9333em;
 }
 
-/* 登录方式切换标签（原药丸式设计：mute 底 + 白底选中项 + 品牌色描影） */
+/* 登录方式切换标签（原药丸式设计；选中底色改为滑块承载，切换时左右滑动） */
 .loginTypeTabs {
+  position: relative;
   display: flex;
   background: var(--bg-mute);
   border-radius: 12px;
   padding: 4px;
-  margin-bottom: 16px;
-  gap: 2px;
+  margin-bottom: 20px;
+}
+
+/* 滑块（选中指示器）：绝对定位于首格（左 4px 顶 4px），宽度为等分一格；
+   transform 由组件按下标注入（translateX(index*100%)），transition 驱动左右滑动 */
+.tabThumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / 3);
+  border-radius: 8px;
+  background: var(--bg-card);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
 }
 
 .tabItem {
+  position: relative;
+  z-index: 1;
   flex: 1;
   text-align: center;
   padding: 8px 0;
@@ -70,19 +87,28 @@
   font-weight: 600;
   cursor: pointer;
   border-radius: 8px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
+
+  /* 清除浏览器原生点击/触摸高亮（蓝色底）：选中指示只由 .tabThumb 滑块承担 */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tabItem:active,
+.tabItem:focus,
+.tabItem:focus-visible {
+  background-color: transparent;
+  outline: none;
 }
 
 .tabItem:hover {
   color: var(--text-primary);
 }
 
+/* 选中态只保留文字色（底色/阴影由 .tabThumb 滑块承载） */
 .tabItem.active {
-  background: var(--bg-card);
   color: var(--brand-primary);
   font-weight: 700;
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--brand-primary) 12%, transparent);
 }
 
 .tabContent {
@@ -117,12 +143,15 @@
   transform: translateY(-1px);
 }
 
+/* 品牌色 hover：background-color 必须 !important——antd text 按钮的悬浮底色
+   经 cssinjs 动态注入，与本规则特异性平手时按文档顺序取胜，品牌底色被盖掉后
+   白图标落在浅灰底上"看不见"；绿/蓝品牌底才是反白图标的正确衬底 */
 .wechatBtn:hover {
-  background: var(--status-success); /* stylelint-disable-line color-no-hex, function-allowed-list */
+  background-color: var(--status-success) !important; /* stylelint-disable-line color-no-hex, function-allowed-list */
 }
 
 .qqBtn:hover {
-  background: var(--status-info); /* stylelint-disable-line color-no-hex, function-allowed-list */
+  background-color: var(--status-info) !important; /* stylelint-disable-line color-no-hex, function-allowed-list */
 }
 
 .wechatBtn:hover img,
@@ -174,11 +203,14 @@
   border-color: rgb(255, 255, 255, 0.06) !important;
 }
 
+:global(html.dark) .tabThumb {
+  background: var(--brand-primary) !important;
+}
+
 :global(html.dark) .loginBox .tabItem:hover {
   color: var(--text-regular) !important;
 }
 
 :global(html.dark) .loginBox .tabItem.active {
-  background: var(--brand-primary) !important;
   color: var(--text-inverse, #fff) !important;
 }

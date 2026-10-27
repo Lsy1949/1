@@ -6,8 +6,9 @@
  * - 验证码暂不上线（先跑通登录主流程）；后续恢复可参考 other/RegisterForm
  *   中现成的 CaptchaField 实现（输入框 + canvas 受控子树）
  */
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { App as AntApp, Button, Checkbox, Form, Input, Select } from 'antd'
 import { BankOutlined, LockOutlined, UserOutlined } from '@ant-design/icons'
 import { useI18n } from '@/i18n'
@@ -30,12 +31,6 @@ interface LoginFormState {
   userId: string
   password: string
   remember: boolean
-}
-
-// 学校选项
-interface SchoolOption {
-  value: string
-  label: string
 }
 
 /**
@@ -66,30 +61,29 @@ export function AccountPasswordLogin({
 
   // 学校选择器数据源：仅主域拉取 /api/tenants/public，完全后端驱动——
   // 不塞前端兜底项、不预填默认值；成功后默认选中列表第一项（后端契约
-  // 保证第一项为 default 主站，前端不假设其内容）；失败明示（空列表 + 提示）
-  const [schools, setSchools] = useState<SchoolOption[]>([])
-  const [schoolsFailed, setSchoolsFailed] = useState(false)
+  // 保证第一项为 default 主站，前端不假设其内容）。
+  // react-query：偶发失败（导航中断/网络抖动）自动重试兜住「选择器空白」，
+  // 彻底失败后下拉内可点击重试，不再需要刷新整页
+  const { data: schools, isPending: schoolsLoading, refetch: refetchSchools } = useQuery({
+    queryKey: ['public-tenants'],
+    queryFn: fetchPublicTenants,
+    enabled: IS_MAIN_SITE,
+    retry: 2,
+    staleTime: 5 * 60_000,
+    // 空列表同样归一为空 options（原逻辑：空列表视为失败态，走 notFound 重试）
+    select: (list) =>
+      Array.isArray(list) && list.length > 0
+        ? list.map((opt) => ({ value: opt.tenantId, label: opt.name }))
+        : [],
+  })
+  const schoolOptions = schools ?? []
+
+  // 默认选中第一项（最常见登录路径）；仅当用户尚未选择时回填，不覆盖用户操作
   useEffect(() => {
-    if (!IS_MAIN_SITE) return
-    fetchPublicTenants()
-      .then((list) => {
-        if (!Array.isArray(list) || list.length === 0) {
-          // 空列表同样视为失败，否则选择器会一直停留在 loading
-          setSchoolsFailed(true)
-          return
-        }
-        const options = list.map((opt) => ({ value: opt.tenantId, label: opt.name }))
-        setSchools(options)
-        // 默认选中第一项（最常见登录路径）；列表回来前用户无从选择，直接 set 安全
-        form.setFieldsValue({ school: options[0].value })
-        setSchoolsFailed(false)
-      })
-      .catch((err) => {
-        // 后端返回为主：失败不伪造兜底数据，明示失败等用户刷新重试
-        setSchoolsFailed(true)
-        console.warn('[Login] /api/tenants/public 拉取失败', err)
-      })
-  }, [form])
+    if (IS_MAIN_SITE && schoolOptions.length > 0 && !form.getFieldValue('school')) {
+      form.setFieldsValue({ school: schoolOptions[0].value })
+    }
+  }, [schoolOptions, form])
 
   // 登录：loading / 成功写 store / 实时通道建立均由 useAuthLogin 统一管理
   const { run: runLogin, loading } = useAuthLogin({
@@ -147,9 +141,22 @@ export function AccountPasswordLogin({
             showSearch
             optionFilterProp="label"
             prefix={<BankOutlined />}
-            options={schools}
-            loading={IS_MAIN_SITE && schools.length === 0 && !schoolsFailed}
-            notFoundContent={t('login.form.schoolLoadFailed')}
+            options={schoolOptions}
+            loading={IS_MAIN_SITE && schoolsLoading}
+            notFoundContent={
+              // 两种空态分开：选项列表为空 = 加载中 / 加载失败（可点击重试）；
+              // 列表有数据时的空 = 搜索无匹配 → 不覆写，走 antd 默认文案
+              // （ConfigProvider locale 已配 zhCN，显示「无匹配结果」）
+              schoolOptions.length === 0 ? (
+                schoolsLoading ? (
+                  t('common.loading')
+                ) : (
+                  <Button type="link" size="small" onClick={() => void refetchSchools()}>
+                    {t('login.form.schoolLoadFailed')}
+                  </Button>
+                )
+              ) : undefined
+            }
           />
         </Form.Item>
       )}
@@ -185,7 +192,7 @@ export function AccountPasswordLogin({
         />
       </Form.Item>
 
-      <Form.Item className={styles.loginOptions}>
+      <Form.Item>
         <div className={styles.loginOptionsContainer}>
           <Form.Item name="remember" valuePropName="checked" noStyle>
             <Checkbox>{t('login.form.remember')}</Checkbox>

@@ -169,11 +169,18 @@
 }
 
 /* ===== 暗色主题：颜色换色已由语义变量自动跟随，此处仅保留富文本在深色底上
-   的必要覆盖（blockquote 由 dark-mode.css 的全局规则接管） ===== */
+   的必要覆盖（blockquote 暗色规则也已收敛到本作用域，不再走 dark-mode.css
+   的全局规则——那会泄漏到登录页等非富文本 blockquote） ===== */
 :global(html.dark .article-detail-page) .richContent p {
   color: var(--text-regular) !important;
 }
 
 :global(html.dark .article-detail-page) .richContent a {
   color: var(--brand-primary-bright) !important;
+}
+
+:global(html.dark .article-detail-page) .richContent blockquote {
+  border-left-color: var(--brand-primary-bright) !important;
+  background: var(--brand-primary-bright-bg) !important;
+  color: var(--text-regular) !important;
 }

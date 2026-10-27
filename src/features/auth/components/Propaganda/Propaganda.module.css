@@ -1,5 +1,6 @@
-/* 登录页左侧品牌展示区（CSS Modules：私有类 camelCase；
-   keyframes 由模块自动局部化，不污染全局） */
+/* 登录页左侧品牌展示区（CSS Modules：私有类 camelCase）
+   动画走 Ant Motion（CSSMotion 内联 style，见 index.tsx + ../../motion），
+   本文件不再含 keyframes，只保留排版与错落缩进 */
 
 .presentationBox {
   flex: 1 1 auto;
@@ -10,13 +11,11 @@
   color: var(--text-inverse, #fff);
   position: relative;
   padding: 8px 0;
-  animation: slideInFromLeft 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 /* 主标题：大字，大气 */
 .heroTitle {
   margin-bottom: 36px;
-  animation: fadeIn 0.7s ease 0.25s both;
 }
 
 .heroTitle h1 {
@@ -49,14 +48,16 @@
   height: 2px;
   background: color-mix(in srgb, var(--text-inverse, #fff) 50%, transparent);
   margin-bottom: 32px;
-  animation: fadeIn 0.7s ease 0.35s both;
 }
 
-/* 引言：左对齐，斜体，文字偏柔 */
+/* 引言：左对齐，斜体，文字偏柔。
+   无底色设计：显式归零 background/border，防任何全局元素规则
+   （如曾经的 html.dark blockquote）泄漏淡蓝底色 */
 .heroQuote {
   margin: 0 0 48px;
   padding: 0;
   border: none;
+  background: none;
   font-size: 16px;
   line-height: 1.95;
   color: color-mix(in srgb, var(--text-inverse, #fff) 88%, transparent);
@@ -65,7 +66,6 @@
   font-weight: 300;
   max-width: 420px;
   text-shadow: 0 1px 6px rgb(0 0 0 / 0.4);
-  animation: fadeIn 0.7s ease 0.45s both;
 }
 
 .quoteMark {
@@ -99,20 +99,17 @@
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 错落缩进：第二项最右，第三项稍回 */
+/* 错落缩进：第二项最右，第三项稍回（入场错落在 motion.ts 编排） */
 .featureStep1 {
   margin-left: 0;
-  animation: fadeIn 0.7s ease 0.55s both;
 }
 
 .featureStep2 {
   margin-left: 64px;
-  animation: fadeIn 0.7s ease 0.65s both;
 }
 
 .featureStep3 {
   margin-left: 24px;
-  animation: fadeIn 0.7s ease 0.75s both;
 }
 
 .featureItem:hover {
@@ -152,30 +149,6 @@
   letter-spacing: 0.2px;
 }
 
-@keyframes slideInFromLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* 响应式：< 1200px 隐藏品牌区。
    与 LoginView 的 antd screens.xl（min-width: 1200px）严格互补，
    避免 1199.x px 这类小数视口下「显示品牌区但不分屏」的错位 */
@@ -188,9 +161,7 @@
 /* ============================================================
    暗色主题（仅保留「暗底上必须提亮」的规则；
    换色类规则已由 light 基础规则的语义变量自动接管。品牌展示区
-   始终叠在深色背景插画上，白色文字为设计常量，无需暗色覆写）
+   始终叠在深色背景插画上，白色文字为设计常量，无需暗色覆写。
+   特性条目无卡片化设计：任何模式下都不出现边框与阴影，
+   hover 只保留 .featureItem 的轻量位移）
    ============================================================ */
-:global(html.dark) .featureItem:hover {
-  border-color: var(--brand-primary-bright) !important;
-  box-shadow: 0 20px 40px rgb(0 0 0 / 0.4) !important;
-}

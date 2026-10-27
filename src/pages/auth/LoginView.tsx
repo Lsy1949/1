@@ -9,10 +9,12 @@
 import { useEffect, type CSSProperties } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Flex, Spin } from 'antd'
+import CSSMotion from '@rc-component/motion'
 import { getUserStore, useUserStore } from '@/stores/useUserStore'
 import { useTenantStore } from '@/stores/useTenantStore'
 import { APP_ROUTE_PATHS, isRouteReachable } from '@/config/routes'
 import { LoginForm, Propaganda } from '@/features/auth'
+import { loginMotions } from '@/features/auth/motion'
 import './LoginView.css'
 
 /**
@@ -94,27 +96,42 @@ export function LoginView() {
 
   return (
     <Flex align="center" className="login-container">
-      {/* 背景层：租户背景图（--login-bg-image）+ 品牌蓝渐变兜底 + 光晕装饰 */}
-      <div className={loginBackground ? 'bg-layer bg-layer--custom' : 'bg-layer'} style={bgStyle} aria-hidden="true" />
-      <div className="bg-mask" aria-hidden="true" />
+      {/* 背景层：租户背景图（--login-bg-image）+ 品牌蓝渐变兜底 + 光晕装饰；
+          整页入场动效统一在 @/features/auth/motion（背景/光晕缓慢淡入 → 内容上浮） */}
+      <CSSMotion visible motionAppear {...loginMotions.bg}>
+        {({ style }) => (
+          <div
+            className={loginBackground ? 'bg-layer bg-layer--custom' : 'bg-layer'}
+            style={bgStyle ? { ...bgStyle, ...style } : style}
+            aria-hidden="true"
+          />
+        )}
+      </CSSMotion>
+      <CSSMotion visible motionAppear {...loginMotions.bgMask}>
+        {({ style }) => <div className="bg-mask" style={style} aria-hidden="true" />}
+      </CSSMotion>
 
       {/* 左右分屏内容：≥1200 分屏，否则表单居中（宽度/间距/内边距全在 CSS） */}
-      <Flex align="center" className="content-wrapper">
-        {/* 左侧：品牌宣传区（≥1200px 显示） */}
-        <Propaganda />
-        {/* 右侧：登录表单区；已登录时用 loading 占位（宽度与卡片共用 CSS 变量） */}
-        {hideForm ? (
-          <Flex
-            align="center"
-            justify="center"
-            style={{ width: '100%', maxWidth: 'var(--login-card-max-width, 420px)' }}
-          >
-            <Spin size="large" />
+      <CSSMotion visible motionAppear {...loginMotions.content}>
+        {({ style }) => (
+          <Flex align="center" className="content-wrapper" style={style}>
+            {/* 左侧：品牌宣传区（≥1200px 显示） */}
+            <Propaganda />
+            {/* 右侧：登录表单区；已登录时用 loading 占位（宽度与卡片共用 CSS 变量） */}
+            {hideForm ? (
+              <Flex
+                align="center"
+                justify="center"
+                style={{ width: '100%', maxWidth: 'var(--login-card-max-width, 420px)' }}
+              >
+                <Spin size="large" />
+              </Flex>
+            ) : (
+              <LoginForm onLoginSuccess={onLoginSuccess} />
+            )}
           </Flex>
-        ) : (
-          <LoginForm onLoginSuccess={onLoginSuccess} />
         )}
-      </Flex>
+      </CSSMotion>
     </Flex>
   )
 }

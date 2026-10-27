@@ -6,9 +6,7 @@
   width: 100%;
 }
 
-.loginForm :global(.ant-form-item) {
-  margin-bottom: 12px;
-}
+/* 表单项间距不覆写：用 antd 默认（24px），为校验错误/告警文案留出展示空间 */
 
 .captchaFormItem .captchaInputContainer {
   display: flex;

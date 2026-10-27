@@ -2,9 +2,15 @@
 .login-container {
   position: relative;
 
-  /* 固定整屏高度：登录内容页恰好占满一屏，页脚展示在下一屏 */
-  height: 100vh;
-  overflow: hidden;
+  /* 高度策略：最小占满一屏（内容不足时保持整屏构图、页脚在下一屏）；
+     内容（.content-wrapper，含整张登录卡）高于可视区时，容器随之长高、
+     页面可滚动——不再用固定 height:100vh + overflow:hidden 把超高表单
+     裁切在视口底部（表现为被页脚截断） */
+  min-height: 100vh;
+
+  /* clip（非 hidden）：入场动画起始位移超出容器边缘时直接裁掉，
+     不产生滚动条闪烁；clip 不建立滚动容器，不影响 fixed 背景层 */
+  overflow: clip;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -68,7 +74,7 @@
   max-width: clamp(1280px, 84vw, 1920px);
   min-height: clamp(560px, 70vh, 760px);
   padding: clamp(24px, 2vw, 48px);
-  animation: contentRise 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  /* 入场上浮走 Ant Motion（CSSMotion，见 @/features/auth/motion 的 content 预设） */
 }
 
 /* ≥1200：左右分屏（与 Propaganda 的隐藏断点 width < 1200px 严格互补） */
@@ -103,17 +109,5 @@
 
   .login-container {
     font-size: 20px;
-  }
-}
-
-@keyframes contentRise {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
