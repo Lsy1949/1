@@ -28,6 +28,8 @@ import './styles/reveal.css' // 通用入场动效
 import './styles/base.css' // 元素基线（reset 之上）
 import './styles/main.css' // 全局排版与工具类
 import './styles/dark-mode.css' // 仅暗色覆写
+// 响应式尺寸 token（Phase 0）：antd v6 尺寸键 ↔ tokens.css「流体尺寸层 L0.5」的映射
+import { responsiveTheme } from './styles/theme'
 
 dayjs.locale('zh-cn')
 
@@ -43,6 +45,10 @@ function AntdThemeBridge({ children }: React.PropsWithChildren) {
         algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
         token: {
           ...tokens,
+          /* 响应式尺寸 token（theme.ts，Phase 0）：置于 ...tokens 之后 —— 仅含
+             尺寸键，与租户色板/字体键无交集（borderRadius 刻意不写，租户通道
+             优先）；仍在显式键 fontFamily 之前，显式键优先级最高 */
+          ...responsiveTheme.token,
           /* 字体：租户配置优先（useTenantTokens.fontFamily，空 = 未配置），
              否则系统栈兜底 —— 与 body 的 var(--brand-font-family) 同源对齐 */
           fontFamily:
@@ -56,6 +62,9 @@ function AntdThemeBridge({ children }: React.PropsWithChildren) {
            · 不显式配 activeBg：antd 的 activeBg/hoverBg 默认派生自 colorBgContainer，
              显式再写一遍会在暗色下与底色等价而静默失效。 */
         components: {
+          /* 响应式组件尺寸键（theme.ts，Phase 0）：Modal/Card 等标题字号 →
+             var(--fs-*)；置于 Input 之前，不影响下方既有 Input 注入 */
+          ...responsiveTheme.components,
           Input: {
             colorBgContainer: 'var(--input-bg, var(--bg-soft))',
             colorBorder: 'var(--border-strong)',
