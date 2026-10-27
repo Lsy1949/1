@@ -1,4 +1,6 @@
 import { Component, Fragment, type ErrorInfo, type ReactNode } from 'react'
+// 降级 UI 的尺寸样式（Phase 0 从内联 style 迁出，见 ErrorBoundary.css）
+import './ErrorBoundary.css'
 
 interface ErrorBoundaryProps {
   /** 保护的子树页面 */
@@ -144,12 +146,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif",
         }}
       >
-        <h1 style={{ fontSize: 20, margin: 0 }}>页面出了点问题</h1>
+        <h1 className="eb-title">页面出了点问题</h1>
         <p style={{ color: 'var(--text-secondary, #666)', margin: 0 }}>
           {isDev ? error.message : '请稍后重试，或刷新页面'}
         </p>
 
-        <div style={{ display: 'flex', gap: 12 }}>
+        <div className="eb-actions">
           {canRetry ? (
             <button type="button" onClick={this.handleRetry} style={buttonStyle}>
               重试{retries > 0 ? `（${retries}/${maxRetries}）` : ''}
@@ -162,9 +164,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         </div>
 
         {errorId && (
-          <p style={{ color: 'var(--text-secondary, #999)', fontSize: 12, margin: 0 }}>
-            错误编号：{errorId}
-          </p>
+          <p className="eb-error-id">错误编号：{errorId}</p>
         )}
       </div>
     )

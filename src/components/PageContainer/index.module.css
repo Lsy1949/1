@@ -1,0 +1,15 @@
+/* PageContainer（Phase 0）：
+   宽度唯一来源是全局 .container（main.css，位于 @layer main）——本模块
+   不写任何 max-width 字面量；CSS Module 未分层，天然压过 @layer，
+   因此这里的 padding 覆写可安全生效。 */
+
+/* 流体水平内边距：覆盖全局 .container 的固定 0 2rem。
+   --container-pad 在 1920 处 = 32px = 2rem，基准视口视觉不变，其余视口流体 */
+.wrap {
+  padding-inline: var(--container-pad);
+}
+
+/* 窄栏变体：文章详情正文等长文阅读场景，宽度收敛到阅读窄栏 token */
+.narrow {
+  max-width: var(--container-narrow);
+}
