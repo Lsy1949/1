@@ -59,9 +59,9 @@
 
 /* ============ 对话面板（品牌纸面 + 硬边框 + 印刷投影） ============ */
 .fabPanel {
-  width: 380px;
+  width: var(--fab-panel-w);
   max-width: calc(100vw - 48px);
-  height: 560px;
+  height: var(--fab-panel-h);
   max-height: calc(100vh - 160px);
   display: flex;
   flex-direction: column;
@@ -126,7 +126,7 @@
 
 .headerText p {
   margin: 2px 0 0;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   letter-spacing: 0.12em;
   color: var(--brand-primary);
   line-height: 1.4;
