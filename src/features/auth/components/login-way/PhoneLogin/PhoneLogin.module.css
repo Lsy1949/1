@@ -10,7 +10,7 @@
 
 .captchaFormItem .captchaInputContainer {
   display: flex;
-  gap: 10px;
+  gap: var(--sp-3);
   align-items: center;
 }
 
@@ -25,9 +25,9 @@
 
 .loginButton {
   width: 100%;
-  margin-top: 8px; /* 减少按钮上方间距 */
-  height: 48px;
-  font-size: 16px;
+  margin-top: var(--sp-2); /* 减少按钮上方间距 */
+  height: var(--sp-12);
+  font-size: var(--fs-md);
   font-weight: 600;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   letter-spacing: 1px;

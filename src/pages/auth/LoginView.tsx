@@ -119,11 +119,7 @@ export function LoginView() {
             <Propaganda />
             {/* 右侧：登录表单区；已登录时用 loading 占位（宽度与卡片共用 CSS 变量） */}
             {hideForm ? (
-              <Flex
-                align="center"
-                justify="center"
-                style={{ width: '100%', maxWidth: 'var(--login-card-max-width, 420px)' }}
-              >
+              <Flex align="center" justify="center" className="form-placeholder">
                 <Spin size="large" />
               </Flex>
             ) : (
