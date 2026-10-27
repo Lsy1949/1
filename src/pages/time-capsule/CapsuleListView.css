@@ -20,7 +20,7 @@
 .capsule-state {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 0 auto;
   padding: 24px 40px 80px;
   min-height: 50vh;
@@ -118,6 +118,6 @@
   }
 
   .fab-label {
-    font-size: 11px;
+    font-size: var(--fs-xs);
   }
 }
