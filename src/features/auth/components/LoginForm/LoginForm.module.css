@@ -7,10 +7,10 @@
 .loginBox {
   width: 100%;
 
-  /* 宽度来源与 LoginView 的 loading 占位共用（变量定义在 .content-wrapper） */
-  max-width: var(--login-card-max-width, 420px);
+  /* 宽度来源与 LoginView 的 loading 占位共用（全局 token，定义在 styles/tokens.css） */
+  max-width: var(--login-card-max-width);
   flex-shrink: 0;
-  padding: 28px 32px;
+  padding: var(--sp-7) var(--sp-8);
   background: color-mix(in srgb, var(--text-inverse, #fff) 96%, transparent);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -26,7 +26,7 @@
 /* 卡内容区（登录/注册/忘记密码三态切换的过渡由 Ant Motion 承担） */
 /* 标题区：结构与底色由 antd Tag/Typography/Flex 承载，这里只微调 */
 .loginHeader {
-  margin-bottom: 18px;
+  margin-bottom: var(--sp-5);
   text-align: left;
 }
 
@@ -57,8 +57,10 @@
   display: flex;
   background: var(--bg-mute);
   border-radius: 12px;
+  /* 4px 与 .tabThumb 的 top/left 同为滑块几何常量（width: calc((100% - 8px)/3)），
+     不随视口流体化，否则滑块与格子错位 */
   padding: 4px;
-  margin-bottom: 20px;
+  margin-bottom: var(--sp-5);
 }
 
 /* 滑块（选中指示器）：绝对定位于首格（左 4px 顶 4px），宽度为等分一格；
@@ -81,7 +83,7 @@
   z-index: 1;
   flex: 1;
   text-align: center;
-  padding: 8px 0;
+  padding: var(--sp-2) 0;
   font-size: 0.8667em;
   color: var(--text-muted);
   font-weight: 600;
@@ -115,9 +117,9 @@
   min-height: 280px;
 }
 
-/* 第三方分隔线：Divider 默认 16px 上下边距，收紧一档贴近原设计 */
+/* 第三方分隔线：Divider 默认 16px 上下边距，收紧一档贴近原设计（--sp-3 保持收紧方向） */
 .socialDivider {
-  margin-block: 14px;
+  margin-block: var(--sp-3);
 }
 
 .socialText {
@@ -161,14 +163,14 @@
 
 /* 注册链接行 */
 .registerLink {
-  margin-top: 8px;
+  margin-top: var(--sp-2);
   font-size: 0.9333em;
 }
 
 @media (width <= 480px) {
   .loginBox {
     padding: 28px 22px;
-    /* 必须写在基础规则 max-width: var(--login-card-max-width, 420px) 之后：
+    /* 必须写在基础规则 max-width: var(--login-card-max-width) 之后：
        CSS Module 同样靠书写顺序覆盖，窄屏才吃得到 100% */
     max-width: 100%;
   }
