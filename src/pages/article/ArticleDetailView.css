@@ -7,7 +7,7 @@
 
 /* 加载 / 错误态容器：保持与详情栏一致的版式留白 */
 .article-state {
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 0 auto;
   padding: 80px 40px;
   min-height: 60vh;
@@ -16,11 +16,9 @@
   gap: 48px;
 }
 
-/* ===== 顶部返回栏 ===== */
+/* ===== 顶部返回栏（宽度/水平留白由 PageContainer 承担） ===== */
 .top-bar {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 40px 28px;
+  padding-block: 0 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -61,11 +59,9 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ===== 标题区 · 纯排版 ===== */
+/* ===== 标题区 · 纯排版（宽度/水平留白由 PageContainer 承担） ===== */
 .detail-header {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 56px 40px 48px;
+  padding-block: 56px 48px;
 }
 
 .header-eyebrow {
@@ -170,11 +166,8 @@
   color: var(--text-faint);
 }
 
-/* ===== 双栏布局 ===== */
+/* ===== 双栏布局（宽度/水平留白由 PageContainer 承担；不套 narrow，主栏由 RichBody 约束阅读行宽） ===== */
 .article-grid {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 40px;
   display: grid;
   grid-template-columns: 1fr 300px;
   gap: 56px;
@@ -190,13 +183,7 @@
 }
 
 @media (width <= 768px) {
-  .top-bar,
-  .detail-header,
-  .article-grid {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-  .detail-header { padding-top: 36px; padding-bottom: 32px; }
+  .detail-header { padding-block: 36px 32px; }
 
   .author-row {
     flex-direction: column;

@@ -7,7 +7,7 @@
 
 /* 加载 / 错误态容器：保持与内容区一致的版式留白 */
 .article-state {
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 0 auto;
   padding: 80px 40px;
   min-height: 60vh;
@@ -16,11 +16,9 @@
   gap: 48px;
 }
 
-/* ===== 编辑式标题区 · 纯排版无卡片 ===== */
+/* ===== 编辑式标题区 · 纯排版无卡片（宽度/水平留白由 PageContainer 承担） ===== */
 .page-intro {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 56px 40px 40px;
+  padding-block: 56px 40px;
   position: relative;
   z-index: 1;
 }
@@ -122,9 +120,7 @@
 }
 
 .ribbon-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 40px;
+  position: relative;
 }
 
 .ribbon-scroll {
@@ -201,11 +197,9 @@
   transform: scaleX(1);
 }
 
-/* ===== 主内容 ===== */
+/* ===== 主内容（宽度/水平留白由 PageContainer 承担） ===== */
 .main-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 56px 40px 100px;
+  padding-block: 56px 100px;
 }
 
 /* 搜索 */
@@ -253,16 +247,9 @@
 }
 
 /* ===== 响应式 ===== */
-@media (width <= 1200px) {
-  .ribbon-container, .main-content, .page-intro {
-    padding-left: 24px;
-    padding-right: 24px;
-  }
-}
-
 @media (width <= 768px) {
   .page-intro {
-    padding: 40px 24px 32px;
+    padding-block: 40px 32px;
   }
 
   .intro-container {

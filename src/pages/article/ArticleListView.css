@@ -7,7 +7,7 @@
 
 /* 加载 / 错误态容器：保持与内容区一致的版式留白 */
 .article-state {
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 0 auto;
   padding: 80px 40px;
   min-height: 60vh;
@@ -16,11 +16,9 @@
   gap: 48px;
 }
 
-/* 纯排版标题区 · 杂志编辑式 */
+/* 纯排版标题区 · 杂志编辑式（宽度/水平留白由 PageContainer 承担） */
 .page-intro {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 56px 40px 48px;
+  padding-block: 56px 48px;
   position: relative;
   z-index: 1;
 }
@@ -49,7 +47,7 @@
 }
 
 .intro-title {
-  font-size: clamp(48px, 7vw, 96px);
+  font-size: clamp(48px, 7vw, 104px);
   font-weight: 900;
   color: var(--text-primary);
   margin: 0;
@@ -99,9 +97,6 @@
 }
 
 .ribbon-container {
-  max-width: 1300px;
-  margin: 0 auto;
-  padding: 0 40px;
   display: flex;
   align-items: center;
   gap: 40px;
@@ -192,11 +187,9 @@
   transform: scaleX(1);
 }
 
-/* Main Content */
+/* Main Content（宽度/水平留白由 PageContainer 承担） */
 .main-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 48px 40px 100px;
+  padding-block: 48px 100px;
 }
 
 /* Search Box · 极简下划线 */
@@ -240,15 +233,10 @@
 
 /* 响应式 */
 @media (width <= 768px) {
-  .ribbon-container {
-    padding: 0 20px;
-  }
-
   .back-link span {
     display: none;
   }
 
-  .main-content {
-    padding: 30px 20px 60px;
-  }
+  .page-intro { padding-block: 32px 32px; }
+  .main-content { padding-block: 30px 60px; }
 }

@@ -1,8 +1,8 @@
 /* ===== 评论区 ===== */
 .commentsSection {
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 64px auto 0;
-  padding: 0 40px;
+  padding: 0 var(--container-pad);
 }
 
 .commentsHeader {
@@ -220,11 +220,6 @@
 }
 
 @media (width <= 768px) {
-  .commentsSection {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
   .commentInputWrap {
     flex-direction: column;
     gap: 10px;
