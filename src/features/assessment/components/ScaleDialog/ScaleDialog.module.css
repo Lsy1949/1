@@ -39,7 +39,7 @@
   display: inline-block;
   padding: 6px 16px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   margin-bottom: 16px;
   background: var(--brand-primary-faint);
@@ -102,7 +102,7 @@
 }
 
 .itemText .label {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
   letter-spacing: 0.3px;
 }
@@ -145,7 +145,7 @@
 
 .introTips li {
   margin-bottom: 6px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   line-height: 1.7;
 }
 
@@ -252,7 +252,7 @@
 }
 
 .resDate {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
   font-weight: 500;
   margin: 0;
@@ -279,7 +279,7 @@
 }
 
 .scoreUnit {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
   margin-top: 4px;
   font-weight: 600;

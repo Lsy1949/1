@@ -1,7 +1,7 @@
 /* 测评中心 - 杂志编辑式 */
 .assessment-page {
-  padding: 24px 24px 80px;
-  max-width: 1400px;
+  padding-block: 24px 80px;
+  max-width: var(--container-md);
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', sans-serif;
   color: var(--text-primary);
@@ -10,7 +10,7 @@
 
 /* 加载 / 错误态容器：与页签内容区保持一致的留白 */
 .assessment-state {
-  padding: 32px 0;
+  padding: var(--sp-8) 0;
   min-height: 50vh;
   display: flex;
   flex-direction: column;
@@ -41,7 +41,7 @@
 
 @media (width <= 768px) {
   .assessment-page {
-    padding: 16px 14px 48px;
+    padding-block: 16px 48px;
   }
 
   .main-tabs .ant-tabs-tab {
