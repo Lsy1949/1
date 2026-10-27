@@ -122,7 +122,7 @@ export function BasicSection({ form, onFormChange, id }: BasicSectionProps) {
             <Form.Item label={t('profile.card.profile.gender')}>
               <Select
                 allowClear
-                style={{ width: '100%' }}
+                className={styles.fullWidth}
                 value={form.gender || undefined}
                 onChange={(v) => onFormChange({ ...form, gender: v ?? '' })}
                 options={[

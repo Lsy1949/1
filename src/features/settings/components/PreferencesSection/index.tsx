@@ -64,7 +64,7 @@ export function PreferencesSection() {
           <Select<AppLocale>
             value={locale}
             onChange={onLangChange}
-            style={{ width: '100%' }}
+            className={styles.fullWidth}
             options={[
               { label: t('settings.card.preferences.zhCN'), value: 'zh-CN' },
               { label: t('settings.card.preferences.zhTW'), value: 'zh-TW' },
@@ -77,7 +77,7 @@ export function PreferencesSection() {
           <Select<ThemeMode | 'auto'>
             value={themeMode}
             onChange={onThemeChange}
-            style={{ width: '100%' }}
+            className={styles.fullWidth}
             options={[
               { label: t('nav.theme.light'), value: 'light' },
               { label: t('nav.theme.dark'), value: 'dark' },

@@ -39,7 +39,7 @@
 }
 
 .markerLabel {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -170,7 +170,11 @@
 
 /* ============ Ant 日期范围选择器对齐（方角 + 撑满） ============ */
 /* （原 ant-picker 宽度/直角规则已 token 化：
-   宽度 → RangePicker style prop；直角 → ConfigProvider DatePicker.borderRadius） */
+   宽度 → RangePicker className（下方 .fullWidth，原 style prop 迁入）；
+   直角 → ConfigProvider DatePicker.borderRadius） */
+.fullWidth {
+  width: 100%;
+}
 
 @media (width <= 1024px) {
   .sectionHeadlineRow {
