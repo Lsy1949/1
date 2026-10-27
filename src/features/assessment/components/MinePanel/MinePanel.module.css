@@ -45,7 +45,7 @@
 }
 
 .psLabel {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
   font-weight: 600;
   letter-spacing: 1.5px;
@@ -110,7 +110,7 @@
 }
 
 .levelBarPct {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--brand-primary-bright);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -245,7 +245,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
   font-weight: 500;
 }
@@ -278,7 +278,7 @@
 .timelineActions :global(.ant-btn) {
   padding: 7px 16px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 
@@ -359,7 +359,7 @@
 }
 
 .badgeDesc {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--text-secondary);
   line-height: 1.4;
 }

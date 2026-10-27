@@ -106,7 +106,7 @@ export default function ScaleDialog({
       open={open}
       onCancel={onClose}
       centered
-      width={640}
+      width="var(--dialog-md)"
       footer={null}
       title={null}
       closable

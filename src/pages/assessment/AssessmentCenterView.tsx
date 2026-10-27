@@ -16,6 +16,7 @@ import {
 } from '@/features/assessment'
 import type { AssessmentCategoryKey, AssessmentRecord, ScaleInfo } from '@/features/assessment'
 import { useI18n } from '@/i18n'
+import { RESPONSIVE_TOKEN } from '@/styles/theme'
 import {
   useAssessmentHistory,
   useAssessmentScale,
@@ -41,7 +42,8 @@ const CATEGORY_KEYS: AssessmentCategoryKey[] = [
  */
 const assessmentThemeComponents = {
   Tabs: {
-    titleFontSize: 14,
+    /* v6 Tabs.titleFontSize 类型仅 number，不可写 var() → 引 RESPONSIVE_TOKEN 数值锚定（--fs-base 1920 端点） */
+    titleFontSize: RESPONSIVE_TOKEN.fontSize,
     itemColor: 'var(--text-faint)',
     itemSelectedColor: 'var(--text-heading)',
     horizontalItemPadding: '0 20px 14px 0',
