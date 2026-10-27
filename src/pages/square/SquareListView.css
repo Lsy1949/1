@@ -27,7 +27,7 @@
 
 /* ===== 主体双栏 ===== */
 .community-body {
-  max-width: 1280px;
+  max-width: var(--container-md);
   margin: 0 auto;
   padding: 32px 56px 0;
   display: grid;

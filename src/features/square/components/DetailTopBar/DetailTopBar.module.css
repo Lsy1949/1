@@ -1,6 +1,6 @@
 /* ===== 顶部返回栏（CSS Modules：私有类 camelCase） ===== */
 .topBar {
-  max-width: 860px;
+  max-width: var(--container-article);
   margin: 0 auto;
   padding: 0 40px 28px;
   display: flex;
@@ -40,7 +40,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   letter-spacing: 2px;
   color: var(--text-faint);
   font-weight: 600;
@@ -51,7 +51,7 @@
 .typeMark {
   padding: 3px 8px;
   border-radius: 5px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 
 /* moment 与 capsule 为 type prop 数据驱动字面量 */

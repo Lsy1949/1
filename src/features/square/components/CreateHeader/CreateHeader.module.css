@@ -1,6 +1,6 @@
 /* 发布页标题区（CSS Modules：私有类 camelCase） */
 .pageHeader {
-  max-width: 1000px;
+  max-width: var(--container-form);
   margin: 0 auto;
   padding: 40px 56px 32px;
   position: relative;

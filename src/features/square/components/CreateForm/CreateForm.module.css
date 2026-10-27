@@ -1,6 +1,6 @@
 /* 发布页表单（CSS Modules：私有类 camelCase） */
 .formContainer {
-  max-width: 1000px;
+  max-width: var(--container-form);
   margin: 0 auto;
   background: transparent;
   position: relative;
@@ -44,7 +44,7 @@
 }
 
 .sectionNum {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--text-faint);
   font-variant-numeric: tabular-nums;
@@ -91,7 +91,7 @@
 }
 
 .emotionLabel {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -386,7 +386,7 @@
 }
 
 .addText {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
 }
 
