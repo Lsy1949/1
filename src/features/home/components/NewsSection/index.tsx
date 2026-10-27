@@ -9,6 +9,7 @@ import { RightOutlined } from '@ant-design/icons'
 import { useI18n } from '@/i18n'
 import imgNist from '@/assets/images/nist-bg.jpg'
 import imgTsinghua from '@/assets/images/tsinghua-bg.jpg'
+import PageContainer from '@/components/PageContainer'
 import type { NewsItem } from '../types'
 import styles from './NewsSection.module.css'
 
@@ -50,8 +51,8 @@ export function NewsSection({ onRead }: NewsSectionProps) {
   return (
     <section id="news" className={styles.newsSection}>
       <div className={styles.techBgPattern}></div>
-      {/* container/relative/z-10 为全局工具类（main.css），保持字面量 */}
-      <div className="container relative z-10">
+      {/* PageContainer 透传 relative z-10（全局工具类）：压住 .techBgPattern 背景装饰 */}
+      <PageContainer className="relative z-10">
         <div className={`${styles.sectionHeader} scroll-reveal`}>
           <span className={styles.sectionBadge}>{t('home.news.badge')}</span>
           <h2>{t('home.news.title')}</h2>
@@ -83,7 +84,7 @@ export function NewsSection({ onRead }: NewsSectionProps) {
             </div>
           ))}
         </div>
-      </div>
+      </PageContainer>
     </section>
   )
 }

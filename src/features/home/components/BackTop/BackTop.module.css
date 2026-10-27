@@ -49,7 +49,7 @@
 }
 
 .btnText {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   line-height: 1;
   letter-spacing: 0.5px;
@@ -78,7 +78,7 @@
 
 .navMenu {
   position: absolute;
-  bottom: 70px;
+  bottom: var(--sp-18);
   right: 0;
   background: var(--bg-overlay);
   backdrop-filter: blur(16px);
@@ -113,7 +113,7 @@
 
 .navMenuTitle {
   display: block;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
   font-weight: 600;
   padding: 4px 12px 8px;
@@ -152,7 +152,7 @@
 
 .menuItem {
   width: 100%;
-  padding: 10px 16px;
+  padding: var(--sp-2) var(--sp-4);
   border: none;
   background: transparent;
   font-family: inherit;

@@ -5,7 +5,7 @@
   border-top: 1px solid var(--border-light);
   border-bottom: 1px solid var(--border-light);
   background: var(--brand-primary-wash);
-  padding: 14px 0;
+  padding: var(--sp-4) 0;
 }
 
 .marqueeTrack {

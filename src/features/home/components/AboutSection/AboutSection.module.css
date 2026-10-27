@@ -4,7 +4,7 @@
 /* 关于我们 - 视差与创新布局 */
 .aboutSection {
   position: relative;
-  padding: 8rem 0;
+  padding: var(--sp-32) 0;
   overflow: hidden;
 }
 
