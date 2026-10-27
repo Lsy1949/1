@@ -1,6 +1,6 @@
 /* ===== 今日话题（CSS Modules：私有类 camelCase；antd 图标根类 .anticon 用 :global 包裹） ===== */
 .dailyPromptSection {
-  max-width: 1280px;
+  max-width: var(--container-md);
   margin: 0 auto;
   padding: 0 56px;
   position: relative;
@@ -26,7 +26,7 @@
 
 .promptLabel {
   display: inline-block;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   letter-spacing: 2px;
   color: color-mix(in srgb, var(--text-inverse, #fff) 70%, transparent);
   font-weight: 700;

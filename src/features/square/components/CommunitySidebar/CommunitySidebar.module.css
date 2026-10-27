@@ -45,7 +45,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--status-success);
   font-weight: 600;
 }
@@ -125,7 +125,7 @@
 }
 
 .cloudCount {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
   font-variant-numeric: tabular-nums;
   margin-left: 2px;
@@ -152,7 +152,7 @@
 }
 
 .ruleNum {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 800;
   color: var(--brand-primary);
   font-variant-numeric: tabular-nums;

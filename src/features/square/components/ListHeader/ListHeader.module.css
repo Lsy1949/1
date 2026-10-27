@@ -1,6 +1,6 @@
 /* ===== 标题区（CSS Modules：私有类 camelCase） ===== */
 .pageHeader {
-  max-width: 1280px;
+  max-width: var(--container-md);
   margin: 0 auto;
   padding: 32px 56px 36px;
   position: relative;
@@ -78,7 +78,7 @@
 }
 
 .statLabel {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
   letter-spacing: 1px;
   text-transform: uppercase;
