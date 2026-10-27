@@ -80,7 +80,7 @@
 
 .nf-slide-inner {
   width: 100%;
-  max-width: 1280px;
+  max-width: var(--container-md);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -103,7 +103,7 @@
 }
 
 .nf-flip-text {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 3px;
   color: var(--dark-text-soft);
@@ -191,7 +191,7 @@
 }
 
 .nf-hero-meta-left span {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 3px;
   color: var(--dark-text-soft);

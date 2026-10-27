@@ -61,7 +61,7 @@
 
 .nf-breath-sync {
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: var(--fs-xs);
   letter-spacing: 3px;
   color: var(--brand-light);
   opacity: 0;
