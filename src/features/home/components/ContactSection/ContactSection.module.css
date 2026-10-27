@@ -3,7 +3,7 @@
 
 /* 联系我们 - 现代表单 */
 .contactSection {
-  padding: 8rem 0;
+  padding: var(--sp-32) 0;
 }
 
 .contactWrapper {

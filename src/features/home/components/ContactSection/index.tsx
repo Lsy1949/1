@@ -7,6 +7,7 @@
 import { App, Button, Col, Form, Input, Row } from 'antd'
 import { MessageOutlined, PhoneOutlined, RightOutlined } from '@ant-design/icons'
 import { useI18n } from '@/i18n'
+import PageContainer from '@/components/PageContainer'
 import styles from './ContactSection.module.css'
 
 interface ContactFormValues {
@@ -33,8 +34,8 @@ export function ContactSection() {
 
   return (
     <section id="contact" className={styles.contactSection}>
-      {/* container 为全局工具类（main.css），保持字面量 */}
-      <div className="container">
+      {/* PageContainer：复用全局 .container，宽度与水平 padding 由 token 流体化 */}
+      <PageContainer>
         <div className={`${styles.contactWrapper} scroll-reveal`}>
           <div className={styles.contactInfo}>
             <div className={styles.contactBgShape}></div>
@@ -106,7 +107,7 @@ export function ContactSection() {
             </Form>
           </div>
         </div>
-      </div>
+      </PageContainer>
     </section>
   )
 }

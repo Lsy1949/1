@@ -6,6 +6,7 @@
  */
 import { useI18n } from '@/i18n'
 import AnimatedCounter from '@/components/AnimatedCounter'
+import PageContainer from '@/components/PageContainer'
 import imgNist from '@/assets/images/nist-bg.jpg'
 import styles from './AboutSection.module.css'
 
@@ -14,8 +15,8 @@ export function AboutSection() {
 
   return (
     <section id="about" className={styles.aboutSection}>
-      {/* container 为全局工具类（main.css），保持字面量 */}
-      <div className="container">
+      {/* PageContainer：复用全局 .container，宽度与水平 padding 由 token 流体化 */}
+      <PageContainer>
         <div className={styles.aboutContent}>
           <div className={`${styles.aboutText} scroll-reveal`}>
             <div className={styles.sectionTag}>{t('home.about.badge')}</div>
@@ -44,7 +45,7 @@ export function AboutSection() {
             </div>
           </div>
         </div>
-      </div>
+      </PageContainer>
     </section>
   )
 }
