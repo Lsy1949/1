@@ -40,7 +40,7 @@
 }
 
 .markerLabel {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -207,7 +207,7 @@
 }
 
 .entryKey {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -282,7 +282,7 @@
 }
 
 .deviceTag {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -300,7 +300,7 @@
 .deviceMeta .metaItem { margin: 0; }
 
 .deviceMeta .metaItem dt {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -351,9 +351,19 @@
 /* ==================================================================
    换绑弹窗（antd Modal teleport 到 body，className 随 React 渲染仍可命中）
    弹窗结构样式（content/header/body/footer 的边框、内边距、直角，
-   以及衬线标题）已 token 化为本组件 Modal 的 styles prop 与 title 内联
-   样式，此处不再覆写 ant-modal-xx 结构类。
+   以及衬线标题）已 token 化为本组件 Modal 的 styles prop 与下方
+   .dialogTitle 类（原 title 内联样式迁入，字号映射 --fs-xl 流体档），
+   此处不再覆写 ant-modal-xx 结构类。
    ================================================================== */
+/* 弹窗衬线主标题（原内联 fontSize:22 → var(--fs-xl)，1920 处 24px 邻近档，
+   大视口随 clamp 流体放大） */
+.contactDialog .dialogTitle,
+:global(.ant-modal).contactDialog .dialogTitle {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+}
 /* 例外：antd 5.29（rc-dialog 9.6）ModalStyles 尚无 close 键（antd 6 起支持），
    关闭按钮定位暂以 CSS 覆写对齐 20px 头部内边距 */
 .contactDialog :global(.ant-modal-close) {
@@ -417,7 +427,7 @@
 }
 
 .contactDialog .dsLabel {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -432,7 +442,11 @@
   display: flex;
   gap: 8px;
 }
-/* code-row 内 Input 的 flex 占位改为组件内联 style，直角由组件 token 注入 */
+/* code-row 内 Input 的 flex 占位（原内联 style flex:1 迁入），
+   直角由组件 token 注入 */
+.contactDialog .codeInput {
+  flex: 1;
+}
 .contactDialog .sendBtn {
   flex-shrink: 0;
   padding: 0 16px;

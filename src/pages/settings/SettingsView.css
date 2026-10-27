@@ -1,7 +1,10 @@
 .settings-page {
-  max-width: 1240px;
+  /* 宽度唯一来源：--container-md（原 1240 字面量统一到 1280 档 clamp，
+     1366→1080 / 1920→1280 / 3840 封顶 1600，与 ProfileView 同档） */
+  max-width: var(--container-md);
   margin: 0 auto;
-  padding: 0 48px 100px;
+  /* 水平 padding 对齐全局容器档 --container-pad；底部留白走流体阶梯 */
+  padding: 0 var(--container-pad) var(--sp-25);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
     'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   color: var(--text-primary);
@@ -45,7 +48,7 @@
 
 /* ============ Responsive ============ */
 @media (width <= 1024px) {
-  .settings-page { padding: 0 24px 80px; }
+  .settings-page { padding: 0 var(--sp-6) var(--sp-20); }
 
   .mobile-toc {
     display: flex;
@@ -56,8 +59,9 @@
     border-top: 1px solid var(--text-primary);
     border-bottom: 1px solid var(--border-light);
     overflow-x: auto;
-    margin: 0 -24px;
-    padding: 0 24px;
+    /* 拉通页面 padding 形成全宽 sticky 条（负 margin 值与上方 padding 同源取反） */
+    margin: 0 calc(var(--sp-6) * -1);
+    padding: 0 var(--sp-6);
     scrollbar-width: none;
   }
   .mobile-toc::-webkit-scrollbar { display: none; }
@@ -88,7 +92,7 @@
   }
 
   .mtoc-text {
-    font-size: 11px;
+    font-size: var(--fs-xs);
     font-weight: 600;
     letter-spacing: 1px;
     white-space: nowrap;
@@ -96,5 +100,5 @@
 }
 
 @media (width <= 768px) {
-  .settings-page { padding: 0 16px 80px; }
+  .settings-page { padding: 0 var(--sp-4) var(--sp-20); }
 }

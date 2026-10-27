@@ -341,14 +341,7 @@ export function SecuritySection() {
         open={contactDialog.visible}
         onCancel={closeContactDialog}
         title={
-          <span
-            style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              fontSize: 22,
-              fontWeight: 700,
-              color: 'var(--text-primary)',
-            }}
-          >
+          <span className={styles.dialogTitle}>
             {contactDialog.type === 'phone'
               ? t('settings.card.security.dialog.modifyPhone')
               : t('settings.card.security.dialog.modifyEmail')}
@@ -479,7 +472,7 @@ export function SecuritySection() {
                   onChange={(e) =>
                     setContactDialog((prev) => ({ ...prev, newCode: e.target.value }))
                   }
-                  style={{ flex: 1 }}
+                  className={styles.codeInput}
                 />
                 <button
                   className={styles.sendBtn}
