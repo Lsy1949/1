@@ -13,6 +13,7 @@ import {
 } from '@ant-design/icons'
 import { Button, Result, Skeleton } from 'antd'
 import type { ComponentType } from 'react'
+import PageContainer from '@/components/PageContainer'
 import ReadProgress from '@/components/ReadProgress'
 import { RowList } from '@/features/article'
 import type { ArticleItem } from '@/features/article'
@@ -112,7 +113,7 @@ export default function ArticleListView() {
     <div className="article-list-page">
       <ReadProgress />
       {/* 纯排版标题区 */}
-      <div className="page-intro">
+      <PageContainer className="page-intro">
         <div className="intro-container">
           <div className="intro-left">
             <span className="intro-eyebrow">— Articles &amp; Stories</span>
@@ -123,11 +124,11 @@ export default function ArticleListView() {
             <span className="intro-count-label">{t('article.stats.count')}</span>
           </div>
         </div>
-      </div>
+      </PageContainer>
 
       {/* Section 1: Navigation Ribbon */}
       <section className="discovery-ribbon">
-        <div className="ribbon-container">
+        <PageContainer className="ribbon-container">
           <button className="back-link" onClick={goBack}>
             <ArrowLeftOutlined />
             <span>{t('common.back')}</span>
@@ -145,10 +146,10 @@ export default function ArticleListView() {
               </div>
             ))}
           </div>
-        </div>
+        </PageContainer>
       </section>
 
-      <div className="main-content">
+      <PageContainer className="main-content">
         {/* 搜索栏 */}
         <div className="search-wrapper">
           <div className="search-box">
@@ -167,7 +168,7 @@ export default function ArticleListView() {
         <div className="article-list-content">
           <RowList articles={articles} onOpen={openArticle} />
         </div>
-      </div>
+      </PageContainer>
     </div>
   )
 }

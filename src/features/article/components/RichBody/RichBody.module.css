@@ -1,10 +1,12 @@
 .articleMain {
   min-width: 0;
+  /* 详情页 .article-grid 不套 narrow：主栏（正文）单独约束阅读行宽 */
+  max-width: var(--container-article);
 }
 
 /* ===== 正文 ===== */
 .richContent {
-  font-size: 17px;
+  font-size: var(--fs-read);
   line-height: 1.85;
   color: var(--text-regular);
   font-weight: 400;
@@ -115,7 +117,7 @@
 }
 
 .footerMark {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   letter-spacing: 2px;
   color: var(--text-faint);
   font-weight: 600;

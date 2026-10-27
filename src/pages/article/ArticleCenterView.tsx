@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Button, Result, Skeleton } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
+import PageContainer from '@/components/PageContainer'
 import ReadProgress from '@/components/ReadProgress'
 import { CardGrid, CollectionGrid, SpotlightCard } from '@/features/article'
 import type { ArticleItem } from '@/features/article'
@@ -152,7 +153,7 @@ export default function ArticleCenterView() {
     <div className="article-center">
       <ReadProgress />
       {/* 编辑式标题区 · 纯排版无卡片 · 随分类切换 */}
-      <div className="page-intro">
+      <PageContainer className="page-intro">
         <div className="intro-container">
           <div className="intro-left">
             <span className="intro-eyebrow">{introData.eyebrow}</span>
@@ -169,11 +170,11 @@ export default function ArticleCenterView() {
             ))}
           </div>
         </div>
-      </div>
+      </PageContainer>
 
       {/* 导读栏 · sticky 紧贴 navbar */}
       <section className="discovery-ribbon">
-        <div className="ribbon-container">
+        <PageContainer className="ribbon-container">
           <div className="ribbon-scroll">
             {categories.map((cat, i) => (
               <div
@@ -186,10 +187,10 @@ export default function ArticleCenterView() {
               </div>
             ))}
           </div>
-        </div>
+        </PageContainer>
       </section>
 
-      <div className="main-content">
+      <PageContainer className="main-content">
         {/* 极简搜索 */}
         <div className="search-wrapper">
           <div className="search-box">
@@ -231,7 +232,7 @@ export default function ArticleCenterView() {
             />
           )}
         </div>
-      </div>
+      </PageContainer>
     </div>
   )
 }
