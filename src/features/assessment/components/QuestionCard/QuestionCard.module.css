@@ -30,7 +30,7 @@
 }
 
 .qCategoryTag {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--text-secondary);
   background: var(--bg-mute);
   padding: 5px 10px;
@@ -40,7 +40,7 @@
 
 .qProgressMark {
   margin-left: auto;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
   font-weight: 600;
   letter-spacing: 1px;

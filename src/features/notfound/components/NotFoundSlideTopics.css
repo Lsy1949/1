@@ -13,7 +13,7 @@
 }
 
 .nf-section-label {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 3px;
   color: var(--brand-primary);
@@ -89,7 +89,7 @@
 }
 
 .nf-topic-en {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 3px;
   color: var(--text-tertiary);
@@ -144,7 +144,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 2px;
   color: var(--text-primary);

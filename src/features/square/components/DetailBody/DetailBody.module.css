@@ -1,6 +1,6 @@
 /* ===== 正文（CSS Modules：私有类 camelCase） ===== */
 .richContent {
-  max-width: 860px;
+  max-width: var(--container-article);
   margin: 0 auto;
   padding: 0 40px;
   position: relative;
@@ -57,7 +57,7 @@
 
 /* ===== 底部互动栏 ===== */
 .detailFooter {
-  max-width: 860px;
+  max-width: var(--container-article);
   margin: 64px auto 0;
   padding: 0 40px;
 }
@@ -76,7 +76,7 @@
 }
 
 .footerMark {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   letter-spacing: 2px;
   color: var(--text-faint);
   font-weight: 600;

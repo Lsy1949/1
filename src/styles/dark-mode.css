@@ -427,11 +427,9 @@ html.dark code {
   color: var(--text-primary) !important;
 }
 
-html.dark blockquote {
-  border-left-color: var(--brand-primary-bright) !important;
-  background: var(--brand-primary-bright-bg) !important;
-  color: var(--text-regular) !important;
-}
+/* 注：blockquote 的暗色样式在 RichBody.module.css 内按 .richContent 作用域
+   下发（曾经的全局 html.dark blockquote 规则会泄漏到登录页 heroQuote 等
+   非富文本场景，造成淡蓝底色，已收敛） */
 
 /* ============================================================
    三期覆盖：杂志时尚风 — 深色模式下卡片融入背景，不卡片化

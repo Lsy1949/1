@@ -139,7 +139,7 @@ export function PsychSection({ form, onFormChange }: PsychSectionProps) {
                 allowClear
                 showSearch
                 optionFilterProp="label"
-                style={{ width: '100%' }}
+                className={styles.fullWidth}
                 value={form.mbti || undefined}
                 placeholder={t('profile.card.psychological.mbtiPlaceholder')}
                 onChange={(v) => onFormChange({ ...form, mbti: v ?? '' })}

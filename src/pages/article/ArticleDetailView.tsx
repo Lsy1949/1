@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Button, Result, Skeleton } from 'antd'
 import { ArrowLeftOutlined, ClockCircleOutlined, EyeOutlined } from '@ant-design/icons'
 import { ApiError, articleApi } from '@/api'
+import PageContainer from '@/components/PageContainer'
 import ReadProgress from '@/components/ReadProgress'
 import InitialAvatar from '@/components/InitialAvatar'
 import { Comments, RelatedSidebar, RichBody } from '@/features/article'
@@ -114,16 +115,16 @@ export default function ArticleDetailView() {
       <ReadProgress />
 
       {/* 顶部返回栏 · 紧贴 navbar */}
-      <div className="top-bar">
+      <PageContainer className="top-bar">
         <button className="back-btn" onClick={goToList}>
           <ArrowLeftOutlined />
           <span>{t('common.back')}</span>
         </button>
         <span className="top-mark">{article.categoryLabel} · No.{String(article.id).padStart(2, '0')}</span>
-      </div>
+      </PageContainer>
 
       {/* 标题区 · 纯排版 */}
-      <header className="detail-header">
+      <PageContainer className="detail-header">
         <div className="header-eyebrow">
           <span className="eyebrow-cat">{article.categoryLabel}</span>
           <span className="eyebrow-sep">/</span>
@@ -150,10 +151,10 @@ export default function ArticleDetailView() {
             <span className="meta-item"><EyeOutlined />{formatViews(article.views)}</span>
           </div>
         </div>
-      </header>
+      </PageContainer>
 
       {/* 双栏布局: 正文 + 右侧推荐 */}
-      <div className="article-grid">
+      <PageContainer className="article-grid">
         {/* 主栏: 正文（含封面首图）+ 操作栏 */}
         <RichBody
           article={article}
@@ -165,7 +166,7 @@ export default function ArticleDetailView() {
 
         {/* 右侧推荐栏 · sticky */}
         <RelatedSidebar related={related} onOpen={openRelated} />
-      </div>
+      </PageContainer>
 
       {/* 评论区 */}
       <Comments />

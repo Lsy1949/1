@@ -123,3 +123,125 @@
     --purple-600: #722ed1;
   }
 }
+
+/* ============================================================
+ * 流体尺寸层 L0.5（Phase 0 响应式基建）
+ *
+ * 设计基准：1080p（CSS 1920×1080），适配视口 1366~3840。
+ * 公式：clamp(min, 中间值 vw, max)
+ *   - 中间值 = 基准值 / 19.2 vw（19.2 = 1920/100，保证 1920 视口恰好
+ *     等于基准值；vw 保留 4 位小数，1920 处误差 < 0.01px，可忽略）
+ *   - 1366 视口落到 min 端；3840 视口封顶 max 端
+ * - 字号阶梯刻意与 antd v6 默认字号对齐（1920 处视觉零变化）：
+ *   xs=fontSizeSM(12) / base=fontSize(14) / md=fontSizeLG(16) /
+ *   lg=fontSizeXL(20) / xl=Heading3(24) / 2xl=Heading2(30) / 3xl=Heading1(38)
+ * - 小字号端点原则：min 不低于全站现有最小字号（12px），解决「全站字号
+ *   偏小」——小字号在 ≤1920 区间不缩小，只在更大视口放大
+ * - 命名与色阶区一致（kebab-case）；本层只含尺寸，不含颜色；
+ *   antd 侧映射见 src/styles/theme.ts（数值键 = 本层 1920 端点）
+ * ============================================================ */
+@layer tokens {
+  :root {
+    /* ----- 字号阶梯 ----- */
+
+    /* 基准 12px（= antd v6 fontSizeSM）；端点 1366→12px / 3840→14px；用途：标签、角标、辅助小字 */
+    --fs-xs: clamp(12px, 0.625vw, 14px);
+    /* 基准 13px；端点 1366→13px / 3840→15px；用途：次要正文、表单辅助说明 */
+    --fs-sm: clamp(13px, 0.6771vw, 15px);
+    /* 基准 14px（= antd v6 fontSize 正文默认）；端点 1366→14px / 3840→17px；用途：正文默认字号 */
+    --fs-base: clamp(14px, 0.7292vw, 17px);
+    /* 基准 16px（= antd v6 fontSizeLG）；端点 1366→15px / 3840→19px；用途：卡片标题、强调正文（≈1800px 以下恒 15px） */
+    --fs-md: clamp(15px, 0.8333vw, 19px);
+    /* 基准 20px（= antd v6 fontSizeXL / Heading4）；端点 1366→17px / 3840→24px；用途：区块标题（h4 级） */
+    --fs-lg: clamp(17px, 1.0417vw, 24px);
+    /* 基准 24px（= antd v6 Heading3）；端点 1366→20px / 3840→29px；用途：页面大标题、弹窗主标题（h3 级） */
+    --fs-xl: clamp(20px, 1.25vw, 29px);
+    /* 基准 30px（= antd v6 Heading2）；端点 1366→24px / 3840→36px；用途：页面主标题（h2 级） */
+    --fs-2xl: clamp(24px, 1.5625vw, 36px);
+    /* 基准 38px（= antd v6 Heading1）；端点 1366→30px / 3840→46px；用途：英雄区/大屏展示标题（h1 级） */
+    --fs-3xl: clamp(30px, 1.9792vw, 46px);
+    /* 基准 64px；端点 1366→约45.5px（min 44px 于约1320px 起）/ 2560→80px（约2400px 起封顶）；用途：hero 主标题（home 轮播文字层，Carousel 消费） */
+    --fs-4xl: clamp(44px, 3.3333vw, 80px);
+    /* 基准 17px；端点 1366→15px / 2560→22px（约2485px 起封顶）；用途：长文正文阅读字号（RichBody 消费，介于 base 与 md 之上的阅读优化档） */
+    --fs-read: clamp(15px, 0.8854vw, 22px);
+
+    /* ----- 间距阶梯（4px 步进，--sp-N 基准 = N×4px）-----
+       基准 = 1920 视口下的 N×4px；min = 0.75×基准（1366 端点）、
+       max = 1.5×基准（约 2880px 视口起封顶，3840 端点）；vw = 基准/19.2。 */
+    --sp-1: clamp(3px, 0.2083vw, 6px);
+    --sp-2: clamp(6px, 0.4167vw, 12px);
+    --sp-3: clamp(9px, 0.625vw, 18px);
+    --sp-4: clamp(12px, 0.8333vw, 24px);
+    --sp-5: clamp(15px, 1.0417vw, 30px);
+    --sp-6: clamp(18px, 1.25vw, 36px);
+    --sp-7: clamp(21px, 1.4583vw, 42px);
+    --sp-8: clamp(24px, 1.6667vw, 48px);
+    --sp-9: clamp(27px, 1.875vw, 54px);
+    --sp-10: clamp(30px, 2.0833vw, 60px);
+    --sp-11: clamp(33px, 2.2917vw, 66px);
+    --sp-12: clamp(36px, 2.5vw, 72px);
+    --sp-13: clamp(39px, 2.7083vw, 78px);
+    --sp-14: clamp(42px, 2.9167vw, 84px);
+    --sp-15: clamp(45px, 3.125vw, 90px);
+    --sp-16: clamp(48px, 3.3333vw, 96px);
+    --sp-17: clamp(51px, 3.5417vw, 102px);
+    --sp-18: clamp(54px, 3.75vw, 108px);
+    --sp-19: clamp(57px, 3.9583vw, 114px);
+    --sp-20: clamp(60px, 4.1667vw, 120px);
+    --sp-21: clamp(63px, 4.375vw, 126px);
+    --sp-22: clamp(66px, 4.5833vw, 132px);
+    --sp-23: clamp(69px, 4.7917vw, 138px);
+    --sp-24: clamp(72px, 5vw, 144px);
+    /* 基准 112px（= 28×4）；端点 1366→84px / 3840→168px（约2880px 起封顶）；用途：section 级大留白（消费方由 Stage B 接入） */
+    --sp-28: clamp(84px, 5.8333vw, 168px);
+    /* 基准 128px（= 32×4）；端点 1366→96px / 3840→192px（约2880px 起封顶）；用途：页面级超大纵向隔断（消费方由 Stage B 接入） */
+    --sp-32: clamp(96px, 6.6667vw, 192px);
+
+    /* ----- 容器 -----
+       全站内容宽度唯一来源：main.css .container 引用 --container-max，
+       页面迁移时禁止再写任何 max-width 字面量（统一用 <PageContainer>
+       或直接引用本组 token）。 */
+
+    /* 基准 1480px（1920）；端点 1366→1200px / 2560→1800px（封顶）/ 3840→1800px；用途：全站主内容最大宽度（解决大屏页面偏空） */
+    --container-max: clamp(1200px, 77.0833vw, 1800px);
+    /* 基准 32px（1920，= 原 .container 的 2rem，基准视口无感切换）；端点 1366→24px / 3840→64px（恰在 3840 处封顶）；用途：容器水平 padding */
+    --container-pad: clamp(24px, 1.6667vw, 64px);
+    /* 基准 780px（1920）；端点 1366→680px / 3840→860px（约 2117px 起封顶）；用途：文章详情等长文阅读窄栏（PageContainer narrow 变体） */
+    --container-narrow: clamp(680px, 40.625vw, 860px);
+
+    /* ----- 容器/宽度档扩展（Phase 0.5 scaffold 补丁，按 9 分片扫描缺口补齐）-----
+       档位由各页面消费场景反推；settings 1240 等零散 max-width 字面量将在
+       Stage B 迁移时统一收敛到下列档位，迁移期允许新旧并存。 */
+
+    /* 基准 1280px（1920）；端点 1366→1080px / 3840→1600px（约 2400px 起封顶）；用途：次级页面主列（square 列表双栏、capsule 归档列、profile、counseling、ai 两页、notfound slide；settings 1240 统一到此档） */
+    --container-md: clamp(1080px, 66.6667vw, 1600px);
+    /* 基准 1000px（1920）；端点 1366→840px / 3840→1250px（约 2400px 起封顶）；用途：发布/新建表单页主列（square create、capsule create 及详情兜底） */
+    --container-form: clamp(840px, 52.0833vw, 1250px);
+    /* 基准 1100px（1920）；端点 1366→940px / 3840→1375px（约 2400px 起封顶）；用途：capsule 详情主列 */
+    --container-content: clamp(940px, 57.2917vw, 1375px);
+    /* 基准 860px（1920）；端点 1366→750px / 3840→950px（约 2121px 起封顶）；用途：square 详情阅读栏 */
+    --container-article: clamp(750px, 44.7917vw, 950px);
+    /* 基准 1200px（1920）；端点 1366→1020px / 3840→1500px（约 2400px 起封顶）；用途：home 轮播文字层（刻意窄于主容器） */
+    --container-hero: clamp(1020px, 62.5vw, 1500px);
+    /* 基准 720px（1920）；端点 1366→620px / 3840→900px（约 2400px 起封顶）；用途：assessment 沉浸作答卡内容列 */
+    --container-take: clamp(620px, 37.5vw, 900px);
+    /* 基准 460.8px（1920 处 24vw）；端点 1366→400px / 2560→480px（约 2000px 起封顶）；用途：登录卡宽度契约（原 LoginView.css 局部同名定义同式升格，P1-Auth 将于 Stage B 移除局部定义，公式相同无视觉变化） */
+    --login-card-max-width: clamp(400px, 24vw, 480px);
+    /* 基准 640px（1920）；端点 1366→560px / 3840→800px（约 2400px 起封顶）；用途：antd Modal 中号宽档（v6 width prop 传 'var(--dialog-md)'） */
+    --dialog-md: clamp(560px, 33.3333vw, 800px);
+    /* 基准 820px（1920）；端点 1366→640px / 3840→880px（约 2061px 起封顶）；用途：AI 全页对话气泡最大宽度 */
+    --chat-bubble-max: clamp(640px, 42.7083vw, 880px);
+    /* 基准 270px（1920）；端点 1366→230px / 3840→340px（约 2418px 起封顶）；用途：AI 悬浮窗对话气泡最大宽度 */
+    --chat-bubble-max-fab: clamp(230px, 14.0625vw, 340px);
+    /* 基准 780px（1920，与 --container-narrow 同值同式）；端点 1366→680px / 3840→860px（约 2117px 起封顶）；用途：AI 对话输入行最大宽度 */
+    --chat-input-max: clamp(680px, 40.625vw, 860px);
+    /* 基准 380px（1920）；端点 1366→320px / 3840→440px（约 2223px 起封顶）；用途：AI 悬浮面板宽度 */
+    --fab-panel-w: clamp(320px, 19.7917vw, 440px);
+    /* 基准 560px（1920）；端点 1366→480px / 3840→640px（约 2194px 起封顶）；用途：AI 悬浮面板高度 */
+    --fab-panel-h: clamp(480px, 29.1667vw, 640px);
+    /* 基准 540px（1920）；端点 1366→460px / 3840→650px（约 2311px 起封顶）；用途：区块描述可读行宽（profile/settings ×6 处） */
+    --measure-desc: clamp(460px, 28.125vw, 650px);
+    /* 基准 620px（1920）；端点 1366→530px / 3840→750px（约 2323px 起封顶）；用途：Hero 副文行宽 */
+    --measure-wide: clamp(530px, 32.2917vw, 750px);
+  }
+}

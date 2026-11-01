@@ -56,7 +56,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
 }
 
@@ -113,7 +113,7 @@
 }
 
 .radarLabel {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   fill: var(--text-muted);
   font-weight: 600;
   text-anchor: middle;
@@ -130,7 +130,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
 }
 
@@ -247,7 +247,7 @@
   flex-direction: column;
   justify-content: space-between;
   color: var(--text-faint);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   width: 20px;
   font-weight: 600;
 }
@@ -283,7 +283,7 @@
   bottom: -22px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
   white-space: nowrap;
   font-weight: 500;
@@ -329,7 +329,7 @@
   font-weight: 600;
   border-radius: 6px;
   padding: 2px 8px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 
 .historyEmpty {
@@ -400,7 +400,7 @@
 }
 
 .kpiLabel {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
   font-weight: 600;
   letter-spacing: 2px;
@@ -440,7 +440,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 3px;
   color: var(--text-heading);
@@ -516,7 +516,7 @@
 }
 
 .donutCenterLabel {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   fill: var(--text-faint);
   font-weight: 600;
 }
@@ -576,7 +576,7 @@
 
 .rangeTabs span {
   padding: 4px 2px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
   cursor: pointer;
   border-radius: 0;
@@ -611,7 +611,7 @@
   position: absolute;
   right: 4px;
   top: -15px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--status-warning);
   font-weight: 700;
   background: transparent;
@@ -664,7 +664,7 @@
 }
 
 .cmpDate {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
@@ -719,7 +719,7 @@
 }
 
 .cmpTag {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   padding: 0;
   border-radius: 0;
@@ -821,7 +821,7 @@
 }
 
 .recReason {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--text-secondary);
   line-height: 1.5;
 }
@@ -890,7 +890,7 @@
 
 .navItem::before {
   content: counter(dashnav, decimal-leading-zero);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--text-faint);
   font-variant-numeric: tabular-nums;

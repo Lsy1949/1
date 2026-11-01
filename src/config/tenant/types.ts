@@ -72,6 +72,27 @@ export interface TenantTheme {
   themeOverrides?: TenantThemeOverrides
 }
 
+/** 登录页宣传区特性条目 */
+export interface TenantPropagandaFeature {
+  /** 特性标题 */
+  title: string
+  /** 特性描述 */
+  description: string
+}
+
+/**
+ * 登录页品牌宣传区文案（主标题用 brand.name，由租户配置下发）。
+ * subtitle / quote 中的 \n 由前端拆行渲染；缺省字段由默认配置保底。
+ */
+export interface TenantPropaganda {
+  /** 副标题（\n 换行） */
+  subtitle: string
+  /** 引言正文（\n 换行，首尾引号由前端渲染） */
+  quote: string
+  /** 特性清单（空数组 = 隐藏特性列表） */
+  features: TenantPropagandaFeature[]
+}
+
 /** 业务资源：租户可自定义的静态素材 */
 export interface TenantAssets {
   /** 登录页背景图 URL（空字符串 = 使用内置默认） */
@@ -94,6 +115,8 @@ export interface TenantConfig {
   tenantId: string
   brand: TenantBrand
   theme: TenantTheme
+  /** 登录页品牌宣传区文案（后端缺省时用前端内置文案兜底） */
+  propaganda: TenantPropaganda
   /**
    * 该租户启用的路由清单（path 全集见 config/routes.ts 的 APP_ROUTE_PATHS，
    * 由注册表派生）。后端随租户配置一起下发，只做「裁剪」、不下发组件。

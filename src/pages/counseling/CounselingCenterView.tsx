@@ -20,6 +20,7 @@ import {
 } from '@/features/counseling'
 import type { BookingPanelHandle } from '@/features/counseling'
 import { useI18n } from '@/i18n'
+import { RESPONSIVE_TOKEN } from '@/styles/theme'
 import {
   useCancelBooking,
   useCounselingInfo,
@@ -44,7 +45,7 @@ const TAB_QUERY_MAP: Record<string, string> = {
  */
 const counselingThemeComponents = {
   Tabs: {
-    titleFontSize: 14,
+    titleFontSize: RESPONSIVE_TOKEN.fontSize,
     itemColor: 'var(--text-faint)',
     itemHoverColor: 'var(--text-heading)',
     itemSelectedColor: 'var(--text-heading)',

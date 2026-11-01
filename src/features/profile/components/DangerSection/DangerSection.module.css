@@ -52,7 +52,8 @@
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.6;
-  max-width: 540px;
+  /* 描述文本窄行宽（原 540px 字面量 → 流体 measure token） */
+  max-width: var(--measure-desc);
 }
 
 /* ============ 危险区 ============ */

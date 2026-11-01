@@ -1,7 +1,7 @@
 /* 时光胶囊 · 详情主体（CSS Modules：私有类 camelCase） */
 
 .capsuleDetail {
-  max-width: 1100px;
+  max-width: var(--container-content);
   margin: 0 auto;
   padding: 0 56px;
   position: relative;

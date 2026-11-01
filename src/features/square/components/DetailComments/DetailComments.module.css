@@ -1,6 +1,6 @@
 /* ===== 评论区（CSS Modules：私有类 camelCase） ===== */
 .commentsSection {
-  max-width: 860px;
+  max-width: var(--container-article);
   margin: 64px auto 0;
   padding: 0 40px;
   position: relative;

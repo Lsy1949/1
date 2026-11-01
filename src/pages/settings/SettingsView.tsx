@@ -11,6 +11,7 @@ import {
 } from '@/features/settings'
 import type { MastheadSection } from '@/features/settings'
 import { ConfigProvider } from 'antd'
+import { RESPONSIVE_TOKEN } from '@/styles/theme'
 import './SettingsView.css'
 
 /**
@@ -44,7 +45,7 @@ const settingsThemeComponents = {
     activeBorderColor: 'var(--brand-primary)',
     activeShadow: 'none',
   },
-  Form: { itemMarginBottom: 0, labelFontSize: 12, labelColor: 'var(--text-regular)' },
+  Form: { itemMarginBottom: 0, labelFontSize: RESPONSIVE_TOKEN.fontSizeSM, labelColor: 'var(--text-regular)' },
 }
 
 export default function SettingsView() {

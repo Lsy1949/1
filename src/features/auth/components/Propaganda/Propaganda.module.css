@@ -1,5 +1,6 @@
-/* 登录页左侧品牌展示区（CSS Modules：私有类 camelCase；
-   keyframes 由模块自动局部化，不污染全局） */
+/* 登录页左侧品牌展示区（CSS Modules：私有类 camelCase）
+   动画走 Ant Motion（CSSMotion 内联 style，见 index.tsx + ../../motion），
+   本文件不再含 keyframes，只保留排版与错落缩进 */
 
 .presentationBox {
   flex: 1 1 auto;
@@ -9,18 +10,16 @@
   flex-direction: column;
   color: var(--text-inverse, #fff);
   position: relative;
-  padding: 8px 0;
-  animation: slideInFromLeft 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  padding: var(--sp-2) 0;
 }
 
 /* 主标题：大字，大气 */
 .heroTitle {
-  margin-bottom: 36px;
-  animation: fadeIn 0.7s ease 0.25s both;
+  margin-bottom: var(--sp-9);
 }
 
 .heroTitle h1 {
-  margin: 0 0 24px;
+  margin: 0 0 var(--sp-6);
 
   /* 流式字号：随视口宽度缩放，适配不同分辨率 */
   font-size: clamp(44px, 5vw, 72px);
@@ -33,8 +32,8 @@
 
 .heroSubtitle {
   margin: 0;
-  margin-left: 4px;
-  font-size: 18px;
+  margin-left: var(--sp-1);
+  font-size: var(--fs-read);
   line-height: 1.8;
   color: color-mix(in srgb, var(--text-inverse, #fff) 82%, transparent);
   letter-spacing: 0.5px;
@@ -48,16 +47,18 @@
   width: 56px;
   height: 2px;
   background: color-mix(in srgb, var(--text-inverse, #fff) 50%, transparent);
-  margin-bottom: 32px;
-  animation: fadeIn 0.7s ease 0.35s both;
+  margin-bottom: var(--sp-8);
 }
 
-/* 引言：左对齐，斜体，文字偏柔 */
+/* 引言：左对齐，斜体，文字偏柔。
+   无底色设计：显式归零 background/border，防任何全局元素规则
+   （如曾经的 html.dark blockquote）泄漏淡蓝底色 */
 .heroQuote {
-  margin: 0 0 48px;
+  margin: 0 0 var(--sp-12);
   padding: 0;
   border: none;
-  font-size: 16px;
+  background: none;
+  font-size: var(--fs-md);
   line-height: 1.95;
   color: color-mix(in srgb, var(--text-inverse, #fff) 88%, transparent);
   font-style: italic;
@@ -65,7 +66,6 @@
   font-weight: 300;
   max-width: 420px;
   text-shadow: 0 1px 6px rgb(0 0 0 / 0.4);
-  animation: fadeIn 0.7s ease 0.45s both;
 }
 
 .quoteMark {
@@ -74,45 +74,42 @@
   color: color-mix(in srgb, var(--text-inverse, #fff) 55%, transparent);
   font-style: normal;
   font-family: Georgia, serif;
-  margin-right: 4px;
+  margin-right: var(--sp-1);
 }
 
 .quoteMarkEnd {
   margin-right: 0;
-  margin-left: 4px;
+  margin-left: var(--sp-1);
 }
 
 /* 特性列表：错落缩进 + 横线编号风格，无背景卡片 */
 .featureList {
   list-style: none;
-  margin: 0 0 48px;
+  margin: 0 0 var(--sp-12);
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: var(--sp-6);
 }
 
 .featureItem {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: var(--sp-5);
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 错落缩进：第二项最右，第三项稍回 */
+/* 错落缩进：第二项最右，第三项稍回（入场错落在 motion.ts 编排） */
 .featureStep1 {
   margin-left: 0;
-  animation: fadeIn 0.7s ease 0.55s both;
 }
 
 .featureStep2 {
-  margin-left: 64px;
-  animation: fadeIn 0.7s ease 0.65s both;
+  margin-left: var(--sp-16);
 }
 
 .featureStep3 {
-  margin-left: 24px;
-  animation: fadeIn 0.7s ease 0.75s both;
+  margin-left: var(--sp-6);
 }
 
 .featureItem:hover {
@@ -121,7 +118,7 @@
 
 .featureIndex {
   flex-shrink: 0;
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 700;
   color: color-mix(in srgb, var(--text-inverse, #fff) 55%, transparent);
   letter-spacing: 2px;
@@ -137,8 +134,8 @@
 }
 
 .featureContent h3 {
-  margin: 0 0 4px;
-  font-size: 17px;
+  margin: 0 0 var(--sp-1);
+  font-size: var(--fs-read);
   font-weight: 700;
   color: var(--text-inverse, #fff);
   letter-spacing: 0.3px;
@@ -146,38 +143,15 @@
 
 .featureContent p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: color-mix(in srgb, var(--text-inverse, #fff) 70%, transparent);
   line-height: 1.5;
   letter-spacing: 0.2px;
 }
 
-@keyframes slideInFromLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* 响应式：< 1200px 隐藏品牌区。
-   与 LoginView 的 antd screens.xl（min-width: 1200px）严格互补，
+   与 LoginView.css 的分屏断点 @media (min-width: 1200px) 严格互补
+   （JS 断点已移除，两处 CSS 媒体查询是断点唯一来源），
    避免 1199.x px 这类小数视口下「显示品牌区但不分屏」的错位 */
 @media (width < 1200px) {
   .presentationBox {
@@ -188,9 +162,7 @@
 /* ============================================================
    暗色主题（仅保留「暗底上必须提亮」的规则；
    换色类规则已由 light 基础规则的语义变量自动接管。品牌展示区
-   始终叠在深色背景插画上，白色文字为设计常量，无需暗色覆写）
+   始终叠在深色背景插画上，白色文字为设计常量，无需暗色覆写。
+   特性条目无卡片化设计：任何模式下都不出现边框与阴影，
+   hover 只保留 .featureItem 的轻量位移）
    ============================================================ */
-:global(html.dark) .featureItem:hover {
-  border-color: var(--brand-primary-bright) !important;
-  box-shadow: 0 20px 40px rgb(0 0 0 / 0.4) !important;
-}

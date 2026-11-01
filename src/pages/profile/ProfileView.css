@@ -1,12 +1,15 @@
+/* 个人中心视图容器（Phase 响应式迁移）
+   宽度唯一来源：--container-md（1280 档 clamp，1366→1080 / 1920→1280 / 3840 封顶 1600），
+   水平 padding 对齐全局容器档 --container-pad；纵向留白走 --sp-* 流体阶梯。 */
 .profile-page {
-  max-width: 1280px;
+  max-width: var(--container-md);
   margin: 0 auto;
-  padding: 32px 40px 80px;
+  padding: var(--sp-8) var(--container-pad) var(--sp-20);
   color: var(--text-heading);
 }
 
 @media (width <= 768px) {
   .profile-page {
-    padding: 20px 18px 60px;
+    padding: var(--sp-5) var(--sp-4) var(--sp-15);
   }
 }

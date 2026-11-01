@@ -4,7 +4,7 @@
    顶部标题区 · 非对称编辑式
    ============================================================ */
 .pageHeader {
-  max-width: 1280px;
+  max-width: var(--container-md);
   margin: 0 auto;
   padding: 48px 56px 36px;
   display: flex;
@@ -35,7 +35,7 @@
 }
 
 .eyebrowText {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   letter-spacing: 2.5px;
   color: var(--text-muted);
   font-weight: 600;

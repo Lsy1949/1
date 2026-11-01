@@ -45,7 +45,8 @@
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.6;
-  max-width: 540px;
+  /* 描述文本窄行宽（原 540px 字面量 → 流体 measure token） */
+  max-width: var(--measure-desc);
 }
 
 .secToggle {
@@ -80,7 +81,7 @@
 }
 
 .gsLabel {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -124,7 +125,7 @@
 }
 
 .gsKey {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -199,7 +200,7 @@
 }
 
 .badgeDesc {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
   line-height: 1.4;
 }
@@ -414,7 +415,7 @@
   }
 
   .badgeDesc {
-    font-size: 10px;
+    font-size: var(--fs-xs);
   }
 }
 

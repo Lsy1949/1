@@ -120,7 +120,7 @@ export function DataSection() {
               onChange={(dates) => setDateRange(dates as RangeValue)}
               placeholder={[t('settings.card.data.startDate'), t('settings.card.data.endDate')]}
               separator="—"
-              style={{ width: '100%' }}
+              className={styles.fullWidth}
             />
           </div>
           <div className={styles.field}>

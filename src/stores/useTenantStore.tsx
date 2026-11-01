@@ -15,6 +15,8 @@ export type {
   TenantTheme,
   TenantAssets,
   TenantFeatures,
+  TenantPropaganda,
+  TenantPropagandaFeature,
   TenantConfig,
 } from '@/config/tenant/types'
 export { DEFAULT_TENANT_ID, DEFAULT_BRAND_PRIMARY } from '@/config/tenant/default'

@@ -17,6 +17,10 @@ import imgTsinghua from '@/assets/images/tsinghua-bg.jpg'
  *
  * assets.loginBackground：登录页背景图，按租户下发（生产为后端 CDN 绝对 URL，
  * mock 用 Vite 资源导入）。空串 / 缺省 = 前端内置默认图。
+ *
+ * propaganda：登录页品牌宣传区文案（副标题 / 引言 / 特性清单），按租户直出。
+ * 主标题用 brand.name；缺省字段由前端内置文案保底（default 租户与保底文案
+ * 保持一致，nist / tsinghua 下发差异化文案，便于验证内容隔离）。
  */
 export const TENANT_MOCKS: Record<string, TenantConfigDTO> = {
   default: {
@@ -32,6 +36,15 @@ export const TENANT_MOCKS: Record<string, TenantConfigDTO> = {
       radius: '6px',
       fontFamily: '',
     },
+    propaganda: {
+      subtitle: '专为大学生打造的\n职业规划与心理减压平台',
+      quote: '在这里，每一步成长都被看见，\n每一份焦虑都被温柔以待。',
+      features: [
+        { title: '职业规划指导', description: '专业职业规划师提供个性化指导' },
+        { title: '心理压力缓解', description: '专业心理支持帮助缓解职业焦虑' },
+        { title: '成长路径规划', description: '科学的技能提升路径助你成长' },
+      ],
+    },
   },
   tsinghua: {
     brand: {
@@ -39,6 +52,15 @@ export const TENANT_MOCKS: Record<string, TenantConfigDTO> = {
       logo: '',
       favicon: '/favicon.svg',
       copyright: `© ${new Date().getFullYear()} 清华大学学生心理发展指导中心`,
+    },
+    propaganda: {
+      subtitle: '为清华学子守护的\n生涯发展与心理健康平台',
+      quote: '紫荆花开处，心有归途，\n行至水穷处，坐看云起时。',
+      features: [
+        { title: '生涯发展指导', description: '一对一生涯咨询规划学业与职业' },
+        { title: '心理健康守护', description: '专业心理支持安放每一份压力' },
+        { title: '朋辈陪伴成长', description: '同伴互助社区让成长不孤单' },
+      ],
     },
     theme: {
       defaultPalette: 'purple',
@@ -83,6 +105,15 @@ export const TENANT_MOCKS: Record<string, TenantConfigDTO> = {
       logo: '',
       favicon: '/favicon.svg',
       copyright: `© ${new Date().getFullYear()} 南京信息职业技术学院`,
+    },
+    propaganda: {
+      subtitle: '为南信院学子打造的\n就业规划与心理赋能平台',
+      quote: '青春如原野，辽阔亦有风雨，\n愿你眼里有光，心中有青野。',
+      features: [
+        { title: '就业规划指导', description: '贴合职院特色的一站式就业指引' },
+        { title: '心理压力调适', description: '专业心理服务陪你度过求职焦虑' },
+        { title: '技能成长地图', description: '清晰的技能进阶路径直达职场' },
+      ],
     },
     theme: {
       defaultPalette: 'green',

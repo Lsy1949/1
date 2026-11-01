@@ -44,7 +44,8 @@
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.6;
-  max-width: 540px;
+  /* 描述文本窄行宽（原 540px 字面量 → 流体 measure token） */
+  max-width: var(--measure-desc);
 }
 
 .secToggle {
@@ -92,7 +93,7 @@
 }
 
 .fieldLabel {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -110,6 +111,11 @@
 /* ============ 表单（编辑模式） ============ */
 .magForm {
   max-width: 100%;
+}
+
+/* 表单内 Select 撑满表单列（原内联 width:100% 迁入） */
+.fullWidth {
+  width: 100%;
 }
 
 .formGrid {

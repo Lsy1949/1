@@ -39,7 +39,7 @@
 }
 
 .markerLabel {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -109,7 +109,11 @@
 
 /* ============ Ant 选择器对齐（方角 + 撑满，对应原 el-select width:100%） ============ */
 /* （原 ant-select 宽度/直角规则已 token 化：
-   宽度 → Select style prop；直角 → ConfigProvider Select.borderRadius） */
+   宽度 → Select className（下方 .fullWidth，原 style prop 迁入）；
+   直角 → ConfigProvider Select.borderRadius） */
+.fullWidth {
+  width: 100%;
+}
 
 /* ============ 默认首页选项 ============ */
 .homeOptions {

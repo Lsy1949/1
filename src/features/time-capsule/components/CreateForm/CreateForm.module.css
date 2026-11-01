@@ -1,7 +1,7 @@
 /* 时光胶囊 · 新建表单（CSS Modules：私有类 camelCase） */
 
 .formContainer {
-  max-width: 1000px;
+  max-width: var(--container-form);
   margin: 0 auto;
   background: transparent;
   position: relative;
@@ -37,7 +37,7 @@
 }
 
 .sectionNum {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--ink-400);
   font-variant-numeric: tabular-nums;
@@ -459,7 +459,7 @@
 }
 
 .addText {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--ink-400);
 }
 
