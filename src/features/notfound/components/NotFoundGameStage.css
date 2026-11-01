@@ -25,7 +25,7 @@
   border: none;
   color: var(--dark-text-soft);
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   letter-spacing: 3px;
   text-transform: uppercase;
   cursor: pointer;
@@ -47,7 +47,7 @@
 
 .nf-game-title {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   letter-spacing: 4px;
   text-transform: uppercase;
   color: var(--dark-text-mute);
@@ -75,7 +75,7 @@
 }
 
 .nf-game-stage .nf-game-stat-label {
-  font-size: 9px;
+  font-size: var(--fs-xs);
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--dark-text-mute);
@@ -131,7 +131,7 @@
 }
 
 .nf-game-stage .nf-game-clear-hint {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   letter-spacing: 4px;
   text-transform: uppercase;
   color: var(--dark-text-soft);
@@ -153,7 +153,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--dark-text-soft);

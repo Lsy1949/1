@@ -29,9 +29,9 @@
 }
 
 .nf-nav-inner {
-  max-width: 1400px;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 20px 56px;
+  padding: var(--sp-5) var(--sp-14);
   display: flex;
   align-items: center;
   justify-content: space-between;

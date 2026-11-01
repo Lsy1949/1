@@ -20,7 +20,7 @@
 }
 
 .nf-section-label {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 3px;
   color: var(--brand-primary);
@@ -65,7 +65,7 @@
 }
 
 .nf-note-tag {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 3px;
   color: var(--brand-primary);
@@ -184,7 +184,7 @@
   align-items: center;
   gap: 10px;
   padding: 0;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 3px;
   font-weight: 500;
@@ -225,7 +225,7 @@
 }
 
 .nf-footline-copy {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   letter-spacing: 2px;
   color: var(--text-tertiary);
   text-transform: uppercase;
