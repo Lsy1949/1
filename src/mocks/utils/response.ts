@@ -89,6 +89,14 @@ export function mocked(resolver: HttpResponseResolver): HttpResponseResolver {
     ) {
       return fail(API_CODE.FORBIDDEN, '【Mock】CSRF 校验失败：缺少或无效的 X-XSRF-TOKEN')
     }
-    return resolver(info)
+    // resolver 异常兜底：MSW 默认只给光秃秃的 500，真实错误被吞——
+    // 这里捕获后打印完整堆栈并在响应体带回异常 message（仅 mock 层，便于诊断）
+    try {
+      return await resolver(info)
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error)
+      console.error(`[Mock] ${info.request.method} ${info.request.url} handler 异常:`, error)
+      return fail(API_CODE.SERVER_ERROR, `【Mock】handler 异常: ${detail}`)
+    }
   }
 }

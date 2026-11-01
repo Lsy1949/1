@@ -1,20 +1,39 @@
 /**
- * 【business】RegisterForm —— 注册表单组件
- * - 源码语义：先整表校验再提交 → AntD Form onFinish（失败自动在表单项下展示错误）
- * - loading / 成功提示 / 回登录页由 useRegister 托管
- * - 验证码行封装为受控子组件 CaptchaField（等价「输入框 + canvas」整行绑定）
+ * 【business】RegisterForm —— 注册表单（大厂式三步向导）
+ * Step 1 身份信息（学校 + 学号 + 邮箱）→ Step 2 邮箱验证（服务端验证码，
+ * 60s 限流）→ Step 3 设置密码（强度条）→ 成功页倒计时自动回登录。
+ *
+ * - 单 Form 实例贯穿三步：每步「下一步」只校验当前步字段，values 累积不丢
+ * - 学校选择器与登录页同源（/api/tenants/public，React Query 同 key 复用缓存）；
+ *   子域站点隐藏选择器，tenantId 由站点解析注入
+ * - 客户端 canvas 验证码已废弃：验证码由服务端签发校验（契约 §1.4），
+ *   mock 通过 devCode 字段回传演示码
+ * - 异步状态全部 useMutation（React Query 统一管理），错误码 → i18n 见 utils/errcode
  */
-import { useEffect, useMemo, useRef } from 'react'
-import type { RefObject } from 'react'
-import { App as AntApp, Button, Form, Input, Select } from 'antd'
+import { useEffect, useMemo, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { App as AntApp, Button, Flex, Form, Input, Select, Steps } from 'antd'
 import {
   ArrowLeftOutlined,
+  ArrowRightOutlined,
   BankOutlined,
   LockOutlined,
+  MailOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import { useRegister } from '@/features/auth/hooks/useAuth'
 import { useI18n } from '@/i18n'
+import {
+  useRegister,
+  useSendEmailCode,
+  useVerifyEmailCode,
+} from '@/features/auth/hooks/useAuth'
+import { useCountdown } from '@/features/auth/hooks/useCountdown'
+import { fetchPublicTenants } from '@/api/modules/auth'
+import { resolveTenantId } from '@/config/tenant/resolve'
+import { DEFAULT_TENANT_ID } from '@/config/tenant/default'
+import { authErrorMessage } from '@/features/auth/utils/errcode'
+import PasswordStrength from '../../shared/PasswordStrength'
+import AuthSuccess from '../../shared/AuthSuccess'
 import styles from './RegisterForm.module.css'
 
 interface RegisterFormProps {
@@ -22,278 +41,363 @@ interface RegisterFormProps {
   onSwitchToLogin?: () => void
 }
 
-// 注册表单数据
+/** 注册表单数据（三步共用一个 Form 实例，字段按步渲染） */
 interface RegisterFormState {
   school: string
-  userId: string
+  username: string
+  email: string
+  code: string
   password: string
   confirmPassword: string
-  captcha: string
 }
 
-// 学校选项
-interface SchoolOption {
-  value: string
-  label: string
-}
+/** 与登录页一致的主域判定：主域显示学校选择器，子域由站点注入租户 */
+const IS_MAIN_SITE =
+  resolveTenantId() === DEFAULT_TENANT_ID && !import.meta.env.VITE_PRIVATE_TENANT
 
-const schools: SchoolOption[] = [
-  { value: 'tsinghua', label: '清华大学' },
-  { value: 'pku', label: '北京大学' },
-  { value: 'fudan', label: '复旦大学' },
-  { value: 'sjtu', label: '上海交通大学' },
-  { value: 'zju', label: '浙江大学' },
-]
+/** 成功页自动返回登录的倒计时秒数 */
+const SUCCESS_COUNTDOWN = 5
+
+/** 验证码重发间隔（与后端 60s 限流对齐） */
+const RESEND_SECONDS = 60
 
 const initialValues: Partial<RegisterFormState> = {
   school: '',
-  userId: '',
+  username: '',
+  email: '',
+  code: '',
   password: '',
   confirmPassword: '',
-  captcha: '',
-}
-
-/** 验证码行（输入框 + 刷新画布），作为 Form.Item 的受控子组件 */
-interface CaptchaFieldProps {
-  value?: string
-  onChange?: (value: string) => void
-  placeholder?: string
-  canvasRef: RefObject<HTMLCanvasElement>
-  onRefresh: () => void
-}
-
-function CaptchaField({ value, onChange, placeholder, canvasRef, onRefresh }: CaptchaFieldProps) {
-  const { t } = useI18n()
-  return (
-    <div className={styles.captchaInputContainer}>
-      <Input
-        value={value}
-        onChange={(e) => onChange?.(e.target.value)}
-        placeholder={placeholder}
-        size="large"
-        maxLength={4}
-      />
-      <button
-        type="button"
-        className={`${styles.captchaImage} btn-reset`}
-        aria-label={t('login.captcha.refresh')}
-        onClick={onRefresh}
-      >
-        <canvas ref={canvasRef} width={100} height={40} />
-      </button>
-    </div>
-  )
 }
 
 export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
-  const { message } = AntApp.useApp() // 替代 ElMessage
+  const { t } = useI18n()
+  const { message } = AntApp.useApp()
 
   const [form] = Form.useForm<RegisterFormState>()
 
-  // 验证码 Canvas 引用
-  const captchaCanvasRef = useRef<HTMLCanvasElement | null>(null)
-  // 验证码文本（非渲染态，用 ref 供 rules 闭包读取）
-  const captchaTextRef = useRef('')
+  // 向导状态：当前步 / 一次性凭证 / 已发送的目标邮箱（脱敏展示）
+  const [step, setStep] = useState(0)
+  const [verifyToken, setVerifyToken] = useState('')
+  const [maskedEmail, setMaskedEmail] = useState('')
 
-  // 确认密码一致性校验
-  const validateConfirmPassword = useMemo(
-    () =>
-      (_rule: unknown, value: string | undefined): Promise<void> => {
-        if (value !== form.getFieldValue('password')) {
-          return Promise.reject(new Error('两次输入的密码不一致'))
-        }
-        return Promise.resolve()
-      },
-    [form],
-  )
+  const codeCountdown = useCountdown()
+  const successCountdown = useCountdown()
+  const [done, setDone] = useState(false)
 
-  // 验证码校验器
-  const validateCaptcha = useMemo(
-    () =>
-      (_rule: unknown, value: string | undefined): Promise<void> => {
-        const v = value ?? ''
-        if (v.toLowerCase() !== captchaTextRef.current.toLowerCase()) {
-          return Promise.reject(new Error('验证码错误'))
-        }
-        return Promise.resolve()
-      },
-    [],
-  )
+  // 学校选择器数据源：与登录页同 key，React Query 直接复用缓存
+  const { data: schools, isPending: schoolsLoading, refetch: refetchSchools } = useQuery({
+    queryKey: ['public-tenants'],
+    queryFn: fetchPublicTenants,
+    enabled: IS_MAIN_SITE,
+    retry: 2,
+    staleTime: 5 * 60_000,
+    select: (list) =>
+      Array.isArray(list) && list.length > 0
+        ? list.map((opt) => ({ value: opt.tenantId, label: opt.name }))
+        : [],
+  })
+  const schoolOptions = schools ?? []
 
-  // 生成验证码（画布逻辑逐字平移）
-  const generateCaptcha = () => {
-    const canvas = captchaCanvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    // 清空画布
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    // 生成随机验证码文本
-    const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789'
-    let text = ''
-    for (let i = 0; i < 4; i++) {
-      text += chars.charAt(Math.floor(Math.random() * chars.length))
+  // 默认选中第一项（仅当用户未选择时回填，不覆盖用户操作）
+  useEffect(() => {
+    if (IS_MAIN_SITE && schoolOptions.length > 0 && !form.getFieldValue('school')) {
+      form.setFieldsValue({ school: schoolOptions[0].value })
     }
-    captchaTextRef.current = text
+  }, [schoolOptions, form])
 
-    // 绘制验证码
-    ctx.font = '20px Arial'
-    ctx.textBaseline = 'middle'
-    ctx.textAlign = 'center'
+  const passwordValue = Form.useWatch('password', form)
 
-    // 绘制字符
-    for (let i = 0; i < text.length; i++) {
-      ctx.fillStyle = `rgb(${Math.floor(Math.random() * 155 + 100)}, ${Math.floor(
-        Math.random() * 155 + 100,
-      )}, ${Math.floor(Math.random() * 155 + 100)})`
-      ctx.shadowColor = 'rgba(0,0,0,0.3)'
-      ctx.shadowBlur = 5
-      ctx.shadowOffsetX = 2
-      ctx.shadowOffsetY = 2
-      ctx.fillText(text[i], 20 + i * 20, 20)
-    }
-
-    // 绘制干扰线
-    for (let i = 0; i < 4; i++) {
-      ctx.strokeStyle = `rgb(${Math.floor(Math.random() * 155 + 100)}, ${Math.floor(
-        Math.random() * 155 + 100,
-      )}, ${Math.floor(Math.random() * 155 + 100)})`
-      ctx.beginPath()
-      ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height)
-      ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height)
-      ctx.stroke()
-    }
-  }
-
-  // 注册提交：loading / 成功提示 / 回登录页均由 useRegister 托管
-  const { run: runRegister, loading: registerLoading } = useRegister({
+  // Step 1 → 2：发送验证码（后端校验邮箱未占用 + 60s 限流）
+  const { run: runSendCode, loading: sendLoading } = useSendEmailCode({
     onSuccess: (result) => {
-      message.success(result.message)
-      // 注册成功后返回登录页面
-      onSwitchToLogin?.()
+      setMaskedEmail(result.emailMasked)
+      codeCountdown.start(RESEND_SECONDS)
+      // mock 无法发信：devCode 随 toast 透出，便于联调；真实后端不下发该字段
+      const devHint = result.devCode ? ` [${t('login.code.devHint', { code: result.devCode })}]` : ''
+      message.success(`${t('login.code.sentTo', { email: result.emailMasked })}${devHint}`)
+      setStep(1)
     },
     onError: (error) => {
-      message.error(error.message || '注册失败')
+      message.error(authErrorMessage(t, error))
     },
   })
 
-  // 等价源码：await validate() 通过后再提交（AntD onFinish 自带整表校验）
-  const handleFinish = (values: RegisterFormState) => {
-    runRegister({ ...values })
+  // Step 2 → 3：校验验证码，换取一次性 verifyToken
+  const { run: runVerify, loading: verifyLoading } = useVerifyEmailCode({
+    onSuccess: (result) => {
+      setVerifyToken(result.verifyToken)
+      setStep(2)
+    },
+    onError: (error) => {
+      message.error(authErrorMessage(t, error))
+    },
+  })
+
+  // Step 3：提交注册（成功 → 成功页 + 倒计时自动回登录）
+  const { run: runRegister, loading: registerLoading } = useRegister({
+    onSuccess: () => {
+      setDone(true)
+      successCountdown.start(SUCCESS_COUNTDOWN)
+    },
+    onError: (error) => {
+      message.error(authErrorMessage(t, error))
+    },
+  })
+
+  /** 每步需要校验的字段（学校选择器仅主域存在） */
+  const stepFields = useMemo<(keyof RegisterFormState)[]>(() => {
+    if (step === 0) {
+      return IS_MAIN_SITE ? ['school', 'username', 'email'] : ['username', 'email']
+    }
+    if (step === 1) return ['code']
+    return ['password', 'confirmPassword']
+  }, [step])
+
+  /** 当前步的提交动作（下一步 / 提交注册） */
+  const handleStepNext = async () => {
+    const values = await form.validateFields(stepFields).catch(() => null)
+    if (!values) return
+    const tenantId = IS_MAIN_SITE ? form.getFieldValue('school') : resolveTenantId()
+    const email = form.getFieldValue('email')
+    if (step === 0) {
+      runSendCode({ email, scene: 'register' })
+      return
+    }
+    if (step === 1) {
+      runVerify({ email, scene: 'register', code: form.getFieldValue('code') })
+      return
+    }
+    runRegister({
+      tenantId,
+      username: form.getFieldValue('username'),
+      password: form.getFieldValue('password'),
+      email,
+      verifyToken,
+    })
   }
 
-  // 组件挂载时生成验证码
+  /** 重发验证码（限流由后端 60s 窗口兜底，前端倒计时同步冷却） */
+  const handleResend = () => {
+    runSendCode({ email: form.getFieldValue('email'), scene: 'register' })
+  }
+
+  // 成功页倒计时归零 → 自动返回登录
   useEffect(() => {
-    generateCaptcha()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (done && successCountdown.countdown === 0) {
+      onSwitchToLogin?.()
+    }
+  }, [done, successCountdown.countdown, onSwitchToLogin])
+
+  const nextLoading = sendLoading || verifyLoading || registerLoading
+
+  if (done) {
+    return (
+      <AuthSuccess
+        titleKey="login.register.success.title"
+        descKey="login.register.success.desc"
+        countdown={successCountdown.countdown}
+        onBackToLogin={() => onSwitchToLogin?.()}
+      />
+    )
+  }
 
   return (
     <Form
       form={form}
       className="register-form-content"
       initialValues={initialValues}
-      onFinish={handleFinish}
     >
-      <Form.Item
-        name="school"
-        validateTrigger="onChange"
-        rules={[{ required: true, message: '请选择学校', validateTrigger: 'onChange' }]}
-      >
-        <Select
-          placeholder="请选择学校"
-          size="large"
-          allowClear
-          showSearch
-          optionFilterProp="label"
-          prefix={<BankOutlined />}
-          options={schools}
-        />
-      </Form.Item>
-
-      <Form.Item
-        name="userId"
-        validateTrigger="onBlur"
-        rules={[
-          { required: true, message: '请输入学号', validateTrigger: 'onBlur' },
-          { min: 1, max: 20, message: '学号长度为1-20个字符', validateTrigger: 'onBlur' },
+      {/* 步骤导航（大厂向导标配：位置感 + 可回退预期） */}
+      <Steps
+        size="small"
+        current={step}
+        className={styles.steps}
+        items={[
+          { title: t('login.steps.account') },
+          { title: t('login.steps.verify') },
+          { title: t('login.steps.password') },
         ]}
-      >
-        <Input placeholder="请输入学号" prefix={<UserOutlined />} size="large" allowClear />
-      </Form.Item>
+      />
 
-      <Form.Item
-        name="password"
-        validateTrigger="onBlur"
-        rules={[
-          { required: true, message: '请输入密码', validateTrigger: 'onBlur' },
-          { min: 6, max: 20, message: '密码长度为6-20个字符', validateTrigger: 'onBlur' },
-          {
-            pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{6,}$/,
-            message: '密码至少包含一个字母和一个数字',
-            validateTrigger: 'onBlur',
-          },
-        ]}
-      >
-        <Input.Password placeholder="请输入密码" prefix={<LockOutlined />} size="large" />
-      </Form.Item>
+      {/* Step 1 身份信息 */}
+      {step === 0 && (
+        <>
+          {IS_MAIN_SITE && (
+            <Form.Item
+              name="school"
+              validateTrigger="onChange"
+              rules={[{ required: true, message: t('login.form.schoolRequired'), validateTrigger: 'onChange' }]}
+            >
+              <Select
+                placeholder={t('login.form.schoolPlaceholder')}
+                size="large"
+                showSearch
+                optionFilterProp="label"
+                prefix={<BankOutlined />}
+                options={schoolOptions}
+                loading={schoolsLoading}
+                notFoundContent={
+                  schoolOptions.length === 0 ? (
+                    schoolsLoading ? (
+                      t('common.loading')
+                    ) : (
+                      <Button type="link" size="small" onClick={() => void refetchSchools()}>
+                        {t('login.form.schoolLoadFailed')}
+                      </Button>
+                    )
+                  ) : undefined
+                }
+              />
+            </Form.Item>
+          )}
 
-      <Form.Item
-        name="confirmPassword"
-        dependencies={['password']}
-        validateTrigger="onBlur"
-        rules={[
-          { required: true, message: '请再次输入密码', validateTrigger: 'onBlur' },
-          { validator: validateConfirmPassword, validateTrigger: 'onBlur' },
-        ]}
-      >
-        <Input.Password placeholder="请再次输入密码" prefix={<LockOutlined />} size="large" />
-      </Form.Item>
+          <Form.Item
+            name="username"
+            validateTrigger="onBlur"
+            rules={[
+              { required: true, message: t('login.form.userIdRequired'), validateTrigger: 'onBlur' },
+              { min: 1, max: 20, message: t('login.form.userIdLength'), validateTrigger: 'onBlur' },
+            ]}
+          >
+            <Input
+              placeholder={t('login.form.userIdPlaceholder')}
+              prefix={<UserOutlined />}
+              size="large"
+              allowClear
+            />
+          </Form.Item>
 
-      <Form.Item
-        name="captcha"
-        className={styles.captchaFormItem}
-        validateTrigger="onBlur"
-        rules={[
-          { required: true, message: '请输入验证码', validateTrigger: 'onBlur' },
-          { min: 4, max: 4, message: '验证码为4位字符', validateTrigger: 'onBlur' },
-          { validator: validateCaptcha, validateTrigger: 'onBlur' },
-        ]}
-      >
-        <CaptchaField
-          placeholder="请输入验证码"
-          canvasRef={captchaCanvasRef}
-          onRefresh={generateCaptcha}
-        />
-      </Form.Item>
+          <Form.Item
+            name="email"
+            validateTrigger="onBlur"
+            rules={[
+              { required: true, message: t('login.form.emailRequired'), validateTrigger: 'onBlur' },
+              {
+                pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: t('login.form.emailFormat'),
+                validateTrigger: 'onBlur',
+              },
+            ]}
+          >
+            <Input
+              placeholder={t('login.form.emailPlaceholder')}
+              prefix={<MailOutlined />}
+              size="large"
+              allowClear
+            />
+          </Form.Item>
+        </>
+      )}
 
-      <Form.Item>
+      {/* Step 2 邮箱验证 */}
+      {step === 1 && (
+        <>
+          <p className={styles.sentTip}>{t('login.code.sentTo', { email: maskedEmail })}</p>
+          <Form.Item
+            name="code"
+            validateTrigger="onBlur"
+            rules={[
+              { required: true, message: t('login.form.codeRequired'), validateTrigger: 'onBlur' },
+              { pattern: /^\d{6}$/, message: t('login.form.codeFormat'), validateTrigger: 'onBlur' },
+            ]}
+          >
+            <Input
+              placeholder={t('login.form.codePlaceholder')}
+              size="large"
+              maxLength={6}
+              allowClear
+            />
+          </Form.Item>
+          <Flex justify="end" className={styles.resendRow}>
+            <Button
+              type="link"
+              size="small"
+              disabled={codeCountdown.countdown > 0 || sendLoading}
+              onClick={handleResend}
+            >
+              {codeCountdown.countdown > 0
+                ? t('login.form.codeResend', { n: codeCountdown.countdown })
+                : t('login.form.getCode')}
+            </Button>
+          </Flex>
+        </>
+      )}
+
+      {/* Step 3 设置密码 */}
+      {step === 2 && (
+        <>
+          <Form.Item
+            name="password"
+            validateTrigger="onBlur"
+            rules={[
+              { required: true, message: t('login.form.passwordRequired'), validateTrigger: 'onBlur' },
+              { min: 6, max: 20, message: t('login.form.passwordLength'), validateTrigger: 'onBlur' },
+              {
+                pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{6,}$/,
+                message: t('login.form.passwordFormat'),
+                validateTrigger: 'onBlur',
+              },
+            ]}
+          >
+            <Input.Password
+              placeholder={t('login.form.passwordPlaceholder')}
+              prefix={<LockOutlined />}
+              size="large"
+            />
+          </Form.Item>
+
+          <PasswordStrength value={passwordValue} />
+
+          <Form.Item
+            name="confirmPassword"
+            dependencies={['password']}
+            validateTrigger="onBlur"
+            rules={[
+              { required: true, message: t('login.form.confirmRequired'), validateTrigger: 'onBlur' },
+              {
+                validator: (_rule, value: string | undefined) =>
+                  value !== form.getFieldValue('password')
+                    ? Promise.reject(new Error(t('login.form.confirmMismatch')))
+                    : Promise.resolve(),
+                validateTrigger: 'onBlur',
+              },
+            ]}
+          >
+            <Input.Password
+              placeholder={t('login.form.confirmPlaceholder')}
+              prefix={<LockOutlined />}
+              size="large"
+            />
+          </Form.Item>
+        </>
+      )}
+
+      {/* 步骤按钮：上一步（保留已填值）/ 下一步 / 提交注册 */}
+      <Flex gap={8} className={styles.stepActions}>
+        {step > 0 && (
+          <Button
+            size="large"
+            icon={<ArrowLeftOutlined />}
+            onClick={() => setStep(step - 1)}
+            className={styles.prevButton}
+          >
+            {t('login.common.prev')}
+          </Button>
+        )}
         <Button
           type="primary"
           size="large"
           block
           shape="round"
           className={styles.registerButton}
-          htmlType="submit"
-          loading={registerLoading}
-          icon={<UserOutlined />}
+          loading={nextLoading}
+          icon={step < 2 ? <ArrowRightOutlined /> : <UserOutlined />}
+          onClick={() => void handleStepNext()}
         >
-          注册账号
+          {step < 2 ? t('login.common.next') : t('login.register.submit')}
         </Button>
-      </Form.Item>
-
-      <Form.Item className={styles.backToLogin}>
-        <Button
-          type="link"
-          icon={<ArrowLeftOutlined />}
-          onClick={() => onSwitchToLogin?.()}
-        >
-          返回登录
-        </Button>
-      </Form.Item>
+      </Flex>
     </Form>
   )
 }

@@ -79,9 +79,54 @@ export interface UpdatePasswordParams extends Record<string, unknown> {
   newPassword?: string
 }
 
-/** 发送邮箱验证码参数 */
+/** 邮箱验证码用途 */
+export type EmailCodeScene = 'register' | 'reset' | 'login'
+
+/** 发送邮箱验证码参数（契约 §1.4） */
 export interface SendEmailCodeParams {
   email: string
-  /** 验证码用途（登录/注册/重置密码），后端确认后调整 */
-  scene?: string
+  /** 用途：register 注册校验邮箱未占用；reset 校验账号与邮箱匹配；login 无附加校验 */
+  scene: EmailCodeScene
+  /** reset 场景：定位账号的租户 + 用户名 */
+  tenantId?: string
+  username?: string
+}
+
+/** 发送验证码响应（契约 §1.4） */
+export interface SendEmailCodeResult {
+  /** 脱敏邮箱（a***@qq.com）：reset 场景提示「验证码已发送至」用 */
+  emailMasked: string
+  /** 【Mock 专用】演示验证码；真实后端不下发（验证码走邮件通道） */
+  devCode?: string
+}
+
+/** 校验邮箱验证码参数（契约 §1.4） */
+export interface VerifyEmailCodeParams {
+  email: string
+  scene: EmailCodeScene
+  code: string
+}
+
+/** 校验验证码响应：一次性凭证，注册 / 重置密码最后一步回传（契约 §1.4） */
+export interface VerifyEmailCodeResult {
+  verifyToken: string
+}
+
+/** 注册参数（契约 §1.5）：verifyToken 由邮箱验证步骤换取 */
+export interface RegisterParams {
+  tenantId: string
+  /** 学号 */
+  username: string
+  password: string
+  email: string
+  verifyToken: string
+}
+
+/** 重置密码参数（契约 §1.6）：verifyToken 由邮箱验证步骤换取 */
+export interface ResetPasswordParams {
+  tenantId: string
+  username: string
+  newPassword: string
+  email: string
+  verifyToken: string
 }

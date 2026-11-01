@@ -3,8 +3,8 @@
  * - 提交前统一 validateFields（回车 / 按钮同一入口），rules 的 blur/change 仅做即时提示
  * - ElForm/ElInput/ElSelect → AntD Form/Input/Select；loading/成功写 store/
  *   实时通道均由 useAuthLogin 统一管理
- * - 验证码暂不上线（先跑通登录主流程）；后续恢复可参考 other/RegisterForm
- *   中现成的 CaptchaField 实现（输入框 + canvas 受控子树）
+ * - 验证码暂不上线（先跑通登录主流程）；注册 / 忘记密码已改为
+ *   服务端邮箱验证码（契约 §1.4），客户端 canvas 验证码已废弃
  */
 import { useEffect } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'

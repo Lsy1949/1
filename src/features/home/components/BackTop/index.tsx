@@ -229,6 +229,7 @@ export function BackTop() {
         ref={triggerRef}
         type="button"
         className={`${styles.backToTopBtn} btn-reset`}
+        aria-label={t('home.nav.top')}
         aria-expanded={open}
         aria-controls={MENU_ID}
         // 点击只回顶并收起，不 toggle 菜单
@@ -243,15 +244,8 @@ export function BackTop() {
           openMenu(true)
         }}
       >
-        <span className={styles.btnContent}>
-          <VerticalAlignTopOutlined className={styles.mainIcon} />
-          <span className={styles.btnText}>TOP</span>
-        </span>
-        <span className={styles.navHint} aria-hidden="true">
-          <span className={styles.dot}></span>
-          <span className={styles.dot}></span>
-          <span className={styles.dot}></span>
-        </span>
+        {/* 方形 FloatButton.BackTop 风格：纯图标（无文字/三点提示），悬停展开菜单逻辑不变 */}
+        <VerticalAlignTopOutlined className={styles.mainIcon} />
       </button>
 
       {/* 非模态菜单：与触发器同处 DOM 流（不 Portal），紧跟其后保证 Tab 顺序 */}

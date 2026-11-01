@@ -5,7 +5,17 @@ import { emitter } from '@/events'
 import { start, stop } from '@/realtime/connection'
 import { logoutApi } from '@/api/modules/auth'
 import * as authApi from '@/api/modules/auth'
-import type { LoginParams, LoginResult, SendEmailCodeParams, UserInfo } from '@/api/modules/types'
+import type {
+  LoginParams,
+  LoginResult,
+  RegisterParams,
+  ResetPasswordParams,
+  SendEmailCodeParams,
+  SendEmailCodeResult,
+  UserInfo,
+  VerifyEmailCodeParams,
+  VerifyEmailCodeResult,
+} from '@/api/modules/types'
 import { DEFAULT_TENANT_ID } from '@/config/tenant/default'
 
 /**
@@ -109,24 +119,44 @@ export function useAuthLogin(hooks?: {
   return { run, loading, error, result: data }
 }
 
-export function useRegister(hooks?: AsyncActionHooks<{ message: string }>) {
-  const { run, loading, error, data } = useMutationAdapter<Record<string, unknown>, { message: string }>(
-    (data) => authApi.register(data),
+/** 注册（契约 §1.5：三步向导最后一步提交） */
+export function useRegister(hooks?: AsyncActionHooks<null>) {
+  const { run, loading, error, data } = useMutationAdapter<RegisterParams, null>(
+    (params) => authApi.register(params),
     hooks,
   )
   return { run, loading, error, result: data }
 }
 
-export function useForgotPassword(hooks?: AsyncActionHooks<{ message: string }>) {
-  const { run, loading, error, data } = useMutationAdapter<Record<string, unknown>, { message: string }>(
-    (data) => authApi.forgotPassword(data),
+/** 重置密码（契约 §1.6：三步向导最后一步提交） */
+export function useResetPassword(hooks?: AsyncActionHooks<null>) {
+  const { run, loading, error, data } = useMutationAdapter<ResetPasswordParams, null>(
+    (params) => authApi.resetPassword(params),
+    hooks,
+  )
+  return { run, loading, error, result: data }
+}
+
+/** 发送邮箱验证码（契约 §1.4：注册 / 重置向导第二步入口动作） */
+export function useSendEmailCode(hooks?: AsyncActionHooks<SendEmailCodeResult>) {
+  const { run, loading, error, data } = useMutationAdapter<SendEmailCodeParams, SendEmailCodeResult>(
+    (params) => authApi.sendEmailCode(params),
+    hooks,
+  )
+  return { run, loading, error, result: data }
+}
+
+/** 校验邮箱验证码（契约 §1.4：通过换取一次性 verifyToken） */
+export function useVerifyEmailCode(hooks?: AsyncActionHooks<VerifyEmailCodeResult>) {
+  const { run, loading, error, data } = useMutationAdapter<VerifyEmailCodeParams, VerifyEmailCodeResult>(
+    (params) => authApi.verifyEmailCode(params),
     hooks,
   )
   return { run, loading, error, result: data }
 }
 
 /** 发送邮箱验证码（无状态动作，直接调 server 层） */
-export function sendEmailCode(params: SendEmailCodeParams): Promise<void> {
+export function sendEmailCode(params: SendEmailCodeParams): Promise<SendEmailCodeResult> {
   return authApi.sendEmailCode(params)
 }
 

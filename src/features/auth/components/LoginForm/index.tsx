@@ -10,6 +10,7 @@
  * - 子表单的 login-success 回调透传给页面层，跳转与 store 写入由页面处理
  */
 import { useMemo, useState } from 'react'
+import type { CSSProperties } from 'react'
 import {
   App as AntApp,
   Button,
@@ -21,11 +22,11 @@ import {
   Typography,
 } from 'antd'
 import CSSMotion from '@rc-component/motion'
+import { ArrowLeftOutlined } from '@ant-design/icons'
 import { useI18n } from '@/i18n'
 import { debounce } from '@/utils/debounce'
 import { loginMotions } from '../../motion'
 import AccountPasswordLogin from '../login-way/AccountPasswordLogin'
-import PhoneLogin from '../login-way/PhoneLogin'
 import EmailLogin from '../login-way/EmailLogin'
 import RegisterForm from '../other/RegisterForm'
 import ForgotPasswordForm from '../other/ForgotPasswordForm'
@@ -33,7 +34,7 @@ import wechatIcon from '@/assets/icons/wechat.svg'
 import qqIcon from '@/assets/icons/qq.svg'
 import styles from './LoginForm.module.css'
 
-type LoginType = 'account' | 'phone' | 'email'
+type LoginType = 'account' | 'email'
 
 /** 卡片三态视图 */
 type LoginView = 'login' | 'register' | 'forgot'
@@ -43,16 +44,41 @@ interface LoginFormProps {
   onLoginSuccess?: (payload?: { remember?: boolean }) => void
 }
 
-/** 卡片标题区（登录/注册/忘记密码三态共用，antd Tag + Typography 承载样式） */
-function LoginHeader({ badge, title, desc }: { badge: string; title: string; desc: string }) {
+/** 卡片标题区（登录/注册/忘记密码三态共用，antd Tag + Typography 承载样式）
+    注册 / 忘记密码态在标题行前提供返回箭头（onBack 存在即渲染） */
+function LoginHeader({
+  badge,
+  title,
+  desc,
+  onBack,
+}: {
+  badge: string
+  title: string
+  desc: string
+  onBack?: () => void
+}) {
+  const { t } = useI18n()
   return (
     <Flex vertical align="flex-start" gap={6} className={styles.loginHeader}>
       <Tag variant="filled" className={styles.headerBadge}>
         {badge}
       </Tag>
-      <Typography.Title level={3} className={styles.headerTitle}>
-        {title}
-      </Typography.Title>
+      <Flex align="center" className={styles.titleRow}>
+        {onBack && (
+          <Button
+            type="text"
+            shape="circle"
+            size="small"
+            className={styles.backButton}
+            aria-label={t('login.common.backToLoginNow')}
+            onClick={onBack}
+            icon={<ArrowLeftOutlined />}
+          />
+        )}
+        <Typography.Title level={3} className={styles.headerTitle}>
+          {title}
+        </Typography.Title>
+      </Flex>
       <Typography.Text type="secondary" className={styles.headerDesc}>
         {desc}
       </Typography.Text>
@@ -78,12 +104,11 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
     setTabLeaving(true) // 触发旧内容离场；离场中再点其它标签只更新目标，天然防抖
   }
 
-  // 登录方式标签：三个方式全量展示（手机/邮箱目前仅前端界面展示，
-  // 后端契约 api-contract §1.1 只支持账号密码，子表单提交仍走原逻辑）
+  // 登录方式标签：账号密码 + 邮箱（手机号登录已移除；后端契约 api-contract §1.1
+  // 目前只支持账号密码，邮箱子表单提交仍走原逻辑，契约就绪后启用）
   const loginTabs = useMemo<{ name: LoginType; label: string }[]>(
     () => [
       { name: 'account', label: t('login.tabs.account') },
-      { name: 'phone', label: t('login.tabs.phone') },
       { name: 'email', label: t('login.tabs.email') },
     ],
     [t],
@@ -118,14 +143,20 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
                   badge={t(`login.header.${view === 'login' ? 'badge' : `${view}Badge`}`)}
                   title={t(`login.header.${view === 'login' ? 'title' : `${view}Title`}`)}
                   desc={t(`login.header.${view === 'login' ? 'desc' : `${view}Desc`}`)}
+                  onBack={view === 'login' ? undefined : () => setView('login')}
                 />
 
                 {view === 'login' && (
                   <>
-                    {/* 登录方式切换（沿用原药丸式自定义标签，样式见 .loginTypeTabs） */}
-                    <div className={styles.loginTypeTabs}>
+                    {/* 登录方式切换（沿用原药丸式自定义标签，样式见 .loginTypeTabs）
+                        --tab-count：滑块等分宽度随 tab 数量自适应（CSS 端 calc 除数） */}
+                    <div
+                      className={styles.loginTypeTabs}
+                      style={{ '--tab-count': loginTabs.length } as CSSProperties}
+                    >
                       {/* 滑动指示器（药丸滑块）：绝对定位于首格，随选中项 translateX 左右滑动。
-                          索引取标签数组下标（等分三格，translateX(index*100%) 恰好逐格平移） */}
+                          translateX(index*100%) 相对滑块自身宽度（= 一格宽），逐格平移恰好对齐，
+                          tab 数量变化时无需改 JS，只由 --tab-count 联动 */}
                       <span
                         className={styles.tabThumb}
                         style={{ transform: `translateX(${Math.max(loginTabs.findIndex((tab) => tab.name === activeLoginType), 0) * 100}%)` }}
@@ -169,10 +200,6 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
                                 onSwitchToForgotPassword={() => setView('forgot')}
                                 onLoginSuccess={onLoginSuccess}
                               />
-                            )}
-                            {/* 手机登录 */}
-                            {displayLoginType === 'phone' && (
-                              <PhoneLogin onLoginSuccess={onLoginSuccess} />
                             )}
                             {/* 邮箱登录 */}
                             {displayLoginType === 'email' && (

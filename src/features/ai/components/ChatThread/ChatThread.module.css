@@ -281,7 +281,7 @@
 }
 
 .isFab .bubble {
-  border-radius: 2px;
+  border-radius: 14px;
   padding: 10px 14px;
   font-size: 13.5px;
 }
@@ -292,17 +292,20 @@
   font-size: 14px;
 }
 
+/* AI 气泡：品牌淡染 + 细描边，左上收角表指向 */
 .isFab .msgAi .bubble {
-  background: var(--bg-card);
+  background: var(--brand-primary-wash);
   border: 1px solid var(--brand-primary-soft);
-  border-radius: 0 6px 6px;
+  border-radius: 14px;
+  border-top-left-radius: 4px;
 }
 
+/* 用户气泡：品牌实底 + 柔和品牌投影（替代硬 offset），右上收角表指向 */
 .isFab .msgUser .bubble {
   background: var(--brand-primary);
   color: var(--text-inverse, #fff);
-  border-radius: 6px 0;
-  box-shadow: 3px 3px 0 color-mix(in srgb, var(--brand-primary) 20%, transparent);
+  border-radius: 14px;
+  border-top-right-radius: 4px;
 }
 
 .isFab .streamCaret {
@@ -313,17 +316,17 @@
   background: var(--brand-primary);
 }
 
-/* 快捷提问：品牌细边签，悬停反白 */
+/* 快捷提问：胶囊细边签，悬停品牌反白 */
 .isFab .quickPrompts {
   margin-left: 42px;
 }
 
 .isFab .quickBtn {
   border: 1px solid var(--brand-primary-soft);
-  border-radius: 2px;
-  background: transparent;
+  border-radius: 999px;
+  background: var(--bg-card);
   color: var(--brand-primary);
-  padding: 5px 12px;
+  padding: 6px 14px;
   letter-spacing: 0.02em;
 }
 
@@ -331,6 +334,7 @@
   background: var(--brand-primary);
   border-color: var(--brand-primary);
   color: var(--text-inverse, #fff);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 25%, transparent);
 }
 
 .isFab .threadDisclaimer {
@@ -339,39 +343,42 @@
   padding: 8px 0;
 }
 
-/* 输入行：下划线式输入框 + 方角品牌色发送键 */
+/* 输入行：胶囊输入框 + 圆形品牌色发送键（呼应悬浮按钮的圆形语言） */
 .isFab .threadInput {
   padding: 12px 16px;
   background: var(--bg-card);
-  border-top: 1px solid var(--brand-primary);
+  border-top: 1px solid var(--border-light);
 }
 
 .isFab .threadInputField {
-  height: 36px;
-  padding: 0 2px;
-  border: none;
-  border-bottom: 1px solid var(--border-strong);
-  border-radius: 0;
-  background: transparent;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg-mute);
 }
 
 .isFab .threadInputField:focus {
-  border-bottom-color: var(--brand-primary);
-  box-shadow: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 12%, transparent);
 }
 
 .isFab .sendBtn {
-  border-radius: 2px;
+  border-radius: 50%;
   background: var(--brand-primary);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--brand-primary) 28%, transparent);
 }
 
 .isFab .sendBtn:not(:disabled):hover {
   background: var(--brand-primary-dark);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 38%, transparent);
 }
 
 .isFab .sendBtn.isStop {
   border: 1.5px solid var(--brand-primary);
   color: var(--brand-primary);
+  background: transparent;
+  box-shadow: none;
 }
 
 /* fab 形态暗夜模式（品牌色不变，底色翻转；层次统一走语义变量） */
@@ -381,19 +388,15 @@
   color: var(--brand-primary-bright);
 }
 
-:global(html.dark) .isFab .msg:first-child .bubble {
-  background: var(--bg-mute);
-  border-color: var(--border-strong);
+:global(html.dark) .isFab .msg:first-child .bubble,
+:global(html.dark) .isFab .msgAi .bubble {
+  background: color-mix(in srgb, var(--brand-primary) 14%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 40%, transparent);
   color: var(--text-primary);
 }
 
-:global(html.dark) .isFab .msgAi .bubble {
-  background: var(--bg-mute);
-  border-color: var(--border-strong);
-}
-
 :global(html.dark) .isFab .msgUser .bubble {
-  box-shadow: 3px 3px 0 rgb(0 0 0 / 0.35);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 35%, transparent);
 }
 
 :global(html.dark) .isFab .streamCaret,
@@ -411,18 +414,19 @@
 }
 
 :global(html.dark) .isFab .threadInput {
-  background: var(--bg-page);
-  border-top-color: var(--brand-primary);
+  background: var(--bg-card);
+  border-top-color: var(--border-regular);
 }
 
 :global(html.dark) .isFab .threadInputField {
-  background: transparent;
-  border-bottom-color: var(--border-strong);
+  background: var(--bg-mute);
+  border-color: var(--border-regular);
   color: var(--text-primary);
 }
 
 :global(html.dark) .isFab .threadInputField:focus {
-  border-bottom-color: var(--brand-primary-bright);
+  border-color: var(--brand-primary-bright);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 20%, transparent);
 }
 
 :global(html.dark) .isFab .sendBtn.isStop {

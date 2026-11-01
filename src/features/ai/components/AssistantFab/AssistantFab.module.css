@@ -4,6 +4,7 @@
 .assistantFab {
   position: fixed;
   right: 40px;
+  /* 原位置：右下角上方一排，其下为同款圆形回顶按钮（right 40 / bottom 40） */
   bottom: 104px;
   z-index: 1100;
   display: flex;
@@ -12,26 +13,39 @@
   gap: 14px;
 }
 
-/* ============ 悬浮按钮（品牌色印刷风） ============ */
+/* ============ 悬浮按钮（白底圆形 + 品牌光晕，与回顶按钮统一） ============ */
 .fabButton {
   position: relative;
   width: 56px;
   height: 56px;
-  border: 1px solid var(--brand-primary);
+  border: 1px solid var(--border-light);
   border-radius: 50%;
-  background: var(--brand-primary);
-  color: var(--text-inverse, #fff);
+  background: var(--bg-card);
+  color: var(--brand-primary);
   display: grid;
   place-items: center;
   cursor: pointer;
-  box-shadow: 4px 4px 0 color-mix(in srgb, var(--brand-primary) 22%, transparent);
-  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* 品牌近影 + 中性触地影（白底上内高光无意义，边界靠细描边） */
+  box-shadow:
+    0 6px 16px color-mix(in srgb, var(--brand-primary) 18%, transparent),
+    0 2px 6px color-mix(in srgb, var(--text-heading) 12%, transparent);
+  transition:
+    transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.35s ease,
+    color 0.35s ease;
 }
 
 .fabButton:hover {
   transform: translateY(-3px);
-  background: var(--brand-primary-dark);
-  box-shadow: 6px 7px 0 color-mix(in srgb, var(--brand-primary) 28%, transparent);
+  color: var(--brand-primary-dark);
+  /* 光晕外扩表达 hover（白底不变，避免色块跳变） */
+  box-shadow:
+    0 10px 28px color-mix(in srgb, var(--brand-primary) 30%, transparent),
+    0 4px 10px color-mix(in srgb, var(--text-heading) 14%, transparent);
+}
+
+.fabButton:active {
+  transform: translateY(-1px) scale(0.96);
 }
 
 .fabIcon {
@@ -57,8 +71,9 @@
   50% { transform: scale(1.25); opacity: 0.75; }
 }
 
-/* ============ 对话面板（品牌纸面 + 硬边框 + 印刷投影） ============ */
+/* ============ 对话面板（白底卡片 + 顶部渐变饰条 + 品牌光晕弥散投影） ============ */
 .fabPanel {
+  position: relative;
   width: var(--fab-panel-w);
   max-width: calc(100vw - 48px);
   height: var(--fab-panel-h);
@@ -66,16 +81,31 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 12px;
-  background: var(--brand-primary-wash);
-  border: 1px solid var(--brand-primary);
+  border-radius: 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  /* 外圈品牌色描边光 + 双层中性弥散：浮起而不生硬 */
   box-shadow:
-    10px 10px 0 color-mix(in srgb, var(--brand-primary) 10%, transparent),
-    0 24px 56px color-mix(in srgb, var(--text-heading) 14%, transparent);
+    0 0 0 1px color-mix(in srgb, var(--brand-primary) 10%, transparent),
+    0 6px 20px color-mix(in srgb, var(--text-heading) 8%, transparent),
+    0 24px 64px color-mix(in srgb, var(--text-heading) 16%, transparent);
   transform-origin: bottom right;
 }
 
-/* 刊头：纸面底 + 品牌双细线（报头式分隔） */
+/* 顶部品牌渐变饰条（刊头式 accent，白卡上唯一的重品牌色块） */
+.fabPanel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand-primary), var(--brand-primary-dark));
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 刊头：单细线分隔（去双线报头， Avatar 圆形呼应悬浮按钮） */
 .fabPanelHeader {
   position: relative;
   display: flex;
@@ -83,30 +113,20 @@
   gap: 12px;
   padding: 16px 16px 14px;
   background: transparent;
-  border-bottom: 1px solid var(--brand-primary);
+  border-bottom: 1px solid var(--border-light);
   flex-shrink: 0;
-}
-
-.fabPanelHeader::after {
-  content: '';
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  bottom: 4px;
-  height: 1px;
-  background: color-mix(in srgb, var(--brand-primary) 32%, transparent);
-  pointer-events: none;
 }
 
 .headerAvatar {
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 20px;
-  background: var(--brand-primary);
+  font-size: 19px;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
   color: var(--text-inverse, #fff);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--brand-primary) 30%, transparent);
 }
 
 .headerText {
@@ -205,14 +225,11 @@
 /* ============ 暗夜模式（品牌色不变，底色翻转；悬浮窗经传送门挂 body，
    规则不依赖页面作用域，:global(html.dark) 前缀即可命中） ============ */
 :global(html.dark) .fabPanel {
-  background: var(--bg-page);
+  background: var(--bg-card);
+  border-color: var(--border-regular);
   box-shadow:
-    10px 10px 0 rgb(0 0 0 / 0.32),
-    0 24px 56px rgb(0 0 0 / 0.4);
-}
-
-:global(html.dark) .fabPanelHeader::after {
-  background: color-mix(in srgb, var(--brand-primary-bright) 45%, transparent);
+    0 0 0 1px color-mix(in srgb, var(--brand-primary-bright) 18%, transparent),
+    0 24px 64px rgb(0 0 0 / 0.45);
 }
 
 :global(html.dark) .headerText h3,
@@ -230,9 +247,15 @@
 }
 
 :global(html.dark) .fabButton {
-  box-shadow: 4px 4px 0 rgb(0 0 0 / 0.4);
+  color: var(--brand-primary-bright);
+  box-shadow:
+    0 6px 16px color-mix(in srgb, var(--brand-primary) 26%, transparent),
+    0 2px 6px rgb(0 0 0 / 0.4);
 }
 
 :global(html.dark) .fabButton:hover {
-  box-shadow: 6px 7px 0 rgb(0 0 0 / 0.48);
+  color: var(--brand-primary-bright);
+  box-shadow:
+    0 10px 28px color-mix(in srgb, var(--brand-primary) 40%, transparent),
+    0 4px 10px rgb(0 0 0 / 0.45);
 }

@@ -694,6 +694,35 @@ export default {
     },
     tabs: { account: '账号密码', phone: '手机号', email: '邮箱' },
     captcha: { refresh: '刷新验证码' },
+    /** 三步向导共用（注册 / 忘记密码） */
+    steps: { account: '账号信息', verify: '邮箱验证', password: '设置密码' },
+    /** 密码强度条级别 */
+    strength: { weak: '弱', medium: '中', strong: '强', excellent: '极强' },
+    /** 邮箱验证码相关 */
+    code: {
+      sentTo: '验证码已发送至 {email}',
+      devHint: 'Mock 演示码 {code}'
+    },
+    /** 向导通用动作 */
+    common: {
+      next: '下一步',
+      prev: '上一步',
+      backToLoginNow: '返回登录',
+      autoBack: '{n}s 后自动返回登录'
+    },
+    /** 认证流程稳定错误码 → 文案（与 mock/后端错误码一一对应，契约 §1.4-1.6） */
+    errors: {
+      invalidEmail: '请输入正确的邮箱格式',
+      emailTaken: '该邮箱已被注册',
+      usernameTaken: '该学号已被注册，请直接登录',
+      userNotFound: '账号不存在，请核对后重试',
+      emailMismatch: '邮箱与账号不匹配，请核对后重试',
+      codeTooFrequent: '发送过于频繁，请稍后再试',
+      codeExpired: '验证码已过期，请重新获取',
+      codeInvalid: '验证码错误',
+      codeLocked: '错误次数过多，请重新获取验证码',
+      verifyTokenInvalid: '验证已失效，请重新完成验证'
+    },
     form: {
       schoolPlaceholder: '请选择学校',
       /** 学校列表未返回 / 加载失败时的提示（后端返回为主，前端不塞兜底数据） */
@@ -725,6 +754,11 @@ export default {
       codeFormat: '验证码为6位数字',
       emailRequired: '请输入邮箱',
       emailFormat: '请输入正确的邮箱格式',
+      registeredEmailPlaceholder: '请输入注册时使用的邮箱',
+      passwordFormat: '密码至少包含一个字母和一个数字',
+      confirmPlaceholder: '请再次输入密码',
+      confirmRequired: '请再次输入密码',
+      confirmMismatch: '两次输入的密码不一致',
       codeSent: '验证码已发送',
       codeSendFail: '验证码发送失败',
       codeSendRetry: '验证码发送失败，请稍后重试',
@@ -732,7 +766,23 @@ export default {
       loginFail: '登录失败'
     },
     social: { text: '其他登录方式', wechat: '微信登录', qq: 'QQ登录' },
-    register: { prompt: '还没有账号？', btn: '立即注册' }
+    register: {
+      prompt: '还没有账号？',
+      btn: '立即注册',
+      submit: '注册',
+      success: {
+        title: '注册成功',
+        desc: '账号已创建，请使用学号和密码登录'
+      }
+    },
+    forgot: {
+      submit: '重置密码',
+      newPasswordPlaceholder: '请输入新密码',
+      success: {
+        title: '密码重置成功',
+        desc: '请使用新密码登录'
+      }
+    }
   },
   notFound: {
     nav: {

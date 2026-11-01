@@ -1,0 +1,30 @@
+/* 注册 / 重置成功视图：轻量居中布局，成功色走语义 token */
+
+.wrapper {
+  padding: var(--sp-6) 0 var(--sp-2);
+  text-align: center;
+}
+
+.icon {
+  font-size: 52px;
+  color: var(--success-500);
+  margin-bottom: var(--sp-3);
+}
+
+.title {
+  margin: 0 !important;
+}
+
+.desc {
+  margin-bottom: var(--sp-5);
+}
+
+.button {
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.autoBack {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-xs);
+}

@@ -18,8 +18,9 @@
 }
 
 /* 标签页 · 极简文字
-   页签外观（字号/颜色/padding/间距/ink-bar/底部外边距）已 token 化为
-   AssessmentCenterView.tsx 嵌套 ConfigProvider 的 Tabs 组件注入。
+   页签外观（字号/颜色/间距/ink-bar/底部外边距）已 token 化为
+   AssessmentCenterView.tsx 嵌套 ConfigProvider 的 Tabs 组件注入；
+   间距全部保持 antd 默认（对称 padding），不做对齐特调。
    字重/字距与 nav 底线隐藏无对应 token，保留在下方。 */
 .main-tabs {
   margin-top: 0;
@@ -46,6 +47,5 @@
 
   .main-tabs .ant-tabs-tab {
     font-size: 14px;
-    padding: 0 14px 12px 0;
   }
 }

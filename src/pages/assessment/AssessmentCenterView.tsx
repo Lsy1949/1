@@ -45,11 +45,10 @@ const assessmentThemeComponents = {
     /* v6 Tabs.titleFontSize 类型仅 number，不可写 var() → 引 RESPONSIVE_TOKEN 数值锚定（--fs-base 1920 端点） */
     titleFontSize: RESPONSIVE_TOKEN.fontSize,
     itemColor: 'var(--text-faint)',
-    itemSelectedColor: 'var(--text-heading)',
-    horizontalItemPadding: '0 20px 14px 0',
-    horizontalItemGutter: 0,
+    /* 选中色与 ink bar 均走品牌主题色；间距/间距全用 antd 默认（对称 padding，横线与文字自然对齐） */
+    itemSelectedColor: 'var(--brand-primary)',
+    inkBarColor: 'var(--brand-primary)',
     horizontalMargin: '0 0 36px 0',
-    inkBarColor: 'var(--text-heading)',
   },
   Table: {
     headerBg: 'var(--bg-soft)',

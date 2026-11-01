@@ -111,21 +111,24 @@
 |---|---|
 | Method / Path | `POST /api/student/login` |
 | Headers | `Content-Type: application/json`、`X-Tenant-Id: {站点租户}` |
-| Body | `{ username: string, password: string, tenantId?: string }` —— 主域（psy.com）**必填**（学校选择器提交）；子域**建议显式传**（前端实现为 `tenantId=resolveTenantId()`，便于后端审计与日志）。**安全判定以 cookie/header 为准，body 里的 tenantId 仅作提示**，后端不得仅凭 body 信任目标租户 |
+| Body | 二选一（`loginType` 区分）：<br>① 账号密码（默认）：`{ loginType?: 'account', username: string, password: string, tenantId?: string }`<br>② 邮箱验证码：`{ loginType: 'email', email: string, code: string, tenantId?: string }` —— 验证码经 §1.4 send-code（scene=login）下发，60s 限流 5min 有效<br>主域（psy.com）**必填** tenantId（学校选择器提交）；子域**建议显式传**（前端实现为 `tenantId=resolveTenantId()`，便于后端审计与日志）。**安全判定以 cookie/header 为准，body 里的 tenantId 仅作提示**，后端不得仅凭 body 信任目标租户 |
 | 成功响应 | `200 { code: 200, data: { userInfo: { userId, name, tenantId, roleId } }, message: '登录成功' }` + `Set-Cookie`（见 0.1） |
-| 参数校验 | 缺 `username`/`password` → `400 { code: 400, message: '缺少必填参数：username/password' }`（前端表单提前拦截，此为协议层兜底） |
-| 失败响应 | `401 { code: 401, message: 'INVALID_CREDENTIALS' }` —— **统一错误码**，不区分账号不存在/密码错误/不属该校（防枚举） |
+| 参数校验 | 账号密码缺 `username`/`password`、邮箱缺 `email`/`code` → `400 { code: 400, message: '缺少必填参数：...' }`（前端表单提前拦截，此为协议层兜底） |
+| 失败响应 | `401 { code: 401, message: 'INVALID_CREDENTIALS' }` —— **统一错误码**，不区分账号不存在/密码错误/验证码错/不属该校（防枚举）。邮箱登录验证码校验通过即消费（一次性） |
+| 邮箱登录身份 | 后端按「租户 + 绑定邮箱」解析账号；邮箱未绑定任何账号 → `401 INVALID_CREDENTIALS`（前端文案统一「账号或密码错误」） |
 | 重复登录 | **待后端确认**（踢旧会话 / 拒绝新登录 / 并存）——当前 mock 未实现 |
 
 **Mock 账号表**（`src/mocks/data/users.ts`）：
 
-| 租户 | 用户名 | 密码 | userId |
-|---|---|---|---|
-| default | `social001` | `111111` | `u-social-001` |
-| nist | `nist001` | `111111` | `u-nist-001` |
-| tsinghua | `thu001` | `111111` | `u-thu-001` |
+| 租户 | 用户名 | 密码 | userId | 邮箱 |
+|---|---|---|---|---|
+| default | `social001` | `111111` | `u-social-001` | - |
+| nist | `nist001` | `111111` | `u-nist-001` | - |
+| tsinghua | `thu001` | `111111` | `u-thu-001` | - |
 
-**Mock 校验规则**（`src/mocks/data/users.ts`）：密码统一为 `111111`，**任意用户名均可登录**（上表账号返回真实身份，未登记账号按请求租户生成临时身份）。真实后端仍需按账号表校验账号存在性与归属租户，失败统一返回 `INVALID_CREDENTIALS`（如 nist001 在 tsinghua 租户下登录 → `401`）。
+**Mock 校验规则**（`src/mocks/data/users.ts`）：
+- 账号密码：密码统一为 `111111`，**任意用户名均可登录**（上表账号返回真实身份，未登记账号按请求租户生成临时身份）。真实后端仍需按账号表校验账号存在性与归属租户，失败统一返回 `INVALID_CREDENTIALS`（如 nist001 在 tsinghua 租户下登录 → `401`）。
+- 邮箱验证码：验证码校验通过（§1.4 mock 签发）即可登录；**优先**按邮箱匹配注册账号（§1.5 注册时绑定的邮箱，`localStorage['mock:registered-users']`）返回真实身份；未命中按邮箱前缀生成临时身份。种子账号未绑定邮箱，邮箱登录走临时身份。真实后端：邮箱未绑定 → 拒绝。
 
 ### 1.2 登出
 
@@ -150,6 +153,53 @@
 | 前端会话三态 | `loading`（启动探测中，受保护路由显示 loading 不跳转）→ `authenticated`（200 且租户匹配）/ `anonymous`（401 / 租户不符 / 5xx / 网络错）。登录态唯一权威 = 后端会话，杜绝"陈旧已登录"闪烁 |
 
 **Mock 错误注入**：`localStorage['mock:fail-me'] = '1'` 时 `/api/me` 返回 500，用于验证前端「5xx/网络错静默不报错不重试、会话落 anonymous 不白屏」。
+
+### 1.4 邮箱验证码（注册 / 重置密码 / 邮箱登录共用）
+
+**POST /api/auth/send-code**
+
+| 项 | 内容 |
+|---|---|
+| Body | `{ email, scene: 'register' \| 'reset' \| 'login', tenantId?, username? }` |
+| 成功响应 | `200 { code: 200, data: { emailMasked, devCode? } }` —— `emailMasked` 为脱敏邮箱（`a***@qq.com`），供「验证码已发送至」提示 |
+| scene 校验 | `register`：邮箱未被任何账号占用；`reset`：`tenantId+username` 账号存在且 `email` 与注册邮箱一致；`login`：无附加校验 |
+| 限流 | 同 `email+scene` 60s 内仅一次 → `429 CODE_TOO_FREQUENT` |
+| 验证码有效期 | 5 分钟 |
+| 错误码 | `400 INVALID_EMAIL` / `409 EMAIL_TAKEN` / `404 USER_NOT_FOUND` / `404 EMAIL_MISMATCH` |
+| 备注 | 真实后端 `devCode` 不下发（验证码走邮件通道）；mock 通过该字段回传演示码，前端 toast 透出。**防枚举（可选加固）**：reset 场景真实后端可对 USER_NOT_FOUND / EMAIL_MISMATCH 统一返回 200，mock 保留显式报错便于联调 |
+
+**POST /api/auth/verify-code**
+
+| 项 | 内容 |
+|---|---|
+| Body | `{ email, scene, code }`（6 位数字） |
+| 成功响应 | `200 { code: 200, data: { verifyToken } }` —— 一次性凭证，5 分钟有效，注册 / 重置最后一步回传 |
+| 错误码 | `401 CODE_INVALID` / `401 CODE_EXPIRED` / `429 CODE_LOCKED`（同一验证码错 5 次锁定） |
+| 消费语义 | 校验通过即作废验证码记录；verifyToken 被最终接口消费后同样作废（一次性） |
+
+**错误码透传约定**：`CODE_INVALID` / `CODE_EXPIRED` / `VERIFY_TOKEN_INVALID` 等 401 错误码由前端拦截器原样透传（axios 层不吞成「登录已过期」），组件层映射 i18n 文案（`login.errors.*`）。
+
+### 1.5 注册（三步向导）
+
+| 项 | 内容 |
+|---|---|
+| Method / Path | `POST /api/auth/register` |
+| Body | `{ tenantId, username, password, email, verifyToken }` —— verifyToken 由 §1.4 verify-code（scene=register）换取 |
+| 成功响应 | `200 { code: 200, data: null }`（文案前端 i18n，接口不下发） |
+| 校验 | verifyToken 有效且绑定 email/scene → 否则 `401 VERIFY_TOKEN_INVALID`；`tenantId+username` 唯一 → 否则 `409 USERNAME_TAKEN` |
+| 后置 | 账号落库后即可用「学号 + 设置的密码」登录（mock：写入 `localStorage['mock:registered-users']` 动态账号表） |
+| 前端流程 | Step1 身份（学校[仅主域]+学号+邮箱）→ Step2 邮箱验证 → Step3 密码（强度条+确认）→ 成功页 5s 倒计时自动回登录 |
+
+### 1.6 重置密码（三步向导）
+
+| 项 | 内容 |
+|---|---|
+| Method / Path | `POST /api/auth/reset-password` |
+| Body | `{ tenantId, username, email, newPassword, verifyToken }` —— verifyToken 由 §1.4 verify-code（scene=reset）换取 |
+| 成功响应 | `200 { code: 200, data: null }` |
+| 校验 | verifyToken 有效（scene=reset、绑定 email）→ 否则 `401 VERIFY_TOKEN_INVALID`；账号存在 → 否则 `404 USER_NOT_FOUND` |
+| 安全语义 | **新密码必须凭邮箱验证码设置**（原「学号+邮箱一步改密」已废弃）；发码时后端已核验账号与邮箱匹配 |
+| Mock 后置 | 更新动态账号表密码（静态种子账号以动态覆写记录生效，登录按新密码精确匹配） |
 
 ---
 

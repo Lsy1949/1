@@ -1,7 +1,7 @@
 /**
  * 【business】AssistantFab —— AI 客服悬浮窗（自治组件）
  * - 内部自持 useChat(assistant) 会话；createPortal 到 body 避免祖先 transform 影响 fixed 定位
- * - 挂载即用：<AssistantFab />；右下角按钮，展开为对话面板（避让同位 BackTop：bottom 104px）
+ * - 挂载即用：<AssistantFab />；右下角按钮（bottom 40 与左侧 antd 回顶同排），展开为对话面板
  * - Vue <Transition name="fab-pop"> → enter/leave 动画类 + 离场动画结束后延迟卸载
  */
 import { useEffect, useMemo, useState } from 'react'

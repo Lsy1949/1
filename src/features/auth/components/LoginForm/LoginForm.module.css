@@ -41,10 +41,35 @@
   line-height: 1.8;
 }
 
-/* antd Title 自带 margin → 归零；字号用 em 跟随容器流式缩放（level=3 的 24px 只是近似值） */
-.headerTitle {
+/* antd Title 自带 margin → 归零；字号用 em 跟随容器流式缩放（level=3 的 24px 只是近似值）
+   注意特异性：antd 的 h3.ant-typography 是 (0,1,1)，单类 .headerTitle (0,1,0) 压不过它，
+   margin/line-height 覆写会静默失效（箭头偏上的根因）——用后代选择器提到 (0,2,0) */
+.titleRow .headerTitle {
   margin: 0;
   font-size: 1.6em;
+  /* 行盒压到 1：盒高紧贴文字视觉高度，flex 居中才是真正的视觉居中 */
+  line-height: 1;
+}
+
+/* 标题行：返回箭头（注册 / 忘记密码态）与标题同排垂直居中 */
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: 1.6em;
+}
+
+.backButton {
+  /* 圆形文字按钮默认继承大行高会撑高：行高压回 1，保持圆形 */
+  flex: none;
+  line-height: 1;
+  margin-left: calc(var(--sp-1) * -1);
+  color: var(--text-secondary);
+}
+
+.backButton:hover {
+  color: var(--brand-primary);
+  background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
 }
 
 .headerDesc {
@@ -57,20 +82,21 @@
   display: flex;
   background: var(--bg-mute);
   border-radius: 12px;
-  /* 4px 与 .tabThumb 的 top/left 同为滑块几何常量（width: calc((100% - 8px)/3)），
+  /* 4px 与 .tabThumb 的 top/left 同为滑块几何常量（width: calc((100% - 8px)/var(--tab-count))），
      不随视口流体化，否则滑块与格子错位 */
   padding: 4px;
   margin-bottom: var(--sp-5);
 }
 
-/* 滑块（选中指示器）：绝对定位于首格（左 4px 顶 4px），宽度为等分一格；
-   transform 由组件按下标注入（translateX(index*100%)），transition 驱动左右滑动 */
+/* 滑块（选中指示器）：绝对定位于首格（左 4px 顶 4px），宽度按 --tab-count 等分
+   （组件注入，tab 数量变化自动适配）；transform 由组件按下标注入
+   （translateX(index*100%)，自身宽即一格宽），transition 驱动左右滑动 */
 .tabThumb {
   position: absolute;
   top: 4px;
   bottom: 4px;
   left: 4px;
-  width: calc((100% - 8px) / 3);
+  width: calc((100% - 8px) / var(--tab-count, 2));
   border-radius: 8px;
   background: var(--bg-card);
   box-shadow: 0 2px 8px color-mix(in srgb, var(--brand-primary) 12%, transparent);

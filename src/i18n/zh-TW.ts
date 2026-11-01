@@ -660,6 +660,35 @@ export default {
     },
     tabs: { account: '帳號密碼', phone: '手機號', email: '郵箱' },
     captcha: { refresh: '重新整理驗證碼' },
+    /** 三步向導共用（註冊 / 忘記密碼） */
+    steps: { account: '帳號資訊', verify: '郵箱驗證', password: '設定密碼' },
+    /** 密碼強度條級別 */
+    strength: { weak: '弱', medium: '中', strong: '強', excellent: '極強' },
+    /** 郵箱驗證碼相關 */
+    code: {
+      sentTo: '驗證碼已發送至 {email}',
+      devHint: 'Mock 演示碼 {code}'
+    },
+    /** 向導通用動作 */
+    common: {
+      next: '下一步',
+      prev: '上一步',
+      backToLoginNow: '返回登入',
+      autoBack: '{n}s 後自動返回登入'
+    },
+    /** 認證流程穩定錯誤碼 → 文案（契約 §1.4-1.6） */
+    errors: {
+      invalidEmail: '請輸入正確的郵箱格式',
+      emailTaken: '該郵箱已被註冊',
+      usernameTaken: '該學號已被註冊，請直接登入',
+      userNotFound: '帳號不存在，請核對後重試',
+      emailMismatch: '郵箱與帳號不匹配，請核對後重試',
+      codeTooFrequent: '發送過於頻繁，請稍後再試',
+      codeExpired: '驗證碼已過期，請重新獲取',
+      codeInvalid: '驗證碼錯誤',
+      codeLocked: '錯誤次數過多，請重新獲取驗證碼',
+      verifyTokenInvalid: '驗證已失效，請重新完成驗證'
+    },
     form: {
       schoolPlaceholder: '請選擇學校',
       /** 學校列表未返回 / 載入失敗時的提示（後端返回為主，前端不塞兜底資料） */
@@ -691,6 +720,11 @@ export default {
       codeFormat: '驗證碼為6位數字',
       emailRequired: '請輸入郵箱',
       emailFormat: '請輸入正確的郵箱格式',
+      registeredEmailPlaceholder: '請輸入註冊時使用的郵箱',
+      passwordFormat: '密碼至少包含一個字母和一個數字',
+      confirmPlaceholder: '請再次輸入密碼',
+      confirmRequired: '請再次輸入密碼',
+      confirmMismatch: '兩次輸入的密碼不一致',
       codeSent: '驗證碼已發送',
       codeSendFail: '驗證碼發送失敗',
       codeSendRetry: '驗證碼發送失敗，請稍後重試',
@@ -698,7 +732,23 @@ export default {
       loginFail: '登入失敗'
     },
     social: { text: '其他登入方式', wechat: '微信登入', qq: 'QQ登入' },
-    register: { prompt: '還沒有帳號？', btn: '立即註冊' }
+    register: {
+      prompt: '還沒有帳號？',
+      btn: '立即註冊',
+      submit: '註冊',
+      success: {
+        title: '註冊成功',
+        desc: '帳號已建立，請使用學號和密碼登入'
+      }
+    },
+    forgot: {
+      submit: '重設密碼',
+      newPasswordPlaceholder: '請輸入新密碼',
+      success: {
+        title: '密碼重設成功',
+        desc: '請使用新密碼登入'
+      }
+    }
   },
   notFound: {
     nav: {

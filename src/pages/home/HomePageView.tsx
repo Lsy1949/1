@@ -163,7 +163,7 @@ export function HomePageView() {
       {/* 联系我们 */}
       <ContactSection />
 
-      {/* 回到顶部与快速导航 */}
+      {/* 回到顶部（与 AI 客服按钮统一的白底圆形风格）+ 悬停展开快速导航 */}
       <BackTop />
 
       {/* AI 客服悬浮窗 */}

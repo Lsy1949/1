@@ -12,6 +12,12 @@ import { emitter } from '@/events'
  * React 侧 store 约定：拦截器运行于非 React 上下文，
  * 统一使用 getXxxStore() 直读模块级 store 快照。
  */
+/**
+ * 401 响应中直接透传给组件层的稳定错误码（契约 §1.4-1.6）：
+ * 验证码校验 / 一次性凭证失效。组件层（注册/重置表单）映射 i18n 文案。
+ */
+const PASS_THROUGH_ERROR_CODES = new Set(['CODE_INVALID', 'CODE_EXPIRED', 'VERIFY_TOKEN_INVALID'])
+
 export function setupInterceptors(service: AxiosInstance): void {
   service.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     // 多租户标识：所有业务请求统一注入（仅作「当前站点租户」提示，契约 §0.3）
@@ -68,6 +74,11 @@ function normalizeError(error: AxiosError): Error {
       // 不区分账号不存在/密码错/不属该校）——映射专用文案，不能显示"登录已过期"
       if (businessMessage === 'INVALID_CREDENTIALS') {
         return new ApiError('账号或密码错误', status)
+      }
+      // 认证流程稳定错误码（契约 §1.4-1.6 验证码/注册/重置）：原样透传，
+      // 由组件层映射 i18n 文案（拦截器非 React 上下文，无法取 t()）
+      if (businessMessage && PASS_THROUGH_ERROR_CODES.has(businessMessage)) {
+        return new ApiError(businessMessage, status)
       }
       return new ApiError('登录已过期，请重新登录', status)
     }

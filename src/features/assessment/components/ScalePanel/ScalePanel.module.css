@@ -1,66 +1,13 @@
-/* 编号式分类导航 + 搜索 */
+/* 分类页签（antd Tabs，作用域 token 见 index.tsx）+ 搜索 */
 .scaleRibbon {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-  padding: 18px 0;
+  padding: 18px 0 0;
   border-top: 1px solid var(--text-heading);
-  border-bottom: 1px solid var(--border-light);
   margin-bottom: 8px;
-  flex-wrap: wrap;
 }
 
-.ribbonCats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 28px;
-  flex: 1;
-}
-
-.ribbonCat {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 6px 0;
-  font-family: inherit;
-  transition: opacity 0.25s;
-  opacity: 0.45;
-}
-
-.ribbonCat:hover {
-  opacity: 0.8;
-}
-
-.ribbonCat.active {
-  opacity: 1;
-}
-
-.ribbonCat .catName {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text-heading);
-  letter-spacing: 0.2px;
-}
-
-.ribbonCat.active .catName {
-  font-weight: 700;
-}
-
-.ribbonCat .catCount {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-  margin-left: 4px;
-  opacity: 0.7;
-}
-
-.ribbonCat.active .catCount {
-  color: var(--brand-primary);
-  opacity: 1;
+/* 收敛 antd tab 栏自身外距；底线由 nav::before 提供（沿用 --border-light） */
+.ribbonTabs :global(.ant-tabs-nav) {
+  margin-bottom: 0;
 }
 
 .ribbonSearch {
@@ -70,6 +17,7 @@
   border-bottom: 1px solid var(--text-heading);
   padding: 4px 0;
   min-width: 200px;
+  margin-left: 16px;
 }
 
 .ribbonSearch .searchIco {
@@ -95,6 +43,26 @@
 /* A3 焦点替代：下划线式输入框聚焦时容器底边变品牌色 */
 .ribbonSearch:focus-within {
   border-bottom-color: var(--brand-primary);
+}
+
+/* 页签 label：名称 + 上标数量徽标（绝对定位不参与布局，横线只对齐文字部分） */
+.catLabel {
+  position: relative;
+}
+
+.catCount {
+  position: absolute;
+  top: -4px;
+  right: -16px;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 选中态数量高亮品牌色（组合选择器命中 antd active 类） */
+.ribbonTabs :global(.ant-tabs-tab-active) .catCount {
+  color: var(--brand-primary);
 }
 
 /* 当前分类小标题 */

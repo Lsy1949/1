@@ -1,5 +1,16 @@
 import { get, post } from '../request'
-import type { LoginParams, LoginResult, PublicTenant, SendEmailCodeParams, UserInfo } from './types'
+import type {
+  LoginParams,
+  LoginResult,
+  PublicTenant,
+  RegisterParams,
+  ResetPasswordParams,
+  SendEmailCodeParams,
+  SendEmailCodeResult,
+  UserInfo,
+  VerifyEmailCodeParams,
+  VerifyEmailCodeResult,
+} from './types'
 
 /**
  * 认证模块（对照旧 api/user.js loginApi + UserInfoByIdApi + api/captcha.js）。
@@ -8,12 +19,21 @@ import type { LoginParams, LoginResult, PublicTenant, SendEmailCodeParams, UserI
 
 /**
  * 登录（契约 §1.1：POST /api/student/login，body JSON）。
+ * - loginType=account（默认）：username + password
+ * - loginType=email：email + code（邮箱验证码登录）
  * 失败统一 INVALID_CREDENTIALS（不区分账号不存在/密码错误/不属该校）。
  */
 export function login(params: LoginParams): Promise<LoginResult> {
+  const credential =
+    params.loginType === 'email'
+      ? { loginType: 'email', email: params.email ?? '', code: params.code ?? '' }
+      : {
+          loginType: 'account',
+          username: params.userId ?? '',
+          password: params.password ?? '',
+        }
   return post<LoginResult>('student/login', {
-    username: params.userId ?? '',
-    password: params.password ?? '',
+    ...credential,
     ...(params.tenantId ?? params.school ? { tenantId: params.tenantId ?? params.school } : {}),
   })
 }
@@ -33,11 +53,24 @@ export function getUserInfoById(userId: string, roleId: string): Promise<UserInf
   return get<UserInfo>(path, { params: { userId } })
 }
 
-/** 发送邮箱验证码（旧 api/captcha.js sendEmailCode） */
-export function sendEmailCode(params: SendEmailCodeParams): Promise<void> {
-  return post<void>('sendCode', null, {
-    params: params as unknown as Record<string, unknown>,
-  })
+/** 发送邮箱验证码（契约 §1.4：60s 限流，5min 有效；scene 决定附加校验） */
+export function sendEmailCode(params: SendEmailCodeParams): Promise<SendEmailCodeResult> {
+  return post<SendEmailCodeResult>('auth/send-code', params)
+}
+
+/** 校验邮箱验证码（契约 §1.4：通过换取一次性 verifyToken，5min 有效） */
+export function verifyEmailCode(params: VerifyEmailCodeParams): Promise<VerifyEmailCodeResult> {
+  return post<VerifyEmailCodeResult>('auth/verify-code', params)
+}
+
+/** 注册（契约 §1.5：verifyToken 必填，服务端校验学号唯一后落库） */
+export function register(params: RegisterParams): Promise<null> {
+  return post<null>('auth/register', params)
+}
+
+/** 重置密码（契约 §1.6：verifyToken 必填，校验通过后更新账号密码） */
+export function resetPassword(params: ResetPasswordParams): Promise<null> {
+  return post<null>('auth/reset-password', params)
 }
 
 /**
@@ -51,16 +84,6 @@ export function fetchMe(): Promise<UserInfo> {
 /** 登出（契约 §1.2：后端清 cookie；前端失败静默，本地状态照清） */
 export function logoutApi(): Promise<null> {
   return post<null>('auth/logout')
-}
-
-/** 注册 */
-export function register(data: Record<string, unknown>): Promise<{ message: string }> {
-  return post<{ message: string }>('register', data)
-}
-
-/** 忘记密码 / 重置密码 */
-export function forgotPassword(data: Record<string, unknown>): Promise<{ message: string }> {
-  return post<{ message: string }>('forgot-password', data)
 }
 
 /** 主域登录页学校选择器数据源（契约 §2.3，公开无需登录） */

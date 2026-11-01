@@ -10,7 +10,9 @@ export {
   logout,
   sendEmailCode,
   useAuthLogin,
-  useForgotPassword,
   useRegister,
+  useResetPassword,
+  useSendEmailCode,
+  useVerifyEmailCode,
 } from './hooks/useAuth'
 export { loginMotions, propagandaFeatureMotion } from './motion'

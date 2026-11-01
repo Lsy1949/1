@@ -5,12 +5,28 @@ import {
   InfoCircleFilled,
   SearchOutlined,
 } from '@ant-design/icons'
-import { Empty } from 'antd'
+import { ConfigProvider, Empty, Tabs } from 'antd'
 import { useReveal } from '@/hooks/useReveal'
 import { useI18n } from '@/i18n'
 import ScaleIcon from '@/components/ScaleIcon'
 import type { ScaleInfo } from '../types'
 import styles from './ScalePanel.module.css'
+
+/**
+ * 分类页签作用域 token：与主 tab 同一套「极简文字」语言；
+ * 间距全部保持 antd 默认（对称 padding，横线与文字自然对齐），仅收敛配色与字号。
+ */
+const ribbonTabsTheme = {
+  components: {
+    Tabs: {
+      titleFontSize: 15,
+      itemColor: 'var(--text-faint)',
+      itemSelectedColor: 'var(--brand-primary)',
+      inkBarColor: 'var(--brand-primary)',
+      horizontalMargin: '0 0 0 0',
+    },
+  },
+}
 
 interface Props {
   categories: { key: string; name: string; count: number }[]
@@ -40,30 +56,41 @@ export default function ScalePanel({
   const { t } = useI18n()
   const ribbonRef = useReveal<HTMLDivElement>({ delay: 80 })
 
+  // 分类页签 items：label = 名称；数量作上标徽标绝对定位（不撑宽页签，ink bar 只跟随文字宽度）
+  const categoryItems = categories.map((cat) => ({
+    key: cat.key,
+    label: (
+      <span className={styles.catLabel}>
+        {cat.name}
+        <sup className={styles.catCount}>{cat.count}</sup>
+      </span>
+    ),
+  }))
+
   return (
     <>
-      {/* 编号式分类导航 + 极简搜索 */}
+      {/* 分类页签（antd Tabs）+ 极简搜索（tabBarExtraContent） */}
       <div ref={ribbonRef} className={styles.scaleRibbon}>
-        <div className={styles.ribbonCats}>
-          {categories.map((cat) => (
-            <button
-              key={cat.key}
-              className={`${styles.ribbonCat}${activeCategory === cat.key ? ` ${styles.active}` : ''}`}
-              onClick={() => onActiveCategoryChange(cat.key)}
-            >
-              <span className={styles.catName}>{cat.name}</span>
-              <span className={styles.catCount}>({cat.count})</span>
-            </button>
-          ))}
-        </div>
-        <div className={styles.ribbonSearch}>
-          <SearchOutlined className={styles.searchIco} />
-          <input
-            value={searchQuery}
-            placeholder={t('assessment.searchPlaceholder')}
-            onChange={(e) => onSearchQueryChange(e.target.value)}
+        <ConfigProvider theme={ribbonTabsTheme}>
+          <Tabs
+            className={styles.ribbonTabs}
+            activeKey={activeCategory}
+            onChange={onActiveCategoryChange}
+            items={categoryItems}
+            tabBarExtraContent={{
+              right: (
+                <div className={styles.ribbonSearch}>
+                  <SearchOutlined className={styles.searchIco} />
+                  <input
+                    value={searchQuery}
+                    placeholder={t('assessment.searchPlaceholder')}
+                    onChange={(e) => onSearchQueryChange(e.target.value)}
+                  />
+                </div>
+              ),
+            }}
           />
-        </div>
+        </ConfigProvider>
       </div>
 
       {/* 当前分类小标题 */}

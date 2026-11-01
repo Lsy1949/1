@@ -660,6 +660,35 @@ export default {
     },
     tabs: { account: 'Account', phone: 'Phone', email: 'Email' },
     captcha: { refresh: 'Refresh captcha' },
+    /** Three-step wizard (register / forgot password) */
+    steps: { account: 'Identity', verify: 'Email Verification', password: 'Password' },
+    /** Password strength levels */
+    strength: { weak: 'Weak', medium: 'Medium', strong: 'Strong', excellent: 'Excellent' },
+    /** Email verification code */
+    code: {
+      sentTo: 'Verification code sent to {email}',
+      devHint: 'Mock demo code {code}'
+    },
+    /** Wizard shared actions */
+    common: {
+      next: 'Next',
+      prev: 'Back',
+      backToLoginNow: 'Back to Sign In',
+      autoBack: 'Back to sign in in {n}s'
+    },
+    /** Auth flow error codes → copy (contract §1.4-1.6) */
+    errors: {
+      invalidEmail: 'Please enter a valid email address',
+      emailTaken: 'This email is already registered',
+      usernameTaken: 'This student ID is already registered, please sign in',
+      userNotFound: 'Account not found, please check and retry',
+      emailMismatch: 'Email does not match the account, please check and retry',
+      codeTooFrequent: 'Sending too frequently, please try again later',
+      codeExpired: 'Code expired, please request a new one',
+      codeInvalid: 'Incorrect verification code',
+      codeLocked: 'Too many attempts, please request a new code',
+      verifyTokenInvalid: 'Verification expired, please verify again'
+    },
     form: {
       schoolPlaceholder: 'Select school',
       /** Shown when the tenants list has not loaded or failed (backend-driven, no frontend fallback data) */
@@ -691,6 +720,11 @@ export default {
       codeFormat: 'Code must be 6 digits',
       emailRequired: 'Please enter email',
       emailFormat: 'Please enter a valid email address',
+      registeredEmailPlaceholder: 'Enter the email used at registration',
+      passwordFormat: 'Password must contain at least one letter and one number',
+      confirmPlaceholder: 'Re-enter password',
+      confirmRequired: 'Please re-enter password',
+      confirmMismatch: 'Passwords do not match',
       codeSent: 'Verification code sent',
       codeSendFail: 'Failed to send code',
       codeSendRetry: 'Failed to send code, please try again later',
@@ -698,7 +732,23 @@ export default {
       loginFail: 'Login failed'
     },
     social: { text: 'Other sign-in methods', wechat: 'WeChat', qq: 'QQ' },
-    register: { prompt: "Don't have an account?", btn: 'Sign Up' }
+    register: {
+      prompt: "Don't have an account?",
+      btn: 'Sign Up',
+      submit: 'Sign Up',
+      success: {
+        title: 'Registration Successful',
+        desc: 'Account created, please sign in with your student ID and password'
+      }
+    },
+    forgot: {
+      submit: 'Reset Password',
+      newPasswordPlaceholder: 'Enter new password',
+      success: {
+        title: 'Password Reset',
+        desc: 'Please sign in with your new password'
+      }
+    }
   },
   notFound: {
     nav: {

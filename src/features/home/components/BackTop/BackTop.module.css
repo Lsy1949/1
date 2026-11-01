@@ -2,6 +2,7 @@
 
 .backToTopContainer {
   position: fixed;
+  /* 原位置：右下角（上方为 AI 客服按钮 bottom 104） */
   bottom: 40px;
   right: 40px;
   z-index: 1000;
@@ -18,63 +19,45 @@
   pointer-events: auto;
 }
 
+/* 触发按钮：与 AI 客服悬浮按钮（AssistantFab .fabButton）统一视觉 ——
+   56px 白底圆形、品牌色图标、品牌光晕 + 触地影 */
 .backToTopBtn {
   width: 56px;
   height: 56px;
+  border: 1px solid var(--border-light);
   border-radius: 50%;
-  background: var(--brand-primary);
-  color: var(--text-inverse, #fff);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--brand-primary) 30%, transparent);
+  background: var(--bg-card);
+  color: var(--brand-primary);
+  display: grid;
+  place-items: center;
   cursor: pointer;
   position: relative;
-  overflow: hidden;
+  box-shadow:
+    0 6px 16px color-mix(in srgb, var(--brand-primary) 18%, transparent),
+    0 2px 6px color-mix(in srgb, var(--text-heading) 12%, transparent);
+  transition:
+    transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.35s ease,
+    color 0.35s ease;
 }
 
-.btnContent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
+.backToTopBtn:hover {
+  transform: translateY(-3px);
+  color: var(--brand-primary-dark);
+  /* 光晕外扩表达 hover（白底不变，避免色块跳变）；菜单关闭有 250ms 延迟，位移不致抖动 */
+  box-shadow:
+    0 10px 28px color-mix(in srgb, var(--brand-primary) 30%, transparent),
+    0 4px 10px color-mix(in srgb, var(--text-heading) 14%, transparent);
+}
+
+.backToTopBtn:active {
+  transform: translateY(-1px) scale(0.96);
 }
 
 .mainIcon {
-  font-size: 18px;
-  margin-bottom: 2px;
-}
-
-.btnText {
-  font-size: var(--fs-xs);
-  font-weight: 600;
+  font-size: 24px;
   line-height: 1;
-  letter-spacing: 0.5px;
 }
-
-.navHint {
-  position: absolute;
-  bottom: 6px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: 3px;
-  opacity: 0.6;
-}
-
-.dot {
-  display: block;
-  width: 3px;
-  height: 3px;
-  background: var(--text-inverse, #fff);
-  border-radius: 50%;
-}
-
-/* 触发器外观恒定：不再提供 hover 位移/阴影变化（A4） */
 
 .navMenu {
   position: absolute;
@@ -210,6 +193,21 @@
    ============================================================ */
 :global(html.dark) .navMenu {
   box-shadow: var(--shadow-hover) !important;
+}
+
+/* 暗色：图标提亮 + 深色实投影（与 AssistantFab .fabButton 暗色规则一致） */
+:global(html.dark) .backToTopBtn {
+  color: var(--brand-primary-bright);
+  box-shadow:
+    0 6px 16px color-mix(in srgb, var(--brand-primary) 26%, transparent),
+    0 2px 6px rgb(0 0 0 / 0.4);
+}
+
+:global(html.dark) .backToTopBtn:hover {
+  color: var(--brand-primary-bright);
+  box-shadow:
+    0 10px 28px color-mix(in srgb, var(--brand-primary) 40%, transparent),
+    0 4px 10px rgb(0 0 0 / 0.45);
 }
 
 :global(html.dark) .menuItem:hover {
