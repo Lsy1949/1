@@ -6,7 +6,7 @@ import { App, Button, Result, Skeleton } from 'antd'
 import { ApiError, capsuleApi } from '@/api'
 import { DetailBody, DetailHeader } from '@/features/time-capsule'
 import { useI18n } from '@/i18n'
-import './CapsuleDetailView.css'
+import './index.css'
 
 export function CapsuleDetailView() {
   const router = useNavigate()

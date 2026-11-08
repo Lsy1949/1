@@ -6,7 +6,7 @@ import { capsuleApi } from '@/api'
 import { CreateForm, CreateHeader } from '@/features/time-capsule'
 import type { CapsuleCreateInput } from '@/features/time-capsule'
 import { useI18n } from '@/i18n'
-import './CapsuleCreateView.css'
+import './index.css'
 
 export function CapsuleCreateView() {
   const router = useNavigate()

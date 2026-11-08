@@ -2,8 +2,8 @@
 import { useNavigate } from 'react-router-dom'
 import { CreateForm, CreateHeader } from '@/features/square'
 import type { SquareCreateInput } from '@/features/square'
-import { useCreateFeed } from './squareQuery'
-import './SquareCreateView.css'
+import { useCreateFeed } from '../squareQuery'
+import './index.css'
 
 export function SquareCreateView() {
   const navigate = useNavigate()

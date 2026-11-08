@@ -14,7 +14,7 @@ import type { AppLocale } from '@/i18n'
 import zhCN from '@/i18n/zh-CN'
 import zhTW from '@/i18n/zh-TW'
 import enUS from '@/i18n/en-US'
-import './AiCompanionView.css'
+import './index.css'
 
 // 语言包原始对象直查：数组文案（quickPrompts）按 locale 取原始值（等价 vue-i18n tm()）
 const RAW_MESSAGES: Record<AppLocale, Record<string, unknown>> = {

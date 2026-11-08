@@ -22,7 +22,6 @@ export function ModuleCover({ eyebrow, no, title, desc }: ModuleCoverProps) {
       {/* 原 v-html(title) 的 React 等价写法；title 由本地 i18n 常量提供，内容可信 */}
       <h2 className="cover-title" dangerouslySetInnerHTML={{ __html: title }} />
       <p className="cover-desc">{desc}</p>
-      <div className="cover-line" />
     </div>
   )
 }

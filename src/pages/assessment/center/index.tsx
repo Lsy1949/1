@@ -22,8 +22,8 @@ import {
   useAssessmentScale,
   useAssessmentScales,
   useClearAssessmentHistory,
-} from './assessmentQuery'
-import './AssessmentCenterView.css'
+} from '../assessmentQuery'
+import './index.css'
 
 /** 分类导航（名称走 i18n；数量由接口数据派生） */
 const CATEGORY_KEYS: AssessmentCategoryKey[] = [
@@ -311,6 +311,18 @@ export default function AssessmentCenterView() {
       ),
     },
     {
+      key: 'dashboard',
+      label: t('assessment.tabs.dashboard'),
+      children: gateHistory(
+        <DashboardPanel
+          history={history}
+          scales={scales}
+          onView={viewHistory}
+          onOpenScale={openScaleIntro}
+        />,
+      ),
+    },
+    {
       key: 'mine',
       label: t('assessment.tabs.mine'),
       children: gateHistory(
@@ -321,18 +333,6 @@ export default function AssessmentCenterView() {
           onRetake={retakeAssessment}
           onClearHistory={clearAllHistory}
           onGoAssess={() => setMainTab('scales')}
-        />,
-      ),
-    },
-    {
-      key: 'dashboard',
-      label: t('assessment.tabs.dashboard'),
-      children: gateHistory(
-        <DashboardPanel
-          history={history}
-          scales={scales}
-          onView={viewHistory}
-          onOpenScale={openScaleIntro}
         />,
       ),
     },

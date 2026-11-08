@@ -18,8 +18,8 @@ import ReadProgress from '@/components/ReadProgress'
 import { RowList } from '@/features/article'
 import type { ArticleItem } from '@/features/article'
 import { useI18n } from '@/i18n'
-import { toArticleItem, useArticleList } from './articleQuery'
-import './ArticleListView.css'
+import { toArticleItem, useArticleList } from '../articleQuery'
+import './index.css'
 
 interface CategoryItem {
   label: string

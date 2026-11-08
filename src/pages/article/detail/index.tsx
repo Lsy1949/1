@@ -11,8 +11,8 @@ import InitialAvatar from '@/components/InitialAvatar'
 import { Comments, RelatedSidebar, RichBody } from '@/features/article'
 import { useReveal } from '@/hooks/useReveal'
 import { useI18n } from '@/i18n'
-import { toArticleItem } from './articleQuery'
-import './ArticleDetailView.css'
+import { toArticleItem } from '../articleQuery'
+import './index.css'
 
 const formatViews = (n: number) => {
   if (n >= 1000) return (n / 1000).toFixed(1) + 'k'

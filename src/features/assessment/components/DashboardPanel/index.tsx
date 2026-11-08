@@ -22,7 +22,10 @@ import {
 } from '@ant-design/icons'
 import ModuleCover from '@/components/ModuleCover'
 import { useReveal } from '@/hooks/useReveal'
+import { useECharts, type EChartsCoreOption } from '@/hooks/useECharts'
 import { useI18n } from '@/i18n'
+import { useTheme } from '@/hooks/useTheme'
+import { readCssColor } from '@/utils/cssVar'
 import ScaleIcon from '@/components/ScaleIcon'
 import { TAG_COLOR } from '../MinePanel'
 import type { AssessmentRecord, ScaleInfo } from '../types'
@@ -49,24 +52,12 @@ const dashboardNav: { key: string; name: string; icon: ReactNode }[] = [
 
 const radarLabels = ['情绪调节', '压力耐受', '职业驱动', '思维深度', '社交能量', '自我认知']
 
-function getRadarPoints(radius: number) {
-  return Array.from({ length: 6 })
-    .map((_, i) => {
-      const angle = ((i * 60 - 90) * Math.PI) / 180
-      return `${100 + radius * Math.cos(angle)},${100 + radius * Math.sin(angle)}`
-    })
-    .join(' ')
-}
-
-function polarPoint(val: number, i: number, scale = 80) {
-  const angle = ((i * 60 - 90) * Math.PI) / 180
-  const r = (val / 100) * scale
-  return `${100 + r * Math.cos(angle)},${100 + r * Math.sin(angle)}`
-}
-
-function polarXY(i: number, radius: number) {
-  const angle = ((i * 60 - 90) * Math.PI) / 180
-  return { x: 100 + radius * Math.cos(angle), y: 100 + radius * Math.sin(angle) }
+/** 把 readCssColor 解析出的 rgb(a) 颜色转为带透明度的 rgba（ECharts 渐变面积用） */
+function withAlpha(resolved: string, alpha: number): string {
+  const m = resolved.match(/rgba?\(([^)]+)\)/)
+  if (!m) return resolved
+  const [r, g, b] = m[1].split(',').map((v) => parseFloat(v))
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
 
 /** 成长看板面板：侧栏导航 + 7 个内容区，可视化数据全部由 history 派生 */
@@ -74,6 +65,35 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
   const { t } = useI18n()
   const { message } = AntApp.useApp() // 替代静态 ElMessage，带主题上下文
   const layoutRef = useReveal<HTMLDivElement>({ delay: 80 })
+  // 订阅真实主题源（useTheme 同步翻 html.dark 后才 emit，重渲染时 token 必为新值）；
+  // mode / palette 任一变化都重建图表配色（themeSignature 缓存随之失效）
+  const { isDark, palette } = useTheme()
+
+  // 图表配色：全部经 readCssColor 从语义 token 解析（禁止在 option 中写死色值）
+  const chartColors = useMemo(() => {
+    const cat = {
+      mental: readCssColor('var(--cat-geekblue)'),
+      career: readCssColor('var(--cat-gold)'),
+      cognitive: readCssColor('var(--cat-cyan)'),
+      esports: readCssColor('var(--cat-red)'),
+      learning: readCssColor('var(--cat-green)'),
+      social: readCssColor('var(--cat-magenta)'),
+    }
+    const brand = readCssColor('var(--brand-primary)')
+    const faint = readCssColor('var(--text-faint)')
+    return {
+      brand,
+      brandArea: withAlpha(brand, 0.16),
+      faint,
+      faintArea: withAlpha(faint, 0.08),
+      textHeading: readCssColor('var(--text-heading)'),
+      textSecondary: readCssColor('var(--text-secondary)'),
+      border: readCssColor('var(--border-strong)'),
+      split: readCssColor('var(--border-light)'),
+      bgCard: readCssColor('var(--bg-card)'),
+      cat,
+    }
+  }, [isDark, palette])
 
   const totalCompleted = history.length
   const growthPoints = history.length * 10
@@ -86,7 +106,11 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
 
   // 平均分（归一化到 100）
   const avgScore = useMemo(() => {
-    const maxScores: Record<string, number> = { phq9: 27, gad7: 21, pss: 40, riasec: 18, mbti: 40 }
+    const maxScores: Record<string, number> = {
+      phq9: 27, gad7: 21, pss: 30, riasec: 18, mbti: 40, reaction: 30,
+      memory: 40, logic: 60, aim: 25, flick: 40, decision: 50, vark: 80,
+      sas: 60, eq: 75,
+    }
     const scored = history.filter((h) => typeof h.score === 'number' && maxScores[h.scaleKey])
     if (scored.length === 0) return 0
     const sum = scored.reduce((acc, h) => acc + (h.score / maxScores[h.scaleKey]) * 100, 0)
@@ -120,56 +144,64 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
     }
   }, [history])
 
-  // --- 身心能量雷达图 ---
-  const radarDataPoints = useMemo(() => {
-    const base = [60, 60, 50, 50, 60, 70]
-    if (history.length > 0) {
-      history.forEach((h) => {
-        if (h.scaleKey === 'phq9') base[0] = Math.min(95, 100 - h.score * 3)
-        if (h.scaleKey === 'pss') base[1] = Math.min(95, 100 - h.score * 2)
-        if (h.scaleKey === 'riasec') base[2] = 85
-        if (h.scaleKey === 'mbti') base[5] = 90
-      })
+  // --- 身心能量雷达：六维由对应量表「最新一次」结果归一化推导（0-100，越高越好） ---
+  const radarUserValues = useMemo(() => {
+    const byKey = new Map<string, AssessmentRecord>()
+    history.forEach((h) => {
+      const prev = byKey.get(h.scaleKey)
+      if (!prev || h.date > prev.date) byKey.set(h.scaleKey, h)
+    })
+    const latest = (key: string) => byKey.get(key)?.score
+    // 情绪/压力类分数越低越好 → 反向归一化
+    const better = (key: string, max: number) => {
+      const score = latest(key)
+      return score === undefined ? null : Math.max(5, Math.round(100 - (score / max) * 100))
     }
-    return base.map((val, i) => polarPoint(val, i)).join(' ')
-  }, [history])
+    const topDetail = (key: string) => {
+      const values = Object.values(byKey.get(key)?.details ?? {})
+      return values.length ? Math.max(...values) : null
+    }
+    return [
+      better('phq9', 27) ?? 62, // 情绪调节
+      better('pss', 30) ?? 58, // 压力耐受
+      topDetail('riasec') !== null ? Math.min(95, Math.round(((topDetail('riasec') ?? 0) / 10) * 100)) : 55, // 职业驱动
+      better('logic', 60) ?? better('decision', 50) ?? 57, // 思维深度
+      better('eq', 75) ?? better('sas', 60) ?? 52, // 社交能量
+      byKey.has('mbti') ? 88 : byKey.has('vark') ? 72 : Math.min(80, Math.round((byKey.size / Math.max(1, scales.length)) * 100)), // 自我认知
+    ]
+  }, [history, scales])
 
-  // 群体均值（mock）
-  const radarAvgPoints = useMemo(
-    () => [55, 58, 52, 50, 55, 58].map((val, i) => polarPoint(val, i)).join(' '),
-    []
-  )
+  // 群体均值（mock 基准线）
+  const radarGroupValues = [55, 58, 52, 50, 55, 58]
 
-  // --- 情绪趋势 ---
+  // --- 情绪趋势：PHQ-9 / GAD-7 / PSS-10 三条「情绪指数」曲线（反向归一化，越高越好） ---
   const [trendRange, setTrendRange] = useState<'7d' | '30d' | 'all'>('all')
 
-  const trendData = useMemo(() => {
-    let data = history.filter((h) => h.scaleKey === 'phq9' || h.scaleKey === 'gad7')
-    const now = new Date()
-    if (trendRange === '7d') {
-      const ago = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-      data = data.filter((h) => new Date(h.date) >= ago)
-    } else if (trendRange === '30d') {
-      const ago = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
-      data = data.filter((h) => new Date(h.date) >= ago)
+  const trendSeries = useMemo(() => {
+    const defs = [
+      { key: 'phq9', name: 'PHQ-9', color: 'var(--cat-geekblue)', max: 27 },
+      { key: 'gad7', name: 'GAD-7', color: 'var(--cat-gold)', max: 21 },
+      { key: 'pss', name: 'PSS-10', color: 'var(--cat-cyan)', max: 30 },
+    ]
+    const days = trendRange === '7d' ? 7 : trendRange === '30d' ? 30 : null
+    const records = history
+      .filter((h) => defs.some((d) => d.key === h.scaleKey))
+      .filter((h) => !days || dayjs(h.date).isAfter(dayjs().subtract(days, 'day')))
+      .sort((a, b) => a.date.localeCompare(b.date))
+    const dates = [...new Set(records.map((h) => dayjs(h.date).format('MM-DD')))]
+    return {
+      dates,
+      series: defs.map((def) => ({
+        ...def,
+        values: dates.map((date) => {
+          const record = records.find(
+            (h) => h.scaleKey === def.key && dayjs(h.date).format('MM-DD') === date
+          )
+          return record ? Math.max(5, Math.round(100 - (record.score / def.max) * 100)) : null
+        }),
+      })),
     }
-    return data
-      .slice(0, 10)
-      .reverse()
-      .map((h) => ({
-        date: dayjs(h.date).format('MM-DD'),
-        phq: h.scaleKey === 'phq9' ? (h.score / 27) * 100 : 0,
-        gad: h.scaleKey === 'gad7' ? (h.score / 21) * 100 : 0,
-      }))
   }, [history, trendRange])
-
-  // 趋势平均线
-  const trendAvgLine = useMemo(() => {
-    const valid = trendData.filter((p) => p.phq > 0 || p.gad > 0)
-    if (valid.length === 0) return 0
-    const sum = valid.reduce((acc, p) => acc + Math.max(p.phq, p.gad), 0)
-    return Math.round(sum / valid.length)
-  }, [trendData])
 
   // --- AI 洞察 ---
   const aiInsights = useMemo(() => {
@@ -202,63 +234,181 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
     return { summary, strength, risk, suggestion }
   }, [history])
 
-  // --- 测评分布（环形图） ---
-  const categoryDistribution = useMemo(() => {
+  // --- 测评分布（环形图数据：按分类聚合并映射主题分类色） ---
+  const donutData = useMemo(() => {
     const catCount: Record<string, number> = {}
     history.forEach((h) => {
       const scale = scales.find((s) => s.key === h.scaleKey)
-      if (scale) {
-        const name = t(`assessment.categories.${scale.category}`)
-        catCount[name] = (catCount[name] || 0) + 1
-      }
+      if (scale) catCount[scale.category] = (catCount[scale.category] || 0) + 1
     })
-    const colors = [
-      'var(--brand-primary)',
-      'var(--cat-geekblue)',
-      'var(--cat-green)',
-      'var(--cat-gold)',
-      'var(--cat-purple)',
-      'var(--cat-red)',
-      'var(--cat-gray)',
-    ]
-    return Object.entries(catCount)
-      .map(([name, value], i) => ({
-        name,
-        value,
-        color: colors[i % colors.length],
-        percent: Math.round((value / history.length) * 100),
-      }))
-  }, [history, scales])
+    return Object.entries(catCount).map(([cat, value]) => ({
+      name: t(`assessment.categories.${cat}`),
+      value,
+      itemStyle: { color: chartColors.cat[cat as keyof typeof chartColors.cat] ?? chartColors.brand },
+    }))
+  }, [history, scales, t, chartColors])
+  const donutTotal = donutData.reduce((acc, d) => acc + d.value, 0)
 
-  // 环形图 SVG 路径
-  const donutSegments = useMemo(() => {
-    const data = categoryDistribution
-    if (data.length === 0) return []
-    const total = data.reduce((acc, d) => acc + d.value, 0)
-    let cumulative = 0
-    const radius = 70
-    const cx = 90
-    const cy = 90
-    return data.map((d) => {
-      const startAngle = (cumulative / total) * 2 * Math.PI - Math.PI / 2
-      cumulative += d.value
-      const endAngle = (cumulative / total) * 2 * Math.PI - Math.PI / 2
-      const x1 = cx + radius * Math.cos(startAngle)
-      const y1 = cy + radius * Math.sin(startAngle)
-      const x2 = cx + radius * Math.cos(endAngle)
-      const y2 = cy + radius * Math.sin(endAngle)
-      const largeArc = endAngle - startAngle > Math.PI ? 1 : 0
-      // 单段且占满时无法用 arc 绘制，需特殊处理
-      if (data.length === 1 || (cumulative === total && d.value === total)) {
-        return { ...d, path: '', isFull: true }
-      }
-      return {
-        ...d,
-        path: `M ${cx} ${cy} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z`,
-        isFull: false,
-      }
-    })
-  }, [categoryDistribution])
+  // --- 图表 option（依赖 chartColors：主题切换时自动重建） ---
+  const radarOption = useMemo<EChartsCoreOption>(
+    () => ({
+      tooltip: { trigger: 'item' },
+      legend: {
+        bottom: 0,
+        icon: 'circle',
+        itemWidth: 8,
+        itemHeight: 8,
+        itemGap: 24,
+        textStyle: { color: chartColors.textSecondary, fontSize: 12 },
+      },
+      radar: {
+        indicator: radarLabels.map((name) => ({ name, max: 100 })),
+        radius: '60%',
+        center: ['50%', '47%'],
+        axisName: { color: chartColors.textSecondary, fontSize: 12, fontWeight: 600 },
+        axisLine: { lineStyle: { color: chartColors.border } },
+        splitLine: { lineStyle: { color: chartColors.border } },
+        splitArea: { show: false },
+      },
+      series: [
+        {
+          type: 'radar',
+          symbol: 'circle',
+          symbolSize: 6,
+          data: [
+            {
+              name: t('assessment.dashboard.yourStatus'),
+              value: radarUserValues,
+              itemStyle: { color: chartColors.brand },
+              lineStyle: { width: 2.5, color: chartColors.brand },
+              areaStyle: { color: chartColors.brandArea },
+            },
+            {
+              name: t('assessment.dashboard.groupAvg'),
+              value: radarGroupValues,
+              symbol: 'none',
+              itemStyle: { color: chartColors.faint },
+              lineStyle: { width: 1.5, type: 'dashed', color: chartColors.faint },
+              areaStyle: { color: chartColors.faintArea },
+            },
+          ],
+        },
+      ],
+    }),
+    [radarUserValues, chartColors, t]
+  )
+
+  const trendOption = useMemo<EChartsCoreOption>(
+    () => ({
+      tooltip: { trigger: 'axis' },
+      legend: {
+        top: 0,
+        right: 8,
+        icon: 'circle',
+        itemWidth: 8,
+        itemHeight: 8,
+        textStyle: { color: chartColors.textSecondary, fontSize: 12 },
+      },
+      grid: { left: 8, right: 24, top: 40, bottom: 8, containLabel: true },
+      xAxis: {
+        type: 'category',
+        data: trendSeries.dates,
+        boundaryGap: false,
+        axisTick: { show: false },
+        axisLine: { lineStyle: { color: chartColors.border } },
+        axisLabel: { color: chartColors.faint, fontSize: 11 },
+      },
+      yAxis: {
+        type: 'value',
+        min: 0,
+        max: 100,
+        splitLine: { lineStyle: { color: chartColors.split } },
+        axisLabel: { color: chartColors.faint, fontSize: 11 },
+      },
+      series: trendSeries.series.map((s, idx) => ({
+        name: s.name,
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 7,
+        connectNulls: false,
+        data: s.values,
+        itemStyle: { color: readCssColor(s.color) },
+        lineStyle: { width: 2.5, color: readCssColor(s.color) },
+        areaStyle: { color: withAlpha(readCssColor(s.color), 0.12) },
+        emphasis: { focus: 'series' },
+        // 仅首条曲线绘制均值参考线，避免三条虚线互相干扰
+        markLine:
+          idx === 0
+            ? {
+                silent: true,
+                symbol: 'none',
+                lineStyle: { type: 'dashed', color: chartColors.faint },
+                label: {
+                  formatter: '均值 {c}',
+                  color: chartColors.faint,
+                  fontSize: 11,
+                  position: 'insideEndTop',
+                },
+                data: [{ type: 'average' }],
+              }
+            : undefined,
+      })),
+    }),
+    [trendSeries, chartColors]
+  )
+
+  const donutOption = useMemo<EChartsCoreOption>(
+    () => ({
+      tooltip: { trigger: 'item', formatter: '{b}：{c} 次（{d}%）' },
+      legend: {
+        orient: 'vertical',
+        right: '4%',
+        top: 'center',
+        icon: 'circle',
+        itemWidth: 9,
+        itemHeight: 9,
+        itemGap: 18,
+        textStyle: { color: chartColors.textSecondary, fontSize: 13 },
+      },
+      title: {
+        text: String(donutTotal),
+        subtext: t('assessment.dashboard.totalLabel'),
+        left: '27%',
+        top: '38%',
+        textAlign: 'center',
+        textStyle: { fontSize: 30, fontWeight: 800, color: chartColors.textHeading },
+        subtextStyle: { fontSize: 12, color: chartColors.faint },
+      },
+      series: [
+        {
+          type: 'pie',
+          radius: ['58%', '80%'],
+          center: ['27%', '50%'],
+          padAngle: 2,
+          itemStyle: { borderColor: chartColors.bgCard, borderWidth: 2, borderRadius: 8 },
+          label: { show: false },
+          labelLine: { show: false },
+          emphasis: {
+            scaleSize: 8,
+            label: {
+              show: true,
+              formatter: '{b}\n{d}%',
+              fontSize: 12,
+              fontWeight: 600,
+              color: chartColors.textHeading,
+            },
+          },
+          data: donutData,
+        },
+      ],
+    }),
+    [donutData, donutTotal, chartColors, t]
+  )
+
+  const radarRef = useECharts(radarOption)
+  const trendRef = useECharts(trendSeries.dates.length > 0 ? trendOption : null)
+  const donutRef = useECharts(donutData.length > 0 ? donutOption : null)
 
   // --- 进步对比（同量表历次分数变化） ---
   const progressComparison = useMemo(() => {
@@ -509,30 +659,7 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
                 </Tooltip>
               </div>
               <div className={`${styles.radarContainer} ${styles.radarLarge}`}>
-                <svg viewBox="0 0 200 200" className={styles.radarSvg}>
-                  {Array.from({ length: 5 }, (_, n) => (
-                    <polygon key={n} points={getRadarPoints((n + 1) * 20)} className={styles.radarBgPoly} />
-                  ))}
-                  {Array.from({ length: 6 }, (_, i) => {
-                    const { x, y } = polarXY(i, 80)
-                    return <line key={i} x1="100" y1="100" x2={x} y2={y} className={styles.radarAxis} />
-                  })}
-                  <polygon points={radarAvgPoints} className={styles.radarAvgPoly} />
-                  <polygon points={radarDataPoints} className={styles.radarDataPoly} />
-                  {radarLabels.map((label, i) => {
-                    const { x, y } = polarXY(i, 95)
-                    return (
-                      <text key={label} x={x} y={y} className={styles.radarLabel}>
-                        {label}
-                      </text>
-                    )
-                  })}
-                </svg>
-              </div>
-              <div className={styles.radarLegend}>
-                {/* dot 为跨 feature 共享协议类（全局 html.dark .dot 规则保留），保留字面量 */}
-                <div className={styles.legendItem}><span className="dot self" /> {t('assessment.dashboard.yourStatus')}</div>
-                <div className={styles.legendItem}><span className="dot avg" /> {t('assessment.dashboard.groupAvg')}</div>
+                <div ref={radarRef} className={styles.chartBox} />
               </div>
             </div>
           </div>
@@ -558,37 +685,14 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
                       </span>
                     ))}
                   </div>
-                  <div className={styles.chartLegend}>
-                    <span className={`${styles.legendDot} ${styles.phq}`} /> PHQ-9
-                    <span className={`${styles.legendDot} ${styles.gad}`} /> GAD-7
-                  </div>
                 </div>
               </div>
               <div className={`${styles.trendChartContainer} ${styles.trendLarge}`}>
-                <div className={styles.yAxis}>
-                  <span>{t('assessment.dashboard.high')}</span>
-                  <span>{t('assessment.dashboard.mid')}</span>
-                  <span>{t('assessment.dashboard.low')}</span>
-                </div>
-                <div className={styles.chartArea}>
-                  {trendAvgLine > 0 && (
-                    <div className={styles.avgLine} style={{ bottom: `${trendAvgLine}%` }}>
-                      <span className={styles.avgLabel}>
-                        {t('assessment.dashboard.avgLabel')} {trendAvgLine}%
-                      </span>
-                    </div>
-                  )}
-                  {trendData.map((point, idx) => (
-                    <div key={idx} className={styles.trendBarGroup}>
-                      {point.phq > 0 && <div className={`${styles.bar} ${styles.phq}`} style={{ height: `${point.phq}%` }} />}
-                      {point.gad > 0 && <div className={`${styles.bar} ${styles.gad}`} style={{ height: `${point.gad}%` }} />}
-                      <div className={styles.barDate}>{point.date}</div>
-                    </div>
-                  ))}
-                  {trendData.length === 0 && (
-                    <div className={styles.chartEmpty}>{t('assessment.dashboard.noTrendData')}</div>
-                  )}
-                </div>
+                {trendSeries.dates.length > 0 ? (
+                  <div ref={trendRef} className={styles.chartBox} />
+                ) : (
+                  <div className={styles.chartEmpty}>{t('assessment.dashboard.noTrendData')}</div>
+                )}
               </div>
             </div>
           </div>
@@ -599,33 +703,9 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
               <div className={styles.cardHeader}>
                 <h3><PieChartOutlined /> {t('assessment.dashboard.typeDist')}</h3>
               </div>
-              {categoryDistribution.length > 0 ? (
+              {donutData.length > 0 ? (
                 <div className={`${styles.donutWrapper} ${styles.donutLarge}`}>
-                  <svg viewBox="0 0 180 180" className={`${styles.donutSvg} ${styles.donutSvgLarge}`}>
-                    {/* SVG 展示属性不支持 var()，改用 style 以便分类色随主题切换 */}
-                    {donutSegments.map((seg, i) =>
-                      seg.isFull ? (
-                        <circle key={i} cx="90" cy="90" r="70" style={{ fill: seg.color }} opacity="0.85" />
-                      ) : (
-                        <path key={i} d={seg.path} style={{ fill: seg.color }} opacity="0.85" />
-                      )
-                    )}
-                    <text x="90" y="84" textAnchor="middle" className={styles.donutCenterVal}>
-                      {totalCompleted}
-                    </text>
-                    <text x="90" y="102" textAnchor="middle" className={styles.donutCenterLabel}>
-                      {t('assessment.dashboard.totalLabel')}
-                    </text>
-                  </svg>
-                  <div className={styles.donutLegend}>
-                    {categoryDistribution.map((d, i) => (
-                      <div key={i} className={styles.donutLegendItem}>
-                        <span className={styles.legendDot} style={{ background: d.color }} />
-                        <span className={styles.legendName}>{d.name}</span>
-                        <span className={styles.legendVal}>{d.value} ({d.percent}%)</span>
-                      </div>
-                    ))}
-                  </div>
+                  <div ref={donutRef} className={styles.chartBox} />
                 </div>
               ) : (
                 <div className={styles.chartEmptyState}>
@@ -787,7 +867,7 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
                 <Table
                   columns={historyColumns}
                   dataSource={filteredHistory}
-                  rowKey={(_, index) => String(index)}
+                  rowKey={(record) => String(record.id)}
                   pagination={false}
                   scroll={{ y: 500 }}
                   rowClassName={(_, index) => (index % 2 === 1 ? 'striped-row' : '')}

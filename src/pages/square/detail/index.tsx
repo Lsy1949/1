@@ -6,8 +6,8 @@ import { App, Button, Result, Skeleton } from 'antd'
 import { DetailBody, DetailComments, DetailHeader, DetailTopBar } from '@/features/square'
 import { ApiError } from '@/api'
 import { useI18n } from '@/i18n'
-import { useSquareComments, useCreateComment, useSquareFeed, useToggleCommentLike, useToggleLike } from './squareQuery'
-import './SquareDetailView.css'
+import { useSquareComments, useCreateComment, useSquareFeed, useToggleCommentLike, useToggleLike } from '../squareQuery'
+import './index.css'
 
 export function SquareDetailView() {
   const navigate = useNavigate()

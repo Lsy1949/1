@@ -8,8 +8,8 @@ import ReadProgress from '@/components/ReadProgress'
 import { CardGrid, CollectionGrid, SpotlightCard } from '@/features/article'
 import type { ArticleItem } from '@/features/article'
 import { useI18n } from '@/i18n'
-import { toArticleItem, useArticleList } from './articleQuery'
-import './ArticleCenterView.css'
+import { toArticleItem, useArticleList } from '../articleQuery'
+import './index.css'
 
 const ARTICLE_LIMIT = 6
 

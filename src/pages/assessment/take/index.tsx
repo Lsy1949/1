@@ -17,8 +17,8 @@ import {
 import { useNavigate, useParams } from 'react-router-dom'
 import { QuestionCard } from '@/features/assessment'
 import { useI18n } from '@/i18n'
-import { useAssessmentScale, useSubmitAssessment } from './assessmentQuery'
-import './AssessmentTakeView.css'
+import { useAssessmentScale, useSubmitAssessment } from '../assessmentQuery'
+import './index.css'
 
 /**
  * Vue → React 映射：

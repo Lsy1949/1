@@ -8,8 +8,8 @@ import { ListArchive, ListHeader } from '@/features/time-capsule'
 import type { CapsuleFilterType, ListArchiveRef } from '@/features/time-capsule'
 import { capsuleApi } from '@/api'
 import { useI18n } from '@/i18n'
-import { useCapsuleBoard } from './capsuleQuery'
-import './CapsuleListView.css'
+import { useCapsuleBoard } from '../capsuleQuery'
+import './index.css'
 
 export function CapsuleListView() {
   const router = useNavigate()

@@ -59,14 +59,3 @@
   line-height: 1.7;
   max-width: 640px;
 }
-
-.module-cover .cover-line {
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    var(--brand-primary) 0,
-    var(--brand-primary) 56px,
-    var(--mist-050) 56px,
-    var(--mist-050) 100%
-  );
-}

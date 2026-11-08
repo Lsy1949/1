@@ -339,6 +339,20 @@
   padding: 32px 0;
 }
 
+/* ECharts 容器：铺满父级既有高度类（radarLarge / trendLarge / donutLarge） */
+.chartBox {
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+}
+
+/* 移动端兜底：图表经 ResizeObserver 自适应，仅保证最小可视高度 */
+@media (max-width: 768px) {
+  .chartBox {
+    min-height: 220px;
+  }
+}
+
 /* KPI 摘要栏 · 编辑式数据条 */
 .kpiGrid {
   display: grid;

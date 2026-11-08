@@ -7,8 +7,8 @@ import { PlusOutlined } from '@ant-design/icons'
 import { CommunitySidebar, DailyPrompt, FeedList, ListHeader } from '@/features/square'
 import type { FeedItem } from '@/features/square'
 import { useI18n } from '@/i18n'
-import { useSquareInfo, useToggleLike } from './squareQuery'
-import './SquareListView.css'
+import { useSquareInfo, useToggleLike } from '../squareQuery'
+import './index.css'
 
 export function SquareListView() {
   const navigate = useNavigate()
