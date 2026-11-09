@@ -70,7 +70,8 @@ export default function ArticleDetailView() {
     if (detail) window.scrollTo({ top: 0, behavior: 'instant' })
   }, [detail])
 
-  const goToList = () => navigate('/articles/list')
+  // 返回文章列表（全部文章并入 /articles 双视图：列表视图）
+  const goToList = () => navigate('/articles?view=list')
   const openRelated = (relatedId: number) => navigate(`/articles/${relatedId}`)
 
   if (!id || isNotFound) return null

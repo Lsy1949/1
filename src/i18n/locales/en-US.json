@@ -774,9 +774,8 @@
   },
   "article": {
     "categories": {
-      "all": "Featured",
+      "featured": "Featured Picks",
       "daily": "Daily Picks",
-      "featured": "Featured Stories",
       "psychology": "Mental Health",
       "career": "Career Guide",
       "stories": "Growth Stories"
@@ -791,8 +790,8 @@
         "sub": "Daily selected high-quality content worth your time"
       },
       "featured": {
-        "title": "Featured Stories",
-        "sub": "In-depth featured stories for an immersive reading experience"
+        "title": "Featured Picks",
+        "sub": "Editor-selected in-depth reads worth returning to"
       },
       "psychology": {
         "title": "Mental Health",
@@ -822,6 +821,10 @@
     "grid": {
       "all": "All Articles",
       "viewAll": "View All"
+    },
+    "view": {
+      "grid": "Grid view",
+      "list": "List view"
     },
     "collections": {
       "title": "Topic Collections",

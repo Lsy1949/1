@@ -132,7 +132,31 @@ export default function MinePanel({
         levelProgress={levelProgress}
       />
 
-      {/* 历史测评时间轴 */}
+      {/* 我的勋章（测评历史移至面板最底部） */}
+      <div className="badges-section">
+        <div className={styles.sectionHeader}>
+          <h3><TrophyOutlined /> {t('assessment.profile.badgesTitle')}</h3>
+          <span className={styles.badgesCount}>
+            {unlockedBadges}/{badges.length} {t('assessment.profile.unlocked')}
+          </span>
+        </div>
+        <div className={styles.badgesGrid}>
+          {badges.map((badge) => (
+            <div
+              key={badge.key}
+              className={`${styles.badgeCard} ${badge.unlocked ? styles.unlocked : styles.locked}`}
+            >
+              <div className={styles.badgeIcon}>{badge.icon}</div>
+              <div className={styles.badgeInfo}>
+                <div className={styles.badgeName}>{badge.name}</div>
+                <div className={styles.badgeDesc}>{badge.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 历史测评时间轴（置底 + 最近 10 条） */}
       <div className="history-section">
         <div className={styles.sectionHeader}>
           <h3><ClockCircleOutlined /> {t('assessment.profile.historyTitle')}</h3>
@@ -144,7 +168,7 @@ export default function MinePanel({
         </div>
         {history.length > 0 ? (
           <div className={styles.timeline}>
-            {sortedHistory.map((record, idx) => (
+            {sortedHistory.slice(0, 10).map((record, idx) => (
               <div key={idx} className={styles.timelineItem}>
                 {/* dot- 为运行时动态等级类（协议类，保留字面量） */}
                 <div className={`${styles.timelineDot} dot-${record.levelTag}`} />
@@ -183,30 +207,6 @@ export default function MinePanel({
             </Empty>
           </div>
         )}
-      </div>
-
-      {/* 我的勋章 */}
-      <div className="badges-section">
-        <div className={styles.sectionHeader}>
-          <h3><TrophyOutlined /> {t('assessment.profile.badgesTitle')}</h3>
-          <span className={styles.badgesCount}>
-            {unlockedBadges}/{badges.length} {t('assessment.profile.unlocked')}
-          </span>
-        </div>
-        <div className={styles.badgesGrid}>
-          {badges.map((badge) => (
-            <div
-              key={badge.key}
-              className={`${styles.badgeCard} ${badge.unlocked ? styles.unlocked : styles.locked}`}
-            >
-              <div className={styles.badgeIcon}>{badge.icon}</div>
-              <div className={styles.badgeInfo}>
-                <div className={styles.badgeName}>{badge.name}</div>
-                <div className={styles.badgeDesc}>{badge.desc}</div>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   )

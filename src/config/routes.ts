@@ -14,8 +14,8 @@
  *  - 路由集合 1:1 对齐 Vue 版 router/pc.ts（迁移基线）；动态参数路由
  *    （:id）记录为模板形式，不作为菜单入口。
  */
-import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
-import { matchPath } from 'react-router-dom'
+import { createElement, lazy, type ComponentType, type LazyExoticComponent } from 'react'
+import { matchPath, Navigate } from 'react-router-dom'
 import type { TenantFeatures } from './tenant/types'
 
 export interface AppRouteConfig {
@@ -54,7 +54,11 @@ const SquareDetailView = lazy(() => import('@/pages/square/detail'))
 const AssessmentCenterView = lazy(() => import('@/pages/assessment/center'))
 const AssessmentTakeView = lazy(() => import('@/pages/assessment/take'))
 const ArticleCenterView = lazy(() => import('@/pages/article/center'))
-const ArticleListView = lazy(() => import('@/pages/article/list'))
+/** /articles/list 旧链接 → 统一文章中心列表视图（全部文章已并入 /articles 双视图，不再是独立页面） */
+const ArticleListRedirect = lazy(async () => {
+  const Redirect = () => createElement(Navigate, { to: '/articles?view=list', replace: true })
+  return { default: Redirect }
+})
 const ArticleDetailView = lazy(() => import('@/pages/article/detail'))
 const CounselingCenterView = lazy(() => import('@/pages/counseling/CounselingCenterView'))
 const AiConsultView = lazy(() => import('@/pages/ai/consult'))
@@ -85,7 +89,7 @@ export const APP_ROUTES: AppRouteConfig[] = [
 
   // ---- 心晴阅读 ----
   { path: 'articles', component: ArticleCenterView, feature: 'articles', group: '心晴阅读' },
-  { path: 'articles/list', component: ArticleListView, feature: 'articles', group: '心晴阅读' },
+  { path: 'articles/list', component: ArticleListRedirect, feature: 'articles', group: '心晴阅读' },
   { path: 'articles/:id', component: ArticleDetailView, feature: 'articles', group: '心晴阅读' },
 
   // ---- 咨询中心 ----

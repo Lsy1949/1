@@ -44,10 +44,14 @@ export const articleHandlers = [
 
       let list = articlesFor(tenantOf(request))
       if (category !== 'all') {
+        // featured=精选推荐（featured 标记）；daily=每日精选（按发布日期取最近 5 篇，
+        // 与 featured 数据集差异化，避免两个 tab 内容完全相同）
         list =
-          category === 'daily' || category === 'featured'
+          category === 'featured'
             ? list.filter(a => a.featured)
-            : list.filter(a => a.category === category)
+            : category === 'daily'
+              ? [...list].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 5)
+              : list.filter(a => a.category === category)
       }
       if (keyword) {
         list = list.filter(

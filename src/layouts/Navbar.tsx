@@ -48,7 +48,8 @@ function handleNav(navigate: ReturnType<typeof useNavigate>, item: MenuItemDTO):
   // 处理文章资讯跳转
   if (item.key === 'articles' || item.key === 'article-list' || ['daily', 'featured', 'psychology', 'career', 'stories'].includes(item.key)) {
     if (item.key === 'article-list') {
-      navigate('/articles/list')
+      // 全部文章不再是独立页面：跳统一文章中心的列表视图
+      navigate('/articles?view=list')
     } else if (item.key === 'articles') {
       navigate('/articles')
     } else {

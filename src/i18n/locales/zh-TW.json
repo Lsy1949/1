@@ -774,9 +774,8 @@
   },
   "article": {
     "categories": {
-      "all": "精選推薦",
+      "featured": "精選推薦",
       "daily": "每日精選",
-      "featured": "專題報導",
       "psychology": "心理科普",
       "career": "生涯導航",
       "stories": "成長故事"
@@ -791,8 +790,8 @@
         "sub": "每日甄選的高品質內容，值得你花時間閱讀"
       },
       "featured": {
-        "title": "專題報導",
-        "sub": "深度專題報導，沉浸式閱讀體驗"
+        "title": "精選推薦",
+        "sub": "編輯部甄選的深度好文，值得反覆閱讀"
       },
       "psychology": {
         "title": "心理科普",
@@ -822,6 +821,10 @@
     "grid": {
       "all": "全部文章",
       "viewAll": "查看全部"
+    },
+    "view": {
+      "grid": "網格檢視",
+      "list": "列表檢視"
     },
     "collections": {
       "title": "專題合集",

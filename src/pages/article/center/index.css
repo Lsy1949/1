@@ -110,23 +110,30 @@
 }
 
 /* ===== 导读栏 · sticky 紧贴 navbar（滚动后 navbar 64px）===== */
+/* 背景用 --bg-page（非 --bg-card）：与页面无缝同色、随主题自动适配，sticky 需遮挡滚动内容 */
 .discovery-ribbon {
-  background: var(--bg-card);
+  background: var(--bg-page);
   border-bottom: 1px solid var(--border-light);
-  padding: 14px 0;
   position: sticky;
   top: 64px;
   z-index: 100;
 }
 
+/* 单行布局：分类轨道（弹性占位）· 全部文章入口 · 竖分隔线 · 视图切换组 */
 .ribbon-container {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .ribbon-scroll {
   display: flex;
-  gap: 36px;
-  overflow-x: clip;
+  align-items: center;
+  gap: 30px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
   scrollbar-width: none;
 }
 
@@ -138,27 +145,29 @@
   display: none;
 }
 
+/* 分类项：内边距撑高整条 ribbon，active 下划线贴底边（无负值 hack） */
 .ribbon-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-standard);
   position: relative;
-  padding: 6px 0;
+  padding: 17px 2px;
   opacity: 0.45;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+  white-space: nowrap;
 }
 
 .item-num {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--text-faint);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
 .item-label {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: var(--text-primary);
   font-weight: 500;
   white-space: nowrap;
@@ -167,7 +176,7 @@
 .ribbon-item::after {
   content: '';
   position: absolute;
-  bottom: -15px;
+  bottom: -1px; /* 压住 border-bottom，视觉上与之融合 */
   left: 0;
   width: 100%;
   height: 2px;
@@ -259,10 +268,59 @@
   }
 
   .ribbon-scroll {
-    gap: 28px;
+    gap: 22px;
+  }
+
+  .ribbon-container {
+    gap: 12px;
   }
 
   .search-wrapper {
     margin-bottom: 48px;
   }
+}
+
+/* ===== 视图切换 · 连体按钮组（网格 / 列表） ===== */
+.view-toggle {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.view-btn {
+  width: 38px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-faint);
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0;
+  transition: all var(--duration-fast) var(--ease-standard);
+}
+
+/* 连体内衬线：两枚按钮之间的共享边界 */
+.view-btn + .view-btn {
+  border-left: 1px solid var(--border-light);
+}
+
+.view-btn:hover {
+  color: var(--brand-primary);
+  background: var(--brand-primary-faint);
+}
+
+.view-btn.active {
+  color: var(--brand-primary);
+  background: var(--brand-primary-faint);
+}
+
+/* 列表视图容器：与网格视图共用上下留白节奏 */
+.article-list-content {
+  margin-bottom: 8px;
 }

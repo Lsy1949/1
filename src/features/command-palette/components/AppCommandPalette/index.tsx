@@ -56,7 +56,7 @@ export function AppCommandPalette() {
     const navItems: AppCmdItem[] = [
       { id: 'nav-home', title: t('command.nav.home'), desc: t('command.nav.homeDesc'), group: 'navigation', to: '/' },
       { id: 'nav-articles', title: t('command.nav.articles'), desc: t('command.nav.articlesDesc'), group: 'navigation', to: '/articles' },
-      { id: 'nav-article-list', title: t('command.nav.articleList'), desc: t('command.nav.articleListDesc'), group: 'navigation', to: '/articles/list' },
+      { id: 'nav-article-list', title: t('command.nav.articleList'), desc: t('command.nav.articleListDesc'), group: 'navigation', to: '/articles?view=list' },
       { id: 'nav-assessment', title: t('command.nav.assessment'), desc: t('command.nav.assessmentDesc'), group: 'navigation', to: '/assessment' },
       { id: 'nav-counseling', title: t('command.nav.counseling'), desc: t('command.nav.counselingDesc'), group: 'navigation', to: '/counseling' },
       { id: 'nav-capsule', title: t('command.nav.capsule'), desc: t('command.nav.capsuleDesc'), group: 'navigation', to: '/time-capsule' },

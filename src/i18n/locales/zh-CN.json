@@ -774,9 +774,8 @@
   },
   "article": {
     "categories": {
-      "all": "精选推荐",
+      "featured": "精选推荐",
       "daily": "每日精选",
-      "featured": "专题报道",
       "psychology": "心理科普",
       "career": "生涯导航",
       "stories": "成长故事"
@@ -791,8 +790,8 @@
         "sub": "每日甄选的高质量内容，值得你花时间阅读"
       },
       "featured": {
-        "title": "专题报道",
-        "sub": "深度专题报道，沉浸式阅读体验"
+        "title": "精选推荐",
+        "sub": "编辑部甄选的深度好文，值得反复阅读"
       },
       "psychology": {
         "title": "心理科普",
@@ -822,6 +821,10 @@
     "grid": {
       "all": "全部文章",
       "viewAll": "查看全部"
+    },
+    "view": {
+      "grid": "网格视图",
+      "list": "列表视图"
     },
     "collections": {
       "title": "专题合集",

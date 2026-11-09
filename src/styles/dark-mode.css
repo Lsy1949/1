@@ -515,22 +515,11 @@ html.dark .immersive-assessment .loading-box {
   border-color: transparent !important;
 }
 /* ---------- ArticleCenter / ArticleList / ArticleDetail 卡片融入背景 ---------- */
-html.dark .article-center .discovery-ribbon,
-html.dark .article-list-page .discovery-ribbon {
-  background: transparent !important;
-  border-color: transparent !important;
-  border-bottom-color: rgb(255, 255, 255, 0.06) !important;
-}
+/* 注：discovery-ribbon 基础样式已改用 --bg-page（随主题自适应），无需暗色覆写 */
 
-html.dark .article-center .search-box,
-html.dark .article-list-page .search-box {
+html.dark .article-center .search-box {
   background: rgb(255, 255, 255, 0.04) !important;
   border-color: rgb(255, 255, 255, 0.08) !important;
-}
-
-html.dark .article-list-page .back-link {
-  background: var(--brand-primary-bright-bg) !important;
-  border-color: color-mix(in srgb, var(--brand-primary-bright) 15%, transparent) !important;
 }
 }
 
