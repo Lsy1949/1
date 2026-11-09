@@ -339,14 +339,75 @@
   padding: 32px 0;
 }
 
-/* ECharts 容器：铺满父级既有高度类（radarLarge / trendLarge / donutLarge） */
+/* 图表容器（@ant-design/plots 组件挂载点）：铺满父级既有高度类（radarLarge / trendLarge / donutChartWrap） */
 .chartBox {
   width: 100%;
   height: 100%;
   min-height: 260px;
 }
 
-/* 移动端兜底：图表经 ResizeObserver 自适应，仅保证最小可视高度 */
+/* 环形图区：图表 + 中心总计 overlay */
+.donutChartWrap {
+  position: relative;
+  flex: 1 1 55%;
+  min-width: 280px;
+  min-height: 280px;
+}
+
+.donutCenter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.donutCenterNum {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text-heading);
+}
+
+.donutCenterLabel {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+/* 环形图例：自绘（右侧垂直排布），与中心总计布局解耦 */
+.donutLegend {
+  margin: 0;
+  padding: 0 16px 0 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.donutLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.donutLegendDot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.donutLegendCount {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+/* 移动端兜底：图表容器自适应（plots 组件自带 autoFit），仅保证最小可视高度 */
 @media (max-width: 768px) {
   .chartBox {
     min-height: 220px;
@@ -1094,6 +1155,10 @@
 
 @media (width <= 900px) {
   .dashboardLayout { flex-direction: column; }
+
+  /* align-items:flex-start 使 column 布局下内容区宽度塌缩为内容宽，
+     显式拉满交叉轴（图表 canvas 依赖容器实际宽度自适应） */
+  .dashboardContent { width: 100%; }
 
   .dashboardSidebar {
     width: 100%;

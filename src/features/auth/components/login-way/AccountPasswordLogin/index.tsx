@@ -11,7 +11,7 @@ import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { App as AntApp, Button, Checkbox, Form, Input, Select } from 'antd'
 import { BankOutlined, LockOutlined, UserOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { useAuthLogin } from '@/features/auth/hooks/useAuth'
 import { fetchPublicTenants } from '@/api/modules/auth'
 import { resolveTenantId } from '@/config/tenant/resolve'
@@ -54,7 +54,7 @@ export function AccountPasswordLogin({
   onSwitchToForgotPassword,
   onLoginSuccess,
 }: AccountPasswordLoginProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = AntApp.useApp() // 替代 ElMessage
 
   const [form] = Form.useForm<LoginFormState>()

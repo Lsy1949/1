@@ -5,13 +5,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { App, Button, Result, Skeleton } from 'antd'
 import { ApiError, capsuleApi } from '@/api'
 import { DetailBody, DetailHeader } from '@/features/time-capsule'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import './index.css'
 
 export function CapsuleDetailView() {
   const router = useNavigate()
   const { id } = useParams<{ id: string }>()
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = App.useApp()
   const queryClient = useQueryClient()
 

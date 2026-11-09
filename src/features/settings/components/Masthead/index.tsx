@@ -1,5 +1,5 @@
 // 设置页报头 · 编辑式 masthead + 目录索引
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { MastheadSection } from '../types'
 import styles from './Masthead.module.css'
 
@@ -10,7 +10,7 @@ export interface MastheadProps {
 }
 
 export function Masthead({ sections, activeSection, onNavigate }: MastheadProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <header className={styles.masthead}>

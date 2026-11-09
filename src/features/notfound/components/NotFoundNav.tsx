@@ -3,7 +3,7 @@
  * 导航链接用 react-router <Link> 恢复链接语义；logo 由父级 onNavigate 处理
  */
 import { Link } from 'react-router-dom'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import './NotFoundNav.css'
 
 export interface NotFoundNavProps {
@@ -15,9 +15,10 @@ export interface NotFoundNavProps {
 }
 
 export function NotFoundNav({ scrolled, dark, onNavigate }: NotFoundNavProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
-  const navLinks = [
+  // key 标注字面量：模板字符串 t(`notFound.nav.${key}`) 可推导出精确字典键
+  const navLinks: ReadonlyArray<{ key: 'home' | 'career' | 'treehole' | 'about'; route: string }> = [
     { key: 'home', route: '/' },
     { key: 'career', route: '/assessment' },
     { key: 'treehole', route: '/square' },
@@ -28,12 +29,12 @@ export function NotFoundNav({ scrolled, dark, onNavigate }: NotFoundNavProps) {
     <nav className={`nf-nav${scrolled ? ' scrolled' : ''}${dark ? ' is-dark-slide' : ''}`}>
       <div className="nf-nav-inner">
         <button type="button" className="nf-nav-logo btn-reset" onClick={() => onNavigate?.('/')}>
-          生涯心旅
+          {t('nav.brand')}
         </button>
         <div className="nf-nav-links">
           {navLinks.map((link) => (
             <Link key={link.key} className="nf-nav-link" to={link.route}>
-              {t('notFound.nav.' + link.key)}
+              {t(`notFound.nav.${link.key}`)}
             </Link>
           ))}
         </div>

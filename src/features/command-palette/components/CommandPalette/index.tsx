@@ -6,6 +6,7 @@
  * - 分层约束：禁止依赖 @/api、@/stores、@/realtime、@/events、路由库
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { CommandPaletteProps, PaletteItem } from './types'
 import styles from './CommandPalette.module.css'
 
@@ -24,11 +25,12 @@ function fuzzyMatch(text: string, q: string): boolean {
 export function CommandPalette({
   open = false,
   items = [],
-  placeholder = '搜索…',
+  placeholder,
   groupLabels = {},
   onUpdateOpen,
   onSelect,
 }: CommandPaletteProps) {
+  const { t } = useTranslation()
   const [query, setQuery] = useState('')
   const [selIndex, setSelIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -198,15 +200,15 @@ export function CommandPalette({
           /* 空状态 */
           <div className={styles.cmdEmpty}>
             <span className={styles.cmdEmptyEyebrow}>— No Match</span>
-            <p className={styles.cmdEmptyText}>没有找到「{query}」相关内容</p>
+            <p className={styles.cmdEmptyText}>{t('command.empty', { query })}</p>
           </div>
         )}
 
         {/* 底部提示 */}
         <div className={styles.cmdFooter}>
-          <span className={styles.cmdFooterHint}><kbd>↑</kbd><kbd>↓</kbd> 导航</span>
-          <span className={styles.cmdFooterHint}><kbd>↵</kbd> 选择</span>
-          <span className={styles.cmdFooterHint}><kbd>ESC</kbd> 关闭</span>
+          <span className={styles.cmdFooterHint}><kbd>↑</kbd><kbd>↓</kbd> {t('command.navigate')}</span>
+          <span className={styles.cmdFooterHint}><kbd>↵</kbd> {t('command.select')}</span>
+          <span className={styles.cmdFooterHint}><kbd>ESC</kbd> {t('command.close')}</span>
         </div>
       </div>
     </div>

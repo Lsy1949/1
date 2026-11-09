@@ -8,6 +8,7 @@
  */
 import { useEffect, useRef, useState } from 'react'
 import type { MouseEvent as ReactMouseEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { readCssColor } from '@/utils/cssVar'
 
 interface StarPoint {
@@ -21,6 +22,7 @@ export interface GameStarProps {
 }
 
 export function GameStar(_props: GameStarProps) {
+  const { t } = useTranslation()
   const starCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const [starLevel, setStarLevel] = useState(1)
   const [starConnected, setStarConnected] = useState(0)
@@ -230,13 +232,13 @@ export function GameStar(_props: GameStarProps) {
         <canvas ref={starCanvasRef} className="nf-game-canvas" onClick={handleStarClick} />
         {starClear && (
           <div className="nf-game-clear nf-fade-enter">
-            <span className="nf-game-clear-text">连珠</span>
-            <span className="nf-game-clear-hint">进入下一关</span>
+            <span className="nf-game-clear-text">{t('notFound.games.starClear')}</span>
+            <span className="nf-game-clear-hint">{t('notFound.games.nextLevel')}</span>
           </div>
         )}
       </div>
       <div className="nf-game-hint">
-        <span className="nf-game-hint-text">按序号依次点击星辰 · 连成星轨</span>
+        <span className="nf-game-hint-text">{t('notFound.games.starHint')}</span>
       </div>
     </div>
   )

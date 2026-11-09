@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import './ForbiddenView.css'
 
 /**
@@ -8,7 +8,7 @@ import './ForbiddenView.css'
  */
 export function ForbiddenView() {
   const navigate = useNavigate()
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <div className="fb-page">

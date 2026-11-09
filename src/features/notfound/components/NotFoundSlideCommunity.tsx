@@ -7,7 +7,7 @@
 import { useState } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { useRef } from 'react'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import './NotFoundSlideCommunity.css'
 
 interface NoteItem {
@@ -25,7 +25,7 @@ export interface NotFoundSlideCommunityProps {
 }
 
 export function NotFoundSlideCommunity(_props: NotFoundSlideCommunityProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   /* ---------- 社区笔记数据 ---------- */
   const noteIdCounterRef = useRef(100)

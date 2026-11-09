@@ -7,7 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { App } from 'antd'
 import { assessmentApi } from '@/api'
 import type { AssessmentSubmitInput } from '@/features/assessment'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 
 export function useAssessmentScales() {
   return useQuery({
@@ -34,7 +34,7 @@ export function useAssessmentHistory() {
 
 /** 提交测评：计分在服务端，成功后刷新历史 */
 export function useSubmitAssessment() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = App.useApp()
   const queryClient = useQueryClient()
 
@@ -50,7 +50,7 @@ export function useSubmitAssessment() {
 
 /** 清空历史记录 */
 export function useClearAssessmentHistory() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = App.useApp()
   const queryClient = useQueryClient()
 

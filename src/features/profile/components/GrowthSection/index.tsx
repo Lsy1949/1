@@ -1,7 +1,7 @@
 // 04 成长足迹区块 · 概览 + 徽章墙 + 分年时间线
 import { useMemo } from 'react'
 import { EyeOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { GrowthItem } from '../types'
 import styles from './GrowthSection.module.css'
 
@@ -10,7 +10,7 @@ export interface GrowthSectionProps {
 }
 
 export function GrowthSection({ onViewAll }: GrowthSectionProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   const growthTimeline = useMemo(() => [
     { type: 'milestone', kind: 'M', text: t('profile.card.growth.items.milestone') + ' · 100', date: '2025-06-20' },

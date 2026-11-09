@@ -1,7 +1,7 @@
 /**
  * CSS 变量读取工具
  *
- * 适用场景：canvas 绘制、SVG 展示属性、第三方图表（ECharts）等
+ * 适用场景：canvas 绘制、SVG 展示属性、第三方图表（@ant-design/plots）等
  * **必须拿到解析后实色**、无法直接使用 `var()` 表达式的地方。
  *
  * 实现：把颜色表达式临时挂到探针元素上，用 getComputedStyle 读回解析结果。

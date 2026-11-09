@@ -1,7 +1,7 @@
 /**
  * 【business】NotFoundSlideQuote —— Slide 2：Pull Quote 引语区（深蓝渐变，纯展示）
  */
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import './NotFoundSlideQuote.css'
 
 export interface NotFoundSlideQuoteProps {
@@ -9,7 +9,7 @@ export interface NotFoundSlideQuoteProps {
 }
 
 export function NotFoundSlideQuote(_props: NotFoundSlideQuoteProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <section className="nf-slide nf-slide-quote">

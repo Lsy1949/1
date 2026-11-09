@@ -20,7 +20,7 @@ import {
   MailOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import {
   useResetPassword,
   useSendEmailCode,
@@ -70,7 +70,7 @@ const initialValues: Partial<ForgotPasswordFormState> = {
 }
 
 export function ForgotPasswordForm({ onSwitchToLogin }: ForgotPasswordFormProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = AntApp.useApp()
 
   const [form] = Form.useForm<ForgotPasswordFormState>()

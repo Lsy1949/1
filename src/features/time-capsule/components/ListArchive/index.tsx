@@ -5,7 +5,8 @@ import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerE
 import { App as AntApp } from 'antd'
 import { DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons'
 import { useReveal } from '@/hooks/useReveal'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import type { CapsuleFilterType, CapsuleItem, CapsuleStats } from '../types'
 import styles from './ListArchive.module.css'
 
@@ -27,7 +28,7 @@ export interface ListArchiveRef {
 const DELETE_WIDTH = 92
 const REVEAL_THRESHOLD = 40
 
-type Translate = (key: string, params?: Record<string, unknown>) => string
+type Translate = TFunction
 
 function statusKey(item: CapsuleItem): string {
   if (item.auditStatus === 0) return 'auditing'
@@ -73,7 +74,7 @@ function ArchiveEntry({
   onPointerUp,
   onDelete,
 }: ArchiveEntryProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const revealRef = useReveal<HTMLDivElement>({ delay: index * 50 })
 
   // 键盘路径：Enter/Space 等价点击（展开/收起），Delete/Backspace 直接走删除二次确认
@@ -167,7 +168,7 @@ export const ListArchive = forwardRef<ListArchiveRef, ListArchiveProps>(
     { capsules, stats, filterType, onFilterChange, onOpen, onCreate, onDelete },
     ref,
   ) {
-    const { t } = useI18n()
+    const { t } = useTranslation()
     const { modal } = AntApp.useApp() // 替代 ElMessageBox
 
     const statsBarRef = useReveal<HTMLDivElement>({ delay: 140 })

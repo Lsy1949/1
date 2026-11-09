@@ -6,6 +6,7 @@
  * - Vue 源无 <style> 块，舞台共用样式见 NotFoundGameStage.css
  */
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { readCssColor } from '@/utils/cssVar'
 
 interface MazeCell {
@@ -28,6 +29,7 @@ export interface GameMazeProps {
 
 export const GameMaze = forwardRef<GameMazeHandle, GameMazeProps>(
   function GameMaze(_props, ref) {
+    const { t } = useTranslation()
     const gameCanvasRef = useRef<HTMLCanvasElement | null>(null)
     const [gameLevel, setGameLevel] = useState(1)
     const [gameSteps, setGameSteps] = useState(0)
@@ -370,8 +372,8 @@ export const GameMaze = forwardRef<GameMazeHandle, GameMazeProps>(
           <canvas ref={gameCanvasRef} className="nf-game-canvas" />
           {gameClear && (
             <div className="nf-game-clear nf-fade-enter">
-              <span className="nf-game-clear-text">通关</span>
-              <span className="nf-game-clear-hint">进入下一关</span>
+              <span className="nf-game-clear-text">{t('notFound.games.mazeClear')}</span>
+              <span className="nf-game-clear-hint">{t('notFound.games.nextLevel')}</span>
             </div>
           )}
         </div>
@@ -380,7 +382,7 @@ export const GameMaze = forwardRef<GameMazeHandle, GameMazeProps>(
           <span className="nf-game-key">↓</span>
           <span className="nf-game-key">←</span>
           <span className="nf-game-key">→</span>
-          <span className="nf-game-hint-text">方向键移动 · 寻找蓝色出口</span>
+          <span className="nf-game-hint-text">{t('notFound.games.mazeHint')}</span>
         </div>
       </div>
     )

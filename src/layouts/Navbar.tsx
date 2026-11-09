@@ -15,8 +15,9 @@ import {
 } from '@ant-design/icons'
 import { useTheme, type ThemeMode } from '@/hooks/useTheme'
 import { useLocale } from '@/hooks/useLocale'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { AppLocale } from '@/i18n'
+import type { I18nKey } from '@/i18n/dataHelper'
 import { useCommandPalette } from '@/features/command-palette'
 import { useUserStore } from '@/stores/useUserStore'
 import { logout } from '@/features/auth'
@@ -99,7 +100,7 @@ export default function Navbar() {
   const { items: menuItems } = useMenu()
   const { themeMode, setThemeMode } = useTheme()
   const { locale, setLocale } = useLocale()
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { toggle: togglePalette } = useCommandPalette()
   const { transparentNavbar: isTransparentPage } = useLayoutMeta()
   const [isScrolled, setIsScrolled] = useState(false)
@@ -158,7 +159,7 @@ export default function Navbar() {
   }
 
   // ---------- 主题 / 语言切换（切换后主动播报，读屏用户无焦点变化也能感知） ----------
-  const localeLabelKeys: Record<AppLocale, string> = {
+  const localeLabelKeys: Record<AppLocale, I18nKey> = {
     'zh-CN': 'settings.card.preferences.zhCN',
     'zh-TW': 'settings.card.preferences.zhTW',
     'en-US': 'settings.card.preferences.enUS'
@@ -166,7 +167,8 @@ export default function Navbar() {
 
   function changeTheme(next: ThemeMode | 'auto') {
     setThemeMode(next)
-    announce(t('a11y.themeSwitched', { theme: t(`nav.theme.${next}`) }))
+    // 旧 API 'auto' 与内部 'system' 共用 nav.theme.auto 文案
+    announce(t('a11y.themeSwitched', { theme: t(`nav.theme.${next}` as I18nKey) }))
   }
 
   function changeLocale(next: AppLocale) {
@@ -264,7 +266,8 @@ export default function Navbar() {
   // ---------- 移动端抽屉折叠面板（等价 el-collapse accordion；菜单来自 useMenu，子项为 DTO 扁平列表） ----------
   const mobileMenuItems: CollapseProps['items'] = menuItems.map((menu) => ({
     key: menu.key,
-    label: <span className="mobile-collapse-title">{t(menu.i18nKey)}</span>,
+    // i18nKey 为后端下发字段：运行时未识别 key 由 i18next 回退显示 key 本身（与旧实现一致）
+    label: <span className="mobile-collapse-title">{t(menu.i18nKey as I18nKey)}</span>,
     children: (
       <>
         {/* 增加跳转到中心页面的入口 */}
@@ -277,7 +280,7 @@ export default function Navbar() {
           {(menu.children ?? []).map((item) => (
             <button type="button" key={item.key} className="mobile-item btn-reset" onClick={onNavClick(item)}>
               <span className="mobile-item-dot" />
-              {t(item.i18nKey)}
+              {t(item.i18nKey as I18nKey)}
             </button>
           ))}
         </div>
@@ -306,7 +309,7 @@ export default function Navbar() {
             {menuItems.map((menu) => (
               <div key={menu.key} className="menu-item-group">
                 <div className="menu-item" onClick={onNavClick(menu)}>
-                  {t(menu.i18nKey)}
+                  {t(menu.i18nKey as I18nKey)}
                   <DownOutlined className="arrow-icon" />
                 </div>
                 {/* Mega Menu（子项为 DTO 扁平列表，单列渲染） */}
@@ -320,7 +323,7 @@ export default function Navbar() {
                             className="mega-item"
                             onClick={onNavClick(item)}
                           >
-                            {t(item.i18nKey)}
+                            {t(item.i18nKey as I18nKey)}
                           </li>
                         ))}
                       </ul>

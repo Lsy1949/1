@@ -23,7 +23,8 @@ import {
 } from 'antd'
 import CSSMotion from '@rc-component/motion'
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
+import type { I18nKey } from '@/i18n/dataHelper'
 import { debounce } from '@/utils/debounce'
 import { loginMotions } from '../../motion'
 import AccountPasswordLogin from '../login-way/AccountPasswordLogin'
@@ -57,7 +58,7 @@ function LoginHeader({
   desc: string
   onBack?: () => void
 }) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   return (
     <Flex vertical align="flex-start" gap={6} className={styles.loginHeader}>
       <Tag variant="filled" className={styles.headerBadge}>
@@ -87,7 +88,7 @@ function LoginHeader({
 }
 
 export function LoginForm({ onLoginSuccess }: LoginFormProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = AntApp.useApp() // 替代 ElMessage
 
   const [view, setView] = useState<LoginView>('login')
@@ -140,9 +141,9 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps) {
             {({ style: viewStyle }) => (
               <div style={viewStyle}>
                 <LoginHeader
-                  badge={t(`login.header.${view === 'login' ? 'badge' : `${view}Badge`}`)}
-                  title={t(`login.header.${view === 'login' ? 'title' : `${view}Title`}`)}
-                  desc={t(`login.header.${view === 'login' ? 'desc' : `${view}Desc`}`)}
+                  badge={t(`login.header.${view === 'login' ? 'badge' : `${view}Badge`}` as I18nKey)}
+                  title={t(`login.header.${view === 'login' ? 'title' : `${view}Title`}` as I18nKey)}
+                  desc={t(`login.header.${view === 'login' ? 'desc' : `${view}Desc`}` as I18nKey)}
                   onBack={view === 'login' ? undefined : () => setView('login')}
                 />
 

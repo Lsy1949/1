@@ -1,5 +1,5 @@
 // 广场列表页 · 编辑式标题区 + 实时统计
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './ListHeader.module.css'
 
 export interface ListHeaderProps {
@@ -9,7 +9,7 @@ export interface ListHeaderProps {
 }
 
 export function ListHeader({ onlineCount, todayNewCount, interactions }: ListHeaderProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <header className={styles.pageHeader}>

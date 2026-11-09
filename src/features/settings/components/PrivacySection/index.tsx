@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'react'
 import { App as AntApp, Switch } from 'antd'
 import { CheckOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './PrivacySection.module.css'
 
 interface PrivacyState {
@@ -12,7 +12,7 @@ interface PrivacyState {
 }
 
 export function PrivacySection() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = AntApp.useApp() // 替代 ElMessage
 
   const [privacy, setPrivacy] = useState<PrivacyState>({

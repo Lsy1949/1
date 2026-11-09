@@ -2,7 +2,7 @@
  * 【business】NotFoundHero —— 404 首屏杂志封面 + 小游戏选择器
  * activeGame 非空时整体淡出（stage-out），把舞台让给游戏
  */
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { games } from './games'
 import './NotFoundHero.css'
 
@@ -13,7 +13,7 @@ export interface NotFoundHeroProps {
 }
 
 export function NotFoundHero({ activeGame, onEnter }: NotFoundHeroProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     // 404 内容（可切换隐藏）

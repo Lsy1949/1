@@ -6,7 +6,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { LeftOutlined, RightOutlined, DownOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { CarouselSlide } from '../types'
 import styles from './Carousel.module.css'
 
@@ -18,7 +18,7 @@ export interface CarouselProps {
 }
 
 export function Carousel({ slides, onSlideAction, onLearnMore, onScrollDown }: CarouselProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   // 轮播图相关状态（渲染依赖用 state，逻辑锁/高频值用 ref）
   const [currentIndex, setCurrentIndex] = useState(1) // 从1开始，因为0是克隆的末尾项

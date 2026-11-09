@@ -10,7 +10,7 @@ import {
   SendOutlined,
   StarFilled,
 } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { AssessmentRecord, ScaleDetail, ScaleInfo } from '../types'
 import styles from './ScaleDialog.module.css'
 
@@ -42,7 +42,7 @@ export default function ScaleDialog({
   onDownload,
   onShare,
 }: Props) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   // 介绍模式数据（详情优先，缺失时回退目录项）
   const currentScale = useMemo(() => scaleDetail ?? null, [scaleDetail])
@@ -50,7 +50,7 @@ export default function ScaleDialog({
 
   // 分数单位：MBTI 显示「类型」，其余显示「分」
   const scoreUnit = useMemo(
-    () => (result?.scaleKey === 'mbti' ? '类型' : t('assessment.unit.score')),
+    () => (result?.scaleKey === 'mbti' ? t('assessment.unit.type') : t('assessment.unit.score')),
     [result, t]
   )
 
@@ -58,27 +58,27 @@ export default function ScaleDialog({
   const mbtiScores = useMemo(() => {
     if (!result || result.scaleKey !== 'mbti') return []
     const d = result.details
-    const pairs = [['E', 'I'], ['S', 'N'], ['T', 'F'], ['J', 'P']]
-    const names: Record<string, string> = { E: '外向', I: '内向', S: '实感', N: '直觉', T: '思考', F: '情感', J: '判断', P: '感知' }
+    // 字面量对组：p[0]/p[1] 为维度字面量，模板字符串可推导出精确字典键
+    const pairs = [['E', 'I'], ['S', 'N'], ['T', 'F'], ['J', 'P']] as const
     return pairs.map((p) => {
       const leftVal = d[p[0]]
       const rightVal = d[p[1]]
       const total = leftVal + rightVal || 1
       const isLeft = leftVal >= rightVal
       return {
-        left: names[p[0]],
-        right: names[p[1]],
+        left: t(`assessment.mbti.${p[0]}`),
+        right: t(`assessment.mbti.${p[1]}`),
         percent: (Math.max(leftVal, rightVal) / total) * 100,
         isLeft,
       }
     })
-  }, [result])
+  }, [result, t])
 
   // RIASEC 六维度条
   const riasecScores = useMemo(() => {
     if (!result || result.scaleKey !== 'riasec') return []
     const d = result.details
-    const names: Record<string, string> = { R: '现实', I: '研究', A: '艺术', S: '社会', E: '企业', C: '常规' }
+    const keys = ['R', 'I', 'A', 'S', 'E', 'C'] as const
     const colors: Record<string, string> = {
       R: 'var(--cat-red)',
       I: 'var(--cat-blue)',
@@ -87,8 +87,8 @@ export default function ScaleDialog({
       E: 'var(--cat-gold)',
       C: 'var(--cat-gray)',
     }
-    return Object.keys(names).map((k) => ({ key: k, name: names[k], score: d[k], color: colors[k] }))
-  }, [result])
+    return keys.map((k) => ({ key: k, name: t(`assessment.riasec.${k}`), score: d[k], color: colors[k] }))
+  }, [result, t])
 
   function getLevelColor(tag: string) {
     const map: Record<string, string> = {

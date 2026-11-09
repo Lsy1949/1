@@ -1,7 +1,7 @@
 // 今日焦点卡（ArticleCenterView），点击上抛 onOpen
 import { ArrowRightOutlined } from '@ant-design/icons'
 import InitialAvatar from '@/components/InitialAvatar'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { ArticleItem } from '../types'
 import styles from './SpotlightCard.module.css'
 
@@ -11,7 +11,7 @@ interface SpotlightCardProps {
 }
 
 export function SpotlightCard({ article, onOpen }: SpotlightCardProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <div className={styles.moduleSpotlight}>

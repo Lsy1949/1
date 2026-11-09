@@ -2,7 +2,7 @@
 import { useMemo } from 'react'
 import { ShareAltOutlined, StarFilled } from '@ant-design/icons'
 import { useReveal } from '@/hooks/useReveal'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { ArticleItem } from '../types'
 import styles from './RichBody.module.css'
 
@@ -15,7 +15,7 @@ interface RichBodyProps {
 }
 
 export function RichBody({ article, liked, onToggleLike, onToggleBookmark }: RichBodyProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const contentRef = useReveal<HTMLElement>({ delay: 80 })
 
   // 正文 = 首图（有封面时注入）+ 内容；mock 静态可信数据

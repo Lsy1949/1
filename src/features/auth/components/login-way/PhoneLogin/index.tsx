@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { App as AntApp, Button, Form, Input, Select } from 'antd'
 import { BankOutlined, MobileOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { useAuthLogin } from '@/features/auth/hooks/useAuth'
 import styles from './PhoneLogin.module.css'
 
@@ -46,7 +46,7 @@ const initialValues: Partial<PhoneLoginFormState> = {
 }
 
 export function PhoneLogin({ onLoginSuccess }: PhoneLoginProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = AntApp.useApp() // 替代 ElMessage
 
   const [form] = Form.useForm<PhoneLoginFormState>()

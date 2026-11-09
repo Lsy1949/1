@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { App as AntApp, Button, Form, Input, Radio, Select } from 'antd'
 import type { InputRef } from 'antd'
 import { CloseOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { PsychFormData } from '../types'
 import styles from './PsychSection.module.css'
 
@@ -16,7 +16,7 @@ export interface PsychSectionProps {
 }
 
 export function PsychSection({ form, onFormChange }: PsychSectionProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = AntApp.useApp() // 替代 ElMessage
 
   const [psychEditing, setPsychEditing] = useState(false)

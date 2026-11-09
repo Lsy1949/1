@@ -7,7 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { App } from 'antd'
 import { counselingApi } from '@/api'
 import type { BookingCreateInput } from '@/features/counseling'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 
 export function useCounselingInfo() {
   return useQuery({
@@ -25,7 +25,7 @@ export function useMyBookings() {
 
 /** 提交预约：成功后刷新预约列表 */
 export function useCreateBooking() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = App.useApp()
   const queryClient = useQueryClient()
 
@@ -41,7 +41,7 @@ export function useCreateBooking() {
 
 /** 取消预约：成功后刷新预约列表 */
 export function useCancelBooking() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = App.useApp()
   const queryClient = useQueryClient()
 

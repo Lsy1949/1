@@ -7,13 +7,13 @@ import { App, Button, Result, Skeleton } from 'antd'
 import { ListArchive, ListHeader } from '@/features/time-capsule'
 import type { CapsuleFilterType, ListArchiveRef } from '@/features/time-capsule'
 import { capsuleApi } from '@/api'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { useCapsuleBoard } from '../capsuleQuery'
 import './index.css'
 
 export function CapsuleListView() {
   const router = useNavigate()
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = App.useApp()
   const queryClient = useQueryClient()
 

@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { App as AntApp, Checkbox, DatePicker } from 'antd'
 import type { Dayjs } from 'dayjs'
 import { ExclamationCircleFilled, FolderOpenOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
+import type { I18nKey } from '@/i18n/dataHelper'
 import styles from './DataSection.module.css'
 
 type RangeValue = [Dayjs | null, Dayjs | null] | null
@@ -23,7 +24,7 @@ interface CacheTypes {
 }
 
 export function DataSection() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message, modal } = AntApp.useApp() // 替代 ElMessage / ElMessageBox
 
   // Vue 版 exportForm.dateRange: string[] → antd RangePicker 使用 Dayjs 区间
@@ -71,7 +72,7 @@ export function DataSection() {
     })
   }
 
-  function renderExportCheckbox(key: keyof ExportTypes, labelKey: string) {
+  function renderExportCheckbox(key: keyof ExportTypes, labelKey: I18nKey) {
     return (
       <Checkbox
         key={key}
@@ -83,7 +84,7 @@ export function DataSection() {
     )
   }
 
-  function renderCacheCheckbox(key: keyof CacheTypes, labelKey: string) {
+  function renderCacheCheckbox(key: keyof CacheTypes, labelKey: I18nKey) {
     return (
       <Checkbox
         key={key}

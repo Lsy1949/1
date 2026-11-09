@@ -1,6 +1,6 @@
 // 广场详情页 · 标题区：心情/日期 + 大标题 + 作者行
 import InitialAvatar from '@/components/InitialAvatar'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { moodMap } from '../moods'
 import type { PostItem } from '../types'
 import styles from './DetailHeader.module.css'
@@ -10,7 +10,7 @@ export interface DetailHeaderProps {
 }
 
 export function DetailHeader({ post }: DetailHeaderProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <header className={styles.detailHeader}>

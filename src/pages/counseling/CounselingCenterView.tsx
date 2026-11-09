@@ -19,7 +19,7 @@ import {
   NoticePanel,
 } from '@/features/counseling'
 import type { BookingPanelHandle } from '@/features/counseling'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { RESPONSIVE_TOKEN } from '@/styles/theme'
 import {
   useCancelBooking,
@@ -62,7 +62,7 @@ const counselingThemeComponents = {
 }
 
 export function CounselingCenterView() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
 

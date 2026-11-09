@@ -1,6 +1,6 @@
 // 设置中心视图（登录守卫由布局层 ProtectedRoute 统一承担，本视图不再自行判断）
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import {
   DataSection,
   Masthead,
@@ -49,7 +49,7 @@ const settingsThemeComponents = {
 }
 
 export default function SettingsView() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   /* ===== Sections / Navigation ===== */
   const sections = useMemo<MastheadSection[]>(() => [

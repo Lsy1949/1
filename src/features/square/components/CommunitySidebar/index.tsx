@@ -1,8 +1,9 @@
 // 广场列表页 · 社区侧边栏：活跃同学 / 热门话题 / 社区公约
 // 纯展示组件：成员与话题由页面注入，加载/错误/空态在此渲染
 import { Button, Empty, Result, Skeleton } from 'antd'
+import type { TFunction } from 'i18next'
 import InitialAvatar from '@/components/InitialAvatar'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { MemberItem, TopicItem } from '../types'
 import styles from './CommunitySidebar.module.css'
 
@@ -25,7 +26,7 @@ export function CommunitySidebar({
   onRetry,
   onTopic,
 }: CommunitySidebarProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <aside className={styles.sidebarColumn}>
@@ -102,7 +103,7 @@ export function CommunitySidebar({
 
 /** 侧栏错误：紧凑 Result + 重试 */
 function SidebarError({ onRetry }: { onRetry: () => void }) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   return (
     <Result
       className={styles.sidebarError}
@@ -118,18 +119,10 @@ function SidebarError({ onRetry }: { onRetry: () => void }) {
 }
 
 /**
- * 社区公约文案：React i18n 未暴露 tm()，按「点路径 + 序号」逐项探测，
- * t 命中缺失时回退返回 key 原文，作为终止信号。
+ * 社区公约文案：t(key, { returnObjects: true }) 整段取数组（等价 vue-i18n tm()）。
  */
-function guidelines(t: (key: string, params?: Record<string, unknown>) => string): string[] {
-  const prefix = 'square.list.community.sidebar.guidelinesItems'
-  const items: string[] = []
-  for (let i = 0; ; i++) {
-    const text = t(`${prefix}.${i}`)
-    if (text === `${prefix}.${i}`) break
-    items.push(text)
-  }
-  return items
+function guidelines(t: TFunction): string[] {
+  return t('square.list.community.sidebar.guidelinesItems', { returnObjects: true }) as string[]
 }
 
 export default CommunitySidebar

@@ -10,7 +10,8 @@
 import { useEffect, useRef, useState } from 'react'
 import type { FocusEvent as ReactFocusEvent, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react'
 import { VerticalAlignTopOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
+import type { I18nKey } from '@/i18n/dataHelper'
 import { scrollBehavior } from '@/utils/motion'
 import styles from './BackTop.module.css'
 
@@ -30,8 +31,8 @@ const HOVER_OPEN_DELAY = 150
 const HOVER_CLOSE_DELAY = 250
 const MENU_ID = 'backtop-quick-nav'
 
-// 导航菜单相关
-const navSections = [
+// 导航菜单相关（nameKey 标注 I18nKey：拼错字典键在编译期报错）
+const navSections: Array<{ id: string; nameKey: I18nKey }> = [
   { id: 'top', nameKey: 'home.nav.top' },
   { id: 'news', nameKey: 'home.nav.news' },
   { id: 'about', nameKey: 'home.nav.about' },
@@ -41,7 +42,7 @@ const navSections = [
 ]
 
 export function BackTop() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   const [open, setOpen] = useState(false)
   const [scrollY, setScrollY] = useState(0)

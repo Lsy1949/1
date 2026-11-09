@@ -1,6 +1,6 @@
 // 广场详情页 · 顶部返回栏
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './DetailTopBar.module.css'
 
 export interface DetailTopBarProps {
@@ -10,7 +10,7 @@ export interface DetailTopBarProps {
 }
 
 export function DetailTopBar({ type, id, onBack }: DetailTopBarProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <div className={styles.topBar}>

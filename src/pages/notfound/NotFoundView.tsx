@@ -8,7 +8,7 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import {
   NotFoundDots,
   NotFoundGameStage,
@@ -25,7 +25,7 @@ const darkSlides = [0, 2]
 
 export function NotFoundView() {
   const navigate = useNavigate()
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   /* ---------- 翻页控制 ---------- */
   const slideCount = 4

@@ -2,7 +2,7 @@
 import { useMemo } from 'react'
 import type { ComponentType } from 'react'
 import { CommentOutlined, EditOutlined, MoonOutlined, RightOutlined, SunOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './CollectionGrid.module.css'
 
 interface CollectionGridProps {
@@ -26,21 +26,16 @@ const collectionMeta: Array<{ count: number; Icon: ComponentType }> = [
 ]
 
 export function CollectionGrid({ onSelect, onViewAll }: CollectionGridProps) {
-  const { t, locale } = useI18n()
+  const { t } = useTranslation()
 
-  // 原 Vue 版用 tm('article.collections.items') 取原始数组；React 版 t 只返回字符串，
-  // 等价做法：按点路径逐项探测（t 回退缺失键时返回 key 本身），直至 items 枚举完
+  // 等价 Vue tm()：returnObjects 整段取数组，再按索引对齐本地 count/icon 配置
   const collectionItems = useMemo<CollectionDisplayItem[]>(() => {
-    const items: CollectionDisplayItem[] = []
-    for (let i = 0; i < 20; i++) {
-      const titleKey = `article.collections.items.${i}.title`
-      const title = t(titleKey)
-      if (title === titleKey) break
+    const items = t('article.collections.items', { returnObjects: true }) as CollectionDisplayItem[]
+    return items.map((item, i) => {
       const meta = collectionMeta[i] ?? collectionMeta[0]
-      items.push({ title, desc: t(`article.collections.items.${i}.desc`), count: meta.count, Icon: meta.Icon })
-    }
-    return items
-  }, [t, locale])
+      return { ...item, count: meta.count, Icon: meta.Icon }
+    })
+  }, [t])
 
   return (
     <div className={styles.moduleCollections}>

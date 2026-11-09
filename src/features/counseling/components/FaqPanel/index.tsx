@@ -17,7 +17,7 @@ import {
   UnorderedListOutlined,
 } from '@ant-design/icons'
 import type { FaqItem } from '../types'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { useReveal } from '@/hooks/useReveal'
 import styles from './FaqPanel.module.css'
 
@@ -37,7 +37,7 @@ const FAQ_CATEGORIES = [
 ] as const
 
 export function FaqPanel({ faqs, onBook }: FaqPanelProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   const layoutRef = useReveal<HTMLDivElement>({ delay: 100 })
 

@@ -1,6 +1,6 @@
 // 时光胶囊 · 新建页头部（返回 + 眉题 + 大标题）
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './CreateHeader.module.css'
 
 export interface CreateHeaderProps {
@@ -8,7 +8,7 @@ export interface CreateHeaderProps {
 }
 
 export function CreateHeader({ onBack }: CreateHeaderProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <header className={styles.pageHeader}>

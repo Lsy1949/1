@@ -1,5 +1,6 @@
 // 相关推荐侧栏（ArticleDetailView 右栏，sticky），点击卡片上抛 onOpen(id)
 import { RightOutlined } from '@ant-design/icons'
+import { useTranslation } from 'react-i18next'
 import { useReveal } from '@/hooks/useReveal'
 import type { ArticleItem } from '../types'
 import styles from './RelatedSidebar.module.css'
@@ -31,13 +32,14 @@ function SidebarCard({ item, index, onOpen }: { item: ArticleItem; index: number
 }
 
 export function RelatedSidebar({ related, onOpen }: RelatedSidebarProps) {
+  const { t } = useTranslation()
   if (related.length === 0) return null
 
   return (
     <aside className={styles.relatedSidebar}>
       <div className={styles.sidebarHeader}>
         <span className={styles.sidebarEyebrow}>— Continue Reading</span>
-        <h3 className={styles.sidebarTitle}>相关<em>推荐</em></h3>
+        <h3 className={styles.sidebarTitle}>{t('article.related.title')}</h3>
       </div>
       <div className={styles.sidebarList}>
         {related.map((item, i) => (

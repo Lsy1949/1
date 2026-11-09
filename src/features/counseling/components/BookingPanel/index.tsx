@@ -42,7 +42,7 @@ import type {
   CounselingIconKey,
   Counselor,
 } from '../types'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './BookingPanel.module.css'
 
 /** 图标语义 key → antd 图标（接口不下发组件） */
@@ -125,7 +125,7 @@ const BookingPanel = forwardRef<BookingPanelHandle, BookingPanelProps>(
     },
     ref,
   ) {
-    const { t } = useI18n()
+    const { t } = useTranslation()
     const { modal } = AntApp.useApp() // 替代 ElMessageBox
 
     const [form] = Form.useForm<BookingFormValues>()

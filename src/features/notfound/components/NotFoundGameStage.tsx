@@ -4,6 +4,7 @@
  * - 根元素带 stage-game-enter 入场动画（等价 Vue transition name="stage-game"）
  */
 import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { games } from './games'
 import { GameMaze } from './GameMaze'
 import type { GameMazeHandle } from './GameMaze'
@@ -25,6 +26,7 @@ export interface NotFoundGameStageProps {
 
 export const NotFoundGameStage = forwardRef<NotFoundGameStageHandle, NotFoundGameStageProps>(
   function NotFoundGameStage({ game, onExit }, ref) {
+    const { t } = useTranslation()
     const mazeRef = useRef<GameMazeHandle | null>(null)
     const breathRef = useRef<GameBreathHandle | null>(null)
 
@@ -55,7 +57,7 @@ export const NotFoundGameStage = forwardRef<NotFoundGameStageHandle, NotFoundGam
         <div className="nf-game-header">
           <button type="button" className="nf-game-back" onClick={() => onExit?.()}>
             <span className="nf-game-back-arrow">←</span>
-            <span>返回</span>
+            <span>{t('notFound.games.back')}</span>
           </button>
           <span className="nf-game-title">{currentGameName}</span>
         </div>

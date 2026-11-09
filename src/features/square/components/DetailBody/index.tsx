@@ -1,6 +1,6 @@
 // 广场详情页 · 正文 + 底部互动栏
 import { ShareAltOutlined, StarOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { PostItem } from '../types'
 import styles from './DetailBody.module.css'
 
@@ -11,7 +11,7 @@ export interface DetailBodyProps {
 }
 
 export function DetailBody({ post, onLike, onShare }: DetailBodyProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <>

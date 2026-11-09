@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { StarFilled } from '@ant-design/icons'
 import InitialAvatar from '@/components/InitialAvatar'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './Comments.module.css'
 
 interface CommentItem {
@@ -23,7 +23,7 @@ const initialComments: CommentItem[] = [
 ]
 
 export function Comments() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const [commentText, setCommentText] = useState('')
   const [comments, setComments] = useState<CommentItem[]>(initialComments)
 

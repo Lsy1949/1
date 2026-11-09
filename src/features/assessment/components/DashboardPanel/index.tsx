@@ -1,7 +1,9 @@
-import { useMemo, useState, type ReactNode } from 'react'
+import { useMemo, useRef, useState, useEffect, type ReactNode } from 'react'
 import { App as AntApp, Button, Empty, Select, Table, Tag, Tooltip } from 'antd'
 import type { TableProps } from 'antd'
+import { Line, Pie, Radar, type Chart } from '@ant-design/plots'
 import dayjs from 'dayjs'
+import type { I18nKey } from '@/i18n/dataHelper'
 import {
   AimOutlined,
   ArrowDownOutlined,
@@ -22,8 +24,7 @@ import {
 } from '@ant-design/icons'
 import ModuleCover from '@/components/ModuleCover'
 import { useReveal } from '@/hooks/useReveal'
-import { useECharts, type EChartsCoreOption } from '@/hooks/useECharts'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/hooks/useTheme'
 import { readCssColor } from '@/utils/cssVar'
 import ScaleIcon from '@/components/ScaleIcon'
@@ -52,24 +53,29 @@ const dashboardNav: { key: string; name: string; icon: ReactNode }[] = [
 
 const radarLabels = ['情绪调节', '压力耐受', '职业驱动', '思维深度', '社交能量', '自我认知']
 
-/** 把 readCssColor 解析出的 rgb(a) 颜色转为带透明度的 rgba（ECharts 渐变面积用） */
-function withAlpha(resolved: string, alpha: number): string {
-  const m = resolved.match(/rgba?\(([^)]+)\)/)
-  if (!m) return resolved
-  const [r, g, b] = m[1].split(',').map((v) => parseFloat(v))
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+/** 雷达图长表行 / 环形图行（@ant-design/plots 均为长表数据形态） */
+interface RadarDatum {
+  dim: string
+  kind: string
+  value: number
+}
+
+interface DonutDatum {
+  name: string
+  value: number
 }
 
 /** 成长看板面板：侧栏导航 + 7 个内容区，可视化数据全部由 history 派生 */
 export default function DashboardPanel({ history, scales, onView, onOpenScale }: Props) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = AntApp.useApp() // 替代静态 ElMessage，带主题上下文
   const layoutRef = useReveal<HTMLDivElement>({ delay: 80 })
   // 订阅真实主题源（useTheme 同步翻 html.dark 后才 emit，重渲染时 token 必为新值）；
   // mode / palette 任一变化都重建图表配色（themeSignature 缓存随之失效）
   const { isDark, palette } = useTheme()
 
-  // 图表配色：全部经 readCssColor 从语义 token 解析（禁止在 option 中写死色值）
+  // 图表配色：全部经 readCssColor 从语义 token 解析（禁止在图表配置中写死色值）；
+  // 面积透明度走 fillOpacity 数值，不需要预合成 rgba
   const chartColors = useMemo(() => {
     const cat = {
       mental: readCssColor('var(--cat-geekblue)'),
@@ -83,9 +89,7 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
     const faint = readCssColor('var(--text-faint)')
     return {
       brand,
-      brandArea: withAlpha(brand, 0.16),
       faint,
-      faintArea: withAlpha(faint, 0.08),
       textHeading: readCssColor('var(--text-heading)'),
       textSecondary: readCssColor('var(--text-secondary)'),
       border: readCssColor('var(--border-strong)'),
@@ -103,6 +107,22 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
 
   // --- 侧边栏选中态（原 ref → useState） ---
   const [activeDashboard, setActiveDashboard] = useState('overview')
+
+  // --- 图表实例 + 显隐切换后的尺寸重算 ---
+  // 看板 section 为 v-show（保持挂载、图表状态不丢失），但 G2 autoFit 只监听
+  // window resize —— 容器 display:none → block 的尺寸变化不触发重算，
+  // 需在面板切换后手动 triggerResize（等价旧 useECharts 内置 ResizeObserver 的职责）
+  const radarChartRef = useRef<Chart | null>(null)
+  const trendChartRef = useRef<Chart | null>(null)
+  const donutChartRef = useRef<Chart | null>(null)
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      radarChartRef.current?.triggerResize()
+      trendChartRef.current?.triggerResize()
+      donutChartRef.current?.triggerResize()
+    })
+    return () => cancelAnimationFrame(id)
+  }, [activeDashboard])
 
   // 平均分（归一化到 100）
   const avgScore = useMemo(() => {
@@ -125,8 +145,8 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
       if (scale) catCount[scale.category] = (catCount[scale.category] || 0) + 1
     })
     const sorted = Object.entries(catCount).sort((a, b) => b[1] - a[1])
-    if (sorted.length === 0) return '尚未探索'
-    return t(`assessment.categories.${sorted[0][0]}`)
+    if (sorted.length === 0) return t('assessment.dashboard.notExplored')
+    return t(`assessment.categories.${sorted[0][0]}` as I18nKey)
   }, [history, scales, t])
 
   // 月度目标
@@ -177,11 +197,12 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
   // --- 情绪趋势：PHQ-9 / GAD-7 / PSS-10 三条「情绪指数」曲线（反向归一化，越高越好） ---
   const [trendRange, setTrendRange] = useState<'7d' | '30d' | 'all'>('all')
 
-  const trendSeries = useMemo(() => {
+  // 长表数据形态（@ant-design/plots）：每行 { date, kind, value }，缺测为 null
+  const trendChart = useMemo(() => {
     const defs = [
-      { key: 'phq9', name: 'PHQ-9', color: 'var(--cat-geekblue)', max: 27 },
-      { key: 'gad7', name: 'GAD-7', color: 'var(--cat-gold)', max: 21 },
-      { key: 'pss', name: 'PSS-10', color: 'var(--cat-cyan)', max: 30 },
+      { key: 'phq9', name: 'PHQ-9', color: chartColors.cat.mental, max: 27 },
+      { key: 'gad7', name: 'GAD-7', color: chartColors.cat.career, max: 21 },
+      { key: 'pss', name: 'PSS-10', color: chartColors.cat.cognitive, max: 30 },
     ]
     const days = trendRange === '7d' ? 7 : trendRange === '30d' ? 30 : null
     const records = history
@@ -189,19 +210,25 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
       .filter((h) => !days || dayjs(h.date).isAfter(dayjs().subtract(days, 'day')))
       .sort((a, b) => a.date.localeCompare(b.date))
     const dates = [...new Set(records.map((h) => dayjs(h.date).format('MM-DD')))]
-    return {
-      dates,
-      series: defs.map((def) => ({
-        ...def,
-        values: dates.map((date) => {
-          const record = records.find(
-            (h) => h.scaleKey === def.key && dayjs(h.date).format('MM-DD') === date
-          )
-          return record ? Math.max(5, Math.round(100 - (record.score / def.max) * 100)) : null
-        }),
-      })),
-    }
-  }, [history, trendRange])
+    const rows = dates.flatMap((date) =>
+      defs.map((def) => {
+        const record = records.find(
+          (h) => h.scaleKey === def.key && dayjs(h.date).format('MM-DD') === date
+        )
+        return {
+          date,
+          kind: def.name,
+          value: record ? Math.max(5, Math.round(100 - (record.score / def.max) * 100)) : null,
+        }
+      }),
+    )
+    // 首条曲线（PHQ-9）均值参考线：仅统计有值日期
+    const firstValues = rows.filter((r) => r.kind === defs[0].name && r.value !== null)
+    const firstAvg = firstValues.length
+      ? Math.round(firstValues.reduce((acc, r) => acc + (r.value ?? 0), 0) / firstValues.length)
+      : null
+    return { dates, rows, domain: defs.map((d) => d.name), range: defs.map((d) => d.color), firstAvg }
+  }, [history, trendRange, chartColors])
 
   // --- AI 洞察 ---
   const aiInsights = useMemo(() => {
@@ -234,181 +261,33 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
     return { summary, strength, risk, suggestion }
   }, [history])
 
-  // --- 测评分布（环形图数据：按分类聚合并映射主题分类色） ---
-  const donutData = useMemo(() => {
+  // --- 测评分布（环形图：按分类聚合，颜色映射主题分类色；图例自绘以配合中心总计） ---
+  const donutChart = useMemo(() => {
     const catCount: Record<string, number> = {}
     history.forEach((h) => {
       const scale = scales.find((s) => s.key === h.scaleKey)
       if (scale) catCount[scale.category] = (catCount[scale.category] || 0) + 1
     })
-    return Object.entries(catCount).map(([cat, value]) => ({
-      name: t(`assessment.categories.${cat}`),
-      value,
-      itemStyle: { color: chartColors.cat[cat as keyof typeof chartColors.cat] ?? chartColors.brand },
-    }))
+    const items: DonutDatum[] = []
+    const colors: string[] = []
+    Object.entries(catCount).forEach(([cat, value]) => {
+      items.push({ name: t(`assessment.categories.${cat}` as I18nKey), value })
+      colors.push(chartColors.cat[cat as keyof typeof chartColors.cat] ?? chartColors.brand)
+    })
+    return { items, colors }
   }, [history, scales, t, chartColors])
-  const donutTotal = donutData.reduce((acc, d) => acc + d.value, 0)
+  const donutTotal = donutChart.items.reduce((acc, d) => acc + d.value, 0)
 
-  // --- 图表 option（依赖 chartColors：主题切换时自动重建） ---
-  const radarOption = useMemo<EChartsCoreOption>(
-    () => ({
-      tooltip: { trigger: 'item' },
-      legend: {
-        bottom: 0,
-        icon: 'circle',
-        itemWidth: 8,
-        itemHeight: 8,
-        itemGap: 24,
-        textStyle: { color: chartColors.textSecondary, fontSize: 12 },
-      },
-      radar: {
-        indicator: radarLabels.map((name) => ({ name, max: 100 })),
-        radius: '60%',
-        center: ['50%', '47%'],
-        axisName: { color: chartColors.textSecondary, fontSize: 12, fontWeight: 600 },
-        axisLine: { lineStyle: { color: chartColors.border } },
-        splitLine: { lineStyle: { color: chartColors.border } },
-        splitArea: { show: false },
-      },
-      series: [
-        {
-          type: 'radar',
-          symbol: 'circle',
-          symbolSize: 6,
-          data: [
-            {
-              name: t('assessment.dashboard.yourStatus'),
-              value: radarUserValues,
-              itemStyle: { color: chartColors.brand },
-              lineStyle: { width: 2.5, color: chartColors.brand },
-              areaStyle: { color: chartColors.brandArea },
-            },
-            {
-              name: t('assessment.dashboard.groupAvg'),
-              value: radarGroupValues,
-              symbol: 'none',
-              itemStyle: { color: chartColors.faint },
-              lineStyle: { width: 1.5, type: 'dashed', color: chartColors.faint },
-              areaStyle: { color: chartColors.faintArea },
-            },
-          ],
-        },
-      ],
-    }),
-    [radarUserValues, chartColors, t]
+  // --- 雷达图长表（双系列：本人 / 群体均值） ---
+  const yourSeries = t('assessment.dashboard.yourStatus')
+  const groupSeries = t('assessment.dashboard.groupAvg')
+  const radarData = useMemo<RadarDatum[]>(
+    () => [
+      ...radarLabels.map((dim, i) => ({ dim, kind: yourSeries, value: radarUserValues[i] })),
+      ...radarLabels.map((dim, i) => ({ dim, kind: groupSeries, value: radarGroupValues[i] })),
+    ],
+    [yourSeries, groupSeries, radarUserValues],
   )
-
-  const trendOption = useMemo<EChartsCoreOption>(
-    () => ({
-      tooltip: { trigger: 'axis' },
-      legend: {
-        top: 0,
-        right: 8,
-        icon: 'circle',
-        itemWidth: 8,
-        itemHeight: 8,
-        textStyle: { color: chartColors.textSecondary, fontSize: 12 },
-      },
-      grid: { left: 8, right: 24, top: 40, bottom: 8, containLabel: true },
-      xAxis: {
-        type: 'category',
-        data: trendSeries.dates,
-        boundaryGap: false,
-        axisTick: { show: false },
-        axisLine: { lineStyle: { color: chartColors.border } },
-        axisLabel: { color: chartColors.faint, fontSize: 11 },
-      },
-      yAxis: {
-        type: 'value',
-        min: 0,
-        max: 100,
-        splitLine: { lineStyle: { color: chartColors.split } },
-        axisLabel: { color: chartColors.faint, fontSize: 11 },
-      },
-      series: trendSeries.series.map((s, idx) => ({
-        name: s.name,
-        type: 'line',
-        smooth: true,
-        symbol: 'circle',
-        symbolSize: 7,
-        connectNulls: false,
-        data: s.values,
-        itemStyle: { color: readCssColor(s.color) },
-        lineStyle: { width: 2.5, color: readCssColor(s.color) },
-        areaStyle: { color: withAlpha(readCssColor(s.color), 0.12) },
-        emphasis: { focus: 'series' },
-        // 仅首条曲线绘制均值参考线，避免三条虚线互相干扰
-        markLine:
-          idx === 0
-            ? {
-                silent: true,
-                symbol: 'none',
-                lineStyle: { type: 'dashed', color: chartColors.faint },
-                label: {
-                  formatter: '均值 {c}',
-                  color: chartColors.faint,
-                  fontSize: 11,
-                  position: 'insideEndTop',
-                },
-                data: [{ type: 'average' }],
-              }
-            : undefined,
-      })),
-    }),
-    [trendSeries, chartColors]
-  )
-
-  const donutOption = useMemo<EChartsCoreOption>(
-    () => ({
-      tooltip: { trigger: 'item', formatter: '{b}：{c} 次（{d}%）' },
-      legend: {
-        orient: 'vertical',
-        right: '4%',
-        top: 'center',
-        icon: 'circle',
-        itemWidth: 9,
-        itemHeight: 9,
-        itemGap: 18,
-        textStyle: { color: chartColors.textSecondary, fontSize: 13 },
-      },
-      title: {
-        text: String(donutTotal),
-        subtext: t('assessment.dashboard.totalLabel'),
-        left: '27%',
-        top: '38%',
-        textAlign: 'center',
-        textStyle: { fontSize: 30, fontWeight: 800, color: chartColors.textHeading },
-        subtextStyle: { fontSize: 12, color: chartColors.faint },
-      },
-      series: [
-        {
-          type: 'pie',
-          radius: ['58%', '80%'],
-          center: ['27%', '50%'],
-          padAngle: 2,
-          itemStyle: { borderColor: chartColors.bgCard, borderWidth: 2, borderRadius: 8 },
-          label: { show: false },
-          labelLine: { show: false },
-          emphasis: {
-            scaleSize: 8,
-            label: {
-              show: true,
-              formatter: '{b}\n{d}%',
-              fontSize: 12,
-              fontWeight: 600,
-              color: chartColors.textHeading,
-            },
-          },
-          data: donutData,
-        },
-      ],
-    }),
-    [donutData, donutTotal, chartColors, t]
-  )
-
-  const radarRef = useECharts(radarOption)
-  const trendRef = useECharts(trendSeries.dates.length > 0 ? trendOption : null)
-  const donutRef = useECharts(donutData.length > 0 ? donutOption : null)
 
   // --- 进步对比（同量表历次分数变化） ---
   const progressComparison = useMemo(() => {
@@ -659,7 +538,50 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
                 </Tooltip>
               </div>
               <div className={`${styles.radarContainer} ${styles.radarLarge}`}>
-                <div ref={radarRef} className={styles.chartBox} />
+                {/* AntV Charts（@ant-design/plots）：配色经 readCssColor 解析语义 token，
+                    isDark 切换 theme + 配色重建 → 图表热更新；面积透明度走 fillOpacity */}
+                <Radar
+                  ref={radarChartRef}
+                  theme={isDark ? 'dark' : 'light'}
+                  className={styles.chartBox}
+                  data={radarData}
+                  xField="dim"
+                  yField="value"
+                  colorField="kind"
+                  scale={{
+                    y: { domain: [0, 100] },
+                    x: { padding: 0 },
+                    color: { domain: [yourSeries, groupSeries], range: [chartColors.brand, chartColors.faint] },
+                  }}
+                  axis={{
+                    x: {
+                      labelFill: chartColors.textSecondary,
+                      labelFontSize: 12,
+                      labelFontWeight: 600,
+                      line: false,
+                      tick: false,
+                      grid: true,
+                      gridStroke: chartColors.border,
+                    },
+                    y: { label: false, line: false, tick: false, grid: true, gridStroke: chartColors.border },
+                  }}
+                  legend={{
+                    color: {
+                      position: 'bottom',
+                      itemMarker: 'circle',
+                      itemMarkerSize: 8,
+                      itemSpacing: 24,
+                      itemLabelFill: chartColors.textSecondary,
+                      itemLabelFontSize: 12,
+                    },
+                  }}
+                  style={{
+                    lineWidth: (d: RadarDatum) => (d.kind === yourSeries ? 2.5 : 1.5),
+                    strokeDasharray: (d: RadarDatum) => (d.kind === groupSeries ? [4, 4] : undefined),
+                  }}
+                  area={{ style: { fillOpacity: (d: RadarDatum) => (d.kind === yourSeries ? 0.16 : 0.08) } }}
+                  point={{ style: { r: (d: RadarDatum) => (d.kind === yourSeries ? 3 : 0) } }}
+                />
               </div>
             </div>
           </div>
@@ -688,8 +610,71 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
                 </div>
               </div>
               <div className={`${styles.trendChartContainer} ${styles.trendLarge}`}>
-                {trendSeries.dates.length > 0 ? (
-                  <div ref={trendRef} className={styles.chartBox} />
+                {trendChart.dates.length > 0 ? (
+                  <Line
+                    ref={trendChartRef}
+                    theme={isDark ? 'dark' : 'light'}
+                    className={styles.chartBox}
+                    data={trendChart.rows}
+                    xField="date"
+                    yField="value"
+                    colorField="kind"
+                    shape="smooth"
+                    scale={{
+                      y: { domain: [0, 100] },
+                      color: { domain: trendChart.domain, range: trendChart.range },
+                    }}
+                    axis={{
+                      x: {
+                        labelFill: chartColors.faint,
+                        labelFontSize: 11,
+                        lineStroke: chartColors.border,
+                        tick: false,
+                        title: false,
+                      },
+                      y: {
+                        labelFill: chartColors.faint,
+                        labelFontSize: 11,
+                        line: false,
+                        tick: false,
+                        grid: true,
+                        gridStroke: chartColors.split,
+                        title: false,
+                      },
+                    }}
+                    legend={{
+                      color: {
+                        position: 'top',
+                        itemMarker: 'circle',
+                        itemMarkerSize: 8,
+                        itemLabelFill: chartColors.textSecondary,
+                        itemLabelFontSize: 12,
+                      },
+                    }}
+                    style={{ lineWidth: 2.5 }}
+                    area={{ style: { fillOpacity: 0.12 } }}
+                    point={{ style: { r: 3.5 } }}
+                    annotations={
+                      trendChart.firstAvg !== null
+                        ? [
+                            {
+                              // 首条曲线（PHQ-9）均值参考线：仅此一条，避免三条虚线互相干扰
+                              type: 'lineY',
+                              encode: { y: trendChart.firstAvg },
+                              style: { stroke: chartColors.faint, lineWidth: 1, strokeDasharray: [4, 4] },
+                              labels: [
+                                {
+                                  text: `${t('assessment.dashboard.avgLabel')} ${trendChart.firstAvg}`,
+                                  position: 'right',
+                                  fill: chartColors.faint,
+                                  fontSize: 11,
+                                },
+                              ],
+                            },
+                          ]
+                        : undefined
+                    }
+                  />
                 ) : (
                   <div className={styles.chartEmpty}>{t('assessment.dashboard.noTrendData')}</div>
                 )}
@@ -703,9 +688,52 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
               <div className={styles.cardHeader}>
                 <h3><PieChartOutlined /> {t('assessment.dashboard.typeDist')}</h3>
               </div>
-              {donutData.length > 0 ? (
+              {donutChart.items.length > 0 ? (
                 <div className={`${styles.donutWrapper} ${styles.donutLarge}`}>
-                  <div ref={donutRef} className={styles.chartBox} />
+                  <div className={styles.donutChartWrap}>
+                    <Pie
+                      ref={donutChartRef}
+                      theme={isDark ? 'dark' : 'light'}
+                      className={styles.chartBox}
+                      data={donutChart.items}
+                      angleField="value"
+                      colorField="name"
+                      innerRadius={0.72}
+                      radius={0.95}
+                      scale={{
+                        color: { domain: donutChart.items.map((d) => d.name), range: donutChart.colors },
+                      }}
+                      style={{ stroke: chartColors.bgCard, lineWidth: 2 }}
+                      label={false}
+                      legend={false}
+                      tooltip={{
+                        items: [
+                          (d: DonutDatum) => ({
+                            name: d.name,
+                            value: t('assessment.dashboard.distTooltip', {
+                              count: d.value,
+                              percent: donutTotal ? Math.round((d.value / donutTotal) * 100) : 0,
+                            }),
+                          }),
+                        ],
+                      }}
+                    />
+                    {/* 中心总计（环形圆心 HTML overlay，颜色走语义 token） */}
+                    <div className={styles.donutCenter} aria-hidden="true">
+                      <span className={styles.donutCenterNum}>{donutTotal}</span>
+                      <span className={styles.donutCenterLabel}>{t('assessment.dashboard.totalLabel')}</span>
+                    </div>
+                  </div>
+                  {/* 图例自绘（右侧垂直排布），与中心总计布局解耦且完全走语义 token */}
+                  <ul className={styles.donutLegend}>
+                    {donutChart.items.map((d, i) => (
+                      <li key={d.name} className={styles.donutLegendItem}>
+                        <span className={styles.donutLegendDot} style={{ backgroundColor: donutChart.colors[i] }} />
+                        <span>{d.name}</span>
+                        <span className={styles.donutLegendCount}>{d.value}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               ) : (
                 <div className={styles.chartEmptyState}>

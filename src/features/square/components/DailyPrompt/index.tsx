@@ -1,6 +1,6 @@
 // 广场列表页 · 今日话题卡
 import { ArrowRightOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './DailyPrompt.module.css'
 
 export interface DailyPromptProps {
@@ -8,7 +8,7 @@ export interface DailyPromptProps {
 }
 
 export function DailyPrompt({ onJoin }: DailyPromptProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <section className={styles.dailyPromptSection}>

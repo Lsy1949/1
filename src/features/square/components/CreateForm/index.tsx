@@ -12,7 +12,7 @@ import {
 } from 'antd'
 import type { UploadChangeParam, UploadFile } from 'antd/es/upload/interface'
 import { PlusOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { SquareCreateInput, SquareMood } from '../types'
 import styles from './CreateForm.module.css'
 
@@ -55,7 +55,7 @@ export interface CreateFormProps {
 }
 
 export function CreateForm({ onSubmit, isSubmitting }: CreateFormProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   const [form] = Form.useForm<SquareFormValues>()
   const [initialValues] = useState(createInitialValues)

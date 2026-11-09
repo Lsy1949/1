@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { App as AntApp, Modal } from 'antd'
 import { CloseOutlined, ExclamationCircleFilled } from '@ant-design/icons'
 import { useReveal } from '@/hooks/useReveal'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import CountdownRing from '@/components/CountdownRing'
 import type { CapsuleDetailItem } from '../types'
 import styles from './DetailBody.module.css'
@@ -21,7 +21,7 @@ export interface DetailBodyProps {
 
 export function DetailBody({ capsule, onDelete }: DetailBodyProps) {
   const router = useNavigate()
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { modal } = AntApp.useApp() // 替代 ElMessageBox
 
   const emotionEmoji = useMemo(() => {

@@ -1,6 +1,6 @@
 // 时光胶囊 · 详情页头部（返回 + 眉题 + 大标题）
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './DetailHeader.module.css'
 
 export interface DetailHeaderProps {
@@ -8,7 +8,7 @@ export interface DetailHeaderProps {
 }
 
 export function DetailHeader({ onBack }: DetailHeaderProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <header className={styles.pageHeader}>

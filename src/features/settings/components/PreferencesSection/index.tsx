@@ -2,7 +2,9 @@
 import { useMemo, useState } from 'react'
 import { App as AntApp, Select } from 'antd'
 import { SettingOutlined } from '@ant-design/icons'
-import { useI18n, type AppLocale } from '@/i18n'
+import { useTranslation } from 'react-i18next'
+import type { AppLocale } from '@/i18n'
+import type { I18nKey } from '@/i18n/dataHelper'
 import { useTheme, type ThemeMode } from '@/hooks/useTheme'
 import { useLocale } from '@/hooks/useLocale'
 import { announce } from '@/components/LiveAnnouncer'
@@ -14,7 +16,7 @@ interface HomeOption {
 }
 
 export function PreferencesSection() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { themeMode, setThemeMode, isDark } = useTheme()
   const { locale, setLocale } = useLocale()
   const { message } = AntApp.useApp() // 替代 ElMessage
@@ -27,7 +29,7 @@ export function PreferencesSection() {
     { value: 'articles', label: t('settings.card.preferences.articlesPage') }
   ], [t])
 
-  const localeLabelKeys: Record<AppLocale, string> = {
+  const localeLabelKeys: Record<AppLocale, I18nKey> = {
     'zh-CN': 'settings.card.preferences.zhCN',
     'zh-TW': 'settings.card.preferences.zhTW',
     'en-US': 'settings.card.preferences.enUS'
@@ -43,7 +45,8 @@ export function PreferencesSection() {
   function onThemeChange(val: ThemeMode | 'auto') {
     setThemeMode(val)
     message.success(t('settings.card.preferences.themeChanged'))
-    announce(t('a11y.themeSwitched', { theme: t(`nav.theme.${val}`) }))
+    // 旧 API 'auto' 与内部 'system' 共用 nav.theme.auto 文案
+    announce(t('a11y.themeSwitched', { theme: t(`nav.theme.${val}` as I18nKey) }))
   }
 
   return (

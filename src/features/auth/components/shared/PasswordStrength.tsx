@@ -3,7 +3,8 @@
  * - 纯展示组件：强度评级由父级密码值实时计算，空值不渲染
  * - 级别配色全部走语义 token（CSS Modules），tsx 零色值
  */
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
+import type { I18nKey } from '@/i18n/dataHelper'
 import styles from './PasswordStrength.module.css'
 
 /** 强度评级（1-4）：与表单校验规则同源的启发式评分 */
@@ -24,7 +25,7 @@ interface PasswordStrengthProps {
 }
 
 export function PasswordStrength({ value = '' }: PasswordStrengthProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const level = scorePassword(value)
   if (level === 0) return null
 
@@ -36,7 +37,8 @@ export function PasswordStrength({ value = '' }: PasswordStrengthProps) {
         ))}
       </div>
       <span className={`${styles.label} ${styles[`labelLevel${level}`]}`}>
-        {t(`login.strength.${LEVEL_KEYS[level]}`)}
+        {/* level 经 scorePassword 约束为 1-4，不会命中空串下标 */}
+        {t(`login.strength.${LEVEL_KEYS[level]}` as I18nKey)}
       </span>
     </div>
   )

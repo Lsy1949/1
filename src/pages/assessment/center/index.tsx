@@ -15,7 +15,7 @@ import {
   ScalePanel,
 } from '@/features/assessment'
 import type { AssessmentCategoryKey, AssessmentRecord, ScaleInfo } from '@/features/assessment'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { RESPONSIVE_TOKEN } from '@/styles/theme'
 import {
   useAssessmentHistory,
@@ -67,7 +67,7 @@ const assessmentThemeComponents = {
 export default function AssessmentCenterView() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message, modal } = AntApp.useApp() // 替代 ElMessage / ElMessageBox
 
   const [mainTab, setMainTab] = useState('scales')

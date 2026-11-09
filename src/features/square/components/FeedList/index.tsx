@@ -5,7 +5,7 @@ import { Button, Empty, Result, Skeleton } from 'antd'
 import { MessageOutlined, ShareAltOutlined, StarOutlined } from '@ant-design/icons'
 import InitialAvatar from '@/components/InitialAvatar'
 import { useReveal } from '@/hooks/useReveal'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { FeedItem } from '../types'
 import { moodMap } from '../moods'
 import styles from './FeedList.module.css'
@@ -33,7 +33,7 @@ interface FeedCardProps {
 }
 
 function FeedCard({ item, index, onOpen, onLike, onShare, onTopic }: FeedCardProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const revealRef = useReveal<HTMLElement>({ delay: index * 60 })
 
   return (
@@ -148,7 +148,7 @@ export function FeedList({
   onShare,
   onTopic,
 }: FeedListProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   // 筛选页签是纯 UI 状态，数据本身由页面注入
   const [activeFilter, setActiveFilter] = useState('all')

@@ -3,8 +3,14 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { ConfigProvider, theme as antdTheme } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
-import dayjs from 'dayjs'
-import 'dayjs/locale/zh-cn'
+import zhTW from 'antd/locale/zh_TW'
+import enUS from 'antd/locale/en_US'
+import { useTranslation } from 'react-i18next'
+
+// i18n 必须最先初始化：置于 import App 之前，保证首次渲染前 init 已完成
+// （字典静态打包同步加载；dayjs locale / document.title 联动见 @/i18n 内 languageChanged 监听）
+import '@/i18n'
+import { normalizeLanguage, type AppLocale } from './i18n'
 
 import App from './App'
 import { GlobalErrorBoundary } from './providers/GlobalErrorBoundary'
@@ -12,7 +18,6 @@ import { QueryProvider } from './providers/QueryProvider'
 import { RouteErrorBoundary } from './providers/RouteErrorBoundary'
 import { ThemeProvider, useTheme } from './providers/ThemeProvider'
 import { TenantProvider, useTenantTokens } from './providers/TenantProvider'
-import { I18nProvider } from './providers/I18nProvider'
 import { PermissionProvider } from './providers/PermissionProvider'
 import { bootstrapTenant } from './stores/useTenantStore'
 import { getUserStore } from './stores/useUserStore'
@@ -31,15 +36,22 @@ import './styles/dark-mode.css' // 仅暗色覆写
 // 响应式尺寸 token（Phase 0）：antd v6 尺寸键 ↔ tokens.css「流体尺寸层 L0.5」的映射
 import { responsiveTheme } from './styles/theme'
 
-dayjs.locale('zh-cn')
+/** 语言 -> antd 语言包映射：ConfigProvider locale 随语言实时切换（新增语言时补一行） */
+const ANTD_LOCALE: Readonly<Record<AppLocale, typeof zhCN>> = {
+  'zh-CN': zhCN,
+  'zh-TW': zhTW,
+  'en-US': enUS,
+}
 
-/** antd 主题桥：从租户/CSS 变量读 token，暗色时切 algorithm */
+/** antd 主题桥：从租户/CSS 变量读 token，暗色时切 algorithm；locale 随语言联动 */
 function AntdThemeBridge({ children }: React.PropsWithChildren) {
   const { isDark } = useTheme()
   const tokens = useTenantTokens()
+  // useTranslation 订阅 languageChanged：语言切换 -> 重渲染 -> 新 locale 实时生效
+  const { i18n } = useTranslation()
   return (
     <ConfigProvider
-      locale={zhCN}
+      locale={ANTD_LOCALE[normalizeLanguage(i18n.language)]}
       theme={{
         cssVar: { key: 'psy' },
         algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
@@ -127,10 +139,9 @@ enableMocking()
               {/* 租户单例的壳：配置由渲染后的 bootstrapTenant() 非阻塞填充，
                   首帧先用保底配置渲染 */}
               <TenantProvider>
-                {/* i18n 在权限层之外：登录页 / 无权限页同样需要文案 */}
-                <I18nProvider>
-                  {/* 权限在路由之外：路由守卫依赖权限数据 */}
-                  <PermissionProvider>
+                {/* i18n 由 @/i18n 模块顶层初始化（react-i18next 无需 Provider 包装），
+                    登录页 / 无权限页同样可用 useTranslation */}
+                <PermissionProvider>
                     {/* 路由：只包页面部分，导航/布局由 App 内部自理。
                         basename 取 Vite base 并去掉结尾斜杠：GitHub Pages 项目站点
                         部署在 /1/ 下，react-router 的 stripBasename 遇到 '/1/' 这类
@@ -154,7 +165,6 @@ enableMocking()
                       </RouteErrorBoundary>
                     </BrowserRouter>
                   </PermissionProvider>
-                </I18nProvider>
               </TenantProvider>
             </AntdThemeBridge>
           </ThemeProvider>

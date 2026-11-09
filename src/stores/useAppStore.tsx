@@ -1,4 +1,5 @@
 import { createStore } from './createStore'
+import { changeAppLanguage } from '@/i18n'
 
 export type ThemeType = 'light' | 'dark'
 export type DeviceType = 'pc' | 'mobile'
@@ -85,13 +86,9 @@ function toggleTheme(): void {
 
 function setLocale(value: AppLocale): void {
   store.setState({ locale: value })
-  // Vue 版同时写 i18n.global.locale.value；React 版 i18n 为 Context 实现，
-  // 这里只负责 store 镜像与 localStorage（I18nProvider 读取同一 key 初始化）
-  try {
-    localStorage.setItem('locale', value)
-  } catch {
-    /* localStorage 不可用时静默跳过 */
-  }
+  // 单一数据源是 i18next（changeLanguage 内部经 detection.caches 持久化 localStorage 'locale'，
+  // 并广播 languageChanged 驱动所有 useTranslation 订阅组件更新）
+  changeAppLanguage(value)
 }
 
 function applyTheme(): void {

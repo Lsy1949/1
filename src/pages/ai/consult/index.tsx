@@ -1,43 +1,24 @@
 /**
  * 【business】AiConsultView —— AI 咨询师（页面层）：counseling 模块子页，全页对话。
  * AI 回复为算法生成，仅供情绪陪伴与自我探索参考——页面需明确免责与专业求助引导。
- * - tm() 快捷提问数组 → RAW_MESSAGES + tmStringArray（React i18n 契约未暴露 tm()）
+ * - tm() 快捷提问数组 → t(key, { returnObjects: true }) 整段取数组
  * - RouterLink(name: counseling) → Link(to="/counseling")
  */
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import ModuleCover from '@/components/ModuleCover'
 import { ChatThread, useChat } from '@/features/ai'
-import { useI18n } from '@/i18n'
-import type { AppLocale } from '@/i18n'
-import zhCN from '@/i18n/zh-CN'
-import zhTW from '@/i18n/zh-TW'
-import enUS from '@/i18n/en-US'
+import { useTranslation } from 'react-i18next'
 import './index.css'
 
-// 语言包原始对象直查：数组文案（quickPrompts）按 locale 取原始值（等价 vue-i18n tm()）
-const RAW_MESSAGES: Record<AppLocale, Record<string, unknown>> = {
-  'zh-CN': zhCN as unknown as Record<string, unknown>,
-  'zh-TW': zhTW as unknown as Record<string, unknown>,
-  'en-US': enUS as unknown as Record<string, unknown>,
-}
-
-function tmStringArray(locale: AppLocale, path: string): string[] {
-  const value = path.split('.').reduce<unknown>(
-    (acc, key) => (acc as Record<string, unknown> | undefined)?.[key],
-    RAW_MESSAGES[locale]
-  )
-  return Array.isArray(value) ? (value as string[]) : []
-}
-
 export function AiConsultView() {
-  const { t, locale } = useI18n()
+  const { t } = useTranslation()
   const { messages, isSending, send, abort } = useChat('counselor')
 
-  // 快捷提问数组来自 i18n（tm 取原始消息数组）
+  // 快捷提问数组来自 i18n（等价 Vue tm()：returnObjects 整段取数组）
   const quickPrompts = useMemo(
-    () => tmStringArray(locale, 'counseling.aiChat.quickPrompts'),
-    [locale]
+    () => t('counseling.aiChat.quickPrompts', { returnObjects: true }) as string[],
+    [t]
   )
 
   return (

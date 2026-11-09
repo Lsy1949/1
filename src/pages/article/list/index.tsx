@@ -17,7 +17,7 @@ import PageContainer from '@/components/PageContainer'
 import ReadProgress from '@/components/ReadProgress'
 import { RowList } from '@/features/article'
 import type { ArticleItem } from '@/features/article'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { toArticleItem, useArticleList } from '../articleQuery'
 import './index.css'
 
@@ -30,7 +30,7 @@ interface CategoryItem {
 export default function ArticleListView() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const categoryParam = searchParams.get('category') || 'all'
 
   const [searchQuery, setSearchQuery] = useState('')

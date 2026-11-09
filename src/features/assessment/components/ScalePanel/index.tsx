@@ -7,7 +7,7 @@ import {
 } from '@ant-design/icons'
 import { ConfigProvider, Empty, Tabs } from 'antd'
 import { useReveal } from '@/hooks/useReveal'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import ScaleIcon from '@/components/ScaleIcon'
 import type { ScaleInfo } from '../types'
 import styles from './ScalePanel.module.css'
@@ -53,7 +53,7 @@ export default function ScalePanel({
   onActiveCategoryChange,
   onSelect,
 }: Props) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const ribbonRef = useReveal<HTMLDivElement>({ delay: 80 })
 
   // 分类页签 items：label = 名称；数量作上标徽标绝对定位（不撑宽页签，ink bar 只跟随文字宽度）

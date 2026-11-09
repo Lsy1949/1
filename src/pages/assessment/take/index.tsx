@@ -16,7 +16,7 @@ import {
 } from '@ant-design/icons'
 import { useNavigate, useParams } from 'react-router-dom'
 import { QuestionCard } from '@/features/assessment'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { useAssessmentScale, useSubmitAssessment } from '../assessmentQuery'
 import './index.css'
 
@@ -31,7 +31,7 @@ export default function AssessmentTakeView() {
   const { modal } = AntApp.useApp()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   const scaleKey = id ? String(id) : undefined
   const {
@@ -189,7 +189,7 @@ export default function AssessmentTakeView() {
         <div className="header-left">
           <Button type="text" className="exit-btn" onClick={confirmExit}>
             <CloseOutlined />
-            <span>退出</span>
+            <span>{t('assessment.take.exit')}</span>
           </Button>
           <div className="divider" />
           <div className="scale-meta">
@@ -243,7 +243,7 @@ export default function AssessmentTakeView() {
             onClick={prevQuestion}
           >
             <ArrowLeftOutlined />
-            <span>上一题</span>
+            <span>{t('assessment.take.prev')}</span>
           </Button>
 
           <div className="step-dots">
@@ -262,7 +262,7 @@ export default function AssessmentTakeView() {
               disabled={currentAnswer === undefined}
               onClick={() => setCurrentIndex((i) => i + 1)}
             >
-              <span>下一题</span>
+              <span>{t('assessment.take.next')}</span>
               <ArrowRightOutlined />
             </Button>
           ) : (
@@ -273,7 +273,7 @@ export default function AssessmentTakeView() {
               loading={submit.isPending}
               onClick={() => void handleSubmit()}
             >
-              <span>提交报告</span>
+              <span>{t('assessment.take.submit')}</span>
               {!submit.isPending && <CheckCircleOutlined />}
             </Button>
           )}
@@ -285,8 +285,8 @@ export default function AssessmentTakeView() {
         <div className="submitting-overlay">
           <div className="loading-box">
             <div className="loading-spinner" />
-            <p>正在分析您的回答，生成深度报告...</p>
-            <p className="loading-sub">请稍候</p>
+            <p>{t('assessment.take.analyzing')}</p>
+            <p className="loading-sub">{t('assessment.take.pleaseWait')}</p>
           </div>
         </div>
       )}

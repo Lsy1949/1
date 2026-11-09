@@ -5,14 +5,15 @@
  */
 import { Button, Flex, Typography } from 'antd'
 import { CheckCircleFilled } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
+import type { I18nKey } from '@/i18n/dataHelper'
 import styles from './AuthSuccess.module.css'
 
 interface AuthSuccessProps {
   /** 结果标题 i18n key */
-  titleKey: string
+  titleKey: I18nKey
   /** 结果描述 i18n key */
-  descKey: string
+  descKey: I18nKey
   /** 剩余秒数（0 时父级负责跳转，本组件不再渲染倒计时行） */
   countdown: number
   /** 立即返回登录 */
@@ -20,7 +21,7 @@ interface AuthSuccessProps {
 }
 
 export function AuthSuccess({ titleKey, descKey, countdown, onBackToLogin }: AuthSuccessProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   return (
     <Flex vertical align="center" gap={4} className={styles.wrapper}>
       <CheckCircleFilled className={styles.icon} aria-hidden="true" />

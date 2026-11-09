@@ -7,7 +7,7 @@ import {
   TrophyOutlined,
 } from '@ant-design/icons'
 import ModuleCover from '@/components/ModuleCover'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { AssessmentRecord, ScaleInfo } from '../types'
 import styles from './MinePanel.module.css'
 
@@ -41,7 +41,7 @@ export default function MinePanel({
   onClearHistory,
   onGoAssess,
 }: Props) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   // --- 成长数据（Vue computed → useMemo，依赖 history/scales） ---
   const { growthPoints, totalCompleted, sortedHistory, joinDate, assessmentDays, growthStatus, userLevel, levelProgress, pointsToNext, badges, unlockedBadges } = useMemo(() => {
@@ -224,7 +224,7 @@ function MineProfileStats(props: {
   pointsToNext: number
   levelProgress: number
 }) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <div className={styles.profileEditorial}>

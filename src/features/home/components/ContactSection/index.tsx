@@ -6,7 +6,7 @@
  */
 import { App, Button, Col, Form, Input, Row } from 'antd'
 import { MessageOutlined, PhoneOutlined, RightOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import PageContainer from '@/components/PageContainer'
 import styles from './ContactSection.module.css'
 
@@ -17,7 +17,7 @@ interface ContactFormValues {
 }
 
 export function ContactSection() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = App.useApp()
   const [form] = Form.useForm<ContactFormValues>()
 

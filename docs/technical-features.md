@@ -307,15 +307,18 @@ DTO 只下发 `key / path / i18nKey / feature? / iconKey? / children?`，文案�
 
 ### 10.2 环境变量
 
+文件按 Vite 约定分层加载（后者覆盖前者）：`.env`（全局默认）→ `.env.development` / `.env.production`（模式专属）→ `.env.local` / `.env.*.local`（本机覆盖，不入库）。完整分层说明与变量总清单见 [.env.example](../.env.example) 与根目录 [README.md](../README.md)。
+
 | 变量 | 说明 |
 |---|---|
 | `VITE_API_BASE_URL` | 业务接口根地址；空则回退 `/api`（同源转发） |
+| `VITE_PROXY_TARGET` | dev server `/api`、`/hubs` 代理目标；空则回退 `http://127.0.0.1:8080` |
 | `VITE_APP_DOMAIN` | 子域名租户解析主域，须 eTLD+1 深度（dev `localhost`，生产必填） |
 | `VITE_PRIVATE_TENANT` | 私有化构建期锁定租户；公网留空 |
 | `VITE_SIGNALR_HUB_URL` | 实时端点；空则静默跳过 |
 | `VITE_AI_CHAT_URL` | AI 流式端点；空则本地引擎 |
 | `VITE_USE_MOCK` / `VITE_MOCK_ERROR` | Mock 开关 / 全量 500 注入 |
-| `VITE_APP_TITLE` | 站点标题默认值 |
+| `VITE_APP_TITLE` | 站点标题默认值（全局默认写在 `.env`） |
 
 ### 10.3 部署要点
 

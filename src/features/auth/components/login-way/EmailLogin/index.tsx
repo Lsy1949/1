@@ -10,7 +10,7 @@ import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { App as AntApp, Button, Form, Input, Select } from 'antd'
 import { BankOutlined, MailOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { useAuthLogin, sendEmailCode } from '@/features/auth/hooks/useAuth'
 import { useCountdown } from '@/features/auth/hooks/useCountdown'
 import { fetchPublicTenants } from '@/api/modules/auth'
@@ -41,7 +41,7 @@ const initialValues: Partial<EmailLoginFormState> = {
 }
 
 export function EmailLogin({ onLoginSuccess }: EmailLoginProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = AntApp.useApp() // 替代 ElMessage
 
   const [form] = Form.useForm<EmailLoginFormState>()

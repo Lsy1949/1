@@ -7,35 +7,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { CloseOutlined, CustomerServiceOutlined, MessageOutlined, UndoOutlined } from '@ant-design/icons'
-import type { AppLocale } from '@/i18n'
-import { useI18n } from '@/i18n'
-import zhCN from '@/i18n/zh-CN'
-import zhTW from '@/i18n/zh-TW'
-import enUS from '@/i18n/en-US'
+import { useTranslation } from 'react-i18next'
 import ChatThread from '../ChatThread'
 import { useChat } from '../../hooks/useChat'
 import styles from './AssistantFab.module.css'
-
-// 语言包原始对象直查：React i18n 契约未暴露 tm()，数组文案（quickPrompts）按 locale 取原始值
-const RAW_MESSAGES: Record<AppLocale, Record<string, unknown>> = {
-  'zh-CN': zhCN as unknown as Record<string, unknown>,
-  'zh-TW': zhTW as unknown as Record<string, unknown>,
-  'en-US': enUS as unknown as Record<string, unknown>,
-}
-
-function tmStringArray(locale: AppLocale, path: string): string[] {
-  const value = path.split('.').reduce<unknown>(
-    (acc, key) => (acc as Record<string, unknown> | undefined)?.[key],
-    RAW_MESSAGES[locale]
-  )
-  return Array.isArray(value) ? (value as string[]) : []
-}
 
 /** fab-pop 离场动画时长（ms），与 fabPopLeave 动画（module 内）保持一致 */
 const FAB_POP_LEAVE_MS = 320
 
 export function AssistantFab() {
-  const { t, locale } = useI18n()
+  const { t } = useTranslation()
   const { messages, isSending, send, abort, reset } = useChat('assistant')
 
   const [open, setOpen] = useState(false)
@@ -48,10 +29,10 @@ export function AssistantFab() {
     setOpen(false)
   }
 
-  // 快捷提问数组来自 i18n（等价 Vue tm()）
+  // 快捷提问数组来自 i18n（等价 Vue tm()：returnObjects 整段取数组）
   const quickPrompts = useMemo(
-    () => tmStringArray(locale, 'home.aiAssistant.quickPrompts'),
-    [locale]
+    () => t('home.aiAssistant.quickPrompts', { returnObjects: true }) as string[],
+    [t]
   )
 
   // 离场动画期间保持挂载，动画结束后卸载（等价 <Transition> 的 leave 阶段）

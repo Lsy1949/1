@@ -4,14 +4,14 @@
  * - 滚动显现样式由页面层 IntersectionObserver 统一触发（scroll-reveal 协议类）
  * - stat-item / about-image-bg 为无样式的结构标记类，保持字面量
  */
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import AnimatedCounter from '@/components/AnimatedCounter'
 import PageContainer from '@/components/PageContainer'
 import imgNist from '@/assets/images/nist-bg.jpg'
 import styles from './AboutSection.module.css'
 
 export function AboutSection() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <section id="about" className={styles.aboutSection}>

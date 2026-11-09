@@ -6,7 +6,7 @@
  */
 import { useMemo } from 'react'
 import { RightOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import imgNist from '@/assets/images/nist-bg.jpg'
 import imgTsinghua from '@/assets/images/tsinghua-bg.jpg'
 import PageContainer from '@/components/PageContainer'
@@ -24,23 +24,11 @@ export interface NewsSectionProps {
 }
 
 export function NewsSection({ onRead }: NewsSectionProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
-  // React 版 i18n 未提供 tm()（整段数组取值），等价方式：按索引点路径逐条 t() 探测，
-  // t 对缺键回退返回 key 本身（与 vue-i18n 回退行为一致），据此终止循环。
-  // 新闻数据（i18n 驱动，图片循环复用）
+  // 等价 Vue tm()：returnObjects 整段取新闻数组（i18n 驱动，图片循环复用）
   const allNews = useMemo<AllNewsItem[]>(() => {
-    const items: NewsItem[] = []
-    for (let i = 0; ; i++) {
-      const prefix = `home.news.items.${i}`
-      if (t(`${prefix}.category`) === `${prefix}.category`) break
-      items.push({
-        category: t(`${prefix}.category`),
-        title: t(`${prefix}.title`),
-        summary: t(`${prefix}.summary`),
-        date: t(`${prefix}.date`)
-      })
-    }
+    const items = t('home.news.items', { returnObjects: true }) as NewsItem[]
     return items.map((item, i) => ({
       ...item,
       id: i + 1,

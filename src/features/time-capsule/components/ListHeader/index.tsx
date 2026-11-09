@@ -1,6 +1,6 @@
 // 时光胶囊 · 列表页头部（编辑式标题 + 邮戳印章）
 import { useReveal } from '@/hooks/useReveal'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './ListHeader.module.css'
 
 // 邮戳日期（当日）
@@ -8,7 +8,7 @@ const now = new Date()
 const postmarkDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`
 
 export function ListHeader() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   // v-reveal / v-reveal="60" / v-reveal="120" / v-reveal="80" → useReveal
   const eyebrowRef = useReveal<HTMLDivElement>()

@@ -3,15 +3,16 @@
  * 区块实现见 features/home/components/*（数据 props 入、行为回调出）。
  *
  * 轮播数据来自统一接口 `GET /api/home/carousel`（DEV 下由 MSW 拦截）：
- * 接口只下发结构 `{ key, image, ctaRoute }`，文案在本页用 useI18n() 按 key 组装，
+ * 接口只下发结构 `{ key, image, ctaRoute }`，文案在本页用 useTranslation() 按 key 组装，
  * 保证语言切换即时生效、且接口不成为第二份文案来源。
  */
 import { useEffect, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { App, Skeleton } from 'antd'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { get, type CarouselSlideDTO } from '@/api'
+import type { I18nKey } from '@/i18n/dataHelper'
 import { Carousel, Marquee, NewsSection, AboutSection, ContactSection, BackTop } from '@/features/home'
 // AI 客服悬浮窗（Vue 版 <AiAssistantFab />，全局浮动于首页）
 import { AssistantFab } from '@/features/ai'
@@ -27,7 +28,7 @@ import './HomePageView.css'
 
 export function HomePageView() {
   const navigate = useNavigate()
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = App.useApp()
 
   // 轮播数据：统一请求封装 get()（自动解包 { code, data, message } 信封）
@@ -38,17 +39,19 @@ export function HomePageView() {
   })
 
   // 接口结构（key/image/ctaRoute）+ i18n → 渲染用 CarouselSlide
-  // useMemo 依赖 t：语言切换时按同一 key 重新取文案
+  // useMemo 依赖 t：语言切换时按同一 key 重新取文案。
+  // slide.key 为后端下发字段（slide1/slide2/slide3）：断言 I18nKey，
+  // 运行时未识别 key 由 i18next 回退显示 key 本身（与旧实现一致）
   const carouselSlides = useMemo<CarouselSlide[]>(
     () =>
       (carouselDtos ?? []).map(slide => ({
         key: slide.key,
         image: slide.image,
         ctaRoute: slide.ctaRoute,
-        title: t(`home.carousel.${slide.key}.title`),
-        tag: t(`home.carousel.${slide.key}.tag`),
-        description: t(`home.carousel.${slide.key}.desc`),
-        buttonText: t(`home.carousel.${slide.key}.btn`)
+        title: t(`home.carousel.${slide.key}.title` as I18nKey),
+        tag: t(`home.carousel.${slide.key}.tag` as I18nKey),
+        description: t(`home.carousel.${slide.key}.desc` as I18nKey),
+        buttonText: t(`home.carousel.${slide.key}.btn` as I18nKey)
       })),
     [carouselDtos, t]
   )

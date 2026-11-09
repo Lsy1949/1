@@ -14,7 +14,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons'
 import type { Counselor, CounselorAccentKey } from '../types'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { useReveal } from '@/hooks/useReveal'
 import styles from './ConsultantsPanel.module.css'
 
@@ -46,7 +46,7 @@ interface ConsFilter {
 const INITIAL_FILTER: ConsFilter = { specialty: '', gender: '', sort: 'rating' }
 
 export function ConsultantsPanel({ counselors, specialties, onBook }: ConsultantsPanelProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   const ribbonRef = useReveal<HTMLDivElement>({ delay: 80 })
   const rowsRef = useReveal<HTMLDivElement>({ delay: 160 })

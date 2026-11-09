@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { App as AntApp, Form, Input, Modal } from 'antd'
 import { ExclamationCircleFilled, LockOutlined, MailOutlined, MobileOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './SecuritySection.module.css'
 
 /* ===== 登录设备 ===== */
@@ -53,7 +53,7 @@ const INITIAL_DEVICES: DeviceItem[] = [
 ]
 
 export function SecuritySection() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message, modal } = AntApp.useApp() // 替代 ElMessage / ElMessageBox
 
   /* ===== 密码 ===== */

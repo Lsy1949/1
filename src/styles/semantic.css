@@ -55,7 +55,7 @@
   --status-info: var(--violet-600);
   --status-danger: var(--danger-800);
 
-  /* 分类/标识色：图表（ECharts/SVG/canvas）、量表、头像等"身份色"。
+  /* 分类/标识色：图表（AntV Charts/SVG/canvas）、量表、头像等"身份色"。
      明色取 antd 官方色板第 6 档、暗色取第 8 档，色相一一对齐。
      注意：官方第 6 档定位是"填充色"（与白底对比度约 2–6:1），
      用于头像/图表填充；若需在浅色底上作正文文字，请改用 --status-* 或品牌色。 */

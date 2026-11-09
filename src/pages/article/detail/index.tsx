@@ -10,7 +10,7 @@ import ReadProgress from '@/components/ReadProgress'
 import InitialAvatar from '@/components/InitialAvatar'
 import { Comments, RelatedSidebar, RichBody } from '@/features/article'
 import { useReveal } from '@/hooks/useReveal'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { toArticleItem } from '../articleQuery'
 import './index.css'
 
@@ -22,7 +22,7 @@ const formatViews = (n: number) => {
 export default function ArticleDetailView() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   const [liked, setLiked] = useState(false)
   const [bookmarked, setBookmarked] = useState(false)

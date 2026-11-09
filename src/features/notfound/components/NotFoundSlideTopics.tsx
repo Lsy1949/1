@@ -1,11 +1,10 @@
 /**
  * 【business】NotFoundSlideTopics —— Slide 1：专题选择区（杂志网格 · 无卡片）
- * - 等价 tm('notFound.topics.items')：i18n 契约只暴露 t，
- *   用「点路径下标越界时 t 返回 key 本身」做哨兵探测数组长度（上限 9）
+ * - 等价 tm('notFound.topics.items')：t(key, { returnObjects: true }) 整段取数组
  * - 点击交由父级统一跳转（等价 emit('navigate', route)）
  */
 import { useMemo } from 'react'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import './NotFoundSlideTopics.css'
 
 export interface NotFoundSlideTopicsProps {
@@ -29,24 +28,15 @@ interface TopicItem {
 }
 
 export function NotFoundSlideTopics({ onNavigate }: NotFoundSlideTopicsProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   const topicItems = useMemo<TopicItem[]>(() => {
-    const items: TopicItem[] = []
-    for (let i = 0; i < 9; i++) {
-      const no = t(`notFound.topics.items.${i}.no`)
-      // t 缺键回退 key 本身 → 该下标越界，收集结束
-      if (no === `notFound.topics.items.${i}.no`) break
-      items.push({
-        no,
-        en: t(`notFound.topics.items.${i}.en`),
-        zh: t(`notFound.topics.items.${i}.zh`),
-        desc: t(`notFound.topics.items.${i}.desc`),
-        image: topicImages[i] || topicImages[0],
-        route: topicRoutes[i] || '/'
-      })
-    }
-    return items
+    const items = t('notFound.topics.items', { returnObjects: true }) as Array<Omit<TopicItem, 'image' | 'route'>>
+    return items.map((item, i) => ({
+      ...item,
+      image: topicImages[i] || topicImages[0],
+      route: topicRoutes[i] || '/'
+    }))
   }, [t])
 
   return (

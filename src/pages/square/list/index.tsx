@@ -6,13 +6,13 @@ import { App } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { CommunitySidebar, DailyPrompt, FeedList, ListHeader } from '@/features/square'
 import type { FeedItem } from '@/features/square'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { useSquareInfo, useToggleLike } from '../squareQuery'
 import './index.css'
 
 export function SquareListView() {
   const navigate = useNavigate()
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = App.useApp()
 
   const { data, isPending, isError, refetch } = useSquareInfo()

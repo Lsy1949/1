@@ -4,13 +4,13 @@
  * @keyframes marquee-scroll 随组件 module css 携带（模块自动局部化）。
  */
 import { Fragment } from 'react'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './Marquee.module.css'
 
 const MARQUEE_KEYS = ['users', 'experts', 'satisfaction', 'aiPsych', 'support', 'slogan'] as const
 
 export function Marquee() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <div className={styles.marqueeBand} aria-hidden="true">

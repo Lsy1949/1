@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'react'
 import { App as AntApp, Switch } from 'antd'
 import { BellOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './NotificationsSection.module.css'
 
 interface NotificationFlags {
@@ -16,7 +16,7 @@ interface NotificationFlags {
 type NotificationKey = keyof NotificationFlags
 
 export function NotificationsSection() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = AntApp.useApp() // 替代 ElMessage
 
   const [notifications, setNotifications] = useState<NotificationFlags>({

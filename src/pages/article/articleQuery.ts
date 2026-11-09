@@ -6,12 +6,13 @@
  *  - 分类标签按 key 走 i18n（接口不下发 categoryLabel）
  */
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import type { TFunction } from 'i18next'
 import { articleApi } from '@/api'
 import type { ArticleCategoryKey, ArticleListItemDTO } from '@/api'
 import type { ArticleItem } from '@/features/article'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 
-type Translate = (key: string, params?: Record<string, unknown>) => string
+type Translate = TFunction
 
 /** 文章列表查询：分类即时生效，关键词防抖；切换时保留上一页数据避免闪屏 */
 export function useArticleList(category: string, keyword: string) {

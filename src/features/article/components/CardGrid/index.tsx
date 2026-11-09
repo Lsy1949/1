@@ -1,7 +1,7 @@
 // 文章网格（ArticleCenterView），卡片点击上抛 onOpen；count 单独传入（原页面显示过滤后总数而非展示数）
 import { ArrowRightOutlined, ClockCircleOutlined, EyeOutlined } from '@ant-design/icons'
 import { Empty } from 'antd'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { ArticleItem } from '../types'
 import styles from './CardGrid.module.css'
 
@@ -15,7 +15,7 @@ interface CardGridProps {
 }
 
 export function CardGrid({ articles, title, count, showViewAll, onOpen, onViewAll }: CardGridProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <div className="module-grid">

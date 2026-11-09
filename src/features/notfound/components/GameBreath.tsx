@@ -4,13 +4,14 @@
  * - 暴露 handleKey 供舞台层分发空格键（等价 defineExpose）
  */
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import './GameBreath.css'
 
 const BREATH = [
-  { phase: 'inhale', duration: 4000, label: '吸 气' },
-  { phase: 'hold', duration: 4000, label: '屏 息' },
-  { phase: 'exhale', duration: 6000, label: '呼 气' }
-]
+  { phase: 'inhale', duration: 4000, labelKey: 'notFound.games.breath.inhale' },
+  { phase: 'hold', duration: 4000, labelKey: 'notFound.games.breath.hold' },
+  { phase: 'exhale', duration: 6000, labelKey: 'notFound.games.breath.exhale' }
+] as const
 const SYNC_WINDOW = 800 // 相位切换前后 400ms 内敲击算同步
 
 export interface GameBreathHandle {
@@ -23,6 +24,7 @@ export interface GameBreathProps {
 
 export const GameBreath = forwardRef<GameBreathHandle, GameBreathProps>(
   function GameBreath(_props, ref) {
+    const { t } = useTranslation()
     const [breathPhase, setBreathPhase] = useState('inhale')
     const [breathCycle, setBreathCycle] = useState(0)
     const [breathStreak, setBreathStreak] = useState(0)
@@ -34,7 +36,9 @@ export const GameBreath = forwardRef<GameBreathHandle, GameBreathProps>(
     const breathPhaseIdx = useRef(0)
     const breathSyncTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-    const breathPhaseLabel = BREATH.find((b) => b.phase === breathPhase)?.label ?? ''
+    const breathPhaseLabel = BREATH.find((b) => b.phase === breathPhase)?.labelKey
+      ? t(BREATH.find((b) => b.phase === breathPhase)!.labelKey)
+      : ''
 
     function startBreathLoop() {
       if (breathRaf.current !== null) cancelAnimationFrame(breathRaf.current)
@@ -141,7 +145,7 @@ export const GameBreath = forwardRef<GameBreathHandle, GameBreathProps>(
         </div>
         <div className="nf-game-hint">
           <span className="nf-game-key">SPACE</span>
-          <span className="nf-game-hint-text">于相位切换瞬间敲击 · 同步心流</span>
+          <span className="nf-game-hint-text">{t('notFound.games.breathHint')}</span>
         </div>
       </div>
     )

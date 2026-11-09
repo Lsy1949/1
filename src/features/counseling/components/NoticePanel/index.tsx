@@ -1,7 +1,7 @@
 /**
  * 【business】NoticePanel —— 咨询须知面板 · 流程横幅 + 编辑式 bento 网格
- * - tm() 数组文案（items / prep.*Items / cancellation.items）→ RAW_MESSAGES + tmStringArray
- *   （React i18n 契约未暴露 tm()，按 locale 直查语言包原始数组）
+ * - tm() 数组文案（items / prep.*Items / cancellation.items）→ t(key, { returnObjects: true })
+ *   整段取数组（等价 vue-i18n tm()）
  * - 图标映射：School→BankOutlined、RefreshLeft→UndoOutlined、CircleCheckFilled→CheckCircleFilled、
  *   InfoFilled→InfoCircleFilled、Warning→WarningOutlined、Reading→ReadOutlined
  */
@@ -16,31 +16,12 @@ import {
   UndoOutlined,
   WarningOutlined,
 } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
-import type { AppLocale } from '@/i18n'
-import zhCN from '@/i18n/zh-CN'
-import zhTW from '@/i18n/zh-TW'
-import enUS from '@/i18n/en-US'
+import { useTranslation } from 'react-i18next'
 import { useReveal } from '@/hooks/useReveal'
 import styles from './NoticePanel.module.css'
 
-// 语言包原始对象直查：数组文案按 locale 取原始值（等价 vue-i18n tm()）
-const RAW_MESSAGES: Record<AppLocale, Record<string, unknown>> = {
-  'zh-CN': zhCN as unknown as Record<string, unknown>,
-  'zh-TW': zhTW as unknown as Record<string, unknown>,
-  'en-US': enUS as unknown as Record<string, unknown>,
-}
-
-function tmStringArray(locale: AppLocale, path: string): string[] {
-  const value = path.split('.').reduce<unknown>(
-    (acc, key) => (acc as Record<string, unknown> | undefined)?.[key],
-    RAW_MESSAGES[locale]
-  )
-  return Array.isArray(value) ? (value as string[]) : []
-}
-
 export function NoticePanel() {
-  const { t, locale } = useI18n()
+  const { t } = useTranslation()
 
   const layoutRef = useReveal<HTMLDivElement>({ delay: 100 })
 
@@ -55,17 +36,17 @@ export function NoticePanel() {
   )
 
   const confidentialityItems = useMemo(
-    () => tmStringArray(locale, 'counseling.confidentiality.items'),
-    [locale]
+    () => t('counseling.confidentiality.items', { returnObjects: true }) as string[],
+    [t]
   )
 
-  const prepBeforeItems = useMemo(() => tmStringArray(locale, 'counseling.prep.beforeItems'), [locale])
-  const prepDuringItems = useMemo(() => tmStringArray(locale, 'counseling.prep.duringItems'), [locale])
-  const prepAfterItems = useMemo(() => tmStringArray(locale, 'counseling.prep.afterItems'), [locale])
+  const prepBeforeItems = useMemo(() => t('counseling.prep.beforeItems', { returnObjects: true }) as string[], [t])
+  const prepDuringItems = useMemo(() => t('counseling.prep.duringItems', { returnObjects: true }) as string[], [t])
+  const prepAfterItems = useMemo(() => t('counseling.prep.afterItems', { returnObjects: true }) as string[], [t])
 
   const cancellationItems = useMemo(
-    () => tmStringArray(locale, 'counseling.cancellation.items'),
-    [locale]
+    () => t('counseling.cancellation.items', { returnObjects: true }) as string[],
+    [t]
   )
 
   const serviceInfo = useMemo(

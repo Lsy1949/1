@@ -1,7 +1,7 @@
 // 05 危险操作区块 · 注销确认（登出与跳转由页面处理）
 import { Button } from 'antd'
 import { WarningOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './DangerSection.module.css'
 
 export interface DangerSectionProps {
@@ -9,7 +9,7 @@ export interface DangerSectionProps {
 }
 
 export function DangerSection({ onConfirmDelete }: DangerSectionProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   return (
     <section className={`${styles.magSection} ${styles.dangerSection}`}>

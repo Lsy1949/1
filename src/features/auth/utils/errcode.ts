@@ -1,12 +1,10 @@
-import type { useI18n } from '@/i18n'
-
-type TFunc = ReturnType<typeof useI18n>['t']
+import type { TFunction } from 'i18next'
 
 /**
  * 认证流程稳定错误码 → i18n 文案（契约 §1.4-1.6：mock/后端下发错误码，
  * 前端统一映射；未识别错误显示原始 message）。
  */
-export function authErrorMessage(t: TFunc, err: unknown): string {
+export function authErrorMessage(t: TFunction, err: unknown): string {
   const code = err instanceof Error ? err.message : ''
   const map: Record<string, string> = {
     INVALID_EMAIL: t('login.errors.invalidEmail'),

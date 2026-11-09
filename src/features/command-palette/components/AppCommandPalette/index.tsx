@@ -6,8 +6,9 @@
  *   遵循 React Router 最佳实践，改为组件内部 useNavigate() 直接
  *   navigate(target.to)，无需父层中转（非机械直译）。
  */
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useCommandPalette } from '../../hooks/useCommandPalette'
 import CommandPalette from '../CommandPalette'
 import type { PaletteItem } from '../CommandPalette'
@@ -17,17 +18,7 @@ interface AppCmdItem extends PaletteItem {
   to: string
 }
 
-// 导航条目
-const navItems: AppCmdItem[] = [
-  { id: 'nav-home', title: '首页', desc: '生涯心旅主页', group: 'navigation', to: '/' },
-  { id: 'nav-articles', title: '文章中心', desc: '阅读 · 看见更广阔的自己', group: 'navigation', to: '/articles' },
-  { id: 'nav-article-list', title: '文章列表', desc: '全部文章', group: 'navigation', to: '/articles/list' },
-  { id: 'nav-assessment', title: '测评中心', desc: '专业心理量表', group: 'navigation', to: '/assessment' },
-  { id: 'nav-counseling', title: '心理咨询', desc: '专业咨询师预约', group: 'navigation', to: '/counseling' },
-  { id: 'nav-capsule', title: '时光胶囊', desc: '写给未来的自己', group: 'navigation', to: '/time-capsule' },
-]
-
-// 文章条目（模拟）
+// 文章条目（模拟演示数据，等价 mock 后端内容，不做 i18n）
 const articleItems: AppCmdItem[] = [
   { id: 'art-1', title: '如何在焦虑中找到内心的锚点', desc: '精选推荐', group: 'articles', to: '/articles' },
   { id: 'art-2', title: '大学生职业规划的五步法', desc: '职业发展', group: 'articles', to: '/articles' },
@@ -35,21 +26,12 @@ const articleItems: AppCmdItem[] = [
   { id: 'art-4', title: '拖延症背后的心理机制', desc: '心理健康', group: 'articles', to: '/articles' },
 ]
 
-// 测评条目（模拟）
+// 测评条目（模拟演示数据）
 const assessItems: AppCmdItem[] = [
   { id: 'asm-1', title: 'SDS 抑郁自评量表', desc: '20题 · 约10分钟', group: 'assessment', to: '/assessment' },
   { id: 'asm-2', title: 'SAS 焦虑自评量表', desc: '20题 · 约10分钟', group: 'assessment', to: '/assessment' },
   { id: 'asm-3', title: 'MBTI 人格类型测试', desc: '93题 · 约15分钟', group: 'assessment', to: '/assessment' },
 ]
-
-const allItems: AppCmdItem[] = [...navItems, ...articleItems, ...assessItems]
-
-// 编号
-allItems.forEach((it, i) => {
-  it.num = String(i + 1).padStart(2, '0')
-})
-
-const idMap = new Map(allItems.map((it) => [it.id, it]))
 
 const groupLabels: Record<string, string> = {
   navigation: '— Navigate',
@@ -57,7 +39,7 @@ const groupLabels: Record<string, string> = {
   assessment: '— Assessment',
 }
 
-// 全局快捷键（自 base 组件上移至业务装配层）
+// 快捷键判定：输入类元素聚焦时不响应 '/' 唤起
 const isTyping = (e: KeyboardEvent): boolean => {
   const target = e.target as HTMLElement | null
   const tag = target?.tagName
@@ -67,6 +49,27 @@ const isTyping = (e: KeyboardEvent): boolean => {
 export function AppCommandPalette() {
   const { open, toggle, close } = useCommandPalette()
   const navigate = useNavigate()
+  const { t } = useTranslation()
+
+  // 导航条目为界面文案，随语言切换重建（模块顶层禁止调用 t()，移入组件体内）
+  const allItems = useMemo<AppCmdItem[]>(() => {
+    const navItems: AppCmdItem[] = [
+      { id: 'nav-home', title: t('command.nav.home'), desc: t('command.nav.homeDesc'), group: 'navigation', to: '/' },
+      { id: 'nav-articles', title: t('command.nav.articles'), desc: t('command.nav.articlesDesc'), group: 'navigation', to: '/articles' },
+      { id: 'nav-article-list', title: t('command.nav.articleList'), desc: t('command.nav.articleListDesc'), group: 'navigation', to: '/articles/list' },
+      { id: 'nav-assessment', title: t('command.nav.assessment'), desc: t('command.nav.assessmentDesc'), group: 'navigation', to: '/assessment' },
+      { id: 'nav-counseling', title: t('command.nav.counseling'), desc: t('command.nav.counselingDesc'), group: 'navigation', to: '/counseling' },
+      { id: 'nav-capsule', title: t('command.nav.capsule'), desc: t('command.nav.capsuleDesc'), group: 'navigation', to: '/time-capsule' },
+    ]
+    const items = [...navItems, ...articleItems, ...assessItems]
+    // 编号
+    items.forEach((it, i) => {
+      it.num = String(i + 1).padStart(2, '0')
+    })
+    return items
+  }, [t])
+
+  const idMap = useMemo(() => new Map(allItems.map((it) => [it.id, it])), [allItems])
 
   const onSelect = (item: PaletteItem) => {
     const target = idMap.get(item.id)
@@ -102,7 +105,7 @@ export function AppCommandPalette() {
       open={open}
       items={allItems}
       groupLabels={groupLabels}
-      placeholder="搜索页面、文章、测评…"
+      placeholder={t('command.placeholder')}
       onUpdateOpen={onOpenChange}
       onSelect={onSelect}
     />

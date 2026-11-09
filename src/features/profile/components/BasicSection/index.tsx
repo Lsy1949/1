@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'react'
 import { App as AntApp, Button, Form, Input, Select } from 'antd'
 import { EditOutlined, EyeOutlined } from '@ant-design/icons'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { ProfileFormData } from '../types'
 import styles from './BasicSection.module.css'
 
@@ -14,7 +14,7 @@ export interface BasicSectionProps {
 }
 
 export function BasicSection({ form, onFormChange, id }: BasicSectionProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = AntApp.useApp() // 替代 ElMessage
 
   const [profileEditing, setProfileEditing] = useState(false)

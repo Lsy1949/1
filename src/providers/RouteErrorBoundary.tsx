@@ -1,6 +1,7 @@
 import { type ErrorInfo, type ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Button, Collapse, Result, Space, Typography } from 'antd'
+import { useTranslation } from 'react-i18next'
 import { ErrorBoundary } from './ErrorBoundary'
 
 const { Paragraph, Text } = Typography
@@ -32,6 +33,7 @@ export function RouteErrorBoundary({
 }: RouteErrorBoundaryProps) {
   const location = useLocation()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   return (
     <ErrorBoundary
@@ -51,6 +53,7 @@ export function RouteErrorBoundary({
         const canRetry = retries < maxRetries
 
         const handleCopy = async () => {
+          // 剪贴板诊断串（开发排障用，类似 console 输出，不做翻译）
           const text = [
             `错误编号: ${errorId}`,
             `路由: ${location.pathname}${location.search}`,
@@ -66,29 +69,29 @@ export function RouteErrorBoundary({
         return (
           <Result
             status="warning"
-            title="这个页面出了点状况"
-            subTitle="你的其他操作没有受到影响，可以再试一次，或去看看别的页面。"
+            title={t('error.route.title')}
+            subTitle={t('error.route.subTitle')}
             extra={
               <Space wrap>
                 {canRetry ? (
                   <Button type="primary" onClick={retry}>
-                    {retries === 0 ? '再试一次' : `再试一次（${retries}/${maxRetries}）`}
+                    {retries === 0 ? t('error.route.retry') : t('error.route.retryCount', { count: `${retries}/${maxRetries}` })}
                   </Button>
                 ) : (
                   <Button type="primary" onClick={() => window.location.reload()}>
-                    刷新页面
+                    {t('error.route.reload')}
                   </Button>
                 )}
-                <Button onClick={() => navigate('/')}>返回首页</Button>
+                <Button onClick={() => navigate('/')}>{t('error.forbidden.back')}</Button>
                 <Button type="link" onClick={handleCopy}>
-                  复制错误编号
+                  {t('error.route.copyErrorId')}
                 </Button>
               </Space>
             }
           >
             <Paragraph type="secondary" style={{ marginBottom: 0 }}>
-              错误编号：<Text code>{errorId}</Text>
-              {'　'}如需帮助，请把编号提供给客服。
+              {t('error.route.errorIdLabel')}<Text code>{errorId}</Text>
+              {'　'}{t('error.route.helpHint')}
             </Paragraph>
 
             {isDev && (
@@ -98,7 +101,7 @@ export function RouteErrorBoundary({
                 items={[
                   {
                     key: 'detail',
-                    label: '错误详情',
+                    label: '错误详情', // DEV 诊断面板（仅开发环境可见），保留原文
                     children: (
                       <pre style={preStyle}>
                         {error.stack ?? error.message}

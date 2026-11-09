@@ -12,7 +12,7 @@ import type {
   SquareCommentCreateInput,
   SquareCreateInput,
 } from '@/features/square'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 
 export function useSquareInfo() {
   return useQuery({
@@ -97,7 +97,7 @@ export function useToggleLike() {
 
 /** 发布动态：成功后刷新列表 */
 export function useCreateFeed() {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = App.useApp()
   const queryClient = useQueryClient()
 
@@ -122,7 +122,7 @@ export function useSquareComments(feedId: string | undefined) {
 
 /** 发布评论：同时刷新评论列表与帖子（commentCount 变化） */
 export function useCreateComment(feedId: string | undefined) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message } = App.useApp()
   const queryClient = useQueryClient()
 

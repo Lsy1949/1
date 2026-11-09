@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { Button, Empty, Input, Result, Skeleton } from 'antd'
 import { StarOutlined } from '@ant-design/icons'
 import InitialAvatar from '@/components/InitialAvatar'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import type { CommentItem, SquareCommentCreateInput } from '../types'
 import styles from './DetailComments.module.css'
 
@@ -28,7 +28,7 @@ export function DetailComments({
   isSubmitting,
   onLike,
 }: DetailCommentsProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   const [commentText, setCommentText] = useState('')
   // 回复目标（纯 UI 状态，不参与数据缓存）

@@ -1,6 +1,6 @@
 // 03 活动统计区块 · 编辑式数字排
 import { useMemo } from 'react'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import styles from './StatsSection.module.css'
 
 export interface StatsSectionProps {
@@ -8,7 +8,7 @@ export interface StatsSectionProps {
 }
 
 export function StatsSection({ id }: StatsSectionProps) {
-  const { t } = useI18n()
+  const { t } = useTranslation()
 
   const stats = useMemo(() => [
     { key: 'assessments', value: 12, label: t('profile.card.stats.assessments') },

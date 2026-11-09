@@ -5,6 +5,7 @@
  * - 通关 2200ms 后自动重开一局
  */
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import './GameMemory.css'
 
 interface MemoryCard {
@@ -20,6 +21,7 @@ export interface GameMemoryProps {
 }
 
 export function GameMemory(_props: GameMemoryProps) {
+  const { t } = useTranslation()
   const [memoryCards, setMemoryCards] = useState<MemoryCard[]>([])
   const [memoryMoves, setMemoryMoves] = useState(0)
   const [memoryMatches, setMemoryMatches] = useState(0)
@@ -130,12 +132,12 @@ export function GameMemory(_props: GameMemoryProps) {
       </div>
       {memoryClear && (
         <div className="nf-game-clear nf-memory-clear nf-fade-enter">
-          <span className="nf-game-clear-text">圆满</span>
-          <span className="nf-game-clear-hint">再玩一局</span>
+          <span className="nf-game-clear-text">{t('notFound.games.memoryClear')}</span>
+          <span className="nf-game-clear-hint">{t('notFound.games.playAgain')}</span>
         </div>
       )}
       <div className="nf-game-hint">
-        <span className="nf-game-hint-text">翻开两张相同的符号 · 配对拾光</span>
+        <span className="nf-game-hint-text">{t('notFound.games.memoryHint')}</span>
       </div>
     </div>
   )

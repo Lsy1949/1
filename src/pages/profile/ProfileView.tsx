@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import { App as AntApp, ConfigProvider } from 'antd'
 import { ExclamationCircleFilled } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-import { useI18n } from '@/i18n'
+import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/stores/useUserStore'
 import { logout } from '@/features/auth'
 import { RESPONSIVE_TOKEN } from '@/styles/theme'
@@ -48,7 +48,7 @@ const profileThemeComponents = {
 
 export default function ProfileView() {
   const navigate = useNavigate()
-  const { t } = useI18n()
+  const { t } = useTranslation()
   const { message, modal } = AntApp.useApp() // 替代 ElMessage / ElMessageBox
   const userStore = useUserStore()
 
