@@ -1,6 +1,6 @@
 name: Deploy to GitHub Pages
 
-# 纯静态发布：只产出 dist（接口请求在 Pages 上会 404，属预期）
+# 纯静态发布：Pages 无后端，构建期打开 MSW（VITE_USE_MOCK=1），接口全部由 mock 接管
 on:
   push:
     branches: [main]
@@ -34,8 +34,13 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # 内含 tsc --noEmit：类型不过则不发布
+      # 内含 tsc --noEmit：类型不过则不发布。
+      # VITE_USE_MOCK=1：生产默认不启用 mock（enable.ts），仅在 Pages 构建期
+      # 通过环境变量打开——真实后端部署时去掉本 env 即可。
+      # Vite 会把带 VITE_ 前缀的 process 环境变量并入 import.meta.env。
       - run: pnpm build
+        env:
+          VITE_USE_MOCK: '1'
 
       - uses: actions/configure-pages@v5
 

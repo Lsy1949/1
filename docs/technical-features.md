@@ -317,14 +317,14 @@ DTO 只下发 `key / path / i18nKey / feature? / iconKey? / children?`，文案�
 | `VITE_PRIVATE_TENANT` | 私有化构建期锁定租户；公网留空 |
 | `VITE_SIGNALR_HUB_URL` | 实时端点；空则静默跳过 |
 | `VITE_AI_CHAT_URL` | AI 流式端点；空则本地引擎 |
-| `VITE_USE_MOCK` / `VITE_MOCK_ERROR` | Mock 开关 / 全量 500 注入 |
+| `VITE_USE_MOCK` / `VITE_MOCK_ERROR` | Mock 开关 / 全量 500 注入；Pages 构建期（deploy.yml）注入 `'1'` 使线上由 mock 接管 |
 | `VITE_APP_TITLE` | 站点标题默认值（全局默认写在 `.env`） |
 
 ### 10.3 部署要点
 
 - 网关需转发 `/api/*` 与 `/hubs/*`（含 WebSocket 升级），其余走静态资源 + SPA fallback。
 - 子路径部署时 `base`、`public/404.html` 的 `pathSegmentsToKeep`、`BrowserRouter basename` 三者必须一致。
-- GitHub Pages：push `main` 触发 `.github/workflows/deploy.yml`（`pnpm install --frozen-lockfile` → `pnpm build` → `upload-pages-artifact` → `deploy-pages`）；生产未启用 MSW，接口 404 属预期。
+- GitHub Pages：push `main` 触发 `.github/workflows/deploy.yml`（`pnpm install --frozen-lockfile` → `pnpm build` → `upload-pages-artifact` → `deploy-pages`）；Pages 无后端，构建期注入 `VITE_USE_MOCK=1` 启用 MSW，接口由 mock 接管（真实后端部署去掉该 env 即可）。
 - 后端需按 `api-contract.md` 提供 cookie 会话、`X-Tenant-Id` 与 CSRF 响应头。
 
 ## 11. 已知偏差与约束

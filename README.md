@@ -15,11 +15,12 @@
 pnpm install      # 安装依赖
 pnpm dev          # 开发服务器 http://localhost:3001（/api、/hubs 代理到后端）
 pnpm build        # tsc --noEmit && vite build（产物 base 为 /1/，GitHub Pages 子路径）
-pnpm preview      # 本地预览构建产物
+pnpm preview      # 本地预览构建产物（base 仅构建期生效，preview 默认挂在根路径；
+                  # 要模拟 Pages 的 /1/ 路径托管需加 --base=/1/）
 pnpm typecheck    # 仅类型检查
 ```
 
-开发默认由 MSW 接管全部接口（无需后端即可运行）；联调真实后端时在 `.env.development`（或 `.env.development.local`）把 `VITE_USE_MOCK` 置 `0`。
+开发默认由 MSW 接管全部接口（无需后端即可运行）；联调真实后端时在 `.env.development`（或 `.env.development.local`）把 `VITE_USE_MOCK` 置 `0`。GitHub Pages 线上同理：`deploy.yml` 构建期注入 `VITE_USE_MOCK=1`，线上接口由 MSW 提供演示数据。
 
 ## 环境变量
 
