@@ -1,4 +1,4 @@
-import type { ArticleDetailDTO } from '@/api/types'
+import type { ArticleCommentDTO, ArticleDetailDTO } from '@/api/types'
 
 /**
  * 文章 domain mock 数据（模拟后端 `GET /api/articles*` 的返回）。
@@ -316,4 +316,53 @@ export const ARTICLES_BY_TENANT: Record<string, ArticleDetailDTO[]> = {
 
 export function articlesFor(tenantId: string): ArticleDetailDTO[] {
   return ARTICLES_BY_TENANT[tenantId] ?? ARTICLES_BY_TENANT.default
+}
+
+// ---------- 评论 mock（模拟后端 `GET/POST /api/articles/:id/comments*`） ----------
+// 演示用户：与 InitialAvatar 种子一致，POST 评论时后端以此身份落库
+export const MOCK_COMMENT_AUTHOR = '王同学'
+
+/** 评论种子：按文章 id 分组；未列出的文章返回空列表（评论天然按需产生） */
+export const ARTICLE_COMMENTS_SEED: Record<number, ArticleCommentDTO[]> = {
+  1: [
+    {
+      id: 1,
+      author: '林晓',
+      content: '读完之后深有感触，尤其是关于建立微小秩序的部分，让我重新审视了自己的日常。',
+      time: '3小时前',
+      likes: 24,
+      liked: false,
+      replies: [
+        { id: 11, author: '陈默', content: '一起加油，微小的秩序积累起来，就是生活的底气。', time: '2小时前' },
+        // replyTo：回复的是陈默那条（平铺显示，前缀表达指向）
+        { id: 12, author: '匿名同学', content: '请问有具体的正念练习方法可以推荐吗？', time: '1小时前', replyTo: '陈默' }
+      ]
+    },
+    { id: 2, author: '陈默', content: '正念练习确实有效，我坚持了三个月，焦虑感明显减轻了。推荐大家试试。', time: '5小时前', likes: 18, liked: false, replies: [] },
+    {
+      id: 3,
+      author: '匿名同学',
+      content: '感谢分享，正在经历迷茫期，这篇文章像一盏灯。',
+      time: '昨天',
+      likes: 31,
+      liked: false,
+      isAnonymous: true,
+      replies: [{ id: 31, author: '周琳', content: '会好起来的，我们都曾走过这段路。', time: '昨天' }]
+    },
+    { id: 4, author: '周琳', content: '与其试图掌控一切，不如学会与不确定性共处。这句话我要记下来。', time: '2天前', likes: 12, liked: false, replies: [] }
+  ]
+}
+
+/**
+ * 评论可变存储（模块级内存态）：handler 首次访问某文章时从种子深拷贝，
+ * 后续 POST/点赞都落在这份可变副本上——模拟真实后端的会话内持久化。
+ */
+const commentStore = new Map<number, ArticleCommentDTO[]>()
+
+export function commentsFor(articleId: number): ArticleCommentDTO[] {
+  if (!commentStore.has(articleId)) {
+    const seed = ARTICLE_COMMENTS_SEED[articleId]
+    commentStore.set(articleId, seed ? JSON.parse(JSON.stringify(seed)) as ArticleCommentDTO[] : [])
+  }
+  return commentStore.get(articleId)!
 }

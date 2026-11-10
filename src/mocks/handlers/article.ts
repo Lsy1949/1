@@ -1,9 +1,9 @@
 import { http } from 'msw'
 import { mocked, ok, fail } from '../utils/response'
-import { articlesFor } from '../data/article'
+import { articlesFor, commentsFor, MOCK_COMMENT_AUTHOR } from '../data/article'
 import { API_CODE } from '@/api/types'
 import { DEFAULT_TENANT_ID } from '@/config/tenant/default'
-import type { ArticleDetailDTO, ArticleListItemDTO } from '@/api/types'
+import type { ArticleCommentCreateDTO, ArticleCommentDTO, ArticleDetailDTO, ArticleListItemDTO } from '@/api/types'
 
 /** 详情 DTO → 列表 DTO（去掉正文，模拟真实后端的列表瘦身） */
 function toListItem(article: ArticleDetailDTO): ArticleListItemDTO {
@@ -91,6 +91,67 @@ export const articleHandlers = [
       return article
         ? ok<ArticleDetailDTO>(article)
         : fail(API_CODE.NOT_FOUND, '文章不存在')
+    }),
+  ),
+
+  // 评论列表：文章不存在 → 404；未产生过评论的文章返回空数组
+  http.get(
+    '/api/articles/:id/comments',
+    mocked(({ params, request }) => {
+      const pool = articlesFor(tenantOf(request))
+      if (!findArticle(pool, params.id)) return fail(API_CODE.NOT_FOUND, '文章不存在')
+      return ok<ArticleCommentDTO[]>(commentsFor(Number(params.id)))
+    }),
+  ),
+
+  // 发表评论 / 楼中楼回复：body { content, commentId?, replyTo? }
+  // commentId 存在即回复该楼层；replyTo 仅用于展示指向，缺省取楼层作者
+  http.post(
+    '/api/articles/:id/comments',
+    mocked(async ({ params, request }) => {
+      const pool = articlesFor(tenantOf(request))
+      if (!findArticle(pool, params.id)) return fail(API_CODE.NOT_FOUND, '文章不存在')
+
+      const body = (await request.json()) as ArticleCommentCreateDTO
+      const content = (body.content ?? '').trim()
+      if (!content) return fail(API_CODE.BAD_REQUEST, '评论内容不能为空')
+
+      const store = commentsFor(Number(params.id))
+      const floorId = body.commentId
+      if (floorId != null) {
+        // 楼中楼回复：平铺挂在目标楼层下，指向关系由 replyTo 表达
+        const floor = store.find(c => c.id === Number(floorId))
+        if (!floor) return fail(API_CODE.NOT_FOUND, '回复目标不存在')
+        floor.replies.push({
+          id: Date.now(),
+          author: MOCK_COMMENT_AUTHOR,
+          content,
+          time: '刚刚',
+          replyTo: body.replyTo?.trim() || floor.author,
+        })
+      } else {
+        // 顶层评论：prepend（最新在前）
+        store.unshift({ id: Date.now(), author: MOCK_COMMENT_AUTHOR, content, time: '刚刚', likes: 0, liked: false, replies: [] })
+      }
+      return ok<ArticleCommentDTO[]>(store)
+    }),
+  ),
+
+  // 评论点赞切换：返回更新后的整个列表（mock 简化，前端直接替换缓存）
+  http.post(
+    '/api/articles/:id/comments/:commentId/like',
+    mocked(({ params, request }) => {
+      const pool = articlesFor(tenantOf(request))
+      if (!findArticle(pool, params.id)) return fail(API_CODE.NOT_FOUND, '文章不存在')
+
+      const store = commentsFor(Number(params.id))
+      const cid = Number(params.commentId)
+      const floor = store.find(c => c.id === cid)
+      if (!floor) return fail(API_CODE.NOT_FOUND, '评论不存在')
+
+      floor.liked = !floor.liked
+      floor.likes += floor.liked ? 1 : -1
+      return ok<ArticleCommentDTO[]>(store)
     }),
   ),
 ]

@@ -30,6 +30,37 @@ export interface ArticleDetailDTO extends ArticleListItemDTO {
   content: string
 }
 
+/** 文章评论的楼中楼回复（平铺一层，指向关系由 replyTo 昵称表达） */
+export interface ArticleCommentReplyDTO {
+  id: number
+  author: string
+  content: string
+  time: string
+  /** 被回复人昵称；回复楼层内他人时存在 */
+  replyTo?: string
+}
+
+/** 文章评论（楼层，含楼中楼回复列表） */
+export interface ArticleCommentDTO {
+  id: number
+  author: string
+  content: string
+  time: string
+  likes: number
+  liked: boolean
+  isAnonymous?: boolean
+  replies: ArticleCommentReplyDTO[]
+}
+
+/** 发表评论 / 楼中楼回复的入参 */
+export interface ArticleCommentCreateDTO {
+  content: string
+  /** 楼中楼回复时传目标楼层 id；顶层评论不传 */
+  commentId?: number
+  /** 被回复人昵称（显示用）；缺省时由后端取楼层作者 */
+  replyTo?: string
+}
+
 /** 列表查询参数（mock 侧模拟真实后端的服务端过滤） */
 export interface ArticleListQuery {
   /** 'all' 或具体分类；缺省等同 'all' */

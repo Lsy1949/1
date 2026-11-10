@@ -170,7 +170,7 @@ export default function ArticleDetailView() {
       </PageContainer>
 
       {/* 评论区 */}
-      <Comments />
+      <Comments articleId={Number(id)} />
     </div>
   )
 }

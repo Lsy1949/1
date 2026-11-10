@@ -75,9 +75,9 @@ export function HomePageView() {
     document.getElementById('news')?.scrollIntoView({ behavior: scrollBehavior() })
   }
 
-  // 阅读动态 → 文章中心（保持原跳转行为）
-  const onReadNews = (_id: number) => {
-    navigate('/articles')
+  // 阅读动态 → 文章详情（id 来自接口，直接用）
+  const onReadNews = (id: number) => {
+    navigate(`/articles/${id}`)
   }
 
   // 监听滚轮事件实现首屏自动滚动
@@ -103,6 +103,8 @@ export function HomePageView() {
   }, [])
 
   // 跨区块「滚动显现」观察器：为所有 .scroll-reveal 元素加 is-visible
+  // 数据来自接口的区块（如最新动态）在挂载后才渲染行，故用 MutationObserver
+  // 监听新增节点补注册（observe 对同一元素幂等，重复注册无副作用）
   useEffect(() => {
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach(entry => {
@@ -116,12 +118,19 @@ export function HomePageView() {
       threshold: 0.1
     })
 
-    document.querySelectorAll('.scroll-reveal').forEach(el => {
-      obs.observe(el)
-    })
+    const observeAll = () => {
+      document.querySelectorAll('.scroll-reveal').forEach(el => {
+        obs.observe(el)
+      })
+    }
+    observeAll()
 
-    // 断开 IntersectionObserver，避免内存泄漏
+    const mutation = new MutationObserver(observeAll)
+    mutation.observe(document.body, { childList: true, subtree: true })
+
+    // 断开观察器，避免内存泄漏
     return () => {
+      mutation.disconnect()
       obs.disconnect()
     }
   }, [])

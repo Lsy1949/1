@@ -17,8 +17,9 @@
 }
 
 /* ===== 顶部返回栏（宽度/水平留白由 PageContainer 承担） ===== */
+/* padding-block 对称：返回按钮与栏目标记在上下分隔空间内垂直居中 */
 .top-bar {
-  padding-block: 0 28px;
+  padding-block: 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;

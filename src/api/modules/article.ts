@@ -1,5 +1,11 @@
-import { get } from '../request'
-import type { ArticleDetailDTO, ArticleListItemDTO, ArticleListQuery } from '../types'
+import { get, post } from '../request'
+import type {
+  ArticleCommentCreateDTO,
+  ArticleCommentDTO,
+  ArticleDetailDTO,
+  ArticleListItemDTO,
+  ArticleListQuery,
+} from '../types'
 
 /**
  * 文章模块 API。
@@ -37,4 +43,28 @@ export function fetchRelatedArticles(
     params: { limit },
     signal,
   })
+}
+
+/** 文章评论列表（楼层 + 楼中楼） */
+export function fetchArticleComments(
+  id: number | string,
+  signal?: AbortSignal,
+): Promise<ArticleCommentDTO[]> {
+  return get<ArticleCommentDTO[]>(`articles/${id}/comments`, { signal })
+}
+
+/** 发表评论 / 楼中楼回复（replyTo 存在即回复），返回最新评论列表 */
+export function addArticleComment(
+  id: number | string,
+  input: ArticleCommentCreateDTO,
+): Promise<ArticleCommentDTO[]> {
+  return post<ArticleCommentDTO[]>(`articles/${id}/comments`, input)
+}
+
+/** 评论点赞切换，返回更新后的评论列表 */
+export function toggleArticleCommentLike(
+  id: number | string,
+  commentId: number,
+): Promise<ArticleCommentDTO[]> {
+  return post<ArticleCommentDTO[]>(`articles/${id}/comments/${commentId}/like`, {})
 }

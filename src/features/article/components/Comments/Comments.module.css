@@ -1,4 +1,4 @@
-/* ===== 评论区 ===== */
+/* ===== 评论区 · 贴吧式楼中楼（无卡片边框，发丝线分隔，行内回复框与顶部发表评论分离） ===== */
 .commentsSection {
   max-width: var(--container-max);
   margin: 64px auto 0;
@@ -7,13 +7,11 @@
 
 .commentsHeader {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 36px;
-  padding-bottom: 24px;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--border-light);
-  position: relative;
 }
 
 .commentsEyebrow {
@@ -25,7 +23,7 @@
 }
 
 .commentsHeader .commentsTitle {
-  font-size: clamp(28px, 3.5vw, 40px);
+  font-size: clamp(24px, 3vw, 32px);
   font-weight: 900;
   color: var(--text-heading);
   letter-spacing: -1px;
@@ -33,9 +31,7 @@
 }
 
 .commentsCount {
-  position: absolute;
-  right: 0;
-  bottom: 28px;
+  margin-left: auto;
   font-size: 13px;
   color: var(--text-faint);
   font-weight: 500;
@@ -43,22 +39,13 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* 评论输入 · 卡片式 */
+/* 发表评论 · 平贴式：仅底部发丝线与列表衔接，无卡片包裹 */
 .commentInputWrap {
   display: flex;
   gap: 14px;
-  margin-bottom: 40px;
-  padding: 20px;
-  background: var(--brand-primary-wash);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  transition: border-color 0.25s ease;
-}
-
-.commentInputWrap:focus-within {
-  border-color: var(--brand-primary-soft);
-  background: var(--bg-card);
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--brand-primary) 6%, transparent);
+  margin-bottom: 8px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .commentInputArea {
@@ -72,20 +59,21 @@
   width: 100%;
   padding: 12px 14px;
   border: 1px solid var(--border-light);
-  border-radius: 12px;
+  border-radius: 10px;
   font-size: 14px;
   line-height: 1.6;
   color: var(--text-primary);
-  background: var(--bg-card);
+  background: var(--bg-soft);
   resize: vertical;
   min-height: 72px;
   font-family: inherit;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
   box-sizing: border-box;
 }
 
 .commentTextarea:focus {
   outline: none;
+  background: var(--bg-card);
   border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 8%, transparent);
 }
@@ -96,120 +84,343 @@
 
 .commentSubmitBtn {
   align-self: flex-end;
-  padding: 10px 28px;
-  background: linear-gradient(
-    135deg,
-    var(--brand-primary),
-    color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff))
-  );
+  padding: 8px 24px;
+  background: var(--brand-primary);
   color: var(--text-inverse, #fff);
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 1px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: filter 0.2s ease, transform 0.2s ease;
   font-family: inherit;
 }
 
 .commentSubmitBtn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px color-mix(in srgb, var(--brand-primary) 25%, transparent);
+  filter: brightness(1.1);
+  transform: translateY(-1px);
 }
 
 .commentSubmitBtn:disabled {
-  background: var(--brand-primary-soft);
+  background: var(--bg-mute);
+  color: var(--text-faint);
   cursor: not-allowed;
   transform: none;
-  box-shadow: none;
+  filter: none;
 }
 
-/* 评论列表 · 卡片式 */
+/* 评论列表 · 楼层平铺 */
 .commentsList {
   display: flex;
   flex-direction: column;
-  gap: 16px;
 }
 
 .commentItem {
   display: flex;
   gap: 14px;
-  padding: 20px 24px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: 14px;
-  transition: all 0.25s ease;
+  padding: 20px 4px;
+  border-bottom: 1px solid var(--border-light);
+  transition: background 0.2s ease;
+}
+
+.commentItem:last-child {
+  border-bottom-color: transparent;
 }
 
 .commentItem:hover {
-  border-color: var(--brand-primary-soft);
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--brand-primary) 6%, transparent);
-  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--brand-primary) 2%, transparent);
+}
+
+.commentAvatar {
+  flex-shrink: 0;
+  padding-top: 2px;
 }
 
 .commentBody {
   flex: 1;
   min-width: 0;
-  position: relative;
 }
 
 .commentMeta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   margin-bottom: 8px;
 }
 
 .commentAuthor {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  color: var(--text-primary);
-}
-
-.commentTime {
-  font-size: 12px;
-  color: var(--text-faint);
-  letter-spacing: 0.5px;
+  color: var(--brand-primary);
+  letter-spacing: 0.2px;
 }
 
 .commentContent {
   font-size: 14px;
   line-height: 1.75;
-  color: var(--text-secondary);
-  margin: 0 0 12px;
+  color: var(--text-primary);
+  margin: 0 0 10px;
 }
 
+/* 操作行：时间靠左，回复/点赞靠右（贴吧式文字按钮，无描边） */
+.commentActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.actionsSpacer {
+  flex: 1;
+}
+
+.commentTime {
+  letter-spacing: 0.5px;
+}
+
+.commentReplyBtn,
 .commentLikeBtn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
+  gap: 5px;
+  padding: 0;
   background: transparent;
-  border: 1px solid var(--border-light);
-  border-radius: 20px;
+  border: none;
   font-size: 12px;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
   font-family: inherit;
 }
 
+.commentReplyBtn:hover,
 .commentLikeBtn:hover {
-  border-color: var(--brand-primary-soft);
-  background: var(--brand-primary-faint);
   color: var(--brand-primary);
 }
 
-.commentLikeBtn.liked {
-  border-color: var(--brand-primary);
-  background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+.commentReplyBtn.active {
   color: var(--brand-primary);
   font-weight: 600;
 }
 
+.commentLikeBtn.liked {
+  color: var(--brand-primary);
+  font-weight: 600;
+}
+
+.commentReplyBtn :global(.anticon),
 .commentLikeBtn :global(.anticon) {
+  font-size: 13px;
+}
+
+/* ===== 楼中楼 · 不做缩进，与主评论左缘对齐，以软底色块区分层级（贴吧式单层嵌套） ===== */
+.repliesWrap {
+  margin-top: 12px;
+}
+
+.repliesToggle {
+  padding: 4px 0;
+  background: transparent;
+  border: none;
   font-size: 12px;
+  font-weight: 600;
+  color: var(--brand-primary);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  font-family: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.repliesToggle:hover {
+  opacity: 0.75;
+}
+
+.repliesList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  margin-top: 8px;
+  background: var(--bg-soft);
+  border-radius: 10px;
+}
+
+/* 楼中楼行 · 头像列固定宽度，文本列（作者/内容/操作）成一条垂直线 */
+.replyItem {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.replyItem + .replyItem {
+  border-top: 1px solid var(--border-light);
+}
+
+.replyAvatar {
+  flex-shrink: 0;
+  width: 26px;
+  padding-top: 1px;
+}
+
+.replyBody {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 作者行：蓝名 + 「回复 @xxx」 muted 前缀，独占一行 */
+.replyMeta {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.replyAuthor {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  letter-spacing: 0.2px;
+}
+
+.replyToName {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.replyContent {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+  word-break: break-word;
+}
+
+.replyActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+/* 多级嵌套：子回复缩进于父回复正文下方，延续线程线视觉 */
+.replyChildren {
+  margin-top: 4px;
+  padding-left: 10px;
+  border-left: 2px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.replyTime {
+  letter-spacing: 0.5px;
+}
+
+.replyBtn {
+  padding: 0;
+  background: transparent;
+  border: none;
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  font-family: inherit;
+}
+
+.replyBtn:hover {
+  color: var(--brand-primary);
+}
+
+/* ===== 行内回复框 · 挂在楼层底部，与顶部发表评论分离 ===== */
+.replyBox {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--bg-soft);
+  border-radius: 10px;
+}
+
+.replyBoxArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.replyTextarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  resize: none;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.replyTextarea:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 8%, transparent);
+}
+
+.replyTextarea::placeholder {
+  color: var(--text-faint);
+}
+
+.replyBoxActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.replyCancelBtn {
+  padding: 5px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.replyCancelBtn:hover {
+  background: var(--bg-mute);
+  color: var(--text-primary);
+}
+
+.replySubmitBtn {
+  padding: 5px 16px;
+  background: var(--brand-primary);
+  color: var(--text-inverse, #fff);
+  border: none;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: filter 0.2s ease;
+}
+
+.replySubmitBtn:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.replySubmitBtn:disabled {
+  background: var(--bg-mute);
+  color: var(--text-faint);
+  cursor: not-allowed;
+  filter: none;
 }
 
 .commentsEmpty {
@@ -224,50 +435,8 @@
     flex-direction: column;
     gap: 10px;
   }
-}
 
-/* ===== 暗色主题：颜色换色已由语义变量自动跟随，此处仅保留
-   「输入卡/评论卡融入背景」这一暗色专用视觉与深色底上的主色提亮 ===== */
-:global(html.dark .article-detail-page) .commentsEyebrow {
-  color: var(--brand-primary-bright) !important;
-}
-
-:global(html.dark .article-detail-page) .commentInputWrap {
-  background: rgb(255, 255, 255, 0.03) !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
-}
-
-:global(html.dark .article-detail-page) .commentInputWrap:focus-within {
-  background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
-  box-shadow: none !important;
-}
-
-:global(html.dark .article-detail-page) .commentTextarea {
-  background: transparent !important;
-  border-color: transparent !important;
-}
-
-:global(html.dark .article-detail-page) .commentTextarea:focus {
-  border-color: var(--brand-primary-bright) !important;
-}
-
-:global(html.dark .article-detail-page) .commentSubmitBtn:disabled {
-  background: var(--bg-mute) !important;
-  color: var(--text-faint) !important;
-}
-
-:global(html.dark .article-detail-page) .commentItem {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-}
-
-:global(html.dark .article-detail-page) .commentItem:hover {
-  background: rgb(255, 255, 255, 0.03) !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-
-:global(html.dark .article-detail-page) .commentLikeBtn:hover,
-:global(html.dark .article-detail-page) .commentLikeBtn.liked {
-  color: var(--brand-primary-bright) !important;
+  .commentActions {
+    gap: 10px;
+  }
 }
