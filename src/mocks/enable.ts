@@ -19,5 +19,16 @@ export async function enableMocking(): Promise<void> {
   // 'bypass'：未命中的请求（vite HMR、静态资源等）静默放行，保持控制台干净；
   // 未 mock 的接口仍可在 Network 面板看到，便于补 handler。
   // 注意 msw v3 把该选项由 onUnhandledRequest 更名为 onUnhandledFrame。
-  await worker.start({ onUnhandledFrame: 'bypass' })
+  //
+  // serviceWorker.url 必须显式锚定 BASE_URL：msw 默认按
+  // new URL('mockServiceWorker.js', location.href) 相对解析（getAbsoluteWorkerUrl），
+  // 子路径部署（BASE_URL='/1/'）的深层路由如 /1/assessment/dashboard
+  // 会被解析成 /1/assessment/mockServiceWorker.js → 注册 404。
+  // dev BASE_URL='/'，Pages '/1/'，均可用。
+  await worker.start({
+    onUnhandledFrame: 'bypass',
+    serviceWorker: {
+      url: `${import.meta.env.BASE_URL}mockServiceWorker.js`,
+    },
+  })
 }
