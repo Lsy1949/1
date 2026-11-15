@@ -68,6 +68,48 @@
   line-height: 1.6;
 }
 
+/* 主行动：写一封给未来的信 */
+.headerCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 999px;
+  background: var(--brand-primary);
+  color: var(--text-inverse, #fff);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--brand-primary) 24%, transparent);
+  transition:
+    transform var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.headerCta .anticon {
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.headerCta:hover {
+  background: var(--brand-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px color-mix(in srgb, var(--brand-primary) 32%, transparent);
+}
+
+.headerCta:hover .anticon {
+  transform: translateX(4px);
+}
+
+.headerCta:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 3px;
+}
+
 /* 邮戳印章 */
 .headerRight {
   flex-shrink: 0;

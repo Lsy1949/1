@@ -14,11 +14,19 @@
   border-bottom: 1px solid var(--border-light);
 }
 
+/* 心情徽章：深浅主题共用同一结构，仅颜色由令牌切换 */
 .detailEmoji {
-  font-size: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--bg-blue-tint);
+  border: 1px solid var(--border-blue);
+  font-size: 26px;
   line-height: 1;
-  display: block;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .detailTitle {
@@ -48,7 +56,25 @@
 }
 
 .metaStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.3px;
+  /* 圆点 + 半透明底都由 currentColor 派生：深浅主题只需切换文字色 */
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.metaStatus::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
 }
 
 .metaStatus.pending { color: var(--status-warning); }
@@ -60,11 +86,22 @@
   border-bottom: 1px solid var(--border-light);
 }
 
+/* 纵向间距由外层 antd Space 统一提供 */
+.detailContentStack {
+  width: 100%;
+}
+
+.detailContentStack :global(.ant-space-item) {
+  width: 100%;
+}
+
 .richContent {
   font-size: 15px;
   color: var(--text-regular);
   line-height: 1.85;
   letter-spacing: 0.2px;
+  /* 形成 BFC 包住首字下沉的浮动元素：正文只有一行时，下沉首字不会溢出到图片上 */
+  display: flow-root;
 }
 
 .richContent p {
@@ -104,23 +141,62 @@
 .detailImages {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 20px;
+  gap: 12px;
+  width: 100%;
 }
 
+/* 图片：antd Image 承载预览，外层负责比例 / 圆角 / 悬浮反馈 */
 .detailImage {
+  position: relative;
   width: 100%;
-  height: 110px;
-  border-radius: 10px;
-  background-size: cover;
-  background-position: center;
-  background-color: var(--bg-soft);
-  cursor: pointer;
-  transition: opacity 0.2s;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg-soft);
+  cursor: zoom-in;
+  transition: transform var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard);
 }
 
 .detailImage:hover {
-  opacity: 0.85;
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px -14px color-mix(in srgb, var(--brand-primary) 35%, transparent);
+}
+
+.detailImageRoot {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.detailImageImg,
+.detailImage :global(.ant-image-img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* antd 6 的 mask.blur 只作用于全屏预览背景，悬停层需自行美化：
+   品牌色淡染 + 轻模糊 + 居中「眼睛」徽标，语义即「预览」 */
+.detailImage :global(.ant-image-cover) {
+  background: color-mix(in srgb, var(--brand-primary) 26%, transparent);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.detailImage :global(.ant-image-cover)::after {
+  content: '';
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: rgb(255 255 255 / 0.94);
+  /* 眼睛图标：内联 SVG，白色圆形底 + 深色描边，深浅主题都清晰 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111827' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 19px 19px;
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.2);
 }
 
 /* 收件信息 · 编辑式定义列表 */
@@ -147,7 +223,7 @@
   display: flex;
   align-items: baseline;
   gap: 24px;
-  padding: 12px 0;
+  padding: 14px 0;
   border-bottom: 1px solid var(--border-light);
 }
 
@@ -158,7 +234,7 @@
 .infoLabel {
   font-size: 12px;
   color: var(--text-faint);
-  min-width: 80px;
+  min-width: 96px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   font-weight: 600;
@@ -170,12 +246,17 @@
   color: var(--text-primary);
   flex: 1;
   letter-spacing: 0.2px;
+  font-weight: 500;
+  overflow-wrap: break-word;
 }
 
-/* 开启时间 · 编辑式大字 */
+/* 开启时间：卡片式焦点区（深浅主题同结构，底色/描边走令牌） */
 .detailDate {
-  padding: 28px 0;
-  border-bottom: 1px solid var(--border-light);
+  margin: 28px 0;
+  padding: 24px 26px;
+  border: 1px solid var(--border-blue);
+  border-radius: 18px;
+  background: var(--bg-blue-tint);
 }
 
 .dateFlex {
@@ -258,6 +339,7 @@
   transition: transform 0.3s ease;
 }
 
+/* 次要操作 = 删除：悬停转危险色，语义更明确 */
 .actionBtn.ghost {
   background: transparent;
   color: var(--text-regular);
@@ -265,8 +347,9 @@
 }
 
 .actionBtn.ghost:hover {
-  box-shadow: inset 0 0 0 1px var(--brand-primary);
-  color: var(--brand-primary);
+  color: var(--status-danger);
+  background: color-mix(in srgb, var(--status-danger) 6%, transparent);
+  box-shadow: inset 0 0 0 1px var(--status-danger);
 }
 
 /* 加载状态 */
@@ -298,15 +381,8 @@
   color: var(--text-faint);
 }
 
-/* 图片预览弹窗：原 image-preview-dialog 下的 el-dialog 死规则未迁移；
-   content/header 结构覆写与关闭按钮颜色已 token 化为
-   DetailBody.tsx 中 Modal 的 styles prop 与 closeIcon 官方 prop */
-
-.previewImage {
-  max-width: 90vw;
-  max-height: 80vh;
-  border-radius: 12px;
-}
+/* 图片预览：改由 antd Image.PreviewGroup 提供（左右切换 / 缩放 / 关闭），
+   无需页面级弹窗与自定义样式 */
 
 @media (width <= 768px) {
   .capsuleDetail {
@@ -319,6 +395,15 @@
 
   .detailImages {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .detailDate {
+    padding: 20px 18px;
+    border-radius: 14px;
+  }
+
+  .dateFlex {
+    gap: 16px;
   }
 
   .infoRow {
@@ -336,21 +421,13 @@
 }
 
 /* ============================================================
-   暗色主题（仅保留「暗底上必须提亮 / 特殊处理」的规则；
-   换色类规则已由 light 基础规则的语义变量自动接管）
+   暗色主题：结构、间距、动效全部沿用浅色规则，
+   仅在「同一令牌在深底上对比不足」时做颜色层面的微调
    ============================================================ */
-:global(html.dark .detail-page) .detailEmoji {
-  background: var(--bg-blue-tint) !important;
-}
 
 /* metaSep 在 light 下用品牌浅色，暗色下对比不足改用中性弱化色 */
 :global(html.dark .detail-page) .metaSep {
   color: var(--text-faint) !important;
-}
-
-/* 状态标签：暗色下用浅蓝底承载（文字色由 light 的状态语义色自动接管） */
-:global(html.dark .detail-page) .metaStatus {
-  background: var(--bg-blue-tint) !important;
 }
 
 /* drop-cap 为 main.css 全局共享工具类（首字下沉），组件内以字面量使用，
@@ -359,41 +436,75 @@
   color: var(--brand-primary-bright) !important;
 }
 
-:global(html.dark .detail-page) .detailInfo,
-:global(html.dark .detail-page) .infoRows,
-:global(html.dark .detail-page) .infoRow {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
+/* ============================================================
+   桌面双栏：正文 + 右侧信息栏（窄屏回落为单栏，保持原有顺序）
+   ============================================================ */
+.detailGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 56px;
+  align-items: start;
 }
 
-:global(html.dark .detail-page) .infoEyebrow {
-  color: var(--brand-primary-bright) !important;
+.detailMain {
+  min-width: 0;
 }
 
-/* 开启时间块：暗色下用浅蓝底承载 */
-:global(html.dark .detail-page) .detailDate {
-  background: var(--bg-blue-tint) !important;
-  border-color: var(--border-blue) !important;
+.detailAside {
+  position: sticky;
+  top: calc(var(--navbar-h, 80px) + 28px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: stretch;
 }
 
-/* 大字倒计时：暗底上提亮为主色强调 */
-:global(html.dark .detail-page) .dateDisplay {
-  color: var(--brand-primary-bright) !important;
+/* 收件信息在侧栏里改为卡片形态 */
+.detailAside .detailInfo {
+  padding: 20px 22px;
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  background: var(--bg-card);
 }
 
-:global(html.dark .detail-page) .dateCount {
-  color: var(--text-muted) !important;
+.detailAside .detailInfo .infoEyebrow {
+  margin-bottom: 12px;
 }
 
-/* ghost 按钮：暗色下文字用提亮主色 */
-:global(html.dark .detail-page) .actionBtn.ghost {
-  color: var(--brand-primary-bright) !important;
+.detailAside .detailInfo .infoRow {
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
 }
 
-:global(html.dark .detail-page) .actionBtn.ghost:hover {
-  background: var(--bg-blue-tint) !important;
+.detailAside .detailInfo .infoValue {
+  min-width: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
-:global(html.dark .detail-page) .loadingText {
-  color: var(--text-muted) !important;
+.detailAside .detailDate {
+  margin: 0;
+}
+
+/* 侧栏内的倒计时环与日期竖排更省宽度 */
+.detailAside .dateFlex {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+@media (width <= 1280px) {
+  .detailGrid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .detailAside {
+    position: static;
+  }
+
+  .detailAside .detailDate {
+    margin-top: 20px;
+  }
 }

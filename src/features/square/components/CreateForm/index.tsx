@@ -1,19 +1,17 @@
-// 发布页 · 表单整体（antd Form：心情 / 内容 / 话题 / 照片 / 开关）
+// 发布页 · 表单整体（桌面双栏：写作区 + 实时预览 / 发布设置 / 提交）
 // 提交行为经 onSubmit 上抛（页面 useMutation → POST /api/square/feed）
 import { useMemo, useState } from 'react'
-import {
-  Form,
-  Input,
-  Radio,
-  Select,
-  Switch,
-  Upload,
-  Button,
-} from 'antd'
+import { Form, Image, Radio, Select, Switch, Upload, Button } from 'antd'
 import type { UploadChangeParam, UploadFile } from 'antd/es/upload/interface'
 import { PlusOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
+import InitialAvatar from '@/components/InitialAvatar'
+import RichTextEditor from '@/components/RichTextEditor'
+import RichTextViewer from '@/components/RichTextViewer'
+import { htmlToText, sanitizeHtml } from '@/components/RichTextEditor/sanitize'
+import { useUserStore } from '@/stores/useUserStore'
 import type { SquareCreateInput, SquareMood } from '../types'
+import { moodMap } from '../moods'
 import styles from './CreateForm.module.css'
 
 const MAX_CONTENT = 500
@@ -56,13 +54,46 @@ export interface CreateFormProps {
 
 export function CreateForm({ onSubmit, isSubmitting }: CreateFormProps) {
   const { t } = useTranslation()
+  const userStore = useUserStore()
 
   const [form] = Form.useForm<SquareFormValues>()
   const [initialValues] = useState(createInitialValues)
 
   const contentValue = Form.useWatch('content', form) ?? ''
+  const contentText = useMemo(() => htmlToText(contentValue).trim(), [contentValue])
   const photoList = Form.useWatch('photos', form) ?? []
-  const contentCount = contentValue.length
+  const moodValue = (Form.useWatch('mood', form) ?? 'hopeful') as SquareMood
+  const topicsValue = Form.useWatch('topics', form) ?? []
+  const anonymousValue = Form.useWatch('isAnonymous', form) ?? false
+
+  const previewPhotos = useMemo(
+    () =>
+      photoList
+        .map((file) => file.thumbUrl ?? file.url ?? '')
+        .filter((src): src is string => Boolean(src)),
+    [photoList],
+  )
+
+  // 图片预览：统一走 antd Image.PreviewGroup（左右切换 / 缩放 / 蒙层）
+  // thumbUrl 由 antd UploadList 原地写入文件对象，父组件拿不到新引用 → 打开时现算 sources
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const [previewSources, setPreviewSources] = useState<string[]>([])
+  const [previewIndex, setPreviewIndex] = useState(0)
+
+  const openPreview = (file: UploadFile) => {
+    const entries = photoList
+      .map((item) => ({ uid: item.uid, src: item.url ?? item.thumbUrl ?? '' }))
+      .filter((item): item is { uid: string; src: string } => Boolean(item.src))
+    if (entries.length === 0) return
+    const index = entries.findIndex((item) => item.uid === file.uid)
+    setPreviewSources(entries.map((item) => item.src))
+    setPreviewIndex(index >= 0 ? index : 0)
+    setPreviewOpen(true)
+  }
+
+  const authorName = anonymousValue
+    ? t('square.list.anonymous')
+    : userStore.profile?.name || t('square.create.aside.me')
 
   const emotionOptions = useMemo(
     () => [
@@ -94,7 +125,7 @@ export function CreateForm({ onSubmit, isSubmitting }: CreateFormProps) {
 
       const payload: SquareCreateInput = {
         mood: values.mood,
-        content: (values.content ?? '').trim(),
+        content: sanitizeHtml(values.content ?? ''),
         topics: values.topics ?? [],
         photos: photos.filter(Boolean),
         isAnonymous: values.isAnonymous,
@@ -116,38 +147,41 @@ export function CreateForm({ onSubmit, isSubmitting }: CreateFormProps) {
       scrollToFirstError
       className={styles.formContainer}
     >
-      {/* 01. 此刻心情 */}
-      <section className={styles.formCard}>
-        <div className={styles.sectionTitle}>
-          <span className={styles.sectionNum}>01</span>
-          {t('square.create.sections.mood')}
-        </div>
-        <Form.Item name="mood" className={styles.moodItem}>
-          <Radio.Group
-            optionType="button"
-            buttonStyle="solid"
-            className={styles.emotionTags}
-            options={emotionOptions}
-          />
-        </Form.Item>
-      </section>
+      {/* ============ 左栏 · 写作区 ============ */}
+      <div className={styles.mainCol}>
+        {/* 01 此刻心情 */}
+        <section className={styles.section}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionNum}>01</span>
+            <h2 className={styles.sectionTitle}>{t('square.create.sections.mood')}</h2>
+          </div>
+          <Form.Item name="mood" className={styles.fieldItem}>
+            <Radio.Group
+              optionType="button"
+              buttonStyle="solid"
+              className={styles.emotionTags}
+              options={emotionOptions}
+            />
+          </Form.Item>
+        </section>
 
-      {/* 02. 心得内容 */}
-      <section className={styles.formCard}>
-        <div className={styles.sectionTitle}>
-          <span className={styles.sectionNum}>02</span>
-          {t('square.create.sections.content')}
-          <span className={styles.optionalHint}>{t('square.create.hints.contentOptional')}</span>
-        </div>
-        <div className={styles.contentWrapper}>
+        {/* 02 心得内容 */}
+        <section className={styles.section}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionNum}>02</span>
+            <h2 className={styles.sectionTitle}>
+              {t('square.create.sections.content')}
+              <span className={styles.optionalHint}>{t('square.create.hints.contentOptional')}</span>
+            </h2>
+          </div>
           <Form.Item
             name="content"
             dependencies={['photos']}
-            className={styles.contentItem}
+            className={styles.fieldItem}
             rules={[
               {
                 validator: (_, value?: string) => {
-                  const text = String(value ?? '').trim()
+                  const text = htmlToText(String(value ?? '')).trim()
                   const photos = (form.getFieldValue('photos') as UploadFile[] | undefined) ?? []
                   return text || photos.length > 0
                     ? Promise.resolve()
@@ -156,106 +190,168 @@ export function CreateForm({ onSubmit, isSubmitting }: CreateFormProps) {
               },
             ]}
           >
-            <Input.TextArea
-              rows={6}
-              maxLength={MAX_CONTENT}
+            <RichTextEditor
+              variant="plain"
               placeholder={t('square.create.placeholders.content')}
-              className={styles.contentTextarea}
+              maxLength={MAX_CONTENT}
             />
           </Form.Item>
-          <span className={styles.contentCount}>{contentCount}/{MAX_CONTENT}</span>
-        </div>
-      </section>
+        </section>
 
-      {/* 03. 话题标签 */}
-      <section className={styles.formCard}>
-        <div className={styles.sectionTitle}>
-          <span className={styles.sectionNum}>03</span>
-          {t('square.create.sections.topic')}
-        </div>
-        <Form.Item name="topics" className={styles.topicItem}>
-          <Select
-            mode="tags"
-            maxCount={MAX_TOPICS}
-            tokenSeparators={[' ', ',', '，', '#']}
-            placeholder={t('square.create.topicPlaceholder')}
-            className={styles.topicSelect}
-            onChange={(value: string[]) => {
-              // 去掉用户输入的前导 # 与空白，避免出现 ##标签
-              const normalized = value
-                .map((tag) => tag.trim().replace(/^#+/, ''))
-                .filter(Boolean)
-              form.setFieldValue('topics', normalized)
-            }}
-          />
-        </Form.Item>
-      </section>
+        {/* 03 话题标签 */}
+        <section className={styles.section}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionNum}>03</span>
+            <h2 className={styles.sectionTitle}>{t('square.create.sections.topic')}</h2>
+          </div>
+          <Form.Item name="topics" className={styles.fieldItem}>
+            <Select
+              mode="tags"
+              maxCount={MAX_TOPICS}
+              tokenSeparators={[' ', ',', '，', '#']}
+              placeholder={t('square.create.topicPlaceholder')}
+              className={styles.topicSelect}
+              onChange={(value: string[]) => {
+                // 去掉用户输入的前导 # 与空白，避免出现 ##标签
+                const normalized = value
+                  .map((tag) => tag.trim().replace(/^#+/, ''))
+                  .filter(Boolean)
+                form.setFieldValue('topics', normalized)
+              }}
+            />
+          </Form.Item>
+        </section>
 
-      {/* 04. 添加照片 */}
-      <section className={styles.formCard}>
-        <div className={styles.sectionTitle}>
-          <span className={styles.sectionNum}>04</span>
-          {t('square.create.sections.photo')}
-        </div>
-        <Form.Item
-          name="photos"
-          valuePropName="fileList"
-          getValueFromEvent={(event: UploadChangeParam) => event?.fileList}
-          className={styles.uploadItem}
-        >
-          <Upload
-            listType="picture-card"
-            accept="image/*"
-            multiple
-            maxCount={MAX_PHOTOS}
-            beforeUpload={() => false}
+        {/* 04 添加照片 */}
+        <section className={styles.section}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionNum}>04</span>
+            <h2 className={styles.sectionTitle}>{t('square.create.sections.photo')}</h2>
+            <span className={styles.sectionMeta}>{photoList.length}/{MAX_PHOTOS}</span>
+          </div>
+          <Form.Item
+            name="photos"
+            valuePropName="fileList"
+            getValueFromEvent={(event: UploadChangeParam) => event?.fileList}
+            className={styles.fieldItem}
           >
-            {photoList.length >= MAX_PHOTOS ? null : (
-              <div className={styles.uploadTrigger}>
-                <PlusOutlined className={styles.uploadIcon} />
-                <span className={styles.uploadText}>{t('square.create.photo.add')}</span>
+            <Upload
+              listType="picture-card"
+              accept="image/*"
+              multiple
+              maxCount={MAX_PHOTOS}
+              beforeUpload={() => false}
+              onPreview={openPreview}
+            >
+              {photoList.length >= MAX_PHOTOS ? null : (
+                <div className={styles.uploadTrigger}>
+                  <PlusOutlined className={styles.uploadIcon} />
+                  <span className={styles.uploadText}>{t('square.create.photo.add')}</span>
+                </div>
+              )}
+            </Upload>
+          </Form.Item>
+        </section>
+      </div>
+
+      {/* ============ 右栏 · 预览 / 设置 / 提交 ============ */}
+      <aside className={styles.rail}>
+        <section className={styles.railBlock}>
+          <div className={styles.railHead}>
+            <h2 className={styles.railTitle}>{t('square.create.aside.preview')}</h2>
+            <span className={styles.railTag}>{t('square.create.aside.live')}</span>
+          </div>
+
+          {/* 实时预览：与广场卡片同构的头部 + 正文 + 话题 + 图片 */}
+          <article className={styles.previewCard}>
+            <header className={styles.previewHead}>
+              <InitialAvatar
+                name={anonymousValue ? '?' : userStore.profile?.name || 'U'}
+                size={36}
+                isAnonymous={anonymousValue}
+              />
+              <div className={styles.previewIdentity}>
+                <span className={styles.previewAuthor}>{authorName}</span>
+                <span className={styles.previewTime}>{t('square.create.aside.now')}</span>
+              </div>
+              <span className={styles.previewMood}>{moodMap[moodValue]}</span>
+            </header>
+
+            {contentText ? (
+              <RichTextViewer html={contentValue} className={styles.previewText} />
+            ) : (
+              <p className={styles.previewEmpty}>{t('square.create.aside.previewEmpty')}</p>
+            )}
+
+            {topicsValue.length > 0 && (
+              <div className={styles.previewTopics}>
+                {topicsValue.map((tag) => (
+                  <span key={tag} className={styles.previewTopic}>#{tag}</span>
+                ))}
               </div>
             )}
-          </Upload>
-        </Form.Item>
-      </section>
 
-      {/* 05. 匿名发布 */}
-      <section className={`${styles.formCard} ${styles.formCardRow}`}>
-        <div className={`${styles.sectionTitle} ${styles.noMargin}`}>
-          <span className={styles.sectionNum}>05</span>
-          {t('square.create.sections.anonymous')}
-        </div>
-        <Form.Item name="isAnonymous" valuePropName="checked" noStyle>
-          <Switch className={styles.squareSwitch} />
-        </Form.Item>
-      </section>
+            {previewPhotos.length > 0 && (
+              <div className={styles.previewPhotos}>
+                {previewPhotos.slice(0, 3).map((src) => (
+                  <img key={src} src={src} className={styles.previewPhoto} loading="lazy" alt="" />
+                ))}
+              </div>
+            )}
+          </article>
+        </section>
 
-      {/* 06. 允许评论 */}
-      <section className={`${styles.formCard} ${styles.formCardRow}`}>
-        <div className={`${styles.sectionTitle} ${styles.noMargin}`}>
-          <span className={styles.sectionNum}>06</span>
-          {t('square.create.sections.comment')}
-        </div>
-        <Form.Item name="allowComment" valuePropName="checked" noStyle>
-          <Switch className={styles.squareSwitch} />
-        </Form.Item>
-      </section>
+        <section className={styles.railBlock}>
+          <h2 className={styles.railTitle}>{t('square.create.aside.settings')}</h2>
 
-      {/* 提交按钮 */}
-      <section className={styles.submitSection}>
-        <Button
-          type="primary"
-          size="large"
-          block
-          loading={isSubmitting}
-          disabled={isSubmitting}
-          className={styles.submitBtn}
-          onClick={() => void handleSubmit()}
-        >
-          {isSubmitting ? t('square.create.submitting') : t('square.create.submit')}
-        </Button>
-      </section>
+          <div className={styles.settingRow}>
+            <div className={styles.settingText}>
+              <span className={styles.settingLabel}>{t('square.create.sections.anonymous')}</span>
+              <span className={styles.settingHint}>{t('square.create.aside.anonymousHint')}</span>
+            </div>
+            <Form.Item name="isAnonymous" valuePropName="checked" noStyle>
+              <Switch className={styles.squareSwitch} />
+            </Form.Item>
+          </div>
+
+          <div className={styles.settingRow}>
+            <div className={styles.settingText}>
+              <span className={styles.settingLabel}>{t('square.create.sections.comment')}</span>
+              <span className={styles.settingHint}>{t('square.create.aside.commentHint')}</span>
+            </div>
+            <Form.Item name="allowComment" valuePropName="checked" noStyle>
+              <Switch className={styles.squareSwitch} />
+            </Form.Item>
+          </div>
+        </section>
+
+        <section className={styles.submitSection}>
+          <Button
+            type="primary"
+            size="large"
+            block
+            loading={isSubmitting}
+            disabled={isSubmitting}
+            className={styles.submitBtn}
+            onClick={() => void handleSubmit()}
+          >
+            {isSubmitting ? t('square.create.submitting') : t('square.create.submit')}
+          </Button>
+          <p className={styles.submitHint}>{t('square.create.aside.submitHint')}</p>
+        </section>
+      </aside>
+
+      {/* 图片预览：antd Image.PreviewGroup（左右切换 / 缩放 / 蒙层 / Esc 关闭） */}
+      {previewSources.length > 0 && (
+        <Image.PreviewGroup
+          items={previewSources}
+          preview={{
+            open: previewOpen,
+            current: previewIndex,
+            onOpenChange: (visible) => setPreviewOpen(visible),
+          }}
+        />
+      )}
     </Form>
   )
 }

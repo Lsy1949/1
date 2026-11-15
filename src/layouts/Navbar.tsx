@@ -21,6 +21,7 @@ import type { I18nKey } from '@/i18n/dataHelper'
 import { useCommandPalette } from '@/features/command-palette'
 import { useUserStore } from '@/stores/useUserStore'
 import { logout } from '@/features/auth'
+import { maskContact } from '@/features/counseling'
 import { useLayoutMeta } from './useLayoutMeta'
 import InitialAvatar from '@/components/InitialAvatar'
 import { announce } from '@/components/LiveAnnouncer'
@@ -106,6 +107,7 @@ export default function Navbar() {
   const { transparentNavbar: isTransparentPage } = useLayoutMeta()
   const [isScrolled, setIsScrolled] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   const shouldBeTransparent = isTransparentPage && !isScrolled
 
@@ -243,17 +245,30 @@ export default function Navbar() {
 
   // ---------- 用户下拉（头部信息区以禁用菜单项承载，样式上还原为纯展示区） ----------
   const profileName = userStore.profile?.name || t('nav.user.guest')
+  const accountContact = userStore.profile?.phone || userStore.profile?.email || ''
+  const roleLabel =
+    userStore.role === 'teacher'
+      ? t('profile.card.profile.roleTeacher')
+      : userStore.role === 'admin'
+        ? t('profile.card.profile.roleAdmin')
+        : t('profile.card.profile.roleStudent')
 
   const userMenuItems: MenuProps['items'] = [
     {
       key: 'header',
+      className: 'dropdown-header-item',
       disabled: true,
       label: (
         <div className="dropdown-header">
-          <InitialAvatar name={userStore.profile?.name || 'U'} size={44} />
+          <span className="dropdown-header-avatar">
+            <InitialAvatar name={userStore.profile?.name || 'U'} size={40} />
+          </span>
           <div className="dropdown-header-info">
             <span className="dropdown-header-name">{profileName}</span>
-            <span className="dropdown-header-id">{userStore.profile?.id || '—'}</span>
+            <span className="dropdown-header-meta">
+              {roleLabel}
+              {accountContact ? ` · ${maskContact(accountContact)}` : ''}
+            </span>
           </div>
         </div>
       ),
@@ -292,7 +307,7 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`nav-header${isScrolled ? ' is-scrolled' : ''}${shouldBeTransparent ? ' is-transparent' : ''}`}
+        className={`nav-header${isScrolled ? ' is-scrolled' : ''}${shouldBeTransparent ? ' is-transparent' : ''}${userMenuOpen ? ' has-user-menu' : ''}`}
       >
         <div className="nav-container">
           {/* Logo */}
@@ -383,15 +398,27 @@ export default function Navbar() {
               {userStore.isLoggedIn ? (
                 <Dropdown
                   trigger={['click']}
+                  placement="bottomRight"
+                  open={userMenuOpen}
+                  onOpenChange={setUserMenuOpen}
+                  /* 浮层挂在固定导航栏内部：页面滚动时无需重定位，避免浮层跟随/滞后 */
+                  getPopupContainer={(triggerNode) =>
+                    (triggerNode.parentElement as HTMLElement | null) ?? document.body
+                  }
                   classNames={{ root: 'user-dropdown-popper' }}
                   menu={{ items: userMenuItems, onClick: ({ key }) => handleCommand(key) }}
                 >
-                  {/* 键盘可达性（tabIndex/键盘开合）留阶段 3 统一处理 */}
-                  <div className="user-profile" role="button" aria-label={t('nav.user.profile')}>
+                  <button
+                    type="button"
+                    className={`user-profile btn-reset${userMenuOpen ? ' is-open' : ''}`}
+                    aria-haspopup="menu"
+                    aria-expanded={userMenuOpen}
+                    aria-label={t('nav.user.profile')}
+                  >
                     <InitialAvatar name={userStore.profile?.name || 'U'} size={32} />
                     <span className="username desktop-only">{profileName}</span>
-                    <span className="caret"><DownOutlined /></span>
-                  </div>
+                    <span className="caret" aria-hidden="true"><DownOutlined /></span>
+                  </button>
                 </Dropdown>
               ) : (
                 <Button

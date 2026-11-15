@@ -6,7 +6,6 @@ import {
   SendOutlined,
   TrophyOutlined,
 } from '@ant-design/icons'
-import ModuleCover from '@/components/ModuleCover'
 import { useTranslation } from 'react-i18next'
 import type { AssessmentRecord, ScaleInfo } from '../types'
 import styles from './MinePanel.module.css'
@@ -60,8 +59,10 @@ export default function MinePanel({
     // 测评天数（不同日期的数量）
     const days = new Set(history.map((h) => h.date)).size
 
-    // 成长状态文案
-    const status = total === 0 ? '即将启程' : total < 3 ? '初露锋芒' : total < 6 ? '稳步成长' : total < 10 ? '深度探索' : '自我大师'
+    // 成长状态文案（i18n 键由完成次数决定）
+    const statusKey =
+      total === 0 ? 'new' : total < 3 ? 'rising' : total < 6 ? 'steady' : total < 10 ? 'deep' : 'master'
+    const status = t(`assessment.profile.status.${statusKey}`)
 
     // 用户等级（基于成长积分）
     const level = points >= 150 ? 5 : points >= 100 ? 4 : points >= 60 ? 3 : points >= 30 ? 2 : 1
@@ -85,14 +86,20 @@ export default function MinePanel({
     const hasMental = history.some((h) => scales.find((sc) => sc.key === h.scaleKey)?.category === 'mental')
     const hasCareer = history.some((h) => scales.find((sc) => sc.key === h.scaleKey)?.category === 'career')
 
-    const list = [
-      { key: 'first', icon: '🌱', name: '初心萌芽', desc: '完成第一次测评', unlocked: total >= 1 },
-      { key: 'multi', icon: '🔀', name: '多元探索', desc: '完成2种不同类型测评', unlocked: categoriesDone >= 2 },
-      { key: 'mental', icon: '💚', name: '心理关怀', desc: '完成心理健康类测评', unlocked: hasMental },
-      { key: 'career', icon: '🧭', name: '生涯启航', desc: '完成生涯发展类测评', unlocked: hasCareer },
-      { key: 'depth', icon: '🔍', name: '深度探索', desc: '完成3次以上测评', unlocked: total >= 3 },
-      { key: 'master', icon: '🏆', name: '自我大师', desc: '完成5次以上测评', unlocked: total >= 5 },
-    ]
+    const list = (
+      [
+        { key: 'first', icon: '🌱', unlocked: total >= 1 },
+        { key: 'multi', icon: '🔀', unlocked: categoriesDone >= 2 },
+        { key: 'mental', icon: '💚', unlocked: hasMental },
+        { key: 'career', icon: '🧭', unlocked: hasCareer },
+        { key: 'depth', icon: '🔍', unlocked: total >= 3 },
+        { key: 'master', icon: '🏆', unlocked: total >= 5 },
+      ] as const
+    ).map((badge) => ({
+      ...badge,
+      name: t(`assessment.profile.badgeDefs.${badge.key}.name`),
+      desc: t(`assessment.profile.badgeDefs.${badge.key}.desc`),
+    }))
 
     return {
       growthPoints: points,
@@ -107,18 +114,10 @@ export default function MinePanel({
       badges: list,
       unlockedBadges: list.filter((b) => b.unlocked).length,
     }
-  }, [history, scales])
+  }, [history, scales, t])
 
   return (
     <div className={styles.mineWrapper}>
-      {/* 模块封面 · 编辑式 */}
-      <ModuleCover
-        eyebrow="— My Profile"
-        no={`No.${String(userLevel).padStart(2, '0')}`}
-        title={t('assessment.cover.mine.title')}
-        desc={t('assessment.cover.mine.desc')}
-      />
-
       {/* 个人信息 · 编辑式定义列表 */}
       <MineProfileStats
         totalCompleted={totalCompleted}
@@ -133,7 +132,7 @@ export default function MinePanel({
       />
 
       {/* 我的勋章（测评历史移至面板最底部） */}
-      <div className="badges-section">
+      <div>
         <div className={styles.sectionHeader}>
           <h3><TrophyOutlined /> {t('assessment.profile.badgesTitle')}</h3>
           <span className={styles.badgesCount}>
@@ -157,7 +156,7 @@ export default function MinePanel({
       </div>
 
       {/* 历史测评时间轴（置底 + 最近 10 条） */}
-      <div className="history-section">
+      <div>
         <div className={styles.sectionHeader}>
           <h3><ClockCircleOutlined /> {t('assessment.profile.historyTitle')}</h3>
           {history.length > 0 && (

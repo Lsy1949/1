@@ -1,13 +1,13 @@
 // 04 · 偏好设置：语言 / 主题 / 默认首页
 import { useMemo, useState } from 'react'
 import { App as AntApp, Select } from 'antd'
-import { SettingOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import type { AppLocale } from '@/i18n'
 import type { I18nKey } from '@/i18n/dataHelper'
 import { useTheme, type ThemeMode } from '@/hooks/useTheme'
 import { useLocale } from '@/hooks/useLocale'
 import { announce } from '@/components/LiveAnnouncer'
+import { SectionHead } from '../SectionHead'
 import styles from './PreferencesSection.module.css'
 
 interface HomeOption {
@@ -51,16 +51,11 @@ export function PreferencesSection() {
 
   return (
     <section id="sec-preferences" className={styles.editorialSection}>
-      <div className={styles.sectionMarker}>
-        <span className={styles.markerNum}>04</span>
-        <span className={styles.markerRule}></span>
-        <SettingOutlined className={styles.markerIcon} />
-        <span className={styles.markerLabel}>{t('settings.card.preferences.title')}</span>
-      </div>
-      <div className={styles.sectionHeadlineRow}>
-        <h2 className={styles.sectionHeadline}>{t('settings.card.preferences.title')}</h2>
-        <p className={styles.sectionDeck}>{t('settings.card.preferences.desc')}</p>
-      </div>
+      <SectionHead
+        no="04"
+        title={t('settings.card.preferences.title')}
+        desc={t('settings.card.preferences.desc')}
+      />
       <div className={`${styles.editorialGrid} ${styles.threeCol}`}>
         <div className={styles.editorialCol}>
           <h3 className={styles.colTitle}>{t('settings.card.preferences.language')}</h3>

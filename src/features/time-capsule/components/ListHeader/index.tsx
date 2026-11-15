@@ -1,4 +1,5 @@
-// 时光胶囊 · 列表页头部（编辑式标题 + 邮戳印章）
+// 时光胶囊 · 列表页头部（编辑式标题 + 主行动 + 邮戳印章）
+import { ArrowRightOutlined } from '@ant-design/icons'
 import { useReveal } from '@/hooks/useReveal'
 import { useTranslation } from 'react-i18next'
 import styles from './ListHeader.module.css'
@@ -7,7 +8,13 @@ import styles from './ListHeader.module.css'
 const now = new Date()
 const postmarkDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`
 
-export function ListHeader() {
+/** 概览：总览数据由列表页注入，用于标题右侧的一句话状态 */
+export interface ListHeaderProps {
+  /** 新建胶囊（页面导航） */
+  onCreate?: () => void
+}
+
+export function ListHeader({ onCreate }: ListHeaderProps) {
   const { t } = useTranslation()
 
   // v-reveal / v-reveal="60" / v-reveal="120" / v-reveal="80" → useReveal
@@ -27,6 +34,12 @@ export function ListHeader() {
         <p ref={descRef} className={styles.headerDesc}>
           {t('capsule.list.desc')}
         </p>
+        {onCreate && (
+          <button type="button" className={styles.headerCta} onClick={onCreate}>
+            {t('capsule.list.create')}
+            <ArrowRightOutlined />
+          </button>
+        )}
       </div>
       <div ref={rightRef} className={styles.headerRight}>
         {/* 邮戳印章 */}

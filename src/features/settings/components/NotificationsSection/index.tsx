@@ -1,8 +1,8 @@
 // 02 · 通知偏好：五项开关两栏排布
 import { useMemo, useState } from 'react'
 import { App as AntApp, Switch } from 'antd'
-import { BellOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
+import { SectionHead } from '../SectionHead'
 import styles from './NotificationsSection.module.css'
 
 interface NotificationFlags {
@@ -56,16 +56,11 @@ export function NotificationsSection() {
 
   return (
     <section id="sec-notifications" className={styles.editorialSection}>
-      <div className={styles.sectionMarker}>
-        <span className={styles.markerNum}>02</span>
-        <span className={styles.markerRule}></span>
-        <BellOutlined className={styles.markerIcon} />
-        <span className={styles.markerLabel}>{t('settings.card.notifications.title')}</span>
-      </div>
-      <div className={styles.sectionHeadlineRow}>
-        <h2 className={styles.sectionHeadline}>{t('settings.card.notifications.title')}</h2>
-        <p className={styles.sectionDeck}>{t('settings.card.notifications.desc')}</p>
-      </div>
+      <SectionHead
+        no="02"
+        title={t('settings.card.notifications.title')}
+        desc={t('settings.card.notifications.desc')}
+      />
       <div className={`${styles.editorialGrid} ${styles.twoCol}`}>
         <div className={styles.editorialCol}>
           <ul className={styles.switchList}>
@@ -76,12 +71,12 @@ export function NotificationsSection() {
           <ul className={styles.switchList}>
             {notifItems.slice(3).map(renderSwitchRow)}
           </ul>
-          <div className={styles.fieldActions}>
-            <button className={styles.editorialBtn} onClick={saveNotifications}>
-              {t('settings.card.notifications.save')}
-            </button>
-          </div>
         </div>
+      </div>
+      <div className={styles.fieldActions}>
+        <button className={styles.editorialBtn} onClick={saveNotifications}>
+          {t('settings.card.notifications.save')}
+        </button>
       </div>
     </section>
   )

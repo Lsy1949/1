@@ -1,68 +1,107 @@
-/* 分类页签（antd Tabs，作用域 token 见 index.tsx）+ 搜索 */
+/* 分类筛选（胶囊）+ 搜索 */
 .scaleRibbon {
-  padding: 18px 0 0;
-  border-top: 1px solid var(--text-heading);
-  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-light);
 }
 
-/* 收敛 antd tab 栏自身外距；底线由 nav::before 提供（沿用 --border-light） */
-.ribbonTabs :global(.ant-tabs-nav) {
-  margin-bottom: 0;
+.catRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.catChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.catChip:hover {
+  border-color: var(--brand-primary-soft);
+  color: var(--brand-primary);
+  transform: translateY(-1px);
+}
+
+.catChipOn {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary);
+  color: var(--text-inverse, #fff);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--brand-primary) 22%, transparent);
+}
+
+.catChip:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* 胶囊内的数量徽标 */
+.catBadge {
+  min-width: 18px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--bg-mute);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.catChipOn .catBadge {
+  background: color-mix(in srgb, var(--text-inverse, #fff) 22%, transparent);
+  color: var(--text-inverse, #fff);
 }
 
 .ribbonSearch {
   display: flex;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid var(--text-heading);
+  min-width: 220px;
   padding: 4px 0;
-  min-width: 200px;
-  margin-left: 16px;
+  border-bottom: 1px solid var(--text-heading);
 }
 
 .ribbonSearch .searchIco {
   font-size: 15px;
-  color: var(--text-secondary);
+  color: var(--text-muted);
 }
 
 .ribbonSearch input {
+  width: 100%;
+  padding: 4px 0;
   border: none;
   outline: none;
   background: transparent;
+  font-family: inherit;
   font-size: 14px;
   color: var(--text-heading);
-  font-family: inherit;
-  width: 100%;
-  padding: 4px 0;
 }
 
 .ribbonSearch input::placeholder {
-  color: var(--text-muted);
+  color: var(--text-faint);
 }
 
-/* A3 焦点替代：下划线式输入框聚焦时容器底边变品牌色 */
 .ribbonSearch:focus-within {
   border-bottom-color: var(--brand-primary);
-}
-
-/* 页签 label：名称 + 上标数量徽标（绝对定位不参与布局，横线只对齐文字部分） */
-.catLabel {
-  position: relative;
-}
-
-.catCount {
-  position: absolute;
-  top: -4px;
-  right: -16px;
-  font-size: 11px;
-  line-height: 1;
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-/* 选中态数量高亮品牌色（组合选择器命中 antd active 类） */
-.ribbonTabs :global(.ant-tabs-tab-active) .catCount {
-  color: var(--brand-primary);
 }
 
 /* 当前分类小标题 */
@@ -70,7 +109,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  padding: 40px 0 20px;
+  padding: 28px 0 16px;
 }
 
 .rowsHeading .headingName {
@@ -141,17 +180,40 @@
   justify-content: space-between;
 }
 
+/* 序号：编辑式描边大数字，默认空心灰、hover 填充分类色 */
 .rowNumber .num {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-muted);
-  letter-spacing: 1.5px;
+  font-size: clamp(26px, 2.2vw, 34px);
+  font-weight: 900;
+  letter-spacing: 0.5px;
   font-variant-numeric: tabular-nums;
   line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--text-muted);
+  transition: color 0.3s ease, -webkit-text-stroke-color 0.3s ease;
 }
 
 .scaleRow:hover .rowNumber .num {
-  color: var(--brand-primary-bright);
+  -webkit-text-stroke-color: transparent;
+  color: var(--cat-accent, var(--brand-primary));
+}
+
+/* 分类强调色（协议类 cat-* 与 .rowIcon 共用一套派生体系） */
+.scaleRow:global(.cat-mental) { --cat-accent: var(--brand-primary); }
+.scaleRow:global(.cat-career) { --cat-accent: color-mix(in srgb, var(--brand-primary-bright) 70%, var(--status-info)); }
+.scaleRow:global(.cat-cognitive) { --cat-accent: color-mix(in srgb, var(--brand-primary-bright) 50%, var(--status-info)); }
+.scaleRow:global(.cat-esports) { --cat-accent: var(--status-danger); }
+.scaleRow:global(.cat-learning) { --cat-accent: var(--status-success); }
+.scaleRow:global(.cat-social) { --cat-accent: var(--status-warning); }
+
+/* 已完成卡片：左上角品牌角标细条（仅颜色，不改结构） */
+.scaleRow.isCompleted::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand-primary), color-mix(in srgb, var(--brand-primary) 20%, transparent));
 }
 
 .rowIcon {

@@ -5,18 +5,27 @@ import styles from './StatsSection.module.css'
 
 export interface StatsSectionProps {
   id?: string
+  /** 真实数据覆盖（缺省沿用展示用基准值） */
+  values?: Partial<Record<'assessments' | 'counseling' | 'moments' | 'favorites' | 'capsules', number>>
 }
 
-export function StatsSection({ id }: StatsSectionProps) {
+export function StatsSection({ id, values }: StatsSectionProps) {
   const { t } = useTranslation()
 
-  const stats = useMemo(() => [
-    { key: 'assessments', value: 12, label: t('profile.card.stats.assessments') },
-    { key: 'counseling', value: 3, label: t('profile.card.stats.counseling') },
-    { key: 'moments', value: 8, label: t('profile.card.stats.moments') },
-    { key: 'favorites', value: 24, label: t('profile.card.stats.favorites') },
-    { key: 'capsules', value: 5, label: t('profile.card.stats.capsules') }
-  ], [t])
+  const stats = useMemo(
+    () =>
+      [
+        { key: 'assessments', value: 12, label: t('profile.card.stats.assessments') },
+        { key: 'counseling', value: 3, label: t('profile.card.stats.counseling') },
+        { key: 'moments', value: 8, label: t('profile.card.stats.moments') },
+        { key: 'favorites', value: 24, label: t('profile.card.stats.favorites') },
+        { key: 'capsules', value: 5, label: t('profile.card.stats.capsules') },
+      ].map((item) => ({
+        ...item,
+        value: values?.[item.key as keyof NonNullable<StatsSectionProps['values']>] ?? item.value,
+      })),
+    [t, values]
+  )
 
   return (
     <section id={id} className={styles.magSection}>

@@ -1,8 +1,8 @@
 /* ===== 今日话题（CSS Modules：私有类 camelCase；antd 图标根类 .anticon 用 :global 包裹） ===== */
 .dailyPromptSection {
-  max-width: var(--container-md);
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 56px;
+  padding: 0 40px;
   position: relative;
   z-index: 1;
 }

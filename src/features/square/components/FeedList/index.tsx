@@ -1,9 +1,10 @@
 // 广场列表页 · Feed 双栏左栏：筛选栏 + 动态列表 + 加载/错误/空状态
 // 纯展示组件：数据与点赞/分享/话题行为均由页面注入
 import { useMemo, useState } from 'react'
-import { Button, Empty, Result, Skeleton } from 'antd'
+import { Button, Empty, Masonry, Result, Skeleton } from 'antd'
 import { MessageOutlined, ShareAltOutlined, StarOutlined } from '@ant-design/icons'
 import InitialAvatar from '@/components/InitialAvatar'
+import RichTextViewer from '@/components/RichTextViewer'
 import { useReveal } from '@/hooks/useReveal'
 import { useTranslation } from 'react-i18next'
 import type { FeedItem } from '../types'
@@ -40,41 +41,18 @@ function FeedCard({ item, index, onOpen, onLike, onShare, onTopic }: FeedCardPro
     <article
       ref={revealRef}
       className={`${styles.feedCard}${item.type === 'capsule' ? ` ${styles.isCapsule}` : ''}${item.isPinned ? ` ${styles.isPinned}` : ''}`}
+      role="button"
+      tabIndex={0}
       onClick={() => onOpen(item.id)}
+      onKeyDown={(e) => {
+        // 键盘路径：Enter / Space 等价于点击整卡
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onOpen(item.id)
+        }
+      }}
     >
-      {/* 置顶/热议标记 */}
-      {(item.isPinned || item.isHot) && (
-        <div className={styles.cardMark}>
-          <span className={`${styles.markBadge}${item.isPinned ? ` ${styles.pinned}` : ''}${item.isHot ? ` ${styles.hot}` : ''}`}>
-            {item.isPinned ? t('square.list.pinned') : t('square.list.hot')}
-          </span>
-        </div>
-      )}
-
-      {/* 卡片头部 */}
-      <div className={styles.cardHead}>
-        <InitialAvatar name={item.author} size={44} isAnonymous={item.isAnonymous} />
-        <div className={styles.headMeta}>
-          <span className={styles.headAuthor}>{item.isAnonymous ? t('square.list.anonymous') : item.author}</span>
-          <span className={styles.headTime}>{item.createdAt}</span>
-        </div>
-        {/* item.type 为数据驱动字面量（moment/capsule），module 类与协议类混拼 */}
-        <span className={`${styles.typeBadge} ${item.type}`}>
-          {item.type === 'capsule' ? t('square.list.capsuleBadge') : t('square.list.momentBadge')}
-        </span>
-      </div>
-
-      {/* 心情 + 内容 */}
-      <div className={styles.cardBody}>
-        {item.mood ? (
-          <div className={styles.moodLine}>
-            <span className={styles.moodEmoji}>{moodMap[item.mood]}</span>
-          </div>
-        ) : null}
-        <p className={styles.cardContent}>{item.content}</p>
-      </div>
-
-      {/* 图片网格 */}
+      {/* 图片优先：瀑布流卡片的视觉锚点（贴边满宽，由卡片 overflow 裁圆角） */}
       {item.photos && item.photos.length > 0 && (
         <div className={`${styles.cardPhotoGrid} photo-count-${Math.min(item.photos.length, 4)}`}>
           {item.photos.slice(0, 4).map((photo, pi) => (
@@ -84,6 +62,40 @@ function FeedCard({ item, index, onOpen, onLike, onShare, onTopic }: FeedCardPro
         </div>
       )}
 
+      {/* 徽标单列一行：窄卡片下不与作者信息抢宽度 */}
+      {(item.isPinned || item.isHot || item.type) && (
+        <div className={styles.cardBadges}>
+          {(item.isPinned || item.isHot) && (
+            <span className={`${styles.markBadge}${item.isPinned ? ` ${styles.pinned}` : ''}${item.isHot ? ` ${styles.hot}` : ''}`}>
+              {item.isPinned ? t('square.list.pinned') : t('square.list.hot')}
+            </span>
+          )}
+          {/* item.type 为数据驱动字面量（moment/capsule），module 类与协议类混拼 */}
+          <span className={`${styles.typeBadge} ${item.type}`}>
+            {item.type === 'capsule' ? t('square.list.capsuleBadge') : t('square.list.momentBadge')}
+          </span>
+        </div>
+      )}
+
+      {/* 卡片头部：作者 + 时间 */}
+      <div className={styles.cardHead}>
+        <InitialAvatar name={item.author} size={34} isAnonymous={item.isAnonymous} />
+        <div className={styles.headMeta}>
+          <span className={styles.headAuthor}>{item.isAnonymous ? t('square.list.anonymous') : item.author}</span>
+          <span className={styles.headTime}>{item.createdAt}</span>
+        </div>
+      </div>
+
+      {/* 心情 + 内容 */}
+      <div className={styles.cardBody}>
+        {item.mood ? (
+          <div className={styles.moodLine}>
+            <span className={styles.moodEmoji}>{moodMap[item.mood]}</span>
+          </div>
+        ) : null}
+        <RichTextViewer html={item.content} className={styles.cardContent} />
+      </div>
+
       {/* 话题标签 */}
       {item.topics && item.topics.length > 0 && (
         <div className={styles.cardTopics}>
@@ -91,9 +103,18 @@ function FeedCard({ item, index, onOpen, onLike, onShare, onTopic }: FeedCardPro
             <span
               key={topic}
               className={styles.topicTag}
+              role="button"
+              tabIndex={0}
               onClick={(e) => {
                 e.stopPropagation()
                 onTopic(topic)
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  onTopic(topic)
+                }
               }}
             >#{topic}</span>
           ))}
@@ -226,21 +247,24 @@ export function FeedList({
         ))}
       </div>
 
-      {/* Feed 列表 */}
+      {/* Feed 瀑布流（antd Masonry）：列数随视口自适应，卡片高度由内容决定 */}
       {filteredItems.length > 0 ? (
-        <div className={styles.feedList}>
-          {filteredItems.map((item, i) => (
+        <Masonry
+          className={styles.feedMasonry}
+          columns={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 4 }}
+          gutter={[18, 18]}
+          items={filteredItems.map((item) => ({ key: item.id, data: item }))}
+          itemRender={(info) => (
             <FeedCard
-              key={item.id}
-              item={item}
-              index={i}
+              item={info.data}
+              index={info.index}
               onOpen={onOpen}
               onLike={onLike}
               onShare={onShare}
               onTopic={onTopic}
             />
-          ))}
-        </div>
+          )}
+        />
       ) : activeFilter !== 'all' ? (
         /* 筛选后无数据 */
         <div className={styles.emptyState}>

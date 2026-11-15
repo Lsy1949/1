@@ -50,10 +50,10 @@
   gap: 10px;
 }
 
-/* ===== 文章网格 · 等宽 3 列 ===== */
+/* ===== 文章网格 · 桌面自适应列数（容器放宽后 3 列过宽，改 fluid 列） ===== */
 .articleGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   gap: 24px;
 }
 
@@ -255,8 +255,8 @@
   background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
   border-color: transparent !important;
   border-bottom-color: color-mix(in srgb, var(--brand-primary-bright) 20%, transparent) !important;
-  box-shadow: none !important;
-  transform: none !important;
+  /* 不覆写 transform / box-shadow：悬浮幅度与投影层级沿用浅色规则，
+     投影颜色由 --brand-primary 令牌自动跟随主题 */
 }
 
 :global(html.dark .article-center) .cardTag {

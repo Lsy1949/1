@@ -1,4 +1,6 @@
 .article-center {
+  /* 局部放宽容器变量（全局 .container 引用此变量），与广场/测评页同一桌面尺度 */
+  --container-max: clamp(1360px, 94vw, 2080px);
   min-height: 100vh;
   background-color: var(--bg-mute);
   padding-top: 28px;

@@ -202,8 +202,11 @@
        页面迁移时禁止再写任何 max-width 字面量（统一用 <PageContainer>
        或直接引用本组 token）。 */
 
-    /* 基准 1480px（1920）；端点 1366→1200px / 2560→1800px（封顶）/ 3840→1800px；用途：全站主内容最大宽度（解决大屏页面偏空） */
-    --container-max: clamp(1200px, 77.0833vw, 1800px);
+    /* 桌面优先（当前仅做桌面端，移动端后续单独制作）：
+       基准 1804px（1920 视口 94vw）；端点 1366→1284px / ≈2213px 起封顶 2080px。
+       用途：全站主内容最大宽度。原 1480/1800 档在 1920 屏两侧各空 220px，
+       且与各页面模块自定的 94vw 档不一致，此处统一收敛到同一桌面尺度。 */
+    --container-max: clamp(1280px, 94vw, 2080px);
     /* 基准 32px（1920，= 原 .container 的 2rem，基准视口无感切换）；端点 1366→24px / 3840→64px（恰在 3840 处封顶）；用途：容器水平 padding */
     --container-pad: clamp(24px, 1.6667vw, 64px);
     /* 基准 780px（1920）；端点 1366→680px / 3840→860px（约 2117px 起封顶）；用途：文章详情等长文阅读窄栏（PageContainer narrow 变体） */
@@ -213,16 +216,18 @@
        档位由各页面消费场景反推；settings 1240 等零散 max-width 字面量将在
        Stage B 迁移时统一收敛到下列档位，迁移期允许新旧并存。 */
 
-    /* 基准 1280px（1920）；端点 1366→1080px / 3840→1600px（约 2400px 起封顶）；用途：次级页面主列（square 列表双栏、capsule 归档列、profile、counseling、ai 两页、notfound slide；settings 1240 统一到此档） */
-    --container-md: clamp(1080px, 66.6667vw, 1600px);
+    /* 桌面优先：基准 1651px（1920 视口 86vw，刻意窄于 --container-max，为表单/档案类页面
+       保留呼吸）；端点 1366→1200px / ≈2210px 起封顶 1900px；用途：次级页面主列
+       （profile、settings、capsule 归档列、notfound slide、ai 两页） */
+    --container-md: clamp(1200px, 86vw, 1900px);
     /* 基准 1000px（1920）；端点 1366→840px / 3840→1250px（约 2400px 起封顶）；用途：发布/新建表单页主列（square create、capsule create 及详情兜底） */
     --container-form: clamp(840px, 52.0833vw, 1250px);
     /* 基准 1100px（1920）；端点 1366→940px / 3840→1375px（约 2400px 起封顶）；用途：capsule 详情主列 */
     --container-content: clamp(940px, 57.2917vw, 1375px);
     /* 基准 860px（1920）；端点 1366→750px / 3840→950px（约 2121px 起封顶）；用途：square 详情阅读栏 */
     --container-article: clamp(750px, 44.7917vw, 950px);
-    /* 基准 1200px（1920）；端点 1366→1020px / 3840→1500px（约 2400px 起封顶）；用途：home 轮播文字层（刻意窄于主容器） */
-    --container-hero: clamp(1020px, 62.5vw, 1500px);
+    /* 原 --container-hero（首页轮播文字层窄栏）已废弃：首屏文字层改为与全站 .container
+       共用 --container-max + --container-pad，保证首屏与正文版心左缘对齐。 */
     /* 基准 720px（1920）；端点 1366→620px / 3840→900px（约 2400px 起封顶）；用途：assessment 沉浸作答卡内容列 */
     --container-take: clamp(620px, 37.5vw, 900px);
     /* 基准 460.8px（1920 处 24vw）；端点 1366→400px / 2560→480px（约 2000px 起封顶）；用途：登录卡宽度契约（原 LoginView.css 局部同名定义同式升格，P1-Auth 将于 Stage B 移除局部定义，公式相同无视觉变化） */

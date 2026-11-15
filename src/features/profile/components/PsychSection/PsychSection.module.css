@@ -1,6 +1,5 @@
 /* 02 心理档案区块 · MBTI/压力/睡眠/兴趣标签/个人简介（CSS Modules：私有类
-   camelCase；antd 表单结构类用 :global 包裹。custom-scroll 为跨页面全局
-   工具类（滚动条样式由全局样式表提供），保留字面量不映射） */
+   camelCase；antd 表单结构类用 :global 包裹） */
 
 /* ============ 杂志区块通用 ============ */
 .magSection {
@@ -47,6 +46,7 @@
   line-height: 1.6;
   /* 描述文本窄行宽（原 540px 字面量 → 流体 measure token） */
   max-width: var(--measure-desc);
+  text-wrap: pretty;
 }
 
 .secToggle {

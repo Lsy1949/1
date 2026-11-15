@@ -1,87 +1,101 @@
-/* 常见问题面板（CSS Modules：私有类 camelCase；antd 全局类用 :global 包裹；
-   暗色规则自本组件原 css 与全局 dark-mode.css counseling 作用域等价迁移，
-   同一选择器取最终生效值） */
+/* 常见问题面板（CSS Modules：私有类 camelCase；antd 全局类用 :global 包裹）
+   设计：左侧分类索引（细线游标，不用卡片）+ 右侧手风琴问答 */
 
-/* ============ FAQ · 卡片化侧栏 ============ */
 .faqLayout {
   display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 48px;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: clamp(32px, 4vw, 64px);
   align-items: flex-start;
 }
 
+/* ============ 分类索引 ============ */
 .faqSidebar {
   position: sticky;
-  top: 96px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 10px;
+  top: calc(var(--navbar-h, 80px) + 28px);
+  align-self: start;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  box-shadow: 0 4px 16px rgb(0 0 0 / 0.04);
+  gap: 2px;
+  border-top: 1px solid var(--border-strong);
+  padding-top: 8px;
 }
 
 .faqCat {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 13px;
-  color: var(--text-secondary);
-  font-weight: 500;
-  transition: all 0.25s ease;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 10px 11px 14px;
   border: none;
-  letter-spacing: 0.2px;
+  border-left: 2px solid transparent;
   background: transparent;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  text-align: left;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    background var(--duration-fast) var(--ease-standard);
 }
 
-.faqCat:hover { background: var(--brand-primary-faint); color: var(--brand-primary); }
+.faqCat:hover {
+  border-left-color: var(--brand-primary-soft);
+  background: linear-gradient(90deg, var(--brand-primary-wash), transparent);
+  color: var(--brand-primary);
+}
 
 .faqCat.active {
-  background: linear-gradient(135deg, var(--brand-primary) 0%, color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff)) 100%);
-  color: var(--text-inverse, #fff);
+  border-left-color: var(--brand-primary);
+  background: linear-gradient(90deg, var(--brand-primary-faint), transparent);
+  color: var(--brand-primary);
   font-weight: 600;
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 25%, transparent);
 }
-.faqCat :global(.anticon) { font-size: 16px; }
+
+.faqCat :global(.anticon) {
+  font-size: 15px;
+  opacity: 0.65;
+}
 
 .faqCatCount {
   margin-left: auto;
   font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 8px;
-  background: var(--border-light);
+  font-weight: 600;
   color: var(--text-faint);
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
 }
 
 .faqCat.active .faqCatCount {
-  background: color-mix(in srgb, var(--text-inverse, #fff) 20%, transparent);
-  color: var(--text-inverse, #fff);
+  color: var(--brand-primary);
 }
 
-.faqContent { min-width: 0; }
-
-.faqSearch { margin-bottom: 28px; max-width: 460px; }
-
-/* el-input 极简外观：底色/描边/hover/focus 已由 Counseling 页 Input token 覆盖，
-   仅保留与 booking 表单（token 10px）不同的 12px 圆角差异项 */
-.faqSearch :global(.ant-input-affix-wrapper) {
-  border-radius: 12px;
+.faqCat:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
 }
 
-.faqSearch :global(.ant-input-prefix) { color: var(--text-faint); }
+/* ============ 问答区 ============ */
+.faqContent {
+  min-width: 0;
+}
 
-/* el-collapse → antd Collapse 适配（无边框、行式问答） */
+.faqSearch {
+  max-width: 460px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.faqSearch :global(.ant-input-prefix) {
+  color: var(--text-faint);
+}
+
 .faqContent :global(.ant-collapse) {
   border: none;
-  background: transparent;
   border-radius: 0;
+  background: transparent;
 }
 
 .faqContent :global(.ant-collapse > .ant-collapse-item) {
@@ -90,125 +104,174 @@
 }
 
 .faqContent :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
-  background: transparent;
+  height: auto;
+  padding: 19px 0;
   border: none;
   border-bottom: 1px solid var(--border-light);
   border-radius: 0;
-  padding: 0;
+  background: transparent;
   font-size: 15px;
   font-weight: 600;
-  color: var(--text-primary);
-  height: 64px;
-  align-items: center;
   letter-spacing: -0.2px;
-  transition: color 0.2s ease;
+  color: var(--text-primary);
+  align-items: center;
+  transition: color var(--duration-fast) var(--ease-standard);
 }
 
-.faqContent :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header):hover { color: var(--brand-primary); }
+.faqContent :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header):hover {
+  color: var(--brand-primary);
+}
+
+.faqContent
+  :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-expand-icon) {
+  color: var(--text-faint);
+}
 
 .faqContent :global(.ant-collapse > .ant-collapse-item > .ant-collapse-content) {
   border: none;
-  background: transparent;
   border-radius: 0;
+  background: transparent;
 }
 
-.faqContent :global(.ant-collapse > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box) {
-  padding: 16px 0 24px;
+.faqContent
+  :global(.ant-collapse > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box) {
+  padding: 16px 0 22px;
 }
 
-.faqQ { display: flex; align-items: center; gap: 14px; color: var(--text-primary); }
+.faqQ {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: var(--text-primary);
+}
 
 .qMark {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--brand-primary-faint), var(--brand-primary-soft));
-  color: var(--brand-primary);
-  border: none;
-  font-size: 12px;
+  background: var(--brand-primary-faint);
+  font-size: 11.5px;
   font-weight: 700;
-  flex-shrink: 0;
   letter-spacing: 0.3px;
+  color: var(--brand-primary);
+  flex-shrink: 0;
 }
 
 .faqA {
-  margin: 0 0 0 44px;
-  font-size: 14px;
-  color: var(--text-secondary);
+  margin: 0 0 0 41px;
+  padding: 14px 18px;
+  border-left: 2px solid var(--brand-primary);
+  border-radius: 0 10px 10px 0;
+  background: var(--bg-soft);
+  font-size: 13.5px;
   line-height: 1.85;
   letter-spacing: 0.1px;
-  padding: 14px 18px;
-  background: var(--bg-soft);
-  border-radius: 10px;
-  border-left: 3px solid var(--brand-primary);
+  color: var(--text-secondary);
 }
 
+/* 底部联系条 */
 .faqContact {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-top: 40px;
-  padding: 20px 24px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--brand-primary) 6%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--brand-primary) 70%, var(--text-inverse, #fff)) 2%, transparent) 100%);
-  border: 1px solid color-mix(in srgb, var(--brand-primary) 12%, transparent);
-  border-radius: 14px;
-  font-size: 14px;
-  color: var(--text-secondary);
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border-strong);
+  font-size: 13.5px;
+  color: var(--text-muted);
 }
-.faqContact :global(.anticon) { color: var(--brand-primary); font-size: 20px; }
 
-/* el-button link → antd link 按钮视觉对齐 */
-.faqContact :global(.ant-btn-link) { padding: 0; height: auto; }
-.faqContact :global(.ant-btn-link):hover { text-decoration: underline; text-underline-offset: 3px; }
+.faqContact :global(.anticon) {
+  font-size: 18px;
+  color: var(--brand-primary);
+}
 
-.emptyTip { padding: 80px 0; }
+.faqContact :global(.ant-btn-link) {
+  padding: 0;
+  height: auto;
+  font-weight: 600;
+}
 
-@media (width <= 900px) {
-  .faqLayout { grid-template-columns: 1fr; gap: 28px; }
-  .faqSidebar { position: relative; top: 0; flex-direction: row; overflow-x: auto; gap: 8px; padding: 8px; }
-  .faqCat { flex-shrink: 0; white-space: nowrap; }
+.faqContact :global(.ant-btn-link):hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.emptyTip {
+  padding: 64px 0;
+}
+
+/* ============ 响应式（移动端另行制作，这里只保证不破版） ============ */
+@media (width <= 1080px) {
+  .faqLayout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .faqSidebar {
+    position: static;
+    flex-direction: row;
+    gap: 8px;
+    padding-top: 0;
+    border-top: none;
+    overflow-x: auto;
+  }
+
+  .faqCat {
+    flex-shrink: 0;
+    width: auto;
+    padding: 8px 14px;
+    border: 1px solid var(--border-light);
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .faqCat.active {
+    border-color: var(--brand-primary-soft);
+  }
+
+  .faqCat.active .faqCatCount {
+    color: inherit;
+  }
 }
 
 @media (width <= 768px) {
-  .faqA { margin-left: 0; padding: 12px 14px; }
-  .qMark { width: 26px; height: 26px; }
+  .faqA {
+    margin-left: 0;
+    padding: 12px 14px;
+  }
+
+  .qMark {
+    width: 26px;
+    height: 26px;
+  }
 }
 
-/* ============================================================
-   暗色主题：背景/文字/边框换色已由语义变量自动跟随；仅保留暗色下的
-   玻璃态（半透明白描边）与品牌强调色
-   ============================================================ */
-:global(html.dark) .faqSidebar {
-  background: var(--bg-card) !important;
-  border-color: var(--border-regular) !important;
-  box-shadow: 0 2px 12px rgb(0 0 0 / 0.3) !important;
+/* ============ 暗色：仅补强调色 ============ */
+:global(html.dark) .faqCat:hover,
+:global(html.dark) .faqCat.active {
+  color: var(--brand-primary-bright);
+  border-left-color: var(--brand-primary-bright);
 }
 
-/* —— 自 dark-mode.css counseling 作用域迁入（最终生效值） —— */
-:global(html.dark .counseling-page) .faqCat {
-  color: var(--text-regular) !important;
-  background: transparent !important;
-  border-color: rgb(255 255 255 / 0.08) !important;
+:global(html.dark) .faqCat.active .faqCatCount,
+:global(html.dark) .qMark,
+:global(html.dark) .faqContact :global(.anticon) {
+  color: var(--brand-primary-bright);
 }
 
-:global(html.dark .counseling-page) .faqCat:hover,
-:global(html.dark .counseling-page) .faqCat.active {
-  background: var(--brand-primary-bright-bg) !important;
-  color: var(--brand-primary-bright) !important;
-  border-color: color-mix(in srgb, var(--brand-primary-bright) 30%, transparent) !important;
+:global(html.dark) .qMark {
+  background: color-mix(in srgb, var(--brand-primary-bright) 12%, transparent);
 }
 
-:global(html.dark .counseling-page) .qMark {
-  background: color-mix(in srgb, var(--brand-primary-bright) 10%, transparent) !important;
-  border-color: transparent !important;
-  color: var(--brand-primary-bright) !important;
+:global(html.dark) .faqA {
+  border-left-color: var(--brand-primary-bright);
+  background: var(--bg-mute);
 }
 
-:global(html.dark .counseling-page) .faqContact {
-  background: color-mix(in srgb, var(--brand-primary-bright) 6%, transparent) !important;
-  border-color: color-mix(in srgb, var(--brand-primary-bright) 15%, transparent) !important;
-  color: var(--brand-primary-bright) !important;
+:global(html.dark) .faqContent :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header):hover {
+  color: var(--brand-primary-bright);
 }

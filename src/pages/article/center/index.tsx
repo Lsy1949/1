@@ -98,7 +98,7 @@ export default function ArticleCenterView() {
 
   // 分类专属标题区数据
   const categoryIntros = useMemo<Record<string, { title: string; eyebrow: string; sub: string }>>(() => ({
-    all: { title: t('article.intro.all.title'), eyebrow: '— Articles &amp; Stories', sub: t('article.intro.all.sub') },
+    all: { title: t('article.intro.all.title'), eyebrow: '— Articles & Stories', sub: t('article.intro.all.sub') },
     daily: { title: t('article.intro.daily.title'), eyebrow: '— Daily Picks', sub: t('article.intro.daily.sub') },
     featured: { title: t('article.intro.featured.title'), eyebrow: '— Featured Picks', sub: t('article.intro.featured.sub') },
     psychology: { title: t('article.intro.psychology.title'), eyebrow: '— Psychology', sub: t('article.intro.psychology.sub') },

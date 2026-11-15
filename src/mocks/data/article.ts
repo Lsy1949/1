@@ -1,4 +1,7 @@
 import type { ArticleCommentDTO, ArticleDetailDTO } from '@/api/types'
+// mock 封面图：本地静态图循环分配，避免 unsplash 外链在内网/离线环境加载失败留裂图
+import imgNist from '@/assets/images/nist-bg.jpg'
+import imgTsinghua from '@/assets/images/tsinghua-bg.jpg'
 
 /**
  * 文章 domain mock 数据（模拟后端 `GET /api/articles*` 的返回）。
@@ -57,7 +60,7 @@ export const ARTICLES: ArticleDetailDTO[] = [
     date: '2026-01-04',
     views: 3420,
     readTime: '15 min',
-    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800',
+    image: imgNist,
     featured: true
   },
   {
@@ -78,7 +81,7 @@ export const ARTICLES: ArticleDetailDTO[] = [
     date: '2026-01-03',
     views: 890,
     readTime: '10 min',
-    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800',
+    image: imgTsinghua,
     featured: false
   },
   {
@@ -100,7 +103,7 @@ export const ARTICLES: ArticleDetailDTO[] = [
     date: '2026-01-02',
     views: 2100,
     readTime: '12 min',
-    image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&q=80&w=800',
+    image: imgNist,
     featured: false
   },
   {
@@ -121,7 +124,7 @@ export const ARTICLES: ArticleDetailDTO[] = [
     date: '2026-01-01',
     views: 1560,
     readTime: '6 min',
-    image: 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&q=80&w=800',
+    image: imgTsinghua,
     featured: true
   },
   {
@@ -143,7 +146,7 @@ export const ARTICLES: ArticleDetailDTO[] = [
     date: '2025-12-30',
     views: 5600,
     readTime: '18 min',
-    image: 'https://images.unsplash.com/photo-1456324504439-367cee3b3c32?auto=format&fit=crop&q=80&w=800',
+    image: imgNist,
     featured: true
   },
   {
@@ -169,7 +172,7 @@ export const ARTICLES: ArticleDetailDTO[] = [
     date: '2025-12-28',
     views: 2800,
     readTime: '9 min',
-    image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=800',
+    image: imgTsinghua,
     featured: false
   },
   {
@@ -191,7 +194,7 @@ export const ARTICLES: ArticleDetailDTO[] = [
     date: '2025-12-25',
     views: 4200,
     readTime: '14 min',
-    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800',
+    image: imgNist,
     featured: false
   },
   {
@@ -213,7 +216,7 @@ export const ARTICLES: ArticleDetailDTO[] = [
     date: '2025-12-20',
     views: 1100,
     readTime: '20 min',
-    image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800',
+    image: imgTsinghua,
     featured: false
   },
   {
@@ -235,7 +238,7 @@ export const ARTICLES: ArticleDetailDTO[] = [
     date: '2025-12-15',
     views: 3100,
     readTime: '7 min',
-    image: 'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&q=80&w=800',
+    image: imgNist,
     featured: false
   }
 ]
@@ -260,7 +263,7 @@ const NIST_ARTICLES: ArticleDetailDTO[] = [
     date: '2026-10-20',
     views: 320,
     readTime: '4 min',
-    image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=800',
+    image: imgTsinghua,
     featured: true,
   },
   {
@@ -290,7 +293,7 @@ const TSINGHUA_ARTICLES: ArticleDetailDTO[] = [
     date: '2026-10-18',
     views: 860,
     readTime: '5 min',
-    image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800',
+    image: imgNist,
     featured: true,
   },
   {

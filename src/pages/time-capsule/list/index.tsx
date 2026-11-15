@@ -1,9 +1,9 @@
-// 时光胶囊 · 列表页（背景水印 + 头部 + 档案列表 + 浮动新建按钮）
+// 时光胶囊 · 列表页（背景水印 + 头部主行动 + 档案列表）
 // 页面层负责数据拉取 / 删除 mutation / 三态兜底，列表区为 Props 驱动的纯展示组件
 import { useCallback, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { App, Button, Result, Skeleton } from 'antd'
+import { App, Button, Result } from 'antd'
 import { ListArchive, ListHeader } from '@/features/time-capsule'
 import type { CapsuleFilterType, ListArchiveRef } from '@/features/time-capsule'
 import { capsuleApi } from '@/api'
@@ -50,14 +50,29 @@ export function CapsuleListView() {
       {/* 装饰性背景水印 */}
       <span className="watermark" aria-hidden="true">CAPSULE</span>
 
-      {/* 顶部编辑式标题区 */}
-      <ListHeader />
+      {/* 顶部编辑式标题区（含主行动） */}
+      <ListHeader onCreate={createCapsule} />
 
       {isPending ? (
-        /* 首次加载：统计条 + 档案列表骨架 */
-        <div className="capsule-state">
-          <Skeleton active title={{ width: '46%' }} paragraph={{ rows: 2 }} />
-          <Skeleton active title={false} paragraph={{ rows: 6 }} />
+        /* 首次加载：与档案列表同构的骨架（统计条 + 信封行），避免布局跳动 */
+        <div className="capsule-state" aria-busy="true">
+          <div className="capsule-skeleton-stats">
+            {[0, 1, 2, 3].map((i) => (
+              <span key={i} className="capsule-skeleton-stat" />
+            ))}
+          </div>
+          <div className="capsule-skeleton-list">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div key={i} className="capsule-skeleton-row">
+                <span className="capsule-skeleton-serial" />
+                <div className="capsule-skeleton-body">
+                  <span className="capsule-skeleton-title" />
+                  <span className="capsule-skeleton-meta" />
+                </div>
+                <span className="capsule-skeleton-tag" />
+              </div>
+            ))}
+          </div>
         </div>
       ) : isError ? (
         /* 加载失败：提示 + 重试 */
@@ -85,18 +100,6 @@ export function CapsuleListView() {
           onDelete={deleteMutation.mutate}
         />
       )}
-
-      {/* 右下角新建按钮 */}
-      <button
-        className="fab-button"
-        onClick={(e) => {
-          e.stopPropagation()
-          createCapsule()
-        }}
-      >
-        <span className="fab-plus">+</span>
-        <span className="fab-label">{t('capsule.list.fab')}</span>
-      </button>
     </div>
   )
 }

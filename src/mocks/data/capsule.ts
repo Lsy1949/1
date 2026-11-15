@@ -173,7 +173,7 @@ export function listCapsules(query: CapsuleListQuery = {}): CapsuleListItemDTO[]
     .filter(item => status === 'all' || item.status === status)
     .filter(item => !openDateFrom || item.openDate >= openDateFrom)
     .filter(item => !openDateTo || item.openDate <= openDateTo)
-    .sort((a, b) => a.openDate.localeCompare(b.openDate))
+    .sort((a, b) => String(a.openDate ?? '').localeCompare(String(b.openDate ?? '')))
     .map(toListItem)
 }
 

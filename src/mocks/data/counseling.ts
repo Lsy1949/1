@@ -3,6 +3,7 @@ import type {
   BookingDTO,
   ConsultationTypeDTO,
   CounselingInfoDTO,
+  CounselingSummaryDTO,
   CounselorDTO,
   FaqDTO,
 } from '@/api/types'
@@ -210,6 +211,66 @@ export function listBookings(): BookingDTO[] {
   return loadBookings().sort((a, b) => b.createdAt.localeCompare(a.createdAt))
 }
 
+/* ============================================================
+   收藏老师（模拟后端偏好表）
+   ------------------------------------------------------------
+   整份 ID 列表持久化在 `mock:counseling-favorites`；
+   前端不再使用 localStorage 自行保存，一律走接口。
+   ============================================================ */
+
+const FAVORITE_STORAGE_KEY = 'mock:counseling-favorites'
+
+/** 首次访问的收藏种子：预置两位老师，便于直接观察「我的收藏」 */
+const FAVORITE_SEED = [1, 3]
+
+function persistFavoriteIds(ids: number[]): void {
+  try {
+    localStorage.setItem(FAVORITE_STORAGE_KEY, JSON.stringify(ids))
+  } catch {
+    /* localStorage 不可用时退化为纯内存 */
+  }
+}
+
+function loadFavoriteIds(): number[] {
+  try {
+    const raw = localStorage.getItem(FAVORITE_STORAGE_KEY)
+    if (raw) {
+      const parsed: unknown = JSON.parse(raw)
+      if (Array.isArray(parsed)) {
+        return parsed.filter((id): id is number => typeof id === 'number')
+      }
+    }
+  } catch {
+    /* 解析失败时回退种子 */
+  }
+
+  persistFavoriteIds(FAVORITE_SEED)
+  return [...FAVORITE_SEED]
+}
+
+/** `GET /api/counseling/favorites` */
+export function listFavoriteCounselorIds(): number[] {
+  return loadFavoriteIds()
+}
+
+/** `POST /api/counseling/favorites` —— 整份替换（仅保留有效老师 id，按老师表顺序） */
+export function saveFavoriteCounselorIds(ids: number[]): number[] {
+  const valid = COUNSELORS.filter((item) => ids.includes(item.id)).map((item) => item.id)
+  persistFavoriteIds(valid)
+  return valid
+}
+
+/** `GET /api/counseling/summary` —— 「我的」概览统计（与列表同源计算） */
+export function counselingSummary(): CounselingSummaryDTO {
+  const list = loadBookings()
+  return {
+    total: list.length,
+    upcoming: list.filter((item) => item.status === 'pending' || item.status === 'confirmed').length,
+    completed: list.filter((item) => item.status === 'completed').length,
+    favorites: loadFavoriteIds().length,
+  }
+}
+
 /** `POST /api/counseling/bookings` —— 生成预约实体并持久化到 mock 存储 */
 export function createBooking(input: BookingCreateDTO): BookingDTO {
   const counselor = COUNSELORS.find(item => item.id === input.counselorId)
@@ -237,4 +298,92 @@ export function cancelBooking(id: number): BookingDTO | undefined {
   target.status = 'cancelled'
   persistBookings(list)
   return target
+}
+
+/* ============================================================
+   排班 / 可约时段（模拟后端排班表）
+   ------------------------------------------------------------
+   · CLOSED_SLOTS：学校固定不开放的时段
+   · occupiedByOthers：其他同学已占用的时段，按「老师+日期+时段」
+     做确定性散列生成，保证同一会话内刷新结果稳定，无需额外存储
+   ============================================================ */
+
+const COUNSELING_SLOTS = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '19:00', '20:00']
+const CLOSED_SLOTS = ['11:00', '16:00']
+
+function slotHash(seed: string): number {
+  let hash = 0
+  for (let i = 0; i < seed.length; i += 1) {
+    hash = (hash * 31 + seed.charCodeAt(i)) % 100000
+  }
+  return hash
+}
+
+function occupiedByOthers(counselorId: number, date: string): string[] {
+  return COUNSELING_SLOTS.filter((slot) => slotHash(`${counselorId}|${date}|${slot}`) % 4 === 0)
+}
+
+function activeBookings(): BookingDTO[] {
+  return loadBookings().filter((item) => item.status !== 'cancelled')
+}
+
+/** 同一时间只能有一场咨询（跨老师也算冲突） */
+export function findSlotConflict(
+  date: string,
+  slot: string,
+  excludeId?: number,
+): BookingDTO | undefined {
+  return activeBookings().find(
+    (item) => item.date === date && item.slot === slot && item.id !== excludeId,
+  )
+}
+
+/** `GET /api/counseling/availability` —— 某老师某日不可预约的时段 */
+export function slotAvailability(counselorId: number, date: string): string[] {
+  const mine = activeBookings()
+    .filter((item) => item.date === date)
+    .map((item) => item.slot)
+  return Array.from(
+    new Set([...CLOSED_SLOTS, ...occupiedByOthers(counselorId, date), ...mine]),
+  )
+}
+
+export type MutationResult<T> = { data: T } | { error: string }
+
+/** `PATCH /api/counseling/bookings/:id/reschedule` —— 改约 */
+export function rescheduleBooking(
+  id: number,
+  input: { date: string; slot: string },
+): MutationResult<BookingDTO> {
+  const list = loadBookings()
+  const target = list.find((item) => item.id === id)
+  if (!target) return { error: 'NOT_FOUND' }
+  if (target.status !== 'pending' && target.status !== 'confirmed') return { error: 'INVALID_STATUS' }
+  if (findSlotConflict(input.date, input.slot, id)) return { error: 'SLOT_CONFLICT' }
+
+  target.date = input.date
+  target.slot = input.slot
+  persistBookings(list)
+  return { data: target }
+}
+
+/** `POST /api/counseling/bookings/:id/feedback` —— 咨询评价 */
+export function submitBookingFeedback(
+  id: number,
+  input: { score: number; comment?: string },
+): MutationResult<BookingDTO> {
+  const list = loadBookings()
+  const target = list.find((item) => item.id === id)
+  if (!target) return { error: 'NOT_FOUND' }
+  if (target.status !== 'completed') return { error: 'INVALID_STATUS' }
+  if (target.feedback) return { error: 'ALREADY_RATED' }
+  if (!input.score || input.score < 1 || input.score > 5) return { error: 'INVALID_SCORE' }
+
+  target.feedback = {
+    score: input.score,
+    comment: input.comment?.trim() || undefined,
+    createdAt: new Date().toISOString(),
+  }
+  persistBookings(list)
+  return { data: target }
 }

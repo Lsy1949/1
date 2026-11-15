@@ -69,12 +69,8 @@
 .memberAvatar {
   border-radius: 50%;
   border: 2px solid var(--bg-card);
+  /* 头像仅作展示、不可点击：不做 hover 位移，避免假示能 */
   transition: transform 0.2s ease;
-}
-
-.memberAvatar:hover {
-  transform: translateY(-3px);
-  z-index: 10 !important;
 }
 
 .membersMore {
@@ -194,13 +190,11 @@
 :global(html.dark .square-page) .sidebarCard:hover {
   background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
   border-color: transparent !important;
-  box-shadow: none !important;
+  /* 不覆写 box-shadow：浅色 hover 的投影层级需保持一致，
+     阴影颜色由 color-mix 里的品牌令牌自动跟随主题 */
 }
 
-:global(html.dark .square-page) .sidebarCard.guidelinesCard {
-  background: color-mix(in srgb, var(--brand-primary-bright) 3%, transparent) !important;
-  border-color: color-mix(in srgb, var(--brand-primary-bright) 12%, transparent) !important;
-}
+/* 三张侧栏卡在暗色下统一「融入背景」处理，保持同类元素同一表面处理 */
 
 :global(html.dark .square-page) .cloudTag {
   background: rgb(255, 255, 255, 0.03) !important;
@@ -210,5 +204,5 @@
 :global(html.dark .square-page) .cloudTag:hover {
   background: color-mix(in srgb, var(--brand-primary-bright) 8%, transparent) !important;
   border-color: color-mix(in srgb, var(--brand-primary-bright) 20%, transparent) !important;
-  transform: none !important;
+  /* 不覆写 transform：深浅主题 hover 动效必须一致，只允许改变颜色 */
 }

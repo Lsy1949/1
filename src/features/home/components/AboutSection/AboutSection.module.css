@@ -40,6 +40,8 @@
   line-height: 1.8;
   color: var(--text-muted);
   margin-bottom: 1.5rem;
+  /* 宽屏上限宽，保持舒适行宽（否则 1600 版心下段落会拉成超长行） */
+  max-width: 34em;
 }
 
 .aboutStats {

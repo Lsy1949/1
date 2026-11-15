@@ -1,8 +1,9 @@
 // 01 · 账号安全：密码修改 / 绑定联系方式 / 登录设备 + 三步换绑弹窗
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { App as AntApp, Form, Input, Modal } from 'antd'
-import { ExclamationCircleFilled, LockOutlined, MailOutlined, MobileOutlined } from '@ant-design/icons'
+import { ExclamationCircleFilled, MailOutlined, MobileOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
+import { SectionHead } from '../SectionHead'
 import styles from './SecuritySection.module.css'
 
 /* ===== 登录设备 ===== */
@@ -231,16 +232,11 @@ export function SecuritySection() {
 
   return (
     <section id="sec-security" className={styles.editorialSection}>
-      <div className={styles.sectionMarker}>
-        <span className={styles.markerNum}>01</span>
-        <span className={styles.markerRule}></span>
-        <LockOutlined className={styles.markerIcon} />
-        <span className={styles.markerLabel}>{t('settings.card.security.title')}</span>
-      </div>
-      <div className={styles.sectionHeadlineRow}>
-        <h2 className={styles.sectionHeadline}>{t('settings.card.security.title')}</h2>
-        <p className={styles.sectionDeck}>{t('settings.card.security.desc')}</p>
-      </div>
+      <SectionHead
+        no="01"
+        title={t('settings.card.security.title')}
+        desc={t('settings.card.security.desc')}
+      />
 
       <div className={`${styles.editorialGrid} ${styles.twoCol}`}>
         {/* Column 1 · Password */}
@@ -349,7 +345,7 @@ export function SecuritySection() {
         }
         width={520}
         centered
-        maskClosable={false}
+        mask={{ closable: false }}
         className={styles.contactDialog}
         styles={{
           // v6：content 面板层改名 container

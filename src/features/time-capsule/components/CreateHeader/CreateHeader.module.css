@@ -1,9 +1,9 @@
 /* 时光胶囊 · 新建页头部（CSS Modules：私有类 camelCase） */
 
 .pageHeader {
-  max-width: var(--container-form);
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 40px 56px 32px;
+  padding: 40px 56px 30px;
   position: relative;
   border-bottom: 1px solid var(--border-light);
   z-index: 1;

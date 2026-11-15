@@ -1,4 +1,6 @@
 .article-detail-page {
+  /* 阅读页局部放宽：侧栏右贴边、正文限宽左置，中间留白属编辑版式 */
+  --container-max: clamp(1360px, 90vw, 1800px);
   min-height: 100vh;
   background: var(--bg-page);
   padding-top: 28px;
@@ -170,9 +172,14 @@
 /* ===== 双栏布局（宽度/水平留白由 PageContainer 承担；不套 narrow，主栏由 RichBody 约束阅读行宽） ===== */
 .article-grid {
   display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 56px;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 64px;
   align-items: start;
+}
+
+/* 正文限宽左置：长文最佳阅读宽度约 1000px，余量留给侧栏与呼吸空间 */
+.article-grid > :first-child {
+  max-width: 1000px;
 }
 
 /* ===== 响应式 ===== */

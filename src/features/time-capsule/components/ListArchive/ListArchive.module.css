@@ -81,6 +81,19 @@
   position: relative;
   transition: opacity var(--duration-fast) var(--ease-standard);
   opacity: 0.4;
+  /* 语义化 button 后抹平 UA 默认样式，视觉与原来的 div 一致 */
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.navItem:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: -2px;
+  border-radius: 4px;
 }
 
 .navItem:hover {
@@ -191,11 +204,16 @@
   padding: 24px 8px 24px 0;
   cursor: pointer;
   position: relative;
-  transition: padding var(--duration-base) var(--ease-standard);
+  /* 横向手势交给左滑删除，纵向仍可滚动页面（触摸端不加会被浏览器判定为滚动而取消拖拽） */
+  touch-action: pan-y;
+  /* 拖拽过程中不选中文字（桌面端鼠标拖拽会连带选中标题） */
+  user-select: none;
+  transition: background var(--duration-base) var(--ease-standard);
 }
 
+/* hover 只做底色提示，不再改变内边距（避免整行文字横向抖动） */
 .envelope:hover {
-  padding-left: 16px;
+  background: color-mix(in srgb, var(--brand-primary) 2.5%, transparent);
 }
 
 /* 键盘聚焦环（仅 :focus-visible，鼠标点击不出现） */
@@ -313,6 +331,31 @@
 .envRight {
   flex-shrink: 0;
   padding-left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 打开指引箭头：纯装饰，不承载点击（删除统一走左滑手势，避免两个入口冲突） */
+.envArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--text-faint);
+  opacity: 0.4;
+  transition: opacity var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.envelope:hover .envArrow,
+.envelope:focus-visible .envArrow {
+  opacity: 1;
+  color: var(--brand-primary);
+  transform: translateX(4px);
 }
 
 .statusTag {
@@ -531,10 +574,6 @@
     padding: 18px 4px 18px 0;
   }
 
-  .envelope:hover {
-    padding-left: 8px;
-  }
-
   .envLeft {
     width: 36px;
   }
@@ -557,46 +596,44 @@
     font-size: var(--fs-xs);
   }
 
+  /* 状态标签在窄屏保留（是本页核心信息），仅缩小尺寸 */
   .envRight {
+    padding-left: 8px;
+  }
+
+  .envArrow {
+    display: none;
+  }
+
+  .statusTag {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    padding: 3px 6px;
+  }
+}
+
+/* 极窄屏（≤640px）：统计 4 列改为 2×2，避免数字与标签挤压 */
+@media (width <= 640px) {
+  .statsBar {
+    flex-wrap: wrap;
+    row-gap: 18px;
+  }
+
+  .statBlock {
+    flex: 0 0 50%;
+    padding: 0;
+  }
+
+  .statDivider {
     display: none;
   }
 }
 
-/* ===== 删除动画 ===== */
+/* ===== 列表容器 ===== */
 .archiveList {
   display: flex;
   flex-direction: column;
   gap: 0;
-}
-
-/* Vue TransitionGroup(name="capsule-anim") 的过渡类，逐字平移保留；
-   React 侧无内置 TransitionGroup，删除为直接移除（无离场动画）。
-   以 :global 形式保持全局类身份 */
-:global(.capsule-anim-enter-active) {
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-:global(.capsule-anim-leave-active) {
-  transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-}
-
-:global(.capsule-anim-enter-from) {
-  opacity: 0;
-  transform: translateY(24px);
-}
-
-:global(.capsule-anim-leave-to) {
-  opacity: 0;
-  transform: translateX(-120%) scale(0.92);
-  max-height: 0;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-:global(.capsule-anim-move) {
-  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============================================================
@@ -607,7 +644,8 @@
 /* 主色在暗色底上对比不足，强调色统一走 bright 变体 */
 :global(html.dark .capsule-list-page) .navItem.active .navCount,
 :global(html.dark .capsule-list-page) .envelope:hover .envSerial,
-:global(html.dark .capsule-list-page) .envelope:hover .envTitle {
+:global(html.dark .capsule-list-page) .envelope:hover .envTitle,
+:global(html.dark .capsule-list-page) .envelope:hover .envArrow {
   color: var(--brand-primary-bright);
 }
 
@@ -624,11 +662,7 @@
   color: var(--brand-primary-bright) !important;
 }
 
-/* 信封 hover：暗色下用投影替代边框来表达抬升 */
-:global(html.dark .capsule-list-page) .envelope:hover {
-  box-shadow: 0 20px 40px rgb(0, 0, 0, 0.45) !important;
-  transform: translateY(-6px);
-}
+/* 信封 hover：深浅主题动效一致，仅颜色随主题变化（不覆写 transform / 不额外加投影） */
 
 /* 删除面板：暗色下改半透明红，避免大面积高饱和色块 */
 :global(html.dark .capsule-list-page .delete-panel) {
@@ -644,7 +678,5 @@
   color: var(--status-danger) !important;
 }
 
-/* 滑动时轨道需融入页面底色 */
-:global(html.dark .capsule-list-page) .swipeTrack {
-  background: transparent !important;
-}
+/* 滑动时轨道需融入页面底色：--brand-primary-wash 已在暗色主题下
+   切换为深底混色，无需额外覆写（原 transparent 覆写会让删除面板透出） */

@@ -7,13 +7,23 @@
 
 .articleRow {
   display: grid;
-  grid-template-columns: 64px 1fr 220px 150px;
+  grid-template-columns: 64px minmax(0, 1fr) 240px 132px;
   gap: 32px;
   align-items: center;
   padding: 32px 0;
   border-bottom: 1px solid var(--border-light);
   cursor: pointer;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 无缩略图的行：收掉空缩略图列（隐藏占位节点，否则 4 个子项会挤进 3 列
+   网格并把日期折到下一行），避免宽屏下正文与日期之间出现大片空白 */
+.articleRow:not(:has(.rowThumb img)) {
+  grid-template-columns: 64px minmax(0, 1fr) 132px;
+}
+
+.articleRow:not(:has(.rowThumb img)) .rowThumb {
+  display: none;
 }
 
 .articleRow:first-child {
@@ -39,9 +49,10 @@
   color: var(--brand-primary);
 }
 
-/* 条目主体 */
+/* 条目主体：桌面宽屏下限宽，保持长文本的可扫读行宽 */
 .rowBody {
   min-width: 0;
+  max-width: 860px;
 }
 
 .rowCat {
@@ -72,6 +83,7 @@
   color: var(--text-muted);
   line-height: 1.6;
   margin: 0;
+  max-width: 640px;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;

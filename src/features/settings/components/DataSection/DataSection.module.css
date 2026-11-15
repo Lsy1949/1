@@ -1,76 +1,14 @@
 /* 05 · 数据管理：数据导出 / 缓存清理（CSS Modules：私有类 camelCase） */
 
-/* ============ 区块通用 ============ */
+/* ============ 区块通用（区块头由 SectionHead 组件承担） ============ */
 .editorialSection {
-  padding: 40px 0 56px;
+  padding: 44px 0 56px;
   border-top: 1px solid var(--border-light);
-  scroll-margin-top: 80px;
+  scroll-margin-top: 96px;
 }
 
 .editorialSection:first-of-type {
   border-top: 1px solid var(--text-heading);
-}
-
-.sectionMarker {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 22px;
-}
-
-.markerNum {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-style: italic;
-  font-size: 30px;
-  font-weight: 700;
-  color: var(--brand-primary);
-  line-height: 1;
-}
-
-.markerRule {
-  flex: 1;
-  height: 1px;
-  background: var(--text-heading);
-}
-
-.markerIcon {
-  font-size: 16px;
-  color: var(--text-heading);
-}
-
-.markerLabel {
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--text-heading);
-}
-
-.sectionHeadlineRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: end;
-  margin-bottom: 36px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--border-light);
-}
-
-.sectionHeadline {
-  margin: 0;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.1;
-  color: var(--text-heading);
-}
-
-.sectionDeck {
-  margin: 0;
-  font-size: 15px;
-  font-style: italic;
-  line-height: 1.6;
-  color: var(--text-muted);
 }
 
 /* ============ 网格 ============ */
@@ -177,11 +115,6 @@
 }
 
 @media (width <= 1024px) {
-  .sectionHeadlineRow {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-  .sectionHeadline { font-size: 26px; }
   .twoCol { grid-template-columns: 1fr; }
 
   .editorialCol {
@@ -211,17 +144,6 @@
    暗色主题：背景/文字/边框换色已由语义变量自动跟随，仅保留暗色下
    必要的强调色规则
    ============================================================ */
-:global(html.dark .settings-page) .markerNum {
-  background: var(--bg-page) !important;
-  border-color: var(--brand-primary-bright) !important;
-  color: var(--brand-primary-bright) !important;
-}
-
-:global(html.dark .settings-page) .markerIcon {
-  background: var(--bg-blue-tint) !important;
-  color: var(--brand-primary-bright) !important;
-}
-
 :global(html.dark .settings-page) .colTitleDanger {
   color: var(--status-danger) !important;
 }

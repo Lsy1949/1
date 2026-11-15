@@ -59,7 +59,7 @@ export function GrowthSection({ onViewAll }: GrowthSectionProps) {
   return (
     <section className={styles.magSection}>
       <div className={styles.secHead}>
-        <span className={styles.secNum}>04</span>
+        <span className={styles.secNum}>06</span>
         <div className={styles.secTitles}>
           <h2 className={styles.secTitle}>{t('profile.card.growth.title')}</h2>
           <p className={styles.secDesc}>{t('profile.card.growth.desc')}</p>

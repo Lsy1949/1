@@ -12,17 +12,27 @@
 .headerBack {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  padding: 5px 12px 5px 6px;
+  margin-left: -6px;
+  border-radius: 999px;
   font-size: 12px;
   color: var(--text-muted);
   cursor: pointer;
-  transition: color 0.2s;
+  transition: color var(--duration-fast) var(--ease-standard),
+    background var(--duration-fast) var(--ease-standard);
   letter-spacing: 0.5px;
   margin-bottom: 20px;
 }
 
 .headerBack:hover {
   color: var(--brand-primary);
+  background: color-mix(in srgb, var(--brand-primary) 6%, transparent);
+}
+
+.headerBack:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
 }
 
 .headerEyebrow {

@@ -199,7 +199,6 @@ export function PsychSection({ form, onFormChange }: PsychSectionProps) {
               rows={4}
               maxLength={200}
               showCount
-              className="custom-scroll"
               onChange={(e) => onFormChange({ ...form, bio: e.target.value })}
             />
           </Form.Item>

@@ -26,9 +26,10 @@
 }
 
 .footer-content {
-  max-width: 1200px;
+  /* 与全站 .container 同一契约（原写死 1200px，页脚比正文窄） */
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 4rem 2rem;
+  padding: 4rem var(--container-pad);
 }
 
 .footer-grid {
@@ -148,9 +149,9 @@
 }
 
 .footer-inner {
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 var(--container-pad);
   display: flex;
   justify-content: space-between;
   align-items: center;

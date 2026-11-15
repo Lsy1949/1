@@ -23,6 +23,8 @@ export interface MockUser {
   tenantId: string
   /** 注册邮箱（注册 / 重置密码身份核验用） */
   email?: string
+  /** 绑定手机号（预约等场景自动带出联系方式） */
+  phone?: string
 }
 
 /** 演示密码：mock 校验规则 —— 任意用户名 + 该密码即可登录 */
@@ -31,13 +33,37 @@ export const MOCK_DEMO_PASSWORD = '111111'
 /** key = 归属租户 ID */
 export const MOCK_USERS: Record<string, MockUser[]> = {
   [DEFAULT_TENANT_ID]: [
-    { userId: 'u-social-001', username: 'admin001', password: '111111', name: '社会人士·体验账号', tenantId: DEFAULT_TENANT_ID },
+    {
+      userId: 'u-social-001',
+      username: '123',
+      password: '123123',
+      name: '社会人士·体验账号',
+      tenantId: DEFAULT_TENANT_ID,
+      phone: '13800008888',
+      email: 'social@example.com',
+    },
   ],
   nist: [
-    { userId: 'u-nist-001', username: 'admin002', password: '111111', name: '南理工·测试学生', tenantId: 'nist' },
+    {
+      userId: 'u-nist-001',
+      username: '123',
+      password: '123123',
+      name: '南理工·测试学生',
+      tenantId: 'nist',
+      phone: '13900001111',
+      email: 'nist@example.com',
+    },
   ],
   tsinghua: [
-    { userId: 'u-thu-001', username: 'admin003', password: '111111', name: '清华·测试学生', tenantId: 'tsinghua' },
+    {
+      userId: 'u-thu-001',
+      username: '123',
+      password: '123123',
+      name: '清华·测试学生',
+      tenantId: 'tsinghua',
+      phone: '13700002222',
+      email: 'thu@example.com',
+    },
   ],
 }
 

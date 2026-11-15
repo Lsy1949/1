@@ -296,7 +296,7 @@
    ============================================================ */
 :global(html.dark) .cmdBackdrop {
   background: rgb(0 0 0 / 0.65) !important;
-  backdrop-filter: blur(6px) !important;
+  /* 只换遮罩颜色；毛玻璃半径沿用浅色态的 blur(8px) */
 }
 
 :global(html.dark) .cmdPanel {

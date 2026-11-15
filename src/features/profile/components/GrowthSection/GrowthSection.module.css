@@ -47,6 +47,7 @@
   line-height: 1.6;
   /* 描述文本窄行宽（原 540px 字面量 → 流体 measure token） */
   max-width: var(--measure-desc);
+  text-wrap: pretty;
 }
 
 .secToggle {
@@ -460,8 +461,7 @@
 :global(html.dark) .badgeCard.earned:hover {
   background: color-mix(in srgb, var(--brand-primary-bright) 8%, transparent) !important;
   border-color: color-mix(in srgb, var(--brand-primary-bright) 30%, transparent) !important;
-  box-shadow: none !important;
-  transform: none !important;
+  /* 不覆写 transform / box-shadow：悬浮幅度与投影层级沿用浅色规则 */
 }
 
 :global(html.dark) .badgeIcon {

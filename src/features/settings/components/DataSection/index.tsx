@@ -2,9 +2,10 @@
 import { useState } from 'react'
 import { App as AntApp, Checkbox, DatePicker } from 'antd'
 import type { Dayjs } from 'dayjs'
-import { ExclamationCircleFilled, FolderOpenOutlined } from '@ant-design/icons'
+import { ExclamationCircleFilled } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import type { I18nKey } from '@/i18n/dataHelper'
+import { SectionHead } from '../SectionHead'
 import styles from './DataSection.module.css'
 
 type RangeValue = [Dayjs | null, Dayjs | null] | null
@@ -98,16 +99,11 @@ export function DataSection() {
 
   return (
     <section id="sec-data" className={styles.editorialSection}>
-      <div className={styles.sectionMarker}>
-        <span className={styles.markerNum}>05</span>
-        <span className={styles.markerRule}></span>
-        <FolderOpenOutlined className={styles.markerIcon} />
-        <span className={styles.markerLabel}>{t('settings.card.data.title')}</span>
-      </div>
-      <div className={styles.sectionHeadlineRow}>
-        <h2 className={styles.sectionHeadline}>{t('settings.card.data.title')}</h2>
-        <p className={styles.sectionDeck}>{t('settings.card.data.desc')}</p>
-      </div>
+      <SectionHead
+        no="05"
+        title={t('settings.card.data.title')}
+        desc={t('settings.card.data.desc')}
+      />
       <div className={`${styles.editorialGrid} ${styles.twoCol}`}>
         {/* 导出 */}
         <div className={styles.editorialCol}>

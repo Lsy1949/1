@@ -24,10 +24,14 @@ export function useCapsuleBoard(filter: CapsuleFilterType) {
 
   const allItems = filter === 'all' ? listQuery.data : allQuery.data
 
-  const stats = useMemo(() => buildStats(allItems ?? []), [allItems])
+  const stats = useMemo(
+    () => buildStats(Array.isArray(allItems) ? allItems : []),
+    [allItems],
+  )
 
   return {
-    capsules: listQuery.data ?? [],
+    // 兜底：接口异常/返回非数组时退化为空列表，避免切换页签时因 map 崩溃整页报错
+    capsules: Array.isArray(listQuery.data) ? listQuery.data : [],
     stats,
     isPending: listQuery.isPending,
     isError: listQuery.isError,
@@ -35,11 +39,12 @@ export function useCapsuleBoard(filter: CapsuleFilterType) {
   }
 }
 
-/** 统计口径与原列表页保持一致 */
+/** 统计口径：与接口 status 过滤保持一致（待开启 = status:pending 全集，
+ *  含审核中的条目，否则页签计数会与切换后实际条数不符） */
 export function buildStats(items: CapsuleListItemDTO[]): CapsuleStats {
   return {
     total: items.length,
-    pending: items.filter(item => item.status === 'pending' && item.auditStatus === 1).length,
+    pending: items.filter(item => item.status === 'pending').length,
     opened: items.filter(item => item.status === 'opened').length,
     auditing: items.filter(item => item.auditStatus === 0).length,
   }

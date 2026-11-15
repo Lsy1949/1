@@ -1,179 +1,231 @@
-/* 时光胶囊 · 新建表单（CSS Modules：私有类 camelCase） */
+/* 时光胶囊 · 新建表单（桌面双栏：左写作区 / 右吸顶摘要；CSS Modules：私有类 camelCase） */
 
+/* ============ 容器：左写作区 + 右摘要栏 ============ */
 .formContainer {
-  max-width: var(--container-form);
+  max-width: 1240px;
   margin: 0 auto;
-  background: transparent;
+  padding: 32px 56px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: clamp(32px, 3.4vw, 56px);
+  align-items: start;
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
 }
 
-.formSection {
-  padding: 28px 32px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: 18px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+.mainCol {
+  min-width: 0;
 }
 
-.formSection:hover {
-  border-color: var(--brand-primary-soft);
-  box-shadow: 0 6px 20px color-mix(in srgb, var(--brand-primary) 5%, transparent);
+/* ============ 左侧分区：发丝线分隔，不做卡片 ============ */
+.section {
+  padding: 30px 0 34px;
+  border-top: 1px solid var(--border-light);
 }
 
-.sectionTitle {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-heading);
-  margin-bottom: 18px;
+.section:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+.sectionHead {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .sectionNum {
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  color: var(--ink-400);
+  flex-shrink: 0;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+  font-style: italic;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--brand-primary);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.5px;
 }
 
-.sectionTitle.noMargin {
-  margin-bottom: 0;
-}
-
-.sectionTitle.small {
-  font-size: 12px;
-  text-transform: none;
-  letter-spacing: 0.5px;
+.sectionTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: var(--text-heading);
 }
 
 .requiredMark {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
   color: var(--status-danger);
-  font-size: 16px;
-  margin-right: 4px;
-  font-weight: bold;
 }
 
 .optionalHint {
-  color: var(--ink-400);
   font-size: 12px;
-  font-weight: normal;
-  margin-left: 8px;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  color: var(--text-faint);
 }
 
-.tipText {
+.sectionMeta {
+  margin-left: auto;
   font-size: 12px;
-  color: var(--ink-400);
-  margin-top: 8px;
-  display: block;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.fieldItem {
+  margin-bottom: 0;
+}
+
+.fieldLabel {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin: 0 0 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 .hint {
+  margin: 8px 0 0;
   font-size: 12px;
-  color: var(--ink-400);
-  margin-top: 10px;
+  line-height: 1.6;
+  color: var(--text-faint);
 }
 
-.titleRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+/* ============ 标题输入 ============ */
+.titleInput {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
-.titleInput,
-.infoInput {
-  flex: 1;
-  font-size: 15px;
-  padding: 10px 0;
+.titleItem :global(.ant-input),
+.titleItem :global(.ant-input-affix-wrapper) {
   background: transparent;
-  border-radius: 0;
   border: none;
   border-bottom: 1px solid var(--border-light);
-  color: var(--text-primary);
-  outline: none;
-  transition: border-color 0.3s ease;
-  box-sizing: border-box;
-  font-family: inherit;
-  width: 100%;
-}
-
-.titleInput:focus,
-.infoInput:focus {
-  border-bottom-color: var(--brand-primary);
-}
-
-.titleInput::placeholder,
-.infoInput::placeholder {
-  color: var(--ink-400);
-}
-
-.titleCount {
-  font-size: 12px;
-  color: var(--ink-400);
-  flex-shrink: 0;
-}
-
-.addressInput {
-  height: 80px;
-  resize: none;
-  margin-top: 0;
-  line-height: 1.6;
-}
-
-.datePickerRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0;
-  background: transparent;
   border-radius: 0;
-  border-bottom: 1px solid var(--border-light);
-  cursor: pointer;
-  transition: border-color 0.3s ease;
+  box-shadow: none;
+  padding: 10px 0;
+  color: var(--text-heading);
+  transition: border-color var(--duration-fast) var(--ease-standard);
 }
 
-.datePickerRow:hover {
+.titleItem :global(.ant-input:hover),
+.titleItem :global(.ant-input-affix-wrapper:hover) {
+  border-bottom-color: var(--border-strong);
+}
+
+.titleItem :global(.ant-input:focus),
+.titleItem :global(.ant-input-affix-wrapper-focused) {
   border-bottom-color: var(--brand-primary);
+  box-shadow: none;
 }
 
-.dateText {
-  font-size: 15px;
-  color: var(--text-primary);
-  letter-spacing: 0.3px;
+.titleItem :global(.ant-input::placeholder) {
+  color: var(--text-faint);
+  font-weight: 400;
 }
 
-.arrow {
-  font-size: 16px;
-  color: var(--ink-400);
-  transition: transform 0.3s ease;
+.titleItem :global(.ant-input-show-count-suffix) {
+  font-size: 12px;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
 }
 
-.datePickerRow:hover .arrow {
-  transform: translateX(4px);
-  color: var(--brand-primary);
+/* ============ 正文：富文本写作区（输入组件由 @/components/RichTextEditor 提供样式） ============ */
+.contentWrapper {
+  position: relative;
 }
 
-.hiddenDatePicker {
-  position: absolute;
-  width: 0;
-  height: 0;
-  opacity: 0;
-  pointer-events: none;
-  overflow: hidden;
+/* ============ 照片 ============ */
+.uploadTrigger {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-faint);
 }
 
-/* 可见的 antd DatePicker：下划线编辑式外观 */
+.uploadIcon {
+  font-size: 22px;
+}
+
+.uploadText {
+  font-size: 12px;
+}
+
+.uploadItem :global(.ant-upload-list-picture-card) {
+  margin-bottom: 0;
+}
+
+/* ============ 心情：胶囊单选 ============ */
+.emotionTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.emotionTags :global(.ant-radio-button-wrapper) {
+  height: auto;
+  padding: 8px 16px;
+  border-radius: 999px !important;
+  border-inline-start-width: 1px;
+  border-color: var(--border-strong);
+  background: transparent;
+  font-size: 18px;
+  line-height: 1.4;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.emotionTags :global(.ant-radio-button-wrapper::before) {
+  display: none;
+}
+
+.emotionTags :global(.ant-radio-button-wrapper:hover) {
+  border-color: var(--brand-primary-soft);
+  background: var(--brand-primary-faint);
+  transform: translateY(-1px);
+}
+
+.emotionTags :global(.ant-radio-button-wrapper-checked) {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary-faint);
+  box-shadow: none;
+}
+
+/* ============ 投递设置：两列子网格 ============ */
+.deliveryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.deliveryCell {
+  min-width: 0;
+}
+
+.deliveryWide {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+/* 日期：下划线编辑式 */
 .datePicker {
   width: 100%;
-  padding: 4px 0;
+  padding: 6px 0;
   background: transparent;
   border: none;
   border-bottom: 1px solid var(--border-light);
@@ -183,18 +235,24 @@
 
 .datePicker :global(.ant-picker-input > input) {
   font-size: 15px;
-  color: var(--text-primary);
+  color: var(--text-heading);
   letter-spacing: 0.3px;
 }
 
 .datePicker :global(.ant-picker-input > input::placeholder) {
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
 .datePicker :global(.ant-picker-suffix) {
-  color: var(--ink-400);
+  color: var(--text-faint);
 }
 
+.arrow {
+  font-size: 15px;
+  color: var(--text-faint);
+}
+
+/* 方式：分段控件 */
 .methodSelector {
   width: 100%;
 }
@@ -203,326 +261,252 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 0;
+  padding: 6px 0;
 }
 
 .methodLabel {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 13.5px;
   letter-spacing: 0.3px;
 }
 
-.methodOption {
-  flex: 1;
+/* 收件信息：下划线输入 */
+.formContainer .infoItem {
+  margin-bottom: 14px;
+}
+
+.formContainer .infoItem:last-child {
+  margin-bottom: 0;
+}
+
+.infoInput {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 6px 0;
+  font-size: 15px;
+  color: var(--text-heading);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.infoItem :global(.ant-input),
+.infoItem :global(.ant-input:hover) {
+  border-bottom-color: var(--border-light);
+  background: transparent;
+  box-shadow: none;
+}
+
+.infoItem :global(.ant-input:hover) {
+  border-bottom-color: var(--border-strong);
+}
+
+.infoItem :global(.ant-input:focus) {
+  border-bottom-color: var(--brand-primary);
+  box-shadow: none;
+}
+
+.infoItem :global(.ant-input::placeholder) {
+  color: var(--text-faint);
+}
+
+.addressInput {
+  line-height: 1.7;
+  resize: none;
+}
+
+/* ============ 右栏：吸顶 ============ */
+.rail {
+  position: sticky;
+  top: calc(var(--navbar-h, 80px) + 28px);
   display: flex;
   flex-direction: column;
+  gap: 26px;
+  min-width: 0;
+}
+
+.railBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.railHead {
+  display: flex;
   align-items: center;
-  padding: 20px 16px;
-  background: transparent;
-  border-radius: 12px;
+  gap: 8px;
+}
+
+.railTitle {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ============ 摘要卡 ============ */
+.summaryCard {
   border: 1px solid var(--border-light);
-  transition: all 0.3s ease;
-  cursor: pointer;
+  border-radius: 14px;
+  background: var(--bg-card);
+  overflow: hidden;
 }
 
-.methodOption:hover {
-  border-color: var(--brand-primary-soft);
-  background: var(--brand-primary-faint);
+.countdown {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 18px 18px 16px;
+  border-bottom: 1px solid var(--border-light);
 }
 
-.methodOption.active {
-  background: var(--brand-primary);
-  border-color: var(--brand-primary);
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--brand-primary) 18%, transparent);
+.countdown b {
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--brand-primary);
+  font-variant-numeric: tabular-nums;
 }
 
-.methodIcon {
-  font-size: 28px;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-}
-
-.methodOption.active .methodIcon {
-  color: var(--text-inverse, #fff);
-}
-
-.methodText {
-  font-size: 14px;
-  color: var(--text-secondary);
+.countdown span {
+  font-size: 12px;
   letter-spacing: 0.3px;
+  color: var(--text-faint);
 }
 
-.methodOption.active .methodText {
-  color: var(--text-inverse, #fff);
+.summaryList {
+  margin: 0;
+  padding: 6px 18px 14px;
+}
+
+.summaryRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  border-top: 1px solid var(--border-light);
+}
+
+.summaryRow:first-child {
+  border-top: none;
+}
+
+.summaryRow dt {
+  flex-shrink: 0;
+  font-size: 11.5px;
+  letter-spacing: 0.2px;
+  color: var(--text-faint);
+}
+
+.summaryRow dd {
+  margin: 0;
+  font-size: 12.5px;
   font-weight: 600;
+  text-align: right;
+  color: var(--text-heading);
+  font-variant-numeric: tabular-nums;
+  word-break: break-word;
 }
 
-.switchRow {
+/* ============ 隐私设置行 ============ */
+.settingRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border-light);
+}
+
+.settingRow:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.settingText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.settingLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.settingHint {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-faint);
 }
 
 .commentSetting {
-  margin-top: 16px;
-  padding-left: 16px;
-  border-left: 2px solid var(--border-light);
+  padding-left: 12px;
+  border-left: 1px solid var(--border-light);
 }
 
-.contentWrapper {
-  position: relative;
-}
-
-.wangEditorWrap {
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--bg-card);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.wangEditorWrap:focus-within {
-  border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 8%, transparent);
-}
-
-.wangToolbar {
-  border-bottom: 1px solid var(--border-light) !important;
-  background: var(--brand-primary-wash) !important;
-  padding: 6px 8px !important;
-}
-
-/* 工具栏按钮（原 wangEditor 的 w-e-menu 视觉等价实现） */
-.wangMenuBtn {
-  min-width: 26px;
-  height: 26px;
-  margin-right: 4px;
-  padding: 0 6px;
-  border: none;
-  background: transparent;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
-
-.wangMenuBtn:hover {
-  color: var(--brand-primary);
-  background: var(--brand-primary-faint);
-}
-
-.wangEditor {
-  min-height: 220px;
-  padding: 12px 16px !important;
-  font-size: 15px;
-  line-height: 1.8;
-  color: var(--text-primary);
-  outline: none;
-  overflow-y: auto;
-}
-
-/* A3 焦点替代：contentEditable 富文本聚焦时给出品牌色焦环 */
-.wangEditor:focus-visible {
-  outline: 2px solid var(--brand-primary);
-  outline-offset: 2px;
-}
-
-/* contentEditable 空态占位（原 wangEditor 的 w-e-text-placeholder 视觉等价实现） */
-.wangEditor:empty::before {
-  content: attr(data-placeholder);
-  color: var(--ink-400);
-  font-style: normal;
-  pointer-events: none;
-}
-
-/* 原文件中 w-e-toolbar 系与 el-switch/el-date-editor/el-dialog/el-button 系
-   为 Element/wangEditor 内部类死规则，React 下不匹配任何 DOM，未迁移 */
-
-.contentCount {
-  position: absolute;
-  right: 0;
-  bottom: -4px;
-  font-size: 12px;
-  color: var(--ink-400);
-}
-
-.imageUploader {
-  width: 100%;
-  height: 140px;
-  background: transparent;
-  border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 1px dashed var(--brand-primary-soft);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.imageUploader:hover {
-  background: var(--brand-primary-faint);
+.capsuleSwitch:global(.ant-switch-checked) {
+  background-color: var(--brand-primary);
   border-color: var(--brand-primary);
 }
 
-.uploadIcon {
-  font-size: 32px;
-  color: var(--ink-400);
-  margin-bottom: 12px;
-}
-
-.uploadText {
-  font-size: 13px;
-  color: var(--ink-400);
-}
-
-.imageGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.imageItem {
-  position: relative;
-  width: 100%;
-  padding-bottom: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--bg-mute);
-}
-
-.uploadedImage {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  object-fit: cover;
-}
-
-.imageItem .deleteBtn {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 22px;
-  height: 22px;
-  background: color-mix(in srgb, var(--brand-primary) 80%, transparent);
-  color: var(--text-inverse, #fff);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  cursor: pointer;
-  line-height: 1;
-  transition: background 0.2s ease;
-}
-
-.imageItem .deleteBtn:hover {
-  background: var(--brand-primary);
-}
-
-.addImageBtn {
-  background: transparent;
-  border: 1px dashed var(--brand-primary-soft);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.addImageBtn:hover {
-  background: var(--brand-primary-faint);
-  border-color: var(--brand-primary);
-}
-
-.addContent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.addIcon {
-  font-size: 24px;
-  color: var(--ink-400);
-  margin-bottom: 4px;
-}
-
-.addText {
-  font-size: var(--fs-xs);
-  color: var(--ink-400);
-}
-
-.hiddenFileInput {
-  display: none;
-}
-
-.emotionTags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.emotionTags :global(.ant-radio-button-wrapper) {
-  width: 48px;
-  height: 48px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  border-inline-start-width: 1px;
-  font-size: 24px;
-  line-height: 1;
-}
-
-.emotionTags :global(.ant-radio-button-wrapper::before) {
-  display: none;
-}
-
-.emotionTag {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: transparent;
-  border: 1px solid var(--border-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.emotionTag:hover {
-  border-color: var(--brand-primary-soft);
-  background: var(--brand-primary-faint);
-  transform: translateY(-2px);
-}
-
-.emotionTag.active {
-  background: var(--brand-primary);
-  border-color: var(--brand-primary);
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 20%, transparent);
-}
-
+/* ============ 提交 ============ */
 .submitSection {
-  padding: 36px 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border-light);
 }
 
-/* ============================================================
-   antd Form 适配：Form.Item 间距 / 下划线输入 / 上传触发器
-   ============================================================ */
+.submitBtn {
+  height: auto;
+  padding: 14px 0;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--brand-primary) 22%, transparent);
+  transition:
+    transform var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: var(--brand-primary-dark) !important;
+  border-color: var(--brand-primary-dark) !important;
+  color: var(--text-inverse, #fff) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--brand-primary) 30%, transparent);
+}
+
+.submitBtn:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 3px;
+}
+
+.submitHint {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--text-faint);
+  text-align: center;
+}
+
+/* ============ antd 表单细节 ============ */
 .formContainer :global(.ant-form-item) {
   margin-bottom: 14px;
 }
@@ -532,8 +516,8 @@
 }
 
 .formContainer :global(.ant-form-item-explain-error) {
-  font-size: 12px;
   margin-top: 4px;
+  font-size: 12px;
 }
 
 .formContainer .titleItem,
@@ -542,242 +526,44 @@
   margin-bottom: 0;
 }
 
-.formContainer .infoItem {
-  margin-bottom: 12px;
-}
+/* ============ 响应式（移动端另行制作，这里只保证不破版） ============ */
+@media (width <= 1080px) {
+  .formContainer {
+    grid-template-columns: 1fr;
+    padding: 24px 32px 0;
+  }
 
-.formContainer .infoItem:last-child {
-  margin-bottom: 0;
-}
-
-/* 标题 / 信息输入：去掉 antd 描边，保留下划线编辑式外观 */
-.titleItem :global(.ant-input-affix-wrapper),
-.titleItem :global(.ant-input),
-.infoItem :global(.ant-input) {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--border-light);
-  border-radius: 0;
-  box-shadow: none;
-  padding: 8px 0;
-  font-size: 15px;
-  color: var(--text-primary);
-}
-
-.titleItem :global(.ant-input-affix-wrapper-focused),
-.infoItem :global(.ant-input:focus) {
-  border-bottom-color: var(--brand-primary);
-  box-shadow: none;
-}
-
-.titleItem :global(.ant-input::placeholder),
-.infoItem :global(.ant-input::placeholder) {
-  color: var(--ink-400);
-}
-
-.titleItem :global(.ant-input-show-count-suffix) {
-  font-size: 12px;
-  color: var(--ink-400);
-}
-
-/* Upload 触发器与图片预览 */
-.uploadTrigger {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  color: var(--ink-400);
-}
-
-.uploadTrigger .uploadIcon {
-  margin-bottom: 0;
-}
-
-.uploadItem :global(.ant-upload-list-picture-card) {
-  margin-bottom: 0;
-}
-
-.previewImage {
-  max-width: 80vw;
-  max-height: 80vh;
-  display: block;
-}
-
-.submitBtn {
-  width: 100%;
-  height: auto;
-  background: linear-gradient(135deg, var(--brand-primary), var(--color-info));
-  color: var(--text-inverse, #fff);
-  font-size: 13px;
-  padding: 18px 0;
-  border-radius: 14px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--brand-primary) 22%, transparent);
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: inherit;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.submitBtn:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--brand-primary-dark), var(--brand-primary-deep, var(--color-info)));
-  color: var(--text-inverse, #fff);
-  box-shadow: 0 10px 26px color-mix(in srgb, var(--brand-primary) 30%, transparent);
-  transform: translateY(-2px);
-}
-
-.submitBtn:hover:not(:disabled) .submitArrow {
-  transform: translateX(6px);
-}
-
-.submitArrow {
-  transition: transform 0.3s ease;
-}
-
-.submitBtn:disabled {
-  background: var(--brand-primary-soft);
-  color: var(--text-inverse, #fff);
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.successDialogContent {
-  text-align: center;
-  padding: 16px 0;
-}
-
-.successBigIcon {
-  font-size: 56px;
-  color: var(--status-success);
-  margin-bottom: 16px;
-}
-
-.successDialogContent h3 {
-  font-size: 22px;
-  margin-bottom: 10px;
-  color: var(--text-heading);
-}
-
-.successDialogContent p {
-  color: var(--text-secondary);
-  margin-bottom: 24px;
-  line-height: 1.6;
-  font-size: 14px;
-}
-
-.successDialogContent b {
-  color: var(--brand-primary);
-}
-
-/* antd Switch 品牌色（对应原 el-switch active-color="#0052d9" 的视觉等价；
-   Switch 组件 token 无选中底色维度，保留覆写） */
-.capsuleSwitch:global(.ant-switch-checked) {
-  background: var(--brand-primary) !important;
-}
-
-/* antd Modal 视觉等价：
-   content/header/footer 结构覆写已 token 化为 CreateForm.tsx 中
-   Modal 的 styles prop；主按钮底色与全局 colorPrimary 同值已删；
-   hover 加深色（默认为提亮色）无对应 token，保留覆写 */
-.successModal :global(.ant-btn-primary):hover {
-  background: var(--brand-primary-dark);
-  border-color: var(--brand-primary-dark);
+  .rail {
+    position: static;
+  }
 }
 
 @media (width <= 768px) {
-  .formSection {
-    padding: 24px 0;
+  .formContainer {
+    padding: 20px 20px 0;
   }
 
-  .methodSelector {
-    gap: 12px;
+  .deliveryGrid {
+    grid-template-columns: 1fr;
   }
 
-  .methodOption {
-    padding: 16px 8px;
+  .deliveryWide {
+    grid-column: auto;
   }
 
-  .emotionTags {
-    gap: 12px;
-  }
-
-  .emotionTag {
-    width: 44px;
-    height: 44px;
-    font-size: 22px;
-  }
-
-  .submitSection {
-    padding: 28px 0 12px;
+  .section {
+    padding: 24px 0 26px;
   }
 }
 
-/* ============================================================
-   暗色主题
-   基础规则已语义 token 化（--bg-card / --text-* / --border-light /
-   --brand-primary-wash 等），dark 下自动跟随 dark-mode.css 的变量重定义。
-   此处仅保留 dark 特有微调：主色提亮（--brand-primary-bright）、
-   半透明白色边框（卡片在深底上的层次感）与 disabled 态。
-   ============================================================ */
-:global(html.dark .time-capsule-page) .formSection {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
+/* ============ 暗色：仅补强调色（基础色已走语义变量） ============ */
+:global(html.dark .time-capsule-page) .sectionNum,
+:global(html.dark .time-capsule-page) .countdown b {
+  color: var(--brand-primary-bright);
 }
 
-:global(html.dark .time-capsule-page) .formSection:hover {
-  border-color: var(--brand-primary-bright) !important;
-}
-
-:global(html.dark .time-capsule-page) .titleInput:focus,
-:global(html.dark .time-capsule-page) .infoInput:focus,
-:global(html.dark .time-capsule-page) .datePickerRow:hover,
-:global(html.dark .time-capsule-page) .imageUploader:hover,
-:global(html.dark .time-capsule-page) .addImageBtn:hover,
-:global(html.dark .time-capsule-page) .emotionTag:hover {
-  border-color: var(--brand-primary-bright) !important;
-}
-
-:global(html.dark .time-capsule-page) .methodIcon,
-:global(html.dark .time-capsule-page) .uploadIcon,
-:global(html.dark .time-capsule-page) .addIcon {
-  color: var(--brand-primary-bright) !important;
-}
-
-:global(html.dark .time-capsule-page) .methodOption.active {
-  background: var(--brand-primary-bright-bg) !important;
-  border-color: var(--brand-primary-bright) !important;
-}
-
-:global(html.dark .time-capsule-page) .methodOption.active .methodIcon,
-:global(html.dark .time-capsule-page) .methodOption.active .methodText {
-  color: var(--brand-primary-bright) !important;
-}
-
-:global(html.dark .time-capsule-page) .methodOption:hover {
-  background: var(--brand-primary-bright-bg) !important;
-  border-color: var(--border-blue) !important;
-}
-
-:global(html.dark .time-capsule-page) .emotionTag.active {
-  background: var(--brand-primary-bright-bg) !important;
-  border-color: var(--brand-primary-bright) !important;
-}
-
-:global(html.dark .time-capsule-page) .submitBtn:disabled {
-  background: var(--bg-mute) !important;
-  color: var(--text-faint) !important;
-}
-
-/* wang 编辑器深色适配（dark-mode.css 中 w-e- 内部类系列深色规则为死规则，未迁移） */
-:global(html.dark .time-capsule-page) .wangEditorWrap,
-:global(html.dark .time-capsule-page) .wangToolbar,
-:global(html.dark .time-capsule-page) .wangEditor {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
+:global(html.dark .time-capsule-page) .emotionTags :global(.ant-radio-button-wrapper-checked) {
+  color: var(--brand-primary-bright);
+  border-color: var(--brand-primary-bright);
+  background: var(--brand-primary-bright-bg);
 }

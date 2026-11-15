@@ -46,6 +46,7 @@
   line-height: 1.6;
   /* 描述文本窄行宽（原 540px 字面量 → 流体 measure token） */
   max-width: var(--measure-desc);
+  text-wrap: pretty;
 }
 
 .secToggle {

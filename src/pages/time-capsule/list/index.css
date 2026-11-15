@@ -11,7 +11,7 @@
     radial-gradient(circle at 80% 80%, color-mix(in srgb, var(--brand-primary) 1.2%, transparent) 0%, transparent 50%);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', sans-serif;
   color: var(--text-primary);
-  padding-bottom: 140px;
+  padding-bottom: 80px;
   position: relative;
   overflow-x: hidden;
 }
@@ -20,13 +20,107 @@
 .capsule-state {
   position: relative;
   z-index: 1;
-  max-width: var(--container-max);
+  max-width: var(--container-md);
   margin: 0 auto;
-  padding: 24px 40px 80px;
+  padding: 0 56px 80px;
   min-height: 50vh;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 32px;
+}
+
+/* ============================================================
+   首屏骨架：与统计条 / 信封行同构，避免数据到位时布局跳动
+   ============================================================ */
+.capsule-skeleton-stats {
+  display: flex;
+  gap: 24px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.capsule-skeleton-stat {
+  flex: 1;
+  height: 56px;
+  border-radius: 8px;
+}
+
+.capsule-skeleton-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.capsule-skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.capsule-skeleton-serial {
+  width: 48px;
+  height: 44px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.capsule-skeleton-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.capsule-skeleton-title {
+  width: 52%;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.capsule-skeleton-meta {
+  width: 32%;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.capsule-skeleton-tag {
+  width: 56px;
+  height: 22px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.capsule-skeleton-stat,
+.capsule-skeleton-serial,
+.capsule-skeleton-title,
+.capsule-skeleton-meta,
+.capsule-skeleton-tag {
+  background: var(--bg-soft);
+  animation: capsule-skeleton-pulse 1.6s var(--ease-standard) infinite;
+}
+
+@keyframes capsule-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .capsule-skeleton-stat,
+  .capsule-skeleton-serial,
+  .capsule-skeleton-title,
+  .capsule-skeleton-meta,
+  .capsule-skeleton-tag {
+    animation: none;
+    opacity: 0.8;
+  }
 }
 
 /* 背景水印 */
@@ -48,76 +142,17 @@
   white-space: nowrap;
 }
 
-/* ============================================================
-   浮动新建按钮
-   ============================================================ */
-.fab-button {
-  position: fixed;
-  right: 40px;
-  bottom: 80px;
-  height: 52px;
-  padding: 0 28px;
-  background: var(--brand-primary);
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  border-radius: 14px;
-  box-shadow: 0 12px 32px color-mix(in srgb, var(--brand-primary) 25%, transparent);
-  z-index: 100;
-  transition: all var(--duration-fast) var(--ease-standard);
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.fab-button:hover {
-  background: var(--brand-primary-dark);
-  color: var(--text-inverse, #fff);
-  box-shadow: 0 16px 40px color-mix(in srgb, var(--brand-primary) 35%, transparent);
-  gap: 14px;
-  transform: translateY(-2px);
-}
-
-.fab-button:active {
-  transform: scale(0.97);
-}
-
-.fab-plus {
-  font-size: 24px;
-  color: var(--text-inverse, #fff);
-  font-weight: 300;
-  line-height: 1;
-}
-
-.fab-button:hover .fab-plus {
-  color: var(--text-inverse, #fff);
-}
-
-.fab-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-inverse, #fff);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.fab-button:hover .fab-label {
-  color: var(--text-inverse, #fff);
-}
-
 @media (width <= 768px) {
-  .fab-button {
-    right: 16px;
-    bottom: 32px;
-    height: 48px;
-    padding: 0 22px;
+  .capsule-state {
+    padding: 0 20px 80px;
   }
 
-  .fab-plus {
-    font-size: 22px;
+  .capsule-skeleton-row {
+    gap: 14px;
+    padding: 18px 0;
   }
 
-  .fab-label {
-    font-size: var(--fs-xs);
+  .capsule-skeleton-serial {
+    width: 36px;
   }
 }

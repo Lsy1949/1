@@ -1,6 +1,6 @@
 // 时光胶囊 · 统计栏 + 筛选导航 + 档案列表（左滑删除手势）+ 空状态
 // 纯展示组件：数据由页面下发，删除行为经 onDelete 上抛（页面负责 mutation）
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react'
 import { App as AntApp } from 'antd'
 import { DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons'
@@ -56,10 +56,8 @@ interface ArchiveEntryProps {
   index: number
   offset: number
   noTransition: boolean
-  onCardClick: (item: CapsuleItem) => void
+  onCardClick: (item: CapsuleItem) => boolean
   onPointerDown: (e: ReactPointerEvent<HTMLDivElement>, item: CapsuleItem) => void
-  onPointerMove: (e: ReactPointerEvent<HTMLDivElement>) => void
-  onPointerUp: () => void
   onDelete: (id: number) => void
 }
 
@@ -70,8 +68,6 @@ function ArchiveEntry({
   noTransition,
   onCardClick,
   onPointerDown,
-  onPointerMove,
-  onPointerUp,
   onDelete,
 }: ArchiveEntryProps) {
   const { t } = useTranslation()
@@ -105,12 +101,13 @@ function ArchiveEntry({
           className={`${styles.envelope} env-${statusKey(item)}`}
           role="button"
           tabIndex={0}
-          onClick={() => onCardClick(item)}
+          onClick={(e) => {
+            // 返回 true 表示这次 click 已被手势/展开态消费，需阻止冒泡到页面级 closeAll，
+            // 否则刚滑开的删除面板会被同一帧的页面点击立刻收起
+            if (onCardClick(item)) e.stopPropagation()
+          }}
           onKeyDown={handleKeyDown}
           onPointerDown={(e) => onPointerDown(e, item)}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
         >
           {/* 信封顶部虚线 */}
           <div className={styles.envFlap}></div>
@@ -137,11 +134,12 @@ function ArchiveEntry({
             </div>
           </div>
 
-          {/* 右侧：状态标签 */}
+          {/* 右侧：状态标签 + 打开指引箭头（删除只走左滑手势，避免两套入口冲突） */}
           <div className={styles.envRight}>
             <span className={`${styles.statusTag} tag-${statusKey(item)}`}>
               {statusLabel(item, t)}
             </span>
+            <span className={styles.envArrow} aria-hidden="true">→</span>
           </div>
         </div>
       </div>
@@ -177,17 +175,73 @@ export const ListArchive = forwardRef<ListArchiveRef, ListArchiveProps>(
     // 左滑偏移：state 驱动渲染 + ref 镜像保证手势读写同步
     const [offsets, setOffsets] = useState<Record<number, number>>({})
     const offsetsRef = useRef<Record<number, number>>({})
-    const updateOffset = (id: number, val: number) => {
+    const updateOffset = useCallback((id: number, val: number) => {
       offsetsRef.current = { ...offsetsRef.current, [id]: val }
       setOffsets(offsetsRef.current)
-    }
+    }, [])
 
     // 拖拽过程数据放 ref（避免高频重渲染与闭包陈旧），仅活跃拖拽 id 进 state 驱动 no-transition 类
-    const dragRef = useRef<{ id: number | null; startX: number; startY: number; startOffset: number; dragging: boolean; moved: boolean }>({
-      id: null, startX: 0, startY: 0, startOffset: 0, dragging: false, moved: false,
+    const dragRef = useRef<{ id: number | null; startX: number; startY: number; startOffset: number; dragging: boolean }>({
+      id: null, startX: 0, startY: 0, startOffset: 0, dragging: false,
     })
     const [activeDragId, setActiveDragId] = useState<number | null>(null)
     const wasDragged = useRef(false)
+
+    /**
+     * 左滑手势监听挂 window 而非元素级 pointermove：
+     * 元素级 + setPointerCapture 在本组件里会因重渲染丢捕获，导致拖拽期间收不到
+     * pointermove（表现为「拖不动 + 松手变点击跳转」）。window 监听对指针移出
+     * 卡片、重渲染都免疫。
+     */
+    useEffect(() => {
+      const handleMove = (e: PointerEvent) => {
+        const drag = dragRef.current
+        if (drag.id === null) return
+        const dx = e.clientX - drag.startX
+        const dy = e.clientY - drag.startY
+        if (!drag.dragging) {
+          if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return
+          // 纵向意图优先：本次不左滑，交还页面滚动
+          if (Math.abs(dy) > Math.abs(dx)) {
+            dragRef.current = { ...drag, id: null }
+            return
+          }
+          drag.dragging = true
+          // 一旦判定为拖拽就置位，保证紧随其后的 click 被拦截
+          wasDragged.current = true
+          setActiveDragId(drag.id)
+        }
+        let next = drag.startOffset + dx
+        if (next > 0) next *= 0.3
+        if (next < -DELETE_WIDTH) next = -DELETE_WIDTH + (next + DELETE_WIDTH) * 0.3
+        updateOffset(drag.id, next)
+      }
+
+      const handleUp = () => {
+        const drag = dragRef.current
+        if (drag.id !== null) {
+          const id = drag.id
+          const offset = offsetsRef.current[id] ?? 0
+          // 松手时收起其它已展开的行
+          Object.keys(offsetsRef.current).forEach((key) => {
+            const other = Number(key)
+            if (other !== id && offsetsRef.current[other] !== 0) updateOffset(other, 0)
+          })
+          updateOffset(id, offset < -REVEAL_THRESHOLD ? -DELETE_WIDTH : 0)
+        }
+        dragRef.current = { id: null, startX: 0, startY: 0, startOffset: 0, dragging: false }
+        setActiveDragId(null)
+      }
+
+      window.addEventListener('pointermove', handleMove, { passive: true })
+      window.addEventListener('pointerup', handleUp)
+      window.addEventListener('pointercancel', handleUp)
+      return () => {
+        window.removeEventListener('pointermove', handleMove)
+        window.removeEventListener('pointerup', handleUp)
+        window.removeEventListener('pointercancel', handleUp)
+      }
+    }, [updateOffset])
 
     const filterTabs: { type: CapsuleFilterType; label: string }[] = [
       { type: 'all', label: t('capsule.list.filter.all') },
@@ -218,18 +272,21 @@ export const ListArchive = forwardRef<ListArchiveRef, ListArchiveProps>(
 
     useImperativeHandle(ref, () => ({ closeAll }), [])
 
-    const onCardClick = (item: CapsuleItem) => {
+    /** 返回 true = 本次 click 已被消费（拖拽尾随点击 / 收起已展开的行），调用方需阻止冒泡 */
+    const onCardClick = (item: CapsuleItem): boolean => {
       if (wasDragged.current) {
         wasDragged.current = false
-        return
+        return true
       }
       if (getOffset(item.id) !== 0) {
         updateOffset(item.id, 0)
-        return
+        return true
       }
       onOpen(item.id)
+      return false
     }
 
+    // 仅记录拖拽起点，移动/松手由上面的 window 监听处理（不在此处 setPointerCapture）
     const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>, item: CapsuleItem) => {
       if (e.pointerType === 'mouse' && e.button !== 0) return
       if ((e.target as HTMLElement).closest('.delete-panel')) return
@@ -240,55 +297,7 @@ export const ListArchive = forwardRef<ListArchiveRef, ListArchiveProps>(
         startY: e.clientY,
         startOffset: offsetsRef.current[item.id] || 0,
         dragging: false,
-        moved: false,
       }
-      try {
-        e.currentTarget.setPointerCapture(e.pointerId)
-      } catch {
-        /* 忽略 pointer capture 失败 */
-      }
-    }
-
-    const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
-      const drag = dragRef.current
-      if (drag.id === null) return
-      const dx = e.clientX - drag.startX
-      const dy = e.clientY - drag.startY
-      if (!drag.dragging) {
-        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return
-        if (Math.abs(dy) > Math.abs(dx)) {
-          drag.id = null
-          return
-        }
-        drag.dragging = true
-        drag.moved = true
-        setActiveDragId(drag.id)
-      }
-      let next = drag.startOffset + dx
-      if (next > 0) next = next * 0.3
-      if (next < -DELETE_WIDTH) next = -DELETE_WIDTH + (next + DELETE_WIDTH) * 0.3
-      updateOffset(drag.id, next)
-    }
-
-    const onPointerUp = () => {
-      const drag = dragRef.current
-      if (drag.id === null) return
-      const id = drag.id
-      const offset = offsetsRef.current[id] || 0
-      const moved = drag.moved
-      Object.keys(offsetsRef.current).forEach((k) => {
-        const key = Number(k)
-        if (key !== id && offsetsRef.current[key] !== 0) updateOffset(key, 0)
-      })
-      if (offset < -REVEAL_THRESHOLD) {
-        updateOffset(id, -DELETE_WIDTH)
-      } else {
-        updateOffset(id, 0)
-      }
-      drag.id = null
-      drag.dragging = false
-      setActiveDragId(null)
-      if (moved) wasDragged.current = true
     }
 
     const deleteCapsule = (id: number) => {
@@ -335,17 +344,20 @@ export const ListArchive = forwardRef<ListArchiveRef, ListArchiveProps>(
           </div>
         </div>
 
-        {/* 筛选导航 · 下划线式 */}
-        <nav ref={filterNavRef} className={styles.filterNav}>
+        {/* 筛选导航 · 下划线式（原生 button，键盘可达） */}
+        <nav ref={filterNavRef} className={styles.filterNav} role="tablist">
           {filterTabs.map((tab) => (
-            <div
+            <button
               key={tab.type}
+              type="button"
+              role="tab"
+              aria-selected={filterType === tab.type}
               className={`${styles.navItem}${filterType === tab.type ? ` ${styles.active}` : ''}`}
               onClick={() => onFilterChange(tab.type)}
             >
               <span className={styles.navLabel}>{tab.label}</span>
               <span className={styles.navCount}>({getTabCount(tab.type)})</span>
-            </div>
+            </button>
           ))}
         </nav>
 
@@ -362,8 +374,6 @@ export const ListArchive = forwardRef<ListArchiveRef, ListArchiveProps>(
                   noTransition={activeDragId === item.id}
                   onCardClick={onCardClick}
                   onPointerDown={onPointerDown}
-                  onPointerMove={onPointerMove}
-                  onPointerUp={onPointerUp}
                   onDelete={deleteCapsule}
                 />
               ))}

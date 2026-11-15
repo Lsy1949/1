@@ -28,6 +28,11 @@ interface ImportMetaEnv {
   readonly VITE_PRIVATE_TENANT?: string
   /** vite dev proxy 目标（未配置时回落 http://127.0.0.1:8080） */
   readonly VITE_PROXY_TARGET?: string
+  /**
+   * 富文本引擎：留空 = quill（默认）；
+   * 置 'dom' 回退到零依赖的 contentEditable 实现（逃生通道）
+   */
+  readonly VITE_EDITOR_ENGINE?: string
 }
 
 interface ImportMeta {

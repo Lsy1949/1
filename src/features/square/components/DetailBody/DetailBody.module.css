@@ -1,71 +1,117 @@
-/* ===== 正文（CSS Modules：私有类 camelCase） ===== */
+/* ===== 正文（CSS Modules：私有类 camelCase；photo-count-N 为数据驱动协议类） ===== */
 .richContent {
-  max-width: var(--container-article);
-  margin: 0 auto;
-  padding: 0 40px;
+  /* 版心与水平留白由页面 .square-detail-shell 承担 */
   position: relative;
   z-index: 1;
 }
 
+/* 正文段落 + 装饰性引号（引号刻意溢出到版心左侧留白里） */
+.prose {
+  position: relative;
+}
+
+.quoteMark {
+  position: absolute;
+  top: -22px;
+  left: -34px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 88px;
+  font-weight: 900;
+  line-height: 1;
+  color: color-mix(in srgb, var(--brand-primary) 14%, transparent);
+  pointer-events: none;
+  user-select: none;
+}
+
 .contentText {
   font-size: 17px;
-  line-height: 1.9;
+  line-height: 1.95;
   color: var(--text-regular);
   margin: 0;
   letter-spacing: 0.1px;
-  position: relative;
-  padding-left: 20px;
+  text-wrap: pretty;
 }
 
-.contentText::before {
-  content: '"';
-  position: absolute;
-  left: -8px;
-  top: -16px;
-  font-size: 64px;
-  font-family: Georgia, 'Times New Roman', serif;
-  color: color-mix(in srgb, var(--brand-primary) 15%, transparent);
-  line-height: 1;
-  font-weight: 900;
-  pointer-events: none;
+/* 富文本正文：段落间距与列表缩进（换行已由编辑器的块级结构承担） */
+.contentText p,
+.contentText div {
+  margin: 0 0 14px;
 }
 
-.contentText::first-letter {
-  font-size: 32px;
-  font-weight: 800;
-  color: var(--brand-primary);
-  font-family: Georgia, 'Times New Roman', serif;
-  line-height: 1;
-  margin-right: 2px;
+.contentText p:last-child,
+.contentText div:last-child {
+  margin-bottom: 0;
 }
 
+.contentText ul,
+.contentText ol {
+  margin: 0 0 14px;
+  padding-left: 24px;
+}
+
+.contentText li {
+  margin: 6px 0;
+}
+
+/* ===== 图片：1 张通栏横向，多张等分网格 ===== */
 .photoGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin: 32px 0;
+  gap: 10px;
+  margin-top: 32px;
 }
 
+.photoGrid:global(.photo-count-1) {
+  grid-template-columns: 1fr;
+}
+
+.photoGrid:global(.photo-count-2) {
+  grid-template-columns: 1fr 1fr;
+}
+
+.photoGrid:global(.photo-count-3) {
+  grid-template-columns: 1fr 1fr;
+}
+
+.photoGrid:global(.photo-count-4) {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* antd Image 根节点即网格项 */
 .contentPhoto {
-  width: 100%;
-  height: 100%;
-  max-height: 320px;
-  object-fit: cover;
-  border-radius: 12px;
   display: block;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--bg-mute);
+  cursor: zoom-in;
+}
+
+.contentPhoto :global(img) {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-standard);
+}
+
+/* 单图用横幅比例，避免一张图占满整屏高 */
+.photoGrid:global(.photo-count-1) .contentPhoto :global(img) {
+  aspect-ratio: 16 / 10;
+}
+
+.contentPhoto:hover :global(img) {
+  transform: scale(1.03);
 }
 
 /* ===== 底部互动栏 ===== */
 .detailFooter {
-  max-width: var(--container-article);
-  margin: 64px auto 0;
-  padding: 0 40px;
+  margin-top: 56px;
 }
 
 .footerLine {
   height: 1px;
   background: var(--border-light);
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .footerRow {
@@ -104,6 +150,7 @@
   transition: all 0.25s ease;
   border-radius: 12px;
   font-family: inherit;
+  font-variant-numeric: tabular-nums;
 }
 
 .actionBtn:hover {
@@ -120,18 +167,17 @@
   color: var(--text-inverse, #fff);
 }
 
+.actionBtn:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
 /* 原 .action-btn .el-icon → antd 图标类名等价选择器 */
 .actionBtn :global(.anticon) { font-size: 13px; }
 
 @media (width <= 768px) {
-  .richContent {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  .detailFooter {
-    padding-left: 20px;
-    padding-right: 20px;
+  .quoteMark {
+    display: none;
   }
 
   .footerRow {
@@ -140,7 +186,9 @@
     gap: 16px;
   }
 
-  .photoGrid {
+  .photoGrid:global(.photo-count-2),
+  .photoGrid:global(.photo-count-3),
+  .photoGrid:global(.photo-count-4) {
     grid-template-columns: 1fr;
   }
 }

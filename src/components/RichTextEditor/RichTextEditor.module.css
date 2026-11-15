@@ -1,0 +1,248 @@
+/* 可复用富文本输入（CSS Modules：私有类 camelCase） */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  background: var(--bg-card);
+  overflow: hidden;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.root:focus-within {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 8%, transparent);
+}
+
+.root.isDisabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ============ 内嵌式外观：去外框，仅底部发丝线 ============ */
+.plain {
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid var(--border-light);
+  background: transparent;
+  overflow: visible;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.plain:focus-within {
+  border-bottom-color: var(--brand-primary);
+  box-shadow: none;
+}
+
+.plain:hover:not(:focus-within) {
+  border-bottom-color: var(--border-strong);
+}
+
+.plain .toolbar {
+  padding: 0 0 6px;
+  border-bottom: none;
+  background: transparent;
+}
+
+.plain .editor {
+  padding: 10px 0 30px;
+}
+
+.plain .count {
+  right: 0;
+  bottom: 8px;
+}
+
+/* ============ 工具栏 ============ */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-soft);
+}
+
+.toolBtn:global(.ant-btn) {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--text-muted);
+}
+
+.toolBtn:global(.ant-btn):hover {
+  background: var(--brand-primary-faint) !important;
+  color: var(--brand-primary) !important;
+}
+
+/* 选中态：当前选区已应用该格式 */
+.toolBtn.isActive:global(.ant-btn) {
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+}
+
+.toolBtn:global(.ant-btn):focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: -2px;
+}
+
+/* 分组分隔：列表与撤销之间 */
+.toolBtn[data-split='true'] {
+  margin-left: 8px;
+  position: relative;
+}
+
+.toolBtn[data-split='true']::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: var(--border-light);
+}
+
+/* ============ 编辑区 ============ */
+.editorWrap {
+  position: relative;
+}
+
+.editor {
+  padding: 16px 18px 34px;
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--text-heading);
+  font-family: inherit;
+  outline: none;
+  overflow-y: auto;
+  max-height: 520px;
+  word-break: break-word;
+}
+
+/* 占位符 */
+.editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+.editor p {
+  margin: 0 0 8px;
+}
+
+.editor ul,
+.editor ol {
+  margin: 8px 0;
+  padding-left: 22px;
+}
+
+.editor li {
+  margin: 4px 0;
+}
+
+.editor b,
+.editor strong {
+  font-weight: 700;
+}
+
+.count {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+/* ============ Quill 引擎：把 ql-* 覆写成现有设计语言 ============ */
+/* Quill 把 ql-container 加在我们传入的挂载元素上，故需同元素选择器 */
+.quill:global(.ql-container) {
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 15px;
+}
+
+.quill:global(.ql-container.ql-snow) {
+  border: none;
+}
+
+.quill :global(.ql-editor) {
+  padding: 16px 18px 34px;
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--text-heading);
+  max-height: 520px;
+  overflow-y: auto;
+  word-break: break-word;
+}
+
+.quill :global(.ql-editor p) {
+  margin: 0;
+}
+
+.quill :global(.ql-editor p + p) {
+  margin-top: 8px;
+}
+
+.quill :global(.ql-editor ul),
+.quill :global(.ql-editor ol) {
+  margin: 8px 0;
+  padding-left: 22px;
+}
+
+.quill :global(.ql-editor.ql-blank::before) {
+  left: 18px;
+  right: 18px;
+  color: var(--text-faint);
+  font-style: normal;
+}
+
+.plain .quill :global(.ql-editor) {
+  padding: 10px 0 30px;
+}
+
+.plain .quill :global(.ql-editor.ql-blank::before) {
+  left: 0;
+  right: 0;
+}
+
+/* ============ 暗色 ============ */
+:global(html.dark) .toolbar {
+  background: rgb(255 255 255 / 0.04);
+  border-bottom-color: rgb(255 255 255 / 0.08);
+}
+
+:global(html.dark) .toolBtn:global(.ant-btn) {
+  color: var(--text-secondary);
+}
+
+:global(html.dark) .toolBtn:global(.ant-btn):hover {
+  color: var(--brand-primary-bright) !important;
+  background: var(--brand-primary-bright-bg) !important;
+}
+
+:global(html.dark) .toolBtn.isActive:global(.ant-btn) {
+  color: var(--brand-primary-bright);
+  background: var(--brand-primary-bright-bg);
+}
+
+:global(html.dark) .root {
+  border-color: rgb(255 255 255 / 0.08);
+  background: rgb(255 255 255 / 0.02);
+}
+
+:global(html.dark) .plain {
+  border: none;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  background: transparent;
+}
+
+:global(html.dark) .plain .toolbar {
+  background: transparent;
+  border-bottom-color: transparent;
+}

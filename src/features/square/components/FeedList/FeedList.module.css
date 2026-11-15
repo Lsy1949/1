@@ -61,49 +61,27 @@
   font-variant-numeric: tabular-nums;
 }
 
-.feedList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 20px;
-}
-
-@media (width <= 768px) {
-  .feedList {
-    grid-template-columns: 1fr;
-  }
+/* 瀑布流容器（antd Masonry 根节点）：由组件自身排布列与 gutter */
+.feedMasonry {
+  width: 100%;
 }
 
 .feedCard {
   background: var(--bg-card);
   border: 1px solid var(--border-light);
-  border-radius: 20px;
-  padding: 28px 32px;
+  border-radius: 18px;
+  padding: 16px 16px 14px;
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-standard);
   position: relative;
   overflow: hidden;
 }
 
-.feedCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--brand-primary-soft), var(--brand-primary-faint));
-  opacity: 0;
-  transition: opacity var(--duration-fast) var(--ease-standard);
-}
-
+/* 瀑布流卡片：悬停只做整体抬升 + 投影，不做旋转（栅格中对齐更稳） */
 .feedCard:hover {
   border-color: var(--border-strong);
-  transform: translateY(-6px) rotate(-0.3deg);
+  transform: translateY(-4px);
   box-shadow: 0 18px 40px color-mix(in srgb, var(--brand-primary) 12%, transparent);
-}
-
-.feedCard:hover::before {
-  opacity: 1;
 }
 
 .feedCard.isCapsule {
@@ -111,41 +89,38 @@
   border-color: var(--brand-primary-soft);
 }
 
-.feedCard.isCapsule::before {
-  background: linear-gradient(90deg, var(--border-blue), var(--brand-primary-faint));
-  opacity: 0;
-}
-
 .feedCard.isPinned {
   border-color: var(--border-strong);
 }
 
-/* 图片网格（photo-count-1 至 photo-count-4 为 JS 拼接协议类） */
+/* 图片区：贴在卡片顶端与左右边缘（负边距抵消卡片内边距），
+   圆角由卡片 overflow:hidden 裁切 */
 .cardPhotoGrid {
   display: grid;
-  gap: 6px;
-  margin: 14px 0 4px;
-  border-radius: 12px;
-  overflow: hidden;
+  gap: 2px;
+  margin: -16px -16px 12px;
   position: relative;
 }
 .cardPhotoGrid:global(.photo-count-1) { grid-template-columns: 1fr; }
-.cardPhotoGrid:global(.photo-count-1) .cardPhoto { height: 280px; }
 .cardPhotoGrid:global(.photo-count-2) { grid-template-columns: 1fr 1fr; }
-.cardPhotoGrid:global(.photo-count-2) .cardPhoto { height: 180px; }
 .cardPhotoGrid:global(.photo-count-3) { grid-template-columns: 1fr 1fr 1fr; }
-.cardPhotoGrid:global(.photo-count-3) .cardPhoto { height: 140px; }
-.cardPhotoGrid:global(.photo-count-4) { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
-.cardPhotoGrid:global(.photo-count-4) .cardPhoto { height: 120px; }
+.cardPhotoGrid:global(.photo-count-4) { grid-template-columns: 1fr 1fr; }
 
 .cardPhoto {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
   display: block;
   cursor: pointer;
   transition: transform var(--duration-fast) var(--ease-standard);
+  background: var(--bg-soft);
 }
+
+/* 单图用 4:3，保持小红书式的横向主图比例 */
+.cardPhotoGrid:global(.photo-count-1) .cardPhoto {
+  aspect-ratio: 4 / 3;
+}
+
 .cardPhoto:hover { transform: scale(1.03); }
 
 .photoMore {
@@ -159,13 +134,7 @@
   font-size: 12px;
 }
 
-/* 置顶与热议标记 */
-.cardMark {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-}
-
+/* 置顶与热议标记（内联在卡片头部，不再绝对定位覆盖图片） */
 .markBadge {
   font-size: var(--fs-xs);
   font-weight: 700;
@@ -173,6 +142,7 @@
   text-transform: uppercase;
   padding: 3px 8px;
   border-radius: 5px;
+  flex-shrink: 0;
 }
 
 .markBadge.pinned {
@@ -186,13 +156,21 @@
   border: 1px solid color-mix(in srgb, var(--status-danger) 30%, transparent);
 }
 
+/* 徽标行：独立一行，窄卡片下不与作者信息抢宽度 */
+.cardBadges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
 /* 卡片头部 */
 .cardHead {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 18px;
-  padding-right: 60px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .headMeta {
@@ -208,12 +186,18 @@
   font-weight: 700;
   color: var(--text-heading);
   letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .headTime {
   font-size: 12px;
   color: var(--text-faint);
   letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .typeBadge {
@@ -221,7 +205,7 @@
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  padding: 5px 10px;
+  padding: 4px 8px;
   border-radius: 6px;
   flex-shrink: 0;
 }
@@ -239,44 +223,56 @@
 
 /* 卡片正文 */
 .cardBody {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .moodLine {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .moodEmoji {
-  font-size: 28px;
+  font-size: 22px;
   line-height: 1;
 }
 
 .cardContent {
-  font-size: 15px;
-  line-height: 1.8;
+  font-size: 14px;
+  line-height: 1.7;
   color: var(--text-regular);
   margin: 0;
   letter-spacing: 0.1px;
   display: -webkit-box;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* 富文本正文：块级元素不额外撑高，保证 3 行截断稳定 */
+.cardContent p,
+.cardContent div {
+  margin: 0;
+}
+
+.cardContent ul,
+.cardContent ol {
+  margin: 0;
+  padding-left: 18px;
 }
 
 /* 话题标签 */
 .cardTopics {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 6px;
+  margin-bottom: 10px;
 }
 
 .topicTag {
   font-size: 12px;
   color: var(--brand-primary);
   background: var(--brand-primary-faint);
-  padding: 4px 10px;
-  border-radius: 12px;
+  padding: 3px 8px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-standard);
   font-weight: 500;
@@ -292,20 +288,20 @@
 .cardFoot {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding-top: 16px;
+  gap: 4px;
+  padding-top: 10px;
   border-top: 1px solid var(--border-regular);
 }
 
 .interactBtn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 5px;
+  padding: 6px 10px;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-standard);
@@ -382,24 +378,30 @@
 }
 
 @media (width <= 768px) {
+  /* 窄屏保持与图片负边距一致的 16px 内边距，否则贴边图会左右露出一截 */
   .feedCard {
-    padding: 20px 18px;
     border-radius: 16px;
   }
 
   .interactBtn {
-    padding: 6px 10px;
+    padding: 6px 8px;
     font-size: 12px;
   }
+}
 
-  .cardHead {
-    padding-right: 0;
-  }
+/* ============================================================
+   键盘可达性：整卡 / 话题标签 / 筛选页签 / 互动按钮 的聚焦环
+   ============================================================ */
+.feedCard:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 3px;
+}
 
-  .cardMark {
-    position: static;
-    margin-bottom: 10px;
-  }
+.topicTag:focus-visible,
+.filterTab:focus-visible,
+.interactBtn:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
 }
 
 /* ============================================================
@@ -460,8 +462,7 @@
   background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
   border-color: transparent !important;
   border-bottom-color: color-mix(in srgb, var(--brand-primary-bright) 20%, transparent) !important;
-  box-shadow: none !important;
-  transform: none !important;
+  /* 不覆写 transform / box-shadow：悬浮幅度与投影层级沿用浅色规则 */
 }
 
 :global(html.dark .square-page) .feedCard.isCapsule {

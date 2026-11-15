@@ -1,8 +1,8 @@
-// 广场列表页：编辑式标题区 + 今日话题 + 双栏主体 + FAB
+// 广场列表页：编辑式标题区 + 今日话题 + 双栏主体
 // 页面层负责数据拉取 / 点赞乐观更新 / 三态兜底，子组件均为 Props 驱动
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { App } from 'antd'
+import { App, FloatButton } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { CommunitySidebar, DailyPrompt, FeedList, ListHeader } from '@/features/square'
 import type { FeedItem } from '@/features/square'
@@ -84,11 +84,14 @@ export function SquareListView() {
         />
       </div>
 
-      {/* FAB 发布按钮 */}
-      <button className="fab-btn" aria-label={t('square.list.fab')} onClick={goCreate}>
-        <PlusOutlined />
-        <span className="fab-text">{t('square.list.fab')}</span>
-      </button>
+      {/* 悬浮发布按钮：AntD FloatButton（与首页悬浮按钮同一形制，位置/尺寸由 .publish-fab 覆写） */}
+      <FloatButton
+        className="publish-fab"
+        icon={<PlusOutlined />}
+        tooltip={t('square.list.fab')}
+        aria-label={t('square.list.fab')}
+        onClick={goCreate}
+      />
     </div>
   )
 }

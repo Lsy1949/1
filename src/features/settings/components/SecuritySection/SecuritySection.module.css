@@ -1,77 +1,15 @@
 /* 01 · 账号安全：密码修改 / 绑定联系方式 / 登录设备 + 三步换绑弹窗
    （CSS Modules：私有类 camelCase；antd 类以 :global 包裹） */
 
-/* ============ 区块通用 ============ */
+/* ============ 区块通用（区块头由 SectionHead 组件承担） ============ */
 .editorialSection {
-  padding: 40px 0 56px;
+  padding: 44px 0 56px;
   border-top: 1px solid var(--border-light);
-  scroll-margin-top: 80px;
+  scroll-margin-top: 96px;
 }
 
 .editorialSection:first-of-type {
   border-top: 1px solid var(--text-heading);
-}
-
-.sectionMarker {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 22px;
-}
-
-.markerNum {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-style: italic;
-  font-size: 30px;
-  font-weight: 700;
-  color: var(--brand-primary);
-  line-height: 1;
-}
-
-.markerRule {
-  flex: 1;
-  height: 1px;
-  background: var(--text-heading);
-}
-
-.markerIcon {
-  font-size: 16px;
-  color: var(--text-heading);
-}
-
-.markerLabel {
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--text-heading);
-}
-
-.sectionHeadlineRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: end;
-  margin-bottom: 36px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--border-light);
-}
-
-.sectionHeadline {
-  margin: 0;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.1;
-  color: var(--text-heading);
-}
-
-.sectionDeck {
-  margin: 0;
-  font-size: 15px;
-  font-style: italic;
-  line-height: 1.6;
-  color: var(--text-muted);
 }
 
 /* ============ 网格 ============ */
@@ -315,11 +253,6 @@
 }
 
 @media (width <= 1024px) {
-  .sectionHeadlineRow {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-  .sectionHeadline { font-size: 26px; }
   .twoCol { grid-template-columns: 1fr; }
 
   .editorialCol {

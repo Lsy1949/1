@@ -255,13 +255,13 @@
 
 /* ============================================================
    暗色主题：hero 封面本身即深色底（浅色规则已用变量与半透明白表达），
-   仅保留暗色下 cta 按钮的玻璃态
+   仅调整 cta 按钮的配色，质感与动效保持与浅色一致
    ============================================================ */
 :global(html.dark) .ctaBtn {
   background: rgb(255 255 255 / 0.12) !important;
   color: var(--text-inverse, #fff) !important;
   border-color: rgb(255 255 255 / 0.2) !important;
-  backdrop-filter: blur(10px);
+  /* 只换颜色：不额外加毛玻璃，保持与浅色态一致的质感 */
 }
 
 :global(html.dark) .ctaBtn:hover {

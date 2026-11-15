@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { App, Button, Result, Skeleton } from 'antd'
+import { App, Button, Result } from 'antd'
 import { ApiError, capsuleApi } from '@/api'
 import { DetailBody, DetailHeader } from '@/features/time-capsule'
 import { useTranslation } from 'react-i18next'
@@ -48,9 +48,20 @@ export function CapsuleDetailView() {
     return (
       <div className="detail-page">
         <DetailHeader onBack={goList} />
-        <div className="detail-state">
-          <Skeleton active title={{ width: '55%' }} paragraph={{ rows: 3 }} />
-          <Skeleton active title={false} paragraph={{ rows: 6 }} />
+        {/* 与详情同构的骨架：徽章 + 标题 + 正文行 + 开启时间卡片，避免加载完成时跳版 */}
+        <div className="detail-state" aria-busy="true">
+          <div className="detail-skeleton-head">
+            <span className="detail-skeleton-chip" />
+            <span className="detail-skeleton-title" />
+            <span className="detail-skeleton-title short" />
+            <span className="detail-skeleton-meta" />
+          </div>
+          <div className="detail-skeleton-body">
+            {[0, 1, 2, 3].map((i) => (
+              <span key={i} className={`detail-skeleton-line${i === 3 ? ' short' : ''}`} />
+            ))}
+          </div>
+          <div className="detail-skeleton-card" />
         </div>
       </div>
     )

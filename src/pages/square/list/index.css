@@ -1,8 +1,11 @@
 .square-page {
+  /* 桌面端局部放宽容器：仅广场页生效（ListHeader/DailyPrompt/主体均引用此变量），
+     94vw 让 1920 屏内容边距收窄到 ~90px，避免两侧大片空白 */
+  --container-max: clamp(1360px, 94vw, 2080px);
   min-height: 100vh;
   background: var(--brand-primary-wash);
   padding-top: 28px;
-  padding-bottom: 120px;
+  padding-bottom: 88px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
   color: var(--text-primary);
   position: relative;
@@ -25,57 +28,73 @@
   z-index: 0;
 }
 
-/* ===== 主体双栏 ===== */
+/* ===== 主体双栏（桌面优先：容器放宽到 --container-max，信息流拿到更多列） ===== */
 .community-body {
-  max-width: var(--container-md);
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 32px 56px 0;
+  padding: 32px 40px 0;
   display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 40px;
+  grid-template-columns: 1fr 320px;
+  gap: 48px;
   position: relative;
   z-index: 1;
 }
 
-/* ===== FAB ===== */
-.fab-btn {
-  position: fixed;
-  right: 48px;
-  bottom: 48px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 16px 28px;
-  background: linear-gradient(135deg, var(--brand-primary), var(--color-info));
-  color: var(--text-inverse, #fff);
-  border: none;
-  border-radius: 32px;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  cursor: pointer;
-  z-index: 50;
-  transition: all 0.3s ease;
-  font-family: inherit;
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-primary) 30%, transparent);
-  animation: fab-pulse 2.4s ease-out infinite;
+/* ===== 悬浮发布按钮（AntD FloatButton 的项目化覆写：56px 白底圆形 + 品牌光晕） ===== */
+.publish-fab.ant-float-btn {
+  inset-inline-end: 40px;
+  inset-block-end: 40px;
+  width: 56px;
+  height: 56px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  color: var(--brand-primary);
+  box-shadow:
+    0 6px 16px color-mix(in srgb, var(--brand-primary) 18%, transparent),
+    0 2px 6px color-mix(in srgb, var(--text-heading) 12%, transparent);
+  transition:
+    transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.35s ease,
+    color 0.35s ease,
+    background-color 0.35s ease;
 }
 
-@keyframes fab-pulse {
-  0% { box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-primary) 30%, transparent), 0 0 0 0 color-mix(in srgb, var(--brand-primary) 40%, transparent); }
-  100% { box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-primary) 30%, transparent), 0 0 0 20px transparent; }
+.publish-fab.ant-float-btn .ant-float-btn-icon {
+  font-size: 24px;
+  color: inherit;
 }
 
-.fab-btn:hover {
-  background: linear-gradient(135deg, var(--brand-primary-dark), var(--brand-primary-deep, var(--color-info)));
+.publish-fab.ant-float-btn:hover {
+  background: var(--bg-card);
+  color: var(--brand-primary-dark);
   transform: translateY(-3px);
-  box-shadow: 0 14px 32px color-mix(in srgb, var(--brand-primary) 40%, transparent);
-  animation: none;
+  box-shadow:
+    0 10px 28px color-mix(in srgb, var(--brand-primary) 30%, transparent),
+    0 4px 10px color-mix(in srgb, var(--text-heading) 14%, transparent);
 }
 
-/* 原 .fab-btn .el-icon → antd 图标类名等价选择器 */
-.fab-btn .anticon {
-  font-size: 18px;
+.publish-fab.ant-float-btn:active {
+  transform: translateY(-1px) scale(0.96);
+}
+
+.publish-fab.ant-float-btn:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 3px;
+}
+
+/* 暗色：图标提亮 + 深色实投影（与首页悬浮按钮一致） */
+html.dark .publish-fab.ant-float-btn {
+  color: var(--brand-primary-bright);
+  box-shadow:
+    0 6px 16px color-mix(in srgb, var(--brand-primary) 26%, transparent),
+    0 2px 6px rgb(0 0 0 / 0.4);
+}
+
+html.dark .publish-fab.ant-float-btn:hover {
+  color: var(--brand-primary-bright);
+  box-shadow:
+    0 10px 28px color-mix(in srgb, var(--brand-primary) 40%, transparent),
+    0 4px 10px rgb(0 0 0 / 0.45);
 }
 
 /* ===== 响应式 ===== */
@@ -95,15 +114,5 @@
 @media (width <= 768px) {
   .community-body {
     padding: 24px 20px 0;
-  }
-
-  .fab-btn {
-    right: 20px;
-    bottom: 24px;
-    padding: 14px 22px;
-  }
-
-  .fab-text {
-    display: none;
   }
 }

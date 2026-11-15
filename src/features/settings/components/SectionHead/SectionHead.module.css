@@ -1,0 +1,62 @@
+/* 设置页区块头：编号 + 标题 + 说明（CSS Modules：私有类 camelCase） */
+
+.sectionHead {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+  margin-bottom: 34px;
+}
+
+.no {
+  padding-top: 3px;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+  font-style: italic;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--brand-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.text {
+  min-width: 0;
+}
+
+.title {
+  margin: 0 0 10px;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.4px;
+  color: var(--text-heading);
+}
+
+.desc {
+  margin: 0;
+  max-width: var(--measure-desc);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+@media (width <= 768px) {
+  .sectionHead {
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .no {
+    font-size: 20px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+}
+
+/* 暗色：仅补强调色 */
+:global(html.dark) .no {
+  color: var(--brand-primary-bright) !important;
+}

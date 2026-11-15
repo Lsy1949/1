@@ -1,8 +1,7 @@
 /* ===== 标题区（CSS Modules：私有类 camelCase） ===== */
 .detailHeader {
-  max-width: var(--container-article);
-  margin: 0 auto;
-  padding: 56px 40px 40px;
+  /* 版心与水平留白由页面 .square-detail-shell 承担 */
+  padding: 52px 0 36px;
   position: relative;
   z-index: 1;
 }
@@ -10,32 +9,39 @@
 .headerEyebrow {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   font-size: 12px;
-  letter-spacing: 2px;
+  letter-spacing: 1.6px;
   color: var(--brand-primary);
   font-weight: 700;
   text-transform: uppercase;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .eyebrowMood {
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1;
 }
 
 .eyebrowDate {
   color: var(--text-muted);
   font-weight: 500;
+  letter-spacing: 0.6px;
 }
 
+/* 标题：由正文首句派生，限制 3 行，保持编辑式标题的呼吸 */
 .detailTitle {
-  font-size: clamp(32px, 4.5vw, 52px);
+  font-size: clamp(30px, 3.4vw, 46px);
   font-weight: 900;
   color: var(--text-heading);
-  line-height: 1.08;
-  letter-spacing: -1.5px;
-  margin: 0 0 32px;
+  line-height: 1.16;
+  letter-spacing: -1.2px;
+  margin: 0 0 30px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-wrap: pretty;
 }
 
 .detailTitle em {
@@ -48,8 +54,9 @@
 .authorRow {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 24px;
-  padding-top: 24px;
+  padding-top: 22px;
   border-top: 1px solid var(--border-light);
 }
 
@@ -57,9 +64,9 @@
   display: flex;
   align-items: center;
   gap: 14px;
+  min-width: 0;
 }
 
-/* 原 scoped 的 .author-avatar 类透传到 InitialAvatar，React 版以包裹结构等价实现 */
 /* InitialAvatar 根类已 module 化（局部 hash），以结构首子元素定位保持等价 */
 .authorBlock > div:first-child {
   flex-shrink: 0;
@@ -68,7 +75,8 @@
 .authorInfo {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+  min-width: 0;
 }
 
 .authorName {
@@ -76,18 +84,21 @@
   font-weight: 700;
   color: var(--text-heading);
   letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .authorTitle {
   font-size: var(--fs-xs);
   color: var(--text-faint);
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-variant-numeric: tabular-nums;
 }
 
 @media (width <= 768px) {
   .detailHeader {
-    padding: 36px 20px 28px;
+    padding: 32px 0 24px;
   }
 }
 

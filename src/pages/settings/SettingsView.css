@@ -1,41 +1,339 @@
+/* ============================================================
+   账号设置 · 桌面优先工作台
+   结构：Hero（标题主张 + 账号名片） + Workspace（左侧索引导航 + 右侧分组面板）
+   色：品牌蓝单一强调，其余全部走语义变量，明暗两态自动跟随。
+   ============================================================ */
+
 .settings-page {
-  /* 宽度唯一来源：--container-md（原 1240 字面量统一到 1280 档 clamp，
-     1366→1080 / 1920→1280 / 3840 封顶 1600，与 ProfileView 同档） */
+  /* 宽度唯一来源：--container-md（1280 档 clamp，与个人中心同档） */
   max-width: var(--container-md);
   margin: 0 auto;
-  /* 水平 padding 对齐全局容器档 --container-pad；底部留白走流体阶梯 */
-  padding: 0 var(--container-pad) var(--sp-25);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
-    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  color: var(--text-primary);
+  padding: var(--sp-8) var(--container-pad) var(--sp-20);
+  color: var(--text-heading);
+  font-feature-settings: 'tnum' 1;
 }
 
-/* ============ Sections ============ */
-.settings-main {
+/* ==================== Hero ==================== */
+.st-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(264px, 340px);
+  align-items: center;
+  gap: clamp(32px, 4vw, 72px);
+  padding: 4px 0 clamp(32px, 3.2vw, 48px);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.st-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.st-eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--brand-primary);
+}
+
+.st-title {
+  margin: 16px 0 0;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+  font-size: clamp(38px, 4.2vw, 64px);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -1.8px;
+  color: var(--text-heading);
+}
+
+.st-title em {
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -1px;
+  color: var(--brand-primary);
+}
+
+.st-desc {
+  margin: 18px 0 0;
+  max-width: var(--measure-wide);
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+.st-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.st-cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.st-cta-ghost:hover {
+  border-color: var(--brand-primary-soft);
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+}
+
+.st-cta-ghost:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 3px;
+}
+
+/* —— 账号名片（发丝线分栏，不做卡片） —— */
+.st-account {
+  padding-left: clamp(20px, 2.4vw, 32px);
+  border-left: 1px solid var(--border-light);
+}
+
+.st-account-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.st-account-id {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.st-account-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.st-account-name {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text-heading);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.st-account-hint {
+  margin: 16px 0 0;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--text-faint);
+  text-wrap: pretty;
+}
+
+.st-account-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light);
+}
+
+.st-account-meta-item dt {
+  margin-bottom: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.st-account-meta-item dd {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.st-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-success, var(--brand-primary));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--status-success, var(--brand-primary)) 16%, transparent);
+}
+
+/* ==================== Workspace ==================== */
+.st-workspace {
+  display: grid;
+  grid-template-columns: 224px minmax(0, 1fr);
+  gap: clamp(36px, 4vw, 64px);
+  padding-top: clamp(32px, 3vw, 44px);
+}
+
+/* —— 左侧索引导航（吸顶） —— */
+.st-rail {
+  position: sticky;
+  top: calc(var(--navbar-h, 80px) + 28px);
+  align-self: start;
   display: flex;
   flex-direction: column;
 }
 
-/* ============ Mobile TOC ============ */
-.mobile-toc { display: none; }
-
-/* ============ 自定义滚动条 ============ */
-.custom-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: var(--mist-350) transparent;
+.st-rail-cap {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-strong);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-faint);
 }
-.custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
-.custom-scroll::-webkit-scrollbar-track { background: transparent; }
-.custom-scroll::-webkit-scrollbar-thumb { background: var(--mist-350); }
-.custom-scroll::-webkit-scrollbar-thumb:hover { background: var(--brand-primary); }
+
+.st-rail-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 15px 8px 15px 0;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+/* 活动项左侧 2px 品牌色游标 */
+.st-rail-item::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  border-radius: 2px;
+  background: var(--brand-primary);
+  transform: translateY(-50%);
+  transition: height var(--duration-base) var(--ease-standard);
+}
+
+.st-rail-item:hover {
+  transform: translateX(4px);
+}
+
+.st-rail-item:hover::before {
+  height: 42%;
+}
+
+.st-rail-item.is-active::before {
+  height: 100%;
+}
+
+.st-rail-item:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 3px;
+}
+
+.st-rail-num {
+  padding-top: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.st-rail-text {
+  min-width: 0;
+}
+
+.st-rail-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--text-muted);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.st-rail-label .anticon {
+  font-size: 13px;
+  opacity: 0.5;
+}
+
+.st-rail-desc {
+  display: block;
+  margin-top: 4px;
+  font-size: 11.5px;
+  letter-spacing: 0.2px;
+  color: var(--text-faint);
+}
+
+.st-rail-item:hover .st-rail-label,
+.st-rail-item.is-active .st-rail-label {
+  color: var(--text-heading);
+}
+
+.st-rail-item.is-active .st-rail-num {
+  color: var(--brand-primary);
+}
+
+.st-rail-item.is-active .st-rail-label .anticon {
+  opacity: 1;
+  color: var(--brand-primary);
+}
+
+.st-rail-foot {
+  margin: 18px 0 0;
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--text-faint);
+  text-wrap: pretty;
+}
+
+/* —— 右侧面板 —— */
+.st-panel {
+  min-width: 0;
+}
+
+/* 首块与 Hero 底边线相邻，去掉重复的重描边与顶部留白 */
+.st-panel > section:first-child {
+  border-top: none;
+  padding-top: 0;
+}
 
 /* ==================================================================
-   原 Element Plus overrides（方角 + ink-300 描边 / hover·focus 品牌色）
-   已 token 化为 SettingsView.tsx 嵌套 ConfigProvider 组件注入：
-   Input/Select/DatePicker 的 borderRadius 0、colorBorder、hoverBorderColor、
-   activeBorderColor、activeShadow。checkbox/switch 选中态原规则与全局
-   colorPrimary（--brand-primary）同值，属冗余，已删除。
-   仍不可 token 化的项保留在下方。
+   原 Element Plus overrides 已 token 化为 SettingsView.tsx 嵌套 ConfigProvider
+   组件注入；仍不可 token 化的项保留在下方。
    ================================================================== */
 /* Checkbox 选中文字着色（Checkbox 组件 token 为空，无对应 token） */
 .settings-page .ant-checkbox-wrapper-checked {
@@ -46,59 +344,112 @@
   font-family: inherit;
 }
 
-/* ============ Responsive ============ */
-@media (width <= 1024px) {
-  .settings-page { padding: 0 var(--sp-6) var(--sp-20); }
+/* ==================== Responsive（移动端另行制作，这里只保证不破版） ==================== */
+@media (width <= 1080px) {
+  .st-hero {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .st-account {
+    padding-left: 0;
+    padding-top: 24px;
+    border-left: none;
+    border-top: 1px solid var(--border-light);
+  }
 
-  .mobile-toc {
-    display: flex;
+  .st-workspace {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .st-rail {
     position: sticky;
-    top: 0;
-    z-index: 50;
-    background: var(--bg-card);
-    border-top: 1px solid var(--text-primary);
-    border-bottom: 1px solid var(--border-light);
+    top: var(--navbar-h, 80px);
+    z-index: 30;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 8px;
     overflow-x: auto;
-    /* 拉通页面 padding 形成全宽 sticky 条（负 margin 值与上方 padding 同源取反） */
-    margin: 0 calc(var(--sp-6) * -1);
-    padding: 0 var(--sp-6);
+    padding: 10px 0;
+    background: var(--bg-page);
     scrollbar-width: none;
   }
-  .mobile-toc::-webkit-scrollbar { display: none; }
 
-  .mtoc-item {
+  .st-rail::-webkit-scrollbar { display: none; }
+
+  .st-rail-cap,
+  .st-rail-desc,
+  .st-rail-foot {
+    display: none;
+  }
+
+  .st-rail-item {
     flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    padding: 12px 18px;
-    text-decoration: none;
-    color: var(--text-secondary);
-    border-bottom: 2px solid transparent;
-    transition: color 0.2s;
+    grid-template-columns: auto auto;
+    gap: 8px;
+    padding: 9px 14px;
+    border: 1px solid var(--border-light);
+    border-radius: 999px;
   }
 
-  .mtoc-item.active {
+  .st-rail-item::before {
+    display: none;
+  }
+
+  .st-rail-item.is-active {
+    border-color: var(--brand-primary-soft);
+    background: var(--brand-primary-faint);
+  }
+
+  .st-rail-item.is-active .st-rail-label {
     color: var(--brand-primary);
-    border-bottom-color: var(--brand-primary);
-  }
-
-  .mtoc-num {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-style: italic;
-    font-size: 14px;
-    font-weight: 600;
-  }
-
-  .mtoc-text {
-    font-size: var(--fs-xs);
-    font-weight: 600;
-    letter-spacing: 1px;
-    white-space: nowrap;
   }
 }
 
 @media (width <= 768px) {
-  .settings-page { padding: 0 var(--sp-4) var(--sp-20); }
+  .settings-page {
+    padding: var(--sp-5) var(--sp-4) var(--sp-15);
+  }
+
+  .st-title {
+    font-size: 34px;
+    letter-spacing: -1px;
+  }
+
+  .st-desc {
+    font-size: 14px;
+  }
+
+  .st-account-meta {
+    gap: 12px;
+  }
+}
+
+/* ==================== 暗色：仅补强调色 ==================== */
+:global(html.dark) .st-title em,
+:global(html.dark) .st-rail-item.is-active .st-rail-num,
+:global(html.dark) .st-rail-item.is-active .st-rail-label .anticon {
+  color: var(--brand-primary-bright);
+}
+
+:global(html.dark) .st-eyebrow::before {
+  background: var(--brand-primary-bright);
+}
+
+:global(html.dark) .st-cta-ghost:hover {
+  color: var(--brand-primary-bright);
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 32%, transparent);
+  background: var(--brand-primary-bright-bg);
+}
+
+:global(html.dark) .st-rail-item::before {
+  background: var(--brand-primary-bright);
+}
+
+/* 仅窄屏（胶囊式导航）下活动项带底色 */
+@media (width <= 1080px) {
+  :global(html.dark) .st-rail-item.is-active {
+    background: var(--bg-blue-tint);
+    border-color: var(--border-light);
+  }
 }

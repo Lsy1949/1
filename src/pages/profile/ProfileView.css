@@ -8,8 +8,79 @@
   color: var(--text-heading);
 }
 
+/* ============ 快捷入口 · 我的（预约 / 收藏 / 设置） ============ */
+.profile-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.profile-quick-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.profile-quick-action:hover {
+  border-color: var(--brand-primary-soft);
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+}
+
+.profile-quick-action:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+.profile-quick-action .anticon {
+  font-size: 14px;
+}
+
+.profile-quick-count {
+  min-width: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--brand-primary);
+  color: var(--text-inverse, #fff);
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.7;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.profile-quick-spacer {
+  flex: 1;
+}
+
 @media (width <= 768px) {
   .profile-page {
     padding: var(--sp-5) var(--sp-4) var(--sp-15);
+  }
+
+  .profile-quick-actions {
+    margin-top: 18px;
+    gap: 8px;
+  }
+
+  .profile-quick-spacer {
+    display: none;
   }
 }

@@ -60,6 +60,17 @@
     }
   },
   "common": {
+    "editor": {
+      "bold": "粗體",
+      "italic": "斜體",
+      "underline": "底線",
+      "strike": "刪除線",
+      "unorderedList": "無序清單",
+      "orderedList": "有序清單",
+      "undo": "復原",
+      "redo": "重做",
+      "ariaLabel": "富文本編輯器"
+    },
     "back": "返回",
     "confirm": "確認",
     "cancel": "取消",
@@ -301,6 +312,32 @@
       "mine": "我的",
       "dashboard": "成長看板"
     },
+    "hero": {
+      "eyebrow": "— Assessment",
+      "title": "認識自己，<em>從這裡開始</em>",
+      "desc": "從心理健康、生涯發展到認知與潛能，用有信度的量表建立屬於你的自我畫像。所有結果僅供自我探索參考。",
+      "primary": "開始測評",
+      "secondary": "查看成長看板",
+      "stats": {
+        "scales": "份量表",
+        "completed": "已完成",
+        "points": "成長積分",
+        "goal": "本月目標"
+      }
+    },
+    "rail": {
+      "scales": "多維度量表目錄",
+      "dashboard": "數據與洞察",
+      "mine": "成長檔案"
+    },
+    "eyebrow": {
+      "scales": "— Scale Catalog",
+      "dashboard": "— Growth Dashboard",
+      "mine": "— My Profile"
+    },
+    "catalog": {
+      "all": "全部測評"
+    },
     "cover": {
       "scales": {
         "title": "測評<em>廣場</em>",
@@ -341,6 +378,21 @@
     "disclaimer": "測評結果僅供個人探索參考，不具備臨床醫療診斷效力。",
     "comingSoonTip": "「{{name}}」即將上線，敬請期待",
     "profile": {
+      "status": {
+        "new": "即將啟程",
+        "rising": "初露鋒芒",
+        "steady": "穩步成長",
+        "deep": "深度探索",
+        "master": "自我大師"
+      },
+      "badgeDefs": {
+        "first": { "name": "初心萌芽", "desc": "完成第一次測評" },
+        "multi": { "name": "多元探索", "desc": "完成2種不同類型測評" },
+        "mental": { "name": "心理關懷", "desc": "完成心理健康類測評" },
+        "career": { "name": "生涯啟航", "desc": "完成生涯發展類測評" },
+        "depth": { "name": "深度探索", "desc": "完成3次以上測評" },
+        "master": { "name": "自我大師", "desc": "完成5次以上測評" }
+      },
       "completed": "已完成",
       "growthPoints": "成長積分",
       "assessmentDays": "測評天數",
@@ -358,6 +410,57 @@
       "unlocked": "已解鎖"
     },
     "dashboard": {
+      "nav": {
+        "overview": "數據概覽",
+        "radar": "身心能量",
+        "trend": "情緒趨勢",
+        "distribution": "測評分佈",
+        "ai": "AI 洞察",
+        "progress": "進步對比",
+        "recommend": "智能推薦",
+        "history": "歷史足跡"
+      },
+      "radarDims": [
+        "情緒調節",
+        "壓力耐受",
+        "職業驅動",
+        "思維深度",
+        "社交能量",
+        "自我認知"
+      ],
+      "insight": {
+        "both": {
+          "summary": "您的探索覆蓋了心理健康與生涯發展兩大核心維度，呈現全面的自我認知圖譜。",
+          "strength": "性格傾向與職業興趣高度契合，具備清晰的自我定位能力。",
+          "risk": "在面臨高壓力時，情緒調節能力仍有提升空間，可能影響職業效能發揮。",
+          "suggestion": "建議結合情緒管理練習與職業規劃，形成個性化的成長方案。"
+        },
+        "psych": {
+          "summary": "您關注心理健康狀態，展現了良好的自我關懷意識。",
+          "strength": "能夠主動識別情緒信號，這是心理韌性的重要基礎。",
+          "risk": "僅關注情緒維度可能忽略職業與認知層面的潛能。",
+          "suggestion": "建議補充生涯發展類測評，全面探索自我潛能。"
+        },
+        "career": {
+          "summary": "您正在積極探索職業方向，展現了前瞻性的規劃意識。",
+          "strength": "對職業興趣與性格有清晰認知，有助於精準定位發展方向。",
+          "risk": "缺乏情緒狀態基線數據，可能在壓力下難以察覺情緒變化。",
+          "suggestion": "建議補充心理健康類測評，建立完整的自我認知圖譜。"
+        },
+        "base": {
+          "summary": "您近期完成了多個維度的測評，展現出較好的自我探索意識。",
+          "strength": "具備良好的自我覺察力，願意主動關注內心狀態。",
+          "risk": "目前數據點較少，建議持續測評以監測狀態變化。",
+          "suggestion": "建議保持每兩週一次的測評頻率，建立個人成長基線。"
+        }
+      },
+      "rec": {
+        "gad7AfterPhq9": "完成焦慮測評，全面了解情緒狀態",
+        "phq9AfterGad7": "補充抑鬱測評，建立情緒基線",
+        "mbtiAfterRiasec": "結合性格類型，深化職業探索",
+        "riasecAfterMbti": "探索職業興趣，匹配性格傾向",
+        "exploreNew": "嘗試新的測評維度，拓展自我認知"
+      },
       "kpi": {
         "total": "累計測評",
         "points": "成長積分",
@@ -432,7 +535,16 @@
       "saveReport": "儲存報告",
       "share": "分享",
       "reportGenerated": "報告已生成並準備下載 (Mock)",
-      "shareCopied": "分享連結已複製到剪貼簿 (Mock)"
+      "shareCopied": "分享連結已複製到剪貼簿 (Mock)",
+      "difficulty": "作答難度",
+      "measure": "測評維度",
+      "ruler": "作答刻度",
+      "rulerHint": "四檔頻次，對照你近兩週的真實狀態",
+      "rulerHintBipolar": "每題給出一對陳述，選擇更貼近你的一側",
+      "lastResult": "上次結果",
+      "viewLast": "查看上次報告",
+      "disclaimer": "本測評不構成醫學診斷；若困擾持續，建議預約心理諮詢。",
+      "retakeHint": "重新測評會新增一條記錄，歷史報告仍會保留。"
     },
     "history": {
       "clearConfirm": "確定要清空所有測評記錄嗎？此操作不可恢復。",
@@ -456,12 +568,32 @@
       "goAssess": "去測評"
     },
     "take": {
+      "exitTitle": "確認退出",
+      "exitConfirm": "測評尚未完成，退出將不會保存當前進度，確定退出嗎？",
+      "exitOk": "確定退出",
+      "exitCancel": "繼續答題",
       "exit": "退出",
       "prev": "上一題",
       "next": "下一題",
       "submit": "提交報告",
       "analyzing": "正在分析您的回答，生成深度報告...",
-      "pleaseWait": "請稍候"
+      "pleaseWait": "請稍候",
+      "answered": "已答 {{done}} / {{total}}",
+      "unanswered": "還有 {{n}} 題未答 · 去補答",
+      "railTitle": "題目索引",
+      "railLegendDone": "已答",
+      "railLegendTodo": "未答",
+      "hintStart": "先做一次深呼吸，憑第一感覺作答",
+      "hintHalf": "已經過半，保持這個節奏",
+      "hintLast": "最後一題，完成後即可生成你的維度畫像",
+      "asideTips": "作答提示",
+      "tipIntuition": "憑第一直覺，不必反覆權衡",
+      "tipHonest": "沒有對錯，真實作答才有參考價值",
+      "tipPrivate": "結果僅用於自我了解，不作診斷依據",
+      "asideKeyboard": "鍵盤操作",
+      "keySelect": "A–E 選擇選項",
+      "keyNav": "← → 切換題目",
+      "keyEnter": "Enter 下一題 / 提交"
     },
     "mbti": {
       "E": "外向",
@@ -485,10 +617,56 @@
   "counseling": {
     "tabs": {
       "booking": "預約諮詢",
+      "mine": "我的",
       "counselors": "心理老師",
       "notice": "諮詢須知",
       "faq": "常見問題",
       "companion": "AI 伴侶"
+    },
+    "hero": {
+      "eyebrow": "— Counseling",
+      "title": "把心事，<em>放在這裡</em>",
+      "desc": "校內免費的一對一心理諮詢。專業老師陪你梳理情緒、關係與成長中的困擾，全程保密，按你的節奏開始。",
+      "primary": "立即預約",
+      "secondary": "先和 AI 聊聊",
+      "stats": {
+        "counselors": "位心理老師",
+        "types": "類諮詢形式",
+        "free": "校內免費",
+        "confirm": "確認時長"
+      }
+    },
+    "rail": {
+      "booking": "四步完成預約",
+      "mine": "預約與收藏一覽",
+      "consultants": "按方向篩選老師",
+      "notice": "流程與規則",
+      "faq": "常見疑問解答",
+      "companion": "隨時傾訴"
+    },
+    "week": {
+      "more": "更多日期"
+    },
+    "slots": {
+      "full": "已約滿"
+    },
+    "match": {
+      "title": "關注方向",
+      "desc": "選擇 1-3 個方向，為你標註匹配度",
+      "score": "匹配度",
+      "best": "首選推薦",
+      "clear": "清除"
+    },
+    "aiShared": {
+      "tipsTitle": "對話建議",
+      "tips": [
+        "不必組織語言，想到哪說到哪",
+        "可以隨時暫停或結束對話",
+        "需要專業幫助時，歡迎預約真人老師"
+      ],
+      "hotlineLabel": "心理援助熱線",
+      "hotline": "12356",
+      "back": "返回諮詢中心"
     },
     "types": {
       "individual": "個別諮詢",
@@ -540,6 +718,11 @@
         "title": "預約<em>諮詢</em>",
         "desc": "四步完成預約：選擇類型 → 挑選老師 → 確定時間 → 填寫資訊。"
       },
+      "mine": {
+        "eyebrow": "— Mine",
+        "title": "我的<em>諮詢</em>",
+        "desc": "集中查看全部預約與收藏的老師，可篩選狀態、改約、取消與評價。"
+      },
       "counselors": {
         "eyebrow": "— Counselors",
         "title": "心理<em>老師</em>",
@@ -560,7 +743,7 @@
       "type": "諮詢類型",
       "counselor": "心理老師",
       "time": "諮詢時間",
-      "info": "個人資訊"
+      "info": "預約資訊"
     },
     "btn": {
       "confirmBooking": "確認預約",
@@ -585,11 +768,29 @@
       "empty": "未選擇"
     },
     "myBookings": "我的預約",
+    "mine": {
+      "stats": {
+        "total": "預約總數",
+        "upcoming": "待進行",
+        "completed": "已完成",
+        "favorites": "收藏老師"
+      },
+      "bookingsDesc": "依狀態篩選預約，點開任一筆可查看詳情、改約、取消或評價。",
+      "favoritesTitle": "收藏的老師",
+      "favoritesDesc": "在心理老師頁收藏後，這裡可以直接發起預約。",
+      "browse": "瀏覽全部老師",
+      "bookNow": "去預約",
+      "newBooking": "新建預約",
+      "emptyFavorites": "還沒有收藏老師"
+    },
     "form": {
       "name": "稱呼",
       "namePlaceholder": "如何稱呼您",
       "contact": "聯繫方式",
       "contactPlaceholder": "手機號或郵箱",
+      "accountHint": "預約人資訊取自登入帳號，無需重複填寫。",
+      "contactUnbound": "未綁定聯絡方式",
+      "editAccount": "帳號設定",
       "datePlaceholder": "選擇諮詢日期",
       "description": "問題描述",
       "descPlaceholder": "簡單描述您想探討的話題",
@@ -617,7 +818,9 @@
       "bookingSuccess": "預約提交成功！心理老師將在24小時內確認",
       "cancelConfirm": "確定取消此預約嗎？",
       "cancelTitle": "提示",
-      "cancelled": "已取消預約"
+      "cancelled": "已取消預約",
+      "rescheduled": "改約成功，請按新時間參加",
+      "feedbackThanks": "感謝你的評價"
     },
     "counselors": {
       "searchPlaceholder": "搜尋姓名 / 專長",
@@ -630,6 +833,8 @@
       "sortByRating": "評分優先",
       "sortByExperience": "經驗優先",
       "sortBySessions": "諮詢次數",
+      "sortByMatch": "匹配度優先",
+      "genderAll": "全部",
       "count": "位",
       "sessionsSuffix": "次諮詢",
       "yearsSuffix": "年經驗",
@@ -742,8 +947,50 @@
     },
     "booking": {
       "cancelBtn": "取消",
+      "detail": "詳情",
+      "reschedule": "改約",
+      "feedback": "評價",
+      "filterAll": "全部",
+      "viewAll": "全部預約",
       "empty": "暫無預約記錄",
-      "emptyHint": "暫無預約，去預約一位老師吧"
+      "emptyHint": "暫無預約，去預約一位老師吧",
+      "emptyFiltered": "該狀態下暫無預約"
+    },
+    "detailDrawer": {
+      "title": "預約詳情",
+      "stepCreated": "提交預約",
+      "stepPending": "等待老師確認",
+      "stepConfirmed": "預約已確認",
+      "stepCompleted": "諮詢已完成",
+      "stepCancelled": "預約已取消",
+      "info": "預約資訊",
+      "notes": "問題描述",
+      "feedbackTitle": "我的評價",
+      "feedbackPrompt": "諮詢已完成，歡迎留下你的回饋",
+      "noFeedback": "諮詢完成後可評價",
+      "noComment": "未填寫文字評價",
+      "tip": "如需調整時間，建議在開始前 24 小時改約或取消"
+    },
+    "reschedule": {
+      "title": "改約時間",
+      "desc": "目前預約：{{date}} {{slot}}",
+      "dateLabel": "新日期",
+      "slotLabel": "新時段",
+      "confirm": "確認改約",
+      "missing": "請選擇新的日期與時段"
+    },
+    "feedbackModal": {
+      "title": "評價這次諮詢",
+      "desc": "你的回饋會幫助心理老師把服務做得更好",
+      "score": "滿意度",
+      "comment": "補充說明（選填）",
+      "placeholder": "可以聊聊這次諮詢的感受…",
+      "submit": "提交評價"
+    },
+    "favorites": {
+      "only": "只看收藏",
+      "add": "收藏老師",
+      "remove": "取消收藏"
     },
     "empty": {
       "noCounselor": "沒有找到匹配的老師",
@@ -914,10 +1161,11 @@
         "hint": "把此刻的心情封存，寫給未來的自己",
         "btn": "建立第一個膠囊"
       },
+      "create": "寫一封給未來",
       "fab": "新建膠囊"
     },
     "create": {
-      "back": "返回廣場",
+      "back": "返回檔案",
       "eyebrow": "— New Capsule",
       "title": "新建<em>膠囊</em>",
       "subtitle": "把此刻的心情，封存進時光膠囊",
@@ -931,7 +1179,8 @@
         "public": "公開到廣場",
         "content": "膠囊內容",
         "photo": "添加照片",
-        "mood": "此刻心情"
+        "mood": "此刻心情",
+        "delivery": "投遞設定"
       },
       "placeholders": {
         "title": "請輸入標題",
@@ -965,6 +1214,19 @@
       },
       "submit": "立即封存",
       "submitting": "封存中...",
+      "aside": {
+        "summary": "投遞摘要",
+        "daysLeft": "天後開啟",
+        "openDate": "開啟日期",
+        "method": "投遞方式",
+        "recipient": "收件人",
+        "visibility": "可見性",
+        "publicOn": "公開到廣場",
+        "publicOff": "僅自己可見",
+        "privacy": "隱私設定",
+        "unspecified": "未填寫",
+        "submitHint": "提交後可在「時光膠囊」查看投遞進度"
+      },
       "validation": {
         "title": "請輸入膠囊標題",
         "date": "請選擇開啟時間",
@@ -983,7 +1245,7 @@
       }
     },
     "detail": {
-      "back": "返回廣場",
+      "back": "返回檔案",
       "title": "膠囊<em>詳情</em>",
       "created": "建立於 {{date}}",
       "remaining": "還有 {{days}} 天開啟",
@@ -1109,6 +1371,17 @@
       },
       "submit": "立即發布",
       "submitting": "發布中...",
+      "aside": {
+        "preview": "即時預覽",
+        "live": "LIVE",
+        "now": "剛剛",
+        "me": "我",
+        "previewEmpty": "寫下第一句話，右側會同步預覽",
+        "settings": "發布設定",
+        "anonymousHint": "隱去暱稱與頭像，以匿名同學身分發布",
+        "commentHint": "關閉後其他同學不能評論這則心得",
+        "submitHint": "發布後可在「交流廣場」查看與管理"
+      },
       "validation": {
         "content": "請添加內容或圖片"
       },
@@ -1123,6 +1396,15 @@
       "title": "動態<em>詳情</em>",
       "createdAt": "發布於 {{date}}",
       "anonymous": "匿名同學",
+      "aside": {
+        "stats": "互動數據",
+        "likes": "點讚",
+        "comments": "評論",
+        "published": "發布時間",
+        "topics": "相關話題",
+        "noTopics": "這條動態還沒有話題標籤",
+        "anon": "TA 選擇了匿名發布，請尊重這份坦誠"
+      },
       "like": "點讚",
       "share": "分享",
       "comments": {
@@ -1132,7 +1414,11 @@
         "submit": "發表評論",
         "empty": "還沒有評論，來搶沙發吧",
         "reply": "回覆",
-        "replyTo": "回覆 {{name}}",
+        "replyTo": "回覆 @{{name}}：",
+        "replyPlaceholder": "回覆 @{{name}}...",
+        "replies": "{{n}} 條回覆",
+        "collapseReplies": "收起回覆",
+        "like": "讚",
         "repliedTo": "回覆 @{{name}}",
         "cancelReply": "取消",
         "submitted": "評論已發布"
@@ -1152,6 +1438,23 @@
       "bioEmpty": "這個人很懶，還沒有寫自我介紹"
     },
     "card": {
+      "quick": {
+        "settings": "帳號設定",
+        "counseling": "心理諮詢中心"
+      },
+      "bookings": {
+        "title": "我的預約",
+        "desc": "查看心理諮詢的預約狀態，可直接改約、取消，或在諮詢結束後留下評價。",
+        "goBook": "去預約",
+        "empty": "還沒有預約記錄",
+        "emptyFiltered": "該狀態下暫無預約"
+      },
+      "favorites": {
+        "title": "我的收藏",
+        "desc": "收藏的心理老師，隨時查看並一鍵預約。",
+        "empty": "還沒有收藏老師，去心理老師列表點 ♡ 收藏",
+        "browse": "去心理老師"
+      },
       "profile": {
         "title": "基礎資料",
         "desc": "維護你的身份資訊，方便在預約與諮詢中使用。",
@@ -1196,7 +1499,7 @@
         "assessments": "參與測評",
         "counseling": "諮詢次數",
         "moments": "發佈心得",
-        "favorites": "收藏文章",
+        "favorites": "收藏老師",
         "capsules": "時光膠囊"
       },
       "growth": {
@@ -1246,6 +1549,22 @@
     "eyebrow": "帳號設定",
     "title": "安全與<em>偏好</em>",
     "desc": "管理帳號安全、通知偏好、隱私設定與個性化偏好，打造屬於你的使用體驗。",
+    "hero": {
+      "backProfile": "返回個人中心",
+      "accountLabel": "目前帳號",
+      "accountHint": "以下設定僅對目前帳號生效，儲存後立即同步到此裝置。",
+      "role": "身分",
+      "status": "帳號狀態",
+      "statusNormal": "正常"
+    },
+    "rail": {
+      "hint": "共 5 組設定，修改後請儲存。",
+      "security": "密碼、聯絡方式與登入裝置",
+      "notifications": "選擇你願意接收的提醒",
+      "privacy": "主頁可見範圍與搜尋",
+      "preferences": "語言、主題與預設首頁",
+      "data": "匯出紀錄與清理快取"
+    },
     "card": {
       "security": {
         "title": "帳號安全",

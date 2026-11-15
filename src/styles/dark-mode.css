@@ -131,19 +131,6 @@ html.dark .stat-label {
    （home BackTop 的独占暗色规则已迁至 BackTop.module.css；
    Navbar 的 .menu-item 在上方"导航栏"块统一处理） */
 
-/* ---------- 滚动条 ---------- */
-html.dark ::-webkit-scrollbar-track {
-  background: var(--bg-soft);
-}
-
-html.dark ::-webkit-scrollbar-thumb {
-  background: rgb(255, 255, 255, 0.15);
-}
-
-html.dark ::-webkit-scrollbar-thumb:hover {
-  background: rgb(255, 255, 255, 0.25);
-}
-
 /* ---------- 文本选中 ---------- */
 html.dark ::selection {
   background: color-mix(in srgb, var(--brand-primary-bright) 40%, transparent);
@@ -281,16 +268,21 @@ html.dark .user-dropdown-popper.ant-dropdown {
 }
 
 html.dark .user-dropdown-popper .dropdown-header {
-  background: linear-gradient(135deg, var(--bg-blue-tint), var(--bg-page)) !important;
-  border-bottom-color: var(--border-blue) !important;
+  border-bottom-color: var(--border-light) !important;
+}
+
+html.dark .user-dropdown-popper .dropdown-header-avatar {
+  box-shadow:
+    0 0 0 2px var(--bg-card),
+    0 0 0 3px color-mix(in srgb, var(--brand-primary-bright) 40%, transparent);
 }
 
 html.dark .user-dropdown-popper .dropdown-header-name {
   color: var(--text-heading) !important;
 }
 
-html.dark .user-dropdown-popper .dropdown-header-id {
-  color: var(--text-secondary) !important;
+html.dark .user-dropdown-popper .dropdown-header-meta {
+  color: var(--text-faint) !important;
 }
 
 html.dark .user-dropdown-popper .ant-dropdown-menu-item {
@@ -316,12 +308,23 @@ html.dark .user-dropdown-popper .ant-dropdown-menu-item-divider {
 
 /* 登出项 hover 变危险色 */
 html.dark .user-dropdown-popper .ant-dropdown-menu-item:last-child:hover {
-  color: var(--danger-500) !important;
-  background: var(--danger-50) !important;
+  color: var(--status-danger) !important;
+  background: color-mix(in srgb, var(--status-danger) 14%, transparent) !important;
 }
 
 html.dark .user-dropdown-popper .ant-dropdown-menu-item:last-child:hover .anticon {
-  color: var(--danger-500) !important;
+  color: var(--status-danger) !important;
+}
+
+/* 触发器打开态 */
+html.dark .user-profile.is-open {
+  background: var(--brand-primary-bright-bg);
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 32%, transparent);
+}
+
+html.dark .user-profile.is-open .caret,
+html.dark .user-profile.is-open .username {
+  color: var(--brand-primary-bright);
 }
 
 /* 装饰渐变：暗色 hero 背景（非变量重放，保留） */
@@ -365,7 +368,7 @@ html.dark .immersive-assessment .step-dots .dot.completed {
 
 html.dark .immersive-assessment .submitting-overlay {
   background: color-mix(in srgb, var(--bg-page) 85%, transparent) !important;
-  backdrop-filter: blur(8px);
+  /* 只换底色；毛玻璃半径沿用浅色态的 blur(12px)，保证两套主题观感一致 */
 }
 
 /* 背景装饰性大题号：低透明度主色水印 */
@@ -402,24 +405,13 @@ html.dark .capsule-list-page .fab-button {
 html.dark .capsule-list-page .fab-button:hover {
   background: var(--brand-primary-dark) !important;
   box-shadow: 0 12px 32px color-mix(in srgb, var(--brand-primary) 50%, transparent) !important;
-  transform: translateY(-2px);
+  /* 不覆写 transform/transition：深浅主题动效一致，只换颜色 */
 }
 
 /* ---------- Square 模块（SquareList/SquareCreate/SquareDetail） ----------
-   页面背景/文字换色规则已删除：业务 CSS 已语义变量化，dark 自动跟随 */
-
-/* SquareList.vue — FAB 品牌按钮强调（保留，背景改为品牌变量） */
-html.dark .square-page .fab-btn {
-  background: var(--brand-primary) !important;
-  color: var(--text-inverse, #fff) !important;
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-primary) 40%, transparent) !important;
-}
-
-html.dark .square-page .fab-btn:hover {
-  background: var(--brand-primary-dark) !important;
-  box-shadow: 0 12px 32px color-mix(in srgb, var(--brand-primary) 50%, transparent) !important;
-  transform: translateY(-2px);
-}
+   页面背景/文字换色规则已删除：业务 CSS 已语义变量化，dark 自动跟随。
+   FAB 亦不再暗色覆写：浅色态的渐变底与 fab-pulse 呼吸动效在暗色下原样沿用，
+   原来的 box-shadow !important 会把动画值压掉（主题只应改颜色，不改动效） */
 /* ---------- 通用：文本查看器/代码块（全局元素，用语义变量表达） ---------- */
 html.dark pre,
 html.dark code {

@@ -87,4 +87,51 @@ export interface BookingDTO extends BookingCreateDTO {
   counselorName: string
   status: BookingStatus
   createdAt: string
+  /** 完成后的评价（未评价时不返回） */
+  feedback?: BookingFeedbackDTO
+}
+
+/** 预约评价（已完成咨询后提交） */
+export interface BookingFeedbackDTO {
+  /** 1-5 星 */
+  score: number
+  comment?: string
+  createdAt: string
+}
+
+/** `GET /api/counseling/favorites` / `POST /api/counseling/favorites` —— 收藏老师 ID 列表 */
+export type FavoriteCounselorIdsDTO = number[]
+
+/** `GET /api/counseling/summary` —— 「我的」概览统计 */
+export interface CounselingSummaryDTO {
+  /** 预约总数 */
+  total: number
+  /** 待进行（待确认 + 已确认） */
+  upcoming: number
+  /** 已完成 */
+  completed: number
+  /** 收藏老师数 */
+  favorites: number
+}
+
+/** `GET /api/counseling/availability` —— 某老师某日已被占用的时段 */
+export interface SlotAvailabilityDTO {
+  counselorId: number
+  /** yyyy-MM-dd */
+  date: string
+  /** 已被其他同学占用 / 学校不开放的时段（HH:mm） */
+  takenSlots: string[]
+}
+
+/** `PATCH /api/counseling/bookings/:id/reschedule` 请求体 */
+export interface BookingRescheduleDTO {
+  /** yyyy-MM-dd */
+  date: string
+  slot: string
+}
+
+/** `POST /api/counseling/bookings/:id/feedback` 请求体 */
+export interface BookingFeedbackInputDTO {
+  score: number
+  comment?: string
 }

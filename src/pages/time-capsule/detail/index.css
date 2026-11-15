@@ -13,27 +13,128 @@
 .detail-state {
   position: relative;
   z-index: 1;
-  max-width: var(--container-form);
+  max-width: var(--container-content);
   margin: 0 auto;
-  padding: 24px 40px 80px;
+  padding: 36px 56px 80px;
   min-height: 50vh;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 32px;
+}
+
+/* ============================================================
+   首屏骨架：与详情结构同构（徽章 → 标题 → 正文 → 开启时间卡片）
+   ============================================================ */
+.detail-skeleton-head {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.detail-skeleton-chip {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  margin-bottom: 4px;
+}
+
+.detail-skeleton-title {
+  width: 62%;
+  height: 30px;
+  border-radius: 8px;
+}
+
+.detail-skeleton-meta {
+  width: 34%;
+  height: 14px;
+  border-radius: 6px;
+}
+
+.detail-skeleton-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-skeleton-line {
+  width: 100%;
+  height: 14px;
+  border-radius: 6px;
+}
+
+.detail-skeleton-card {
+  height: 132px;
+  border-radius: 18px;
+}
+
+.detail-skeleton-chip,
+.detail-skeleton-title,
+.detail-skeleton-meta,
+.detail-skeleton-line,
+.detail-skeleton-card {
+  background: var(--bg-soft);
+  animation: detail-skeleton-pulse 1.6s var(--ease-standard) infinite;
+}
+
+.detail-skeleton-title.short {
+  width: 38%;
+}
+
+.detail-skeleton-line.short {
+  width: 56%;
+}
+
+@keyframes detail-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detail-skeleton-chip,
+  .detail-skeleton-title,
+  .detail-skeleton-meta,
+  .detail-skeleton-line,
+  .detail-skeleton-card {
+    animation: none;
+    opacity: 0.8;
+  }
 }
 
 .detail-page::before {
   content: 'OPEN';
   position: absolute;
-  top: 80px;
-  right: -30px;
-  font-size: clamp(160px, 24vw, 300px);
+  top: 90px;
+  right: 0;
+  font-size: clamp(120px, 17vw, 220px);
   font-weight: 900;
+  line-height: 1;
   color: var(--brand-primary);
   opacity: 0.04;
-  letter-spacing: -10px;
-  line-height: 0.8;
+  letter-spacing: -8px;
   pointer-events: none;
   user-select: none;
   z-index: 0;
+}
+
+@media (width <= 768px) {
+  .detail-state {
+    padding: 24px 16px 64px;
+  }
+
+  .detail-skeleton-title {
+    width: 80%;
+    height: 24px;
+  }
+
+  .detail-skeleton-meta {
+    width: 60%;
+  }
 }

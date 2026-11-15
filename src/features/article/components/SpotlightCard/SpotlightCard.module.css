@@ -292,8 +292,7 @@
   background: color-mix(in srgb, var(--brand-primary-bright) 4%, transparent) !important;
   border-color: transparent !important;
   border-bottom-color: color-mix(in srgb, var(--brand-primary-bright) 20%, transparent) !important;
-  box-shadow: none !important;
-  transform: none !important;
+  /* 不覆写 transform / box-shadow：悬浮幅度与投影层级沿用浅色规则 */
 }
 
 /* 三期：无封面卡在暗色下融入背景 */

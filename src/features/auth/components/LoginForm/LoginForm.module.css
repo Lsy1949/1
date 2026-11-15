@@ -220,7 +220,7 @@
    ============================================================ */
 :global(html.dark) .loginBox {
   background: color-mix(in srgb, var(--bg-page) 92%, transparent) !important;
-  backdrop-filter: blur(24px) !important;
+  /* 只换底色；毛玻璃半径沿用浅色态的 blur(20px) */
   border-color: rgb(255, 255, 255, 0.08) !important;
   color: var(--text-regular) !important;
   box-shadow: 0 25px 60px rgb(0 0 0 / 0.6) !important;

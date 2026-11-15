@@ -174,6 +174,8 @@ export const authHandlers = [
         name: user?.name ?? session.username,
         tenantId: session.tenantId,
         roleId: 'student',
+        phone: user?.phone,
+        email: user?.email,
       })
     }),
   ),

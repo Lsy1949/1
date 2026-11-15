@@ -70,4 +70,22 @@ export interface BookingItem extends BookingCreateInput {
   counselorName: string
   status: BookingStatus
   createdAt: string
+  /** 完成咨询后的评价（未评价时缺省） */
+  feedback?: BookingFeedback
+}
+
+/** 咨询评价 */
+export interface BookingFeedback {
+  /** 1-5 星 */
+  score: number
+  comment?: string
+  createdAt: string
+}
+
+/** 「我的」概览统计（由接口下发，前端只负责展示） */
+export interface CounselingSummary {
+  total: number
+  upcoming: number
+  completed: number
+  favorites: number
 }

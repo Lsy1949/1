@@ -1,8 +1,7 @@
 /* ===== 顶部返回栏（CSS Modules：私有类 camelCase） ===== */
 .topBar {
-  max-width: var(--container-article);
-  margin: 0 auto;
-  padding: 0 40px 28px;
+  /* 版心与水平留白由页面 .square-detail-shell 承担，组件只负责自身纵向节奏 */
+  padding: 0 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -48,6 +47,12 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* 编号：等宽数字，避免不同 id 的宽度跳动 */
+.idMark {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1.5px;
+}
+
 .typeMark {
   padding: 3px 8px;
   border-radius: 5px;
@@ -66,24 +71,20 @@
 }
 
 @media (width <= 768px) {
-  .topBar {
-    padding-left: 20px;
-    padding-right: 20px;
+  .backBtn span {
+    display: none;
   }
 }
 
 /* ============================================================
    暗色主题：背景/文字/边框换色由语义变量自动跟随，仅保留
-   强调色的暗色专用取值（id-mark 浅色态无样式定义，module 导出
-   依赖本段提供）
+   强调色的暗色专用取值
    ============================================================ */
 :global(html.dark .square-detail-page) .backBtn:hover {
   color: var(--brand-primary-bright) !important;
-  background: var(--brand-primary-faint) !important;
 }
 
-:global(html.dark .square-detail-page) .topMark,
-:global(html.dark .square-detail-page) .idMark {
+:global(html.dark .square-detail-page) .topMark {
   color: var(--text-faint) !important;
 }
 

@@ -60,6 +60,17 @@
     }
   },
   "common": {
+    "editor": {
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "strike": "Strikethrough",
+      "unorderedList": "Bulleted list",
+      "orderedList": "Numbered list",
+      "undo": "Undo",
+      "redo": "Redo",
+      "ariaLabel": "Rich text editor"
+    },
     "back": "Back",
     "confirm": "Confirm",
     "cancel": "Cancel",
@@ -301,6 +312,32 @@
       "mine": "Mine",
       "dashboard": "Growth Board"
     },
+    "hero": {
+      "eyebrow": "— Assessment",
+      "title": "Know yourself, <em>starting here</em>",
+      "desc": "From mental health and career development to cognition and potential — build your self-portrait with validated scales. Results are for self-exploration only.",
+      "primary": "Start an Assessment",
+      "secondary": "Open Growth Board",
+      "stats": {
+        "scales": "scales",
+        "completed": "completed",
+        "points": "growth points",
+        "goal": "monthly goal"
+      }
+    },
+    "rail": {
+      "scales": "Scale catalog",
+      "dashboard": "Data and insight",
+      "mine": "Growth profile"
+    },
+    "eyebrow": {
+      "scales": "— Scale Catalog",
+      "dashboard": "— Growth Dashboard",
+      "mine": "— My Profile"
+    },
+    "catalog": {
+      "all": "All assessments"
+    },
     "cover": {
       "scales": {
         "title": "Assessment <em>Square</em>",
@@ -341,6 +378,21 @@
     "disclaimer": "Assessment results are for personal exploration reference only and do not have clinical diagnostic validity.",
     "comingSoonTip": "\"{{name}}\" is coming soon, stay tuned",
     "profile": {
+      "status": {
+        "new": "Setting Off",
+        "rising": "First Spark",
+        "steady": "Steady Growth",
+        "deep": "Deep Explorer",
+        "master": "Self Master"
+      },
+      "badgeDefs": {
+        "first": { "name": "First Sprout", "desc": "Complete your first assessment" },
+        "multi": { "name": "Multi-Explorer", "desc": "Complete assessments in 2 categories" },
+        "mental": { "name": "Self Care", "desc": "Complete a mental-health assessment" },
+        "career": { "name": "Career Launch", "desc": "Complete a career assessment" },
+        "depth": { "name": "Deep Dive", "desc": "Complete 3+ assessments" },
+        "master": { "name": "Self Master", "desc": "Complete 5+ assessments" }
+      },
       "completed": "Completed",
       "growthPoints": "Growth Points",
       "assessmentDays": "Assessment Days",
@@ -358,6 +410,57 @@
       "unlocked": "Unlocked"
     },
     "dashboard": {
+      "nav": {
+        "overview": "Overview",
+        "radar": "Wellbeing",
+        "trend": "Mood trend",
+        "distribution": "Distribution",
+        "ai": "AI insight",
+        "progress": "Progress",
+        "recommend": "Recommended",
+        "history": "History"
+      },
+      "radarDims": [
+        "Emotional regulation",
+        "Stress tolerance",
+        "Career drive",
+        "Depth of thinking",
+        "Social energy",
+        "Self-awareness"
+      ],
+      "insight": {
+        "both": {
+          "summary": "Your exploration covers both mental health and career development, forming a well-rounded self-portrait.",
+          "strength": "Your personality and career interests align closely, giving you a clear sense of direction.",
+          "risk": "Under high pressure, emotional regulation still has room to grow and may affect career performance.",
+          "suggestion": "Combine emotion-management practice with career planning to build a personal growth plan."
+        },
+        "psych": {
+          "summary": "You pay attention to your mental health and show strong self-care awareness.",
+          "strength": "You notice emotional signals early — the foundation of psychological resilience.",
+          "risk": "Focusing only on emotions may hide potential in career and cognition.",
+          "suggestion": "Add a career-development assessment to explore your potential fully."
+        },
+        "career": {
+          "summary": "You are actively exploring career directions with a forward-looking planning mindset.",
+          "strength": "You have a clear read on your interests and personality, which sharpens your direction.",
+          "risk": "Without emotional baseline data, changes under stress may go unnoticed.",
+          "suggestion": "Add a mental-health assessment to complete your self-portrait."
+        },
+        "base": {
+          "summary": "You have recently completed assessments across several dimensions, showing good self-exploration.",
+          "strength": "You are self-aware and willing to check in on your inner state.",
+          "risk": "There are few data points so far — keep assessing to monitor change.",
+          "suggestion": "Aim for one assessment every two weeks to build your personal baseline."
+        }
+      },
+      "rec": {
+        "gad7AfterPhq9": "Take the anxiety scale to complete your emotional picture",
+        "phq9AfterGad7": "Add the depression scale to set an emotional baseline",
+        "mbtiAfterRiasec": "Pair with personality type to deepen career exploration",
+        "riasecAfterMbti": "Explore career interests to match your personality",
+        "exploreNew": "Try a new dimension to broaden self-awareness"
+      },
       "kpi": {
         "total": "Total Assessments",
         "points": "Growth Points",
@@ -432,7 +535,16 @@
       "saveReport": "Save Report",
       "share": "Share",
       "reportGenerated": "Report generated and ready for download (Mock)",
-      "shareCopied": "Share link copied to clipboard (Mock)"
+      "shareCopied": "Share link copied to clipboard (Mock)",
+      "difficulty": "Difficulty",
+      "measure": "What it measures",
+      "ruler": "Answer scale",
+      "rulerHint": "Four frequency levels — answer for the past two weeks",
+      "rulerHintBipolar": "Each item pairs two statements — pick the closer side",
+      "lastResult": "Last result",
+      "viewLast": "View last report",
+      "disclaimer": "This assessment is not a medical diagnosis. If distress persists, consider booking a counseling session.",
+      "retakeHint": "Retaking adds a new record; your past reports stay intact."
     },
     "history": {
       "clearConfirm": "Are you sure you want to clear all assessment records? This cannot be undone.",
@@ -456,12 +568,32 @@
       "goAssess": "Start Assessment"
     },
     "take": {
+      "exitTitle": "Leave the assessment?",
+      "exitConfirm": "Your progress will not be saved if you leave now. Leave anyway?",
+      "exitOk": "Leave",
+      "exitCancel": "Keep going",
       "exit": "Exit",
       "prev": "Previous",
       "next": "Next",
       "submit": "Submit report",
       "analyzing": "Analyzing your answers, generating your in-depth report...",
-      "pleaseWait": "Please wait"
+      "pleaseWait": "Please wait",
+      "answered": "{{done}} / {{total}} answered",
+      "unanswered": "{{n}} left · go to next unanswered",
+      "railTitle": "Question index",
+      "railLegendDone": "Answered",
+      "railLegendTodo": "Unanswered",
+      "hintStart": "Take a breath, then answer by first instinct",
+      "hintHalf": "Halfway there — keep the rhythm",
+      "hintLast": "Last question — your profile is one step away",
+      "asideTips": "How to answer",
+      "tipIntuition": "Trust your first instinct, do not overthink",
+      "tipHonest": "There are no right answers — honesty makes it useful",
+      "tipPrivate": "Results are for self-exploration, not diagnosis",
+      "asideKeyboard": "Keyboard",
+      "keySelect": "A–E select an option",
+      "keyNav": "← → move between questions",
+      "keyEnter": "Enter next / submit"
     },
     "mbti": {
       "E": "Extraversion",
@@ -485,10 +617,56 @@
   "counseling": {
     "tabs": {
       "booking": "Book a Session",
+      "mine": "Mine",
       "counselors": "Counselors",
       "notice": "Counseling Guide",
       "faq": "FAQ",
       "companion": "AI Companion"
+    },
+    "hero": {
+      "eyebrow": "— Counseling",
+      "title": "Leave your worries <em>right here</em>",
+      "desc": "Free one-on-one counseling on campus. Professional counselors help you untangle emotions, relationships and personal growth — always confidential, at your own pace.",
+      "primary": "Book a Session",
+      "secondary": "Talk to AI First",
+      "stats": {
+        "counselors": "counselors",
+        "types": "session types",
+        "free": "campus free",
+        "confirm": "to confirm"
+      }
+    },
+    "rail": {
+      "booking": "Four quick steps",
+      "mine": "Bookings and saves",
+      "consultants": "Filter by focus",
+      "notice": "Process and rules",
+      "faq": "Answers to questions",
+      "companion": "Talk anytime"
+    },
+    "week": {
+      "more": "More dates"
+    },
+    "slots": {
+      "full": "Full"
+    },
+    "match": {
+      "title": "Focus areas",
+      "desc": "Pick 1-3 areas to see your best match",
+      "score": "Match",
+      "best": "Top pick",
+      "clear": "Clear"
+    },
+    "aiShared": {
+      "tipsTitle": "Chat tips",
+      "tips": [
+        "No need to prepare — just say what comes to mind",
+        "Pause or end the conversation anytime",
+        "Reach out to a human counselor whenever you need"
+      ],
+      "hotlineLabel": "Crisis hotline",
+      "hotline": "12356",
+      "back": "Back to Counseling"
     },
     "types": {
       "individual": "Individual",
@@ -540,6 +718,11 @@
         "title": "Book a <em>Session</em>",
         "desc": "Four steps to book: choose type → pick counselor → select time → fill in info."
       },
+      "mine": {
+        "eyebrow": "— Mine",
+        "title": "My <em>Sessions</em>",
+        "desc": "All your bookings and saved counselors in one place — filter by status, reschedule, cancel or review."
+      },
       "counselors": {
         "eyebrow": "— Counselors",
         "title": "Our <em>Counselors</em>",
@@ -560,7 +743,7 @@
       "type": "Session Type",
       "counselor": "Counselor",
       "time": "Session Time",
-      "info": "Personal Info"
+      "info": "Booking Details"
     },
     "btn": {
       "confirmBooking": "Confirm Booking",
@@ -585,11 +768,29 @@
       "empty": "Not Selected"
     },
     "myBookings": "My Bookings",
+    "mine": {
+      "stats": {
+        "total": "Bookings",
+        "upcoming": "Upcoming",
+        "completed": "Completed",
+        "favorites": "Saved"
+      },
+      "bookingsDesc": "Filter by status, then open any booking to view details, reschedule, cancel or review.",
+      "favoritesTitle": "Saved Counselors",
+      "favoritesDesc": "Counselors you saved from the directory can be booked right here.",
+      "browse": "Browse counselors",
+      "bookNow": "Book",
+      "newBooking": "New booking",
+      "emptyFavorites": "No saved counselors yet"
+    },
     "form": {
       "name": "Name",
       "namePlaceholder": "How should we address you",
       "contact": "Contact",
       "contactPlaceholder": "Phone or email",
+      "accountHint": "Prefilled from your signed-in account — no need to enter it again.",
+      "contactUnbound": "No contact on file",
+      "editAccount": "Account settings",
       "datePlaceholder": "Select a date",
       "description": "Issue Description",
       "descPlaceholder": "Briefly describe topics you'd like to explore",
@@ -617,7 +818,9 @@
       "bookingSuccess": "Booking submitted! The counselor will confirm within 24 hours",
       "cancelConfirm": "Are you sure you want to cancel this booking?",
       "cancelTitle": "Notice",
-      "cancelled": "Booking cancelled"
+      "cancelled": "Booking cancelled",
+      "rescheduled": "Rescheduled — see you at the new time",
+      "feedbackThanks": "Thanks for your feedback"
     },
     "counselors": {
       "searchPlaceholder": "Search name / specialty",
@@ -630,6 +833,8 @@
       "sortByRating": "Rating First",
       "sortByExperience": "Experience First",
       "sortBySessions": "Session Count",
+      "sortByMatch": "Best Match",
+      "genderAll": "All",
       "count": "",
       "sessionsSuffix": "sessions",
       "yearsSuffix": "years experience",
@@ -742,8 +947,50 @@
     },
     "booking": {
       "cancelBtn": "Cancel",
+      "detail": "Details",
+      "reschedule": "Reschedule",
+      "feedback": "Rate",
+      "filterAll": "All",
+      "viewAll": "All bookings",
       "empty": "No booking records yet",
-      "emptyHint": "No bookings yet. Book a counselor now."
+      "emptyHint": "No bookings yet. Book a counselor now.",
+      "emptyFiltered": "No bookings in this status"
+    },
+    "detailDrawer": {
+      "title": "Booking Details",
+      "stepCreated": "Booking submitted",
+      "stepPending": "Awaiting counselor confirmation",
+      "stepConfirmed": "Booking confirmed",
+      "stepCompleted": "Session completed",
+      "stepCancelled": "Booking cancelled",
+      "info": "Booking information",
+      "notes": "Issue description",
+      "feedbackTitle": "My feedback",
+      "feedbackPrompt": "Your session is complete — feel free to leave feedback",
+      "noFeedback": "Feedback opens after the session",
+      "noComment": "No written feedback",
+      "tip": "To change the time, reschedule or cancel at least 24 hours in advance"
+    },
+    "reschedule": {
+      "title": "Reschedule",
+      "desc": "Current booking: {{date}} {{slot}}",
+      "dateLabel": "New date",
+      "slotLabel": "New time",
+      "confirm": "Confirm change",
+      "missing": "Pick a new date and time"
+    },
+    "feedbackModal": {
+      "title": "Rate this session",
+      "desc": "Your feedback helps counselors improve the service",
+      "score": "Satisfaction",
+      "comment": "Additional notes (optional)",
+      "placeholder": "Share how the session felt…",
+      "submit": "Submit feedback"
+    },
+    "favorites": {
+      "only": "Saved only",
+      "add": "Save counselor",
+      "remove": "Remove from saved"
     },
     "empty": {
       "noCounselor": "No matching counselors found",
@@ -914,10 +1161,11 @@
         "hint": "Seal this moment's feelings and write to your future self",
         "btn": "Create Your First Capsule"
       },
+      "create": "Write to the future",
       "fab": "New Capsule"
     },
     "create": {
-      "back": "Back to Square",
+      "back": "Back to archive",
       "eyebrow": "— New Capsule",
       "title": "New <em>Capsule</em>",
       "subtitle": "Seal this moment's feelings into a time capsule",
@@ -931,7 +1179,8 @@
         "public": "Publish to Square",
         "content": "Capsule Content",
         "photo": "Add Photos",
-        "mood": "Current Mood"
+        "mood": "Current Mood",
+        "delivery": "Delivery Setup"
       },
       "placeholders": {
         "title": "Enter title",
@@ -965,6 +1214,19 @@
       },
       "submit": "Seal Now",
       "submitting": "Sealing...",
+      "aside": {
+        "summary": "Delivery summary",
+        "daysLeft": "days until it opens",
+        "openDate": "Opens on",
+        "method": "Delivery",
+        "recipient": "Recipient",
+        "visibility": "Visibility",
+        "publicOn": "Shared to Square",
+        "publicOff": "Only you",
+        "privacy": "Privacy",
+        "unspecified": "Not set",
+        "submitHint": "Track delivery progress in Time Capsule after sealing"
+      },
       "validation": {
         "title": "Please enter a title",
         "date": "Please select an open date",
@@ -983,7 +1245,7 @@
       }
     },
     "detail": {
-      "back": "Back to Square",
+      "back": "Back to archive",
       "title": "Capsule <em>Details</em>",
       "created": "Created on {{date}}",
       "remaining": "Opens in {{days}} days",
@@ -1109,6 +1371,17 @@
       },
       "submit": "Publish Now",
       "submitting": "Publishing...",
+      "aside": {
+        "preview": "Live preview",
+        "live": "LIVE",
+        "now": "Just now",
+        "me": "Me",
+        "previewEmpty": "Start writing — the preview updates here",
+        "settings": "Publish settings",
+        "anonymousHint": "Hide your name and avatar, post as an anonymous student",
+        "commentHint": "When off, others cannot comment on this post",
+        "submitHint": "You can view and manage it in the Square after publishing"
+      },
       "validation": {
         "content": "Please add content or images"
       },
@@ -1123,6 +1396,15 @@
       "title": "Post <em>Details</em>",
       "createdAt": "Posted on {{date}}",
       "anonymous": "Anonymous",
+      "aside": {
+        "stats": "Engagement",
+        "likes": "Likes",
+        "comments": "Comments",
+        "published": "Published",
+        "topics": "Topics",
+        "noTopics": "No topic tags on this post yet",
+        "anon": "Shared anonymously — please respect that"
+      },
       "like": "Like",
       "share": "Share",
       "comments": {
@@ -1132,7 +1414,11 @@
         "submit": "Post Comment",
         "empty": "No comments yet. Grab the first seat!",
         "reply": "Reply",
-        "replyTo": "Replying to {{name}}",
+        "replyTo": "Replying to @{{name}}:",
+        "replyPlaceholder": "Reply to @{{name}}...",
+        "replies": "{{n}} replies",
+        "collapseReplies": "Collapse replies",
+        "like": "Like",
         "repliedTo": "Reply to @{{name}}",
         "cancelReply": "Cancel",
         "submitted": "Comment posted"
@@ -1152,6 +1438,23 @@
       "bioEmpty": "This person is lazy and has not written a bio yet"
     },
     "card": {
+      "quick": {
+        "settings": "Account settings",
+        "counseling": "Counseling center"
+      },
+      "bookings": {
+        "title": "My bookings",
+        "desc": "Track counseling bookings — reschedule, cancel, or rate a finished session right here.",
+        "goBook": "Book a session",
+        "empty": "No bookings yet",
+        "emptyFiltered": "No bookings in this status"
+      },
+      "favorites": {
+        "title": "Saved counselors",
+        "desc": "Counselors you saved — review anytime and book in one tap.",
+        "empty": "No saved counselors yet — tap ♡ in the counselor list",
+        "browse": "Browse counselors"
+      },
       "profile": {
         "title": "Basic Info",
         "desc": "Maintain your identity info for booking and counseling.",
@@ -1196,7 +1499,7 @@
         "assessments": "Assessments",
         "counseling": "Counseling Sessions",
         "moments": "Posts",
-        "favorites": "Favorites",
+        "favorites": "Saved counselors",
         "capsules": "Time Capsules"
       },
       "growth": {
@@ -1246,6 +1549,22 @@
     "eyebrow": "Settings",
     "title": "Security & <em>Preferences</em>",
     "desc": "Manage account security, notifications, privacy and personalization for your own experience.",
+    "hero": {
+      "backProfile": "Back to profile",
+      "accountLabel": "Current account",
+      "accountHint": "These settings apply to this account only and take effect on this device once saved.",
+      "role": "Role",
+      "status": "Status",
+      "statusNormal": "Active"
+    },
+    "rail": {
+      "hint": "5 groups of settings — save each after editing.",
+      "security": "Password, contacts and devices",
+      "notifications": "Choose the alerts you receive",
+      "privacy": "Profile visibility and search",
+      "preferences": "Language, theme and start page",
+      "data": "Export records and clear cache"
+    },
     "card": {
       "security": {
         "title": "Account Security",

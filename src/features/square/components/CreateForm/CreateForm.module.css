@@ -1,553 +1,421 @@
-/* 发布页表单（CSS Modules：私有类 camelCase） */
+/* 发布心得 · 桌面双栏表单（CSS Modules：私有类 camelCase） */
+
+/* ============ 容器：左写作区 + 右预览栏 ============ */
 .formContainer {
-  max-width: var(--container-form);
+  max-width: 1240px;
   margin: 0 auto;
-  background: transparent;
+  padding: 32px 56px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: clamp(32px, 3.4vw, 56px);
+  align-items: start;
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
 }
 
-.formCard {
-  padding: 28px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: 18px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+.mainCol {
+  min-width: 0;
 }
 
-.formCard:hover {
-  border-color: var(--brand-primary-soft);
-  box-shadow: 0 6px 20px color-mix(in srgb, var(--brand-primary) 5%, transparent);
+/* ============ 左侧分区：发丝线分隔，不做卡片 ============ */
+.section {
+  padding: 30px 0 34px;
+  border-top: 1px solid var(--border-light);
 }
 
-.formCardRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.section:first-child {
+  padding-top: 0;
+  border-top: none;
 }
 
-/* section-title 为 counseling 与 time-capsule 表单跨域共享类，
-   module 化后 hash 类名不再匹配全局字面量选择器 */
-.sectionTitle {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-heading);
-  margin-bottom: 18px;
+.sectionHead {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .sectionNum {
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  color: var(--text-faint);
+  flex-shrink: 0;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+  font-style: italic;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--brand-primary);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.5px;
 }
 
-.sectionTitle.noMargin {
-  margin-bottom: 0;
+.sectionTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: var(--text-heading);
 }
 
 .optionalHint {
-  color: var(--text-faint);
   font-size: 12px;
-  font-weight: normal;
-  margin-left: 8px;
-  text-transform: none;
-  letter-spacing: 0.3px;
-}
-
-/* 心情选择器 */
-.emotionTags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.emotionTag {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 12px 16px;
-  border-radius: 14px;
-  background: var(--brand-primary-wash);
-  border: 1px solid var(--border-light);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 72px;
-}
-
-.emotionEmoji {
-  font-size: 26px;
-  line-height: 1;
-}
-
-.emotionLabel {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-.emotionTag:hover {
-  border-color: var(--brand-primary-soft);
-  background: var(--brand-primary-faint);
-  transform: translateY(-2px);
-}
-
-.emotionTag.active {
-  background: var(--brand-primary);
-  border-color: var(--brand-primary);
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 25%, transparent);
-}
-
-.emotionTag.active .emotionLabel {
-  color: var(--text-inverse, #fff);
-}
-
-/* 话题输入 */
-.topicInputWrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  padding: 12px 14px;
-  background: var(--brand-primary-wash);
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-  transition: border-color 0.25s ease;
-}
-
-.topicInputWrap:focus-within {
-  border-color: var(--brand-primary);
-  background: var(--bg-card);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 8%, transparent);
-}
-
-.topicTags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.topicTag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
-  color: var(--brand-primary);
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.topicRemove {
-  background: transparent;
-  border: none;
-  color: var(--brand-primary);
-  cursor: pointer;
-  font-size: 14px;
-  line-height: 1;
-  padding: 0 0 0 2px;
-  opacity: 0.6;
-  transition: opacity 0.2s;
-}
-
-.topicRemove:hover {
-  opacity: 1;
-}
-
-.topicInput {
-  flex: 1;
-  min-width: 120px;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 13px;
-  color: var(--text-regular);
-  font-family: inherit;
-}
-
-.topicInput::placeholder {
+  font-weight: 400;
+  letter-spacing: 0.2px;
   color: var(--text-faint);
 }
 
-/* 内容输入 */
-.contentWrapper {
-  position: relative;
-}
-
-/* antd Form 适配 */
-.formContainer :global(.ant-form-item) { margin-bottom: 14px; }
-
-.formContainer :global(.ant-form-item:last-child) { margin-bottom: 0; }
-
-.formContainer :global(.ant-form-item-explain-error) {
+.sectionMeta {
+  margin-left: auto;
   font-size: 12px;
-  margin-top: 4px;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
 }
 
-.moodItem,
-.contentItem,
-.topicItem,
-.uploadItem { margin-bottom: 0; }
+.fieldItem {
+  margin-bottom: 0;
+}
 
-/* 心情选择：大号 emoji 按钮 */
+/* ============ 心情：胶囊单选 ============ */
 .emotionTags {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
 
 .emotionTags :global(.ant-radio-button-wrapper) {
   height: auto;
-  padding: 10px 18px;
+  padding: 9px 16px;
   border-radius: 999px !important;
   border-inline-start-width: 1px;
+  border-color: var(--border-strong);
+  background: transparent;
+  color: var(--text-secondary);
   line-height: normal;
-  font-size: 14px;
+  font-size: 13.5px;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
 }
 
-.emotionTags :global(.ant-radio-button-wrapper::before) { display: none; }
+.emotionTags :global(.ant-radio-button-wrapper::before) {
+  display: none;
+}
 
-/* 话题：antd Select tags 模式，与输入框同一描边语言 */
-.topicSelect { width: 100%; }
+.emotionTags :global(.ant-radio-button-wrapper:hover) {
+  border-color: var(--brand-primary-soft);
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+}
+
+.emotionTags :global(.ant-radio-button-wrapper-checked) {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+  box-shadow: none;
+}
+
+/* ============ 话题 ============ */
+.topicSelect {
+  width: 100%;
+}
 
 .topicSelect :global(.ant-select-selector) {
-  border-radius: 12px !important;
-  background: var(--bg-card) !important;
-  padding: 6px 10px !important;
+  border-radius: 10px !important;
+  background: transparent !important;
 }
 
-/* 图片上传触发器 */
+/* ============ 照片 ============ */
 .uploadTrigger {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  color: var(--ink-400);
-}
-
-.uploadTrigger .uploadIcon { margin-bottom: 0; }
-
-.contentTextarea {
-  width: 100%;
-  min-height: 160px;
-  padding: 16px 18px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: 14px;
-  font-size: 15px;
-  line-height: 1.8;
-  color: var(--text-regular);
-  resize: vertical;
-  outline: none;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  box-sizing: border-box;
-  font-family: inherit;
-}
-
-.contentTextarea:focus {
-  border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 8%, transparent);
-}
-
-.contentTextarea:hover {
-  border-color: var(--brand-primary);
-}
-
-.contentTextarea::placeholder {
+  gap: 6px;
   color: var(--text-faint);
-}
-
-.contentCount {
-  position: absolute;
-  right: 8px;
-  bottom: -22px;
-  font-size: 12px;
-  color: var(--text-faint);
-  font-variant-numeric: tabular-nums;
-}
-
-/* 图片上传 */
-.imageUploader {
-  width: 100%;
-  height: 140px;
-  background: transparent;
-  border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 1px dashed var(--brand-primary-soft);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.imageUploader:hover {
-  background: var(--brand-primary-faint);
-  border-color: var(--brand-primary);
 }
 
 .uploadIcon {
-  font-size: 32px;
-  color: var(--text-faint);
-  margin-bottom: 12px;
+  font-size: 22px;
 }
 
 .uploadText {
-  font-size: 13px;
-  color: var(--text-faint);
+  font-size: 12px;
 }
 
-.imageGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+/* ============ 右栏：吸顶 ============ */
+.rail {
+  position: sticky;
+  top: calc(var(--navbar-h, 80px) + 28px);
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  min-width: 0;
+}
+
+.railBlock {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 
-.imageItem {
-  position: relative;
-  width: 100%;
-  padding-bottom: 100%;
-  border-radius: 12px;
+.railHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.railTitle {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.railTag {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+/* 预览卡：与广场 Feed 卡片同构但更紧凑 */
+.previewCard {
+  padding: 16px;
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  background: var(--bg-card);
+}
+
+.previewHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.previewIdentity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.previewAuthor {
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.previewTime {
+  font-size: 11.5px;
+  color: var(--text-faint);
+}
+
+.previewMood {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.previewText {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--text-regular);
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.previewEmpty {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+/* 预览正文是富文本容器：压掉块级元素默认间距，保持卡片紧凑 */
+.previewText p,
+.previewText div {
+  margin: 0;
+}
+
+.previewText ul,
+.previewText ol {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.previewTopics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.previewTopic {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--brand-primary);
+}
+
+.previewPhotos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.previewPhoto {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px;
   background: var(--bg-soft);
 }
 
-.uploadedImage {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  object-fit: cover;
-}
-
-.imageItem .deleteBtn {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 22px;
-  height: 22px;
-  background: color-mix(in srgb, var(--brand-primary) 80%, transparent);
-  color: var(--text-inverse, #fff);
-  border-radius: 50%;
+/* ============ 设置行 ============ */
+.settingRow {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  cursor: pointer;
-  line-height: 1;
-  transition: background 0.2s ease;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border-light);
 }
 
-.imageItem .deleteBtn:hover {
-  background: var(--brand-primary);
+.settingRow:first-of-type {
+  border-top: none;
+  padding-top: 0;
 }
 
-.addImageBtn {
-  background: transparent;
-  border: 1px dashed var(--brand-primary-soft);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.addImageBtn:hover {
-  background: var(--brand-primary-faint);
-  border-color: var(--brand-primary);
-}
-
-.addContent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+.settingText {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  gap: 3px;
+  min-width: 0;
 }
 
-.addIcon {
-  font-size: 24px;
-  color: var(--text-faint);
-  margin-bottom: 4px;
-}
-
-.addText {
-  font-size: var(--fs-xs);
-  color: var(--text-faint);
-}
-
-.hiddenFileInput {
-  display: none;
-}
-
-/* 提交按钮 */
-.submitSection {
-  padding: 36px 0 12px;
-}
-
-.submitBtn {
-  width: 100%;
-  background: linear-gradient(135deg, var(--brand-primary), var(--color-info));
-  color: var(--text-inverse, #fff);
+.settingLabel {
   font-size: 13px;
-  padding: 18px 0;
-  border-radius: 14px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--brand-primary) 22%, transparent);
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: inherit;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.submitBtn:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--brand-primary-dark), var(--brand-primary-deep));
-  color: var(--text-inverse, #fff);
-  box-shadow: 0 12px 28px color-mix(in srgb, var(--brand-primary) 35%, transparent);
-  transform: translateY(-3px);
-}
-
-.submitBtn:hover:not(:disabled) .submitArrow {
-  transform: translateX(6px);
-}
-
-.submitArrow {
-  transition: transform 0.3s ease;
-}
-
-.submitBtn:disabled {
-  background: var(--brand-primary-soft);
-  color: var(--text-inverse, #fff);
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* 成功弹窗 */
-.successDialogContent {
-  text-align: center;
-  padding: 16px 0;
-}
-
-.successBigIcon {
-  font-size: 56px;
-  color: var(--status-success);
-  margin-bottom: 16px;
-}
-
-.successDialogContent h3 {
-  font-size: 20px;
-  margin-bottom: 24px;
+  font-weight: 600;
   color: var(--text-heading);
-  font-weight: 700;
 }
 
-/* 原 :deep(.el-switch.is-checked .el-switch__core) → antd Switch 选中态等价
-   （Switch 组件 token 无选中底色维度，保留覆写） */
+.settingHint {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-faint);
+}
+
+/* 原 :deep(.el-switch.is-checked .el-switch__core) → antd Switch 选中态等价 */
 .squareSwitch:global(.ant-switch-checked) {
   background-color: var(--brand-primary);
   border-color: var(--brand-primary);
 }
 
-/* 原 :deep(.el-dialog) 系列 → content/header 结构覆写已 token 化为
-   CreateForm/index.tsx 中 Modal 的 styles prop；主按钮底色与全局
-   colorPrimary 同值已删；hover 加深色无对应 token，保留覆写 */
-.successModal :global(.ant-btn-primary):hover {
-  background: var(--brand-primary-dark);
-  border-color: var(--brand-primary-dark);
+/* ============ 提交 ============ */
+.submitSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border-light);
+}
+
+.submitBtn {
+  height: auto;
+  padding: 14px 0;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--brand-primary) 22%, transparent);
+  transition:
+    transform var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: var(--brand-primary-dark) !important;
+  border-color: var(--brand-primary-dark) !important;
+  color: var(--text-inverse, #fff) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--brand-primary) 30%, transparent);
+}
+
+.submitBtn:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 3px;
+}
+
+.submitHint {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--text-faint);
+  text-align: center;
+}
+
+/* ============ antd 表单细节 ============ */
+.formContainer :global(.ant-form-item) {
+  margin-bottom: 14px;
+}
+
+.formContainer :global(.ant-form-item:last-child) {
+  margin-bottom: 0;
+}
+
+.formContainer :global(.ant-form-item-explain-error) {
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+/* ============ 响应式（移动端另行制作，这里只保证不破版） ============ */
+@media (width <= 1080px) {
+  .formContainer {
+    grid-template-columns: 1fr;
+    padding: 24px 32px 0;
+  }
+
+  .rail {
+    position: static;
+  }
 }
 
 @media (width <= 768px) {
-  .emotionTags {
-    gap: 12px;
-  }
-
-  .emotionTag {
-    width: 48px;
-    height: 48px;
-    font-size: 22px;
-    border-radius: 12px;
-  }
-
-  .submitSection {
-    padding: 28px 0 12px;
+  .formContainer {
+    padding: 20px 20px 0;
   }
 }
 
-/* ============================================================
-   暗色主题：背景/文字/边框换色由语义变量自动跟随，仅保留
-   强调色、状态色与「卡片融入背景」的暗色专用视觉
-   ============================================================ */
+/* ============ 暗色：仅补强调色 ============ */
 :global(html.dark .square-create-page) .sectionNum,
-:global(html.dark .square-create-page) .uploadIcon,
-:global(html.dark .square-create-page) .addIcon,
-:global(html.dark .square-create-page) .topicTag,
-:global(html.dark .square-create-page) .topicRemove {
-  color: var(--brand-primary-bright) !important;
+:global(html.dark .square-create-page) .previewTopic,
+:global(html.dark .square-create-page) .railTag {
+  color: var(--brand-primary-bright);
 }
 
-:global(html.dark .square-create-page) .topicRemove:hover {
-  color: var(--status-danger) !important;
+:global(html.dark .square-create-page) .railTag {
+  background: var(--brand-primary-bright-bg);
 }
 
-:global(html.dark .square-create-page) .deleteBtn {
-  background: var(--status-danger) !important;
-  color: var(--text-inverse, #fff) !important;
-}
-
-:global(html.dark .square-create-page) .successBigIcon {
-  background: color-mix(in srgb, var(--status-success) 15%, transparent) !important;
-}
-
-/* ============================================================
-   暗色主题 · 三期「卡片融入背景」覆盖段
-   ============================================================ */
-:global(html.dark .square-create-page) .formContainer,
-:global(html.dark .square-create-page) .formCard,
-:global(html.dark .square-create-page) .formCardRow,
-:global(html.dark .square-create-page) .imageUploader,
-:global(html.dark .square-create-page) .addImageBtn,
-:global(html.dark .square-create-page) .imageItem {
-  background: transparent !important;
-  border-color: rgb(255, 255, 255, 0.06) !important;
-}
-
-:global(html.dark .square-create-page) .contentTextarea {
-  background: rgb(255, 255, 255, 0.04) !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
-}
-
-:global(html.dark .square-create-page) .emotionTag {
-  background: rgb(255, 255, 255, 0.04) !important;
-  border-color: rgb(255, 255, 255, 0.08) !important;
-}
-
-:global(html.dark .square-create-page) .emotionTag:hover,
-:global(html.dark .square-create-page) .emotionTag.active {
-  background: color-mix(in srgb, var(--brand-primary-bright) 10%, transparent) !important;
-  border-color: color-mix(in srgb, var(--brand-primary-bright) 30%, transparent) !important;
-}
-
-:global(html.dark .square-create-page) .topicTag {
-  background: color-mix(in srgb, var(--brand-primary-bright) 8%, transparent) !important;
-  border-color: transparent !important;
+:global(html.dark .square-create-page) .emotionTags :global(.ant-radio-button-wrapper-checked) {
+  color: var(--brand-primary-bright);
+  border-color: var(--brand-primary-bright);
+  background: var(--brand-primary-bright-bg);
 }

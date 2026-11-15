@@ -1,8 +1,9 @@
 // 03 · 隐私控制：可见性三选一卡片 + 两个开关
 import { useMemo, useState } from 'react'
 import { App as AntApp, Switch } from 'antd'
-import { CheckOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
+import { CheckOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
+import { SectionHead } from '../SectionHead'
 import styles from './PrivacySection.module.css'
 
 interface PrivacyState {
@@ -33,16 +34,11 @@ export function PrivacySection() {
 
   return (
     <section id="sec-privacy" className={styles.editorialSection}>
-      <div className={styles.sectionMarker}>
-        <span className={styles.markerNum}>03</span>
-        <span className={styles.markerRule}></span>
-        <EyeInvisibleOutlined className={styles.markerIcon} />
-        <span className={styles.markerLabel}>{t('settings.card.privacy.title')}</span>
-      </div>
-      <div className={styles.sectionHeadlineRow}>
-        <h2 className={styles.sectionHeadline}>{t('settings.card.privacy.title')}</h2>
-        <p className={styles.sectionDeck}>{t('settings.card.privacy.desc')}</p>
-      </div>
+      <SectionHead
+        no="03"
+        title={t('settings.card.privacy.title')}
+        desc={t('settings.card.privacy.desc')}
+      />
       <h3 className={styles.colTitle}>{t('settings.card.privacy.visibility')}</h3>
       <div className={styles.visibilityGrid}>
         {visibilityOpts.map((opt, i) => (

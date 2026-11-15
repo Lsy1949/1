@@ -22,7 +22,6 @@ import {
   TrophyOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons'
-import ModuleCover from '@/components/ModuleCover'
 import { useReveal } from '@/hooks/useReveal'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/hooks/useTheme'
@@ -39,19 +38,17 @@ interface Props {
   onOpenScale: (key: string) => void
 }
 
-// --- 成长看板侧边栏导航（图标以 ReactNode 形态存放，替代 Vue 存组件引用） ---
-const dashboardNav: { key: string; name: string; icon: ReactNode }[] = [
-  { key: 'overview', name: '数据概览', icon: <LineChartOutlined /> },
-  { key: 'radar', name: '身心能量', icon: <AimOutlined /> },
-  { key: 'trend', name: '情绪趋势', icon: <RiseOutlined /> },
-  { key: 'distribution', name: '测评分布', icon: <PieChartOutlined /> },
-  { key: 'ai', name: 'AI 洞察', icon: <RobotOutlined /> },
-  { key: 'progress', name: '进步对比', icon: <TrophyOutlined /> },
-  { key: 'recommend', name: '智能推荐', icon: <StarOutlined /> },
-  { key: 'history', name: '历史足迹', icon: <UnorderedListOutlined /> },
+// --- 成长看板侧边栏导航（名称走 i18n；图标以 ReactNode 形态存放） ---
+const DASHBOARD_NAV: { key: string; icon: ReactNode }[] = [
+  { key: 'overview', icon: <LineChartOutlined /> },
+  { key: 'radar', icon: <AimOutlined /> },
+  { key: 'trend', icon: <RiseOutlined /> },
+  { key: 'distribution', icon: <PieChartOutlined /> },
+  { key: 'ai', icon: <RobotOutlined /> },
+  { key: 'progress', icon: <TrophyOutlined /> },
+  { key: 'recommend', icon: <StarOutlined /> },
+  { key: 'history', icon: <UnorderedListOutlined /> },
 ]
-
-const radarLabels = ['情绪调节', '压力耐受', '职业驱动', '思维深度', '社交能量', '自我认知']
 
 /** 雷达图长表行 / 环形图行（@ant-design/plots 均为长表数据形态） */
 interface RadarDatum {
@@ -107,6 +104,22 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
 
   // --- 侧边栏选中态（原 ref → useState） ---
   const [activeDashboard, setActiveDashboard] = useState('overview')
+
+  /** 导航项名称（i18n） */
+  const dashboardNav = useMemo(
+    () =>
+      DASHBOARD_NAV.map((item) => ({
+        ...item,
+        name: t(`assessment.dashboard.nav.${item.key}` as I18nKey),
+      })),
+    [t],
+  )
+
+  /** 雷达六维名称（i18n 数组） */
+  const radarLabels = useMemo(
+    () => t('assessment.dashboard.radarDims', { returnObjects: true }) as string[],
+    [t],
+  )
 
   // --- 图表实例 + 显隐切换后的尺寸重算 ---
   // 看板 section 为 v-show（保持挂载、图表状态不丢失），但 G2 autoFit 只监听
@@ -230,36 +243,21 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
     return { dates, rows, domain: defs.map((d) => d.name), range: defs.map((d) => d.color), firstAvg }
   }, [history, trendRange, chartColors])
 
-  // --- AI 洞察 ---
+  // --- AI 洞察（文案走 i18n：按已测维度选择一套洞察） ---
   const aiInsights = useMemo(() => {
     if (history.length === 0) return { summary: '', strength: '', risk: '', suggestion: '' }
     const hasPsych = history.some((h) => ['phq9', 'gad7'].includes(h.scaleKey))
     const hasCareer = history.some((h) => ['riasec', 'mbti'].includes(h.scaleKey))
 
-    let summary = '您近期完成了多个维度的测评，展现出较好的自我探索意识。'
-    let strength = '具备良好的自我觉察力，愿意主动关注内心状态。'
-    let risk = '目前数据点较少，建议持续测评以监测状态变化。'
-    let suggestion = '建议保持每两周一次的测评频率，建立个人成长基线。'
+    const variant = hasPsych && hasCareer ? 'both' : hasPsych ? 'psych' : hasCareer ? 'career' : 'base'
 
-    if (hasPsych && hasCareer) {
-      summary = '您的探索覆盖了心理健康与生涯发展两大核心维度，呈现全面的自我认知图谱。'
-      strength = '性格倾向与职业兴趣高度契合，具备清晰的自我定位能力。'
-      risk = '在面临高压力时，情绪调节能力仍有提升空间，可能影响职业效能发挥。'
-      suggestion = '建议结合情绪管理练习与职业规划，形成个性化的成长方案。'
-    } else if (hasPsych) {
-      summary = '您关注心理健康状态，展现了良好的自我关怀意识。'
-      strength = '能够主动识别情绪信号，这是心理韧性的重要基础。'
-      risk = '仅关注情绪维度可能忽略职业与认知层面的潜能。'
-      suggestion = '建议补充生涯发展类测评，全面探索自我潜能。'
-    } else if (hasCareer) {
-      summary = '您正在积极探索职业方向，展现了前瞻性的规划意识。'
-      strength = '对职业兴趣与性格有清晰认知，有助于精准定位发展方向。'
-      risk = '缺乏情绪状态基线数据，可能在压力下难以察觉情绪变化。'
-      suggestion = '建议补充心理健康类测评，建立完整的自我认知图谱。'
+    return {
+      summary: t(`assessment.dashboard.insight.${variant}.summary`),
+      strength: t(`assessment.dashboard.insight.${variant}.strength`),
+      risk: t(`assessment.dashboard.insight.${variant}.risk`),
+      suggestion: t(`assessment.dashboard.insight.${variant}.suggestion`),
     }
-
-    return { summary, strength, risk, suggestion }
-  }, [history])
+  }, [history, t])
 
   // --- 测评分布（环形图：按分类聚合，颜色映射主题分类色；图例自绘以配合中心总计） ---
   const donutChart = useMemo(() => {
@@ -327,34 +325,34 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
     return comparisons
   }, [history])
 
-  // --- 智能推荐 ---
+  // --- 智能推荐（推荐理由走 i18n） ---
   const recommendations = useMemo(() => {
     const completedKeys = new Set(history.map((h) => h.scaleKey))
     const recs = [] as { key: string; reason: string }[]
     if (completedKeys.has('phq9') && !completedKeys.has('gad7')) {
-      recs.push({ key: 'gad7', reason: '完成焦虑测评，全面了解情绪状态' })
+      recs.push({ key: 'gad7', reason: t('assessment.dashboard.rec.gad7AfterPhq9') })
     }
     if (completedKeys.has('gad7') && !completedKeys.has('phq9')) {
-      recs.push({ key: 'phq9', reason: '补充抑郁测评，建立情绪基线' })
+      recs.push({ key: 'phq9', reason: t('assessment.dashboard.rec.phq9AfterGad7') })
     }
     if (completedKeys.has('riasec') && !completedKeys.has('mbti')) {
-      recs.push({ key: 'mbti', reason: '结合性格类型，深化职业探索' })
+      recs.push({ key: 'mbti', reason: t('assessment.dashboard.rec.mbtiAfterRiasec') })
     }
     if (completedKeys.has('mbti') && !completedKeys.has('riasec')) {
-      recs.push({ key: 'riasec', reason: '探索职业兴趣，匹配性格倾向' })
+      recs.push({ key: 'riasec', reason: t('assessment.dashboard.rec.riasecAfterMbti') })
     }
     if (recs.length < 3) {
       scales
         .filter((s) => s.available && !completedKeys.has(s.key))
         .slice(0, 3 - recs.length)
         .forEach((s) => {
-          recs.push({ key: s.key, reason: '尝试新的测评维度，拓展自我认知' })
+          recs.push({ key: s.key, reason: t('assessment.dashboard.rec.exploreNew') })
         })
     }
     return recs
       .slice(0, 3)
       .map((rec) => ({ ...rec, scale: scales.find((s) => s.key === rec.key) }))
-  }, [history, scales])
+  }, [history, scales, t])
 
   // --- 历史足迹 ---
   const [historyFilter, setHistoryFilter] = useState('all')
@@ -431,24 +429,21 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
 
   return (
     <div className={styles.dashboardWrapper}>
-      <ModuleCover
-        eyebrow="— Growth Dashboard"
-        no={`No.${String(totalCompleted).padStart(2, '0')}`}
-        title={t('assessment.cover.dashboard.title')}
-        desc={t('assessment.cover.dashboard.desc')}
-      />
       <div ref={layoutRef} className={styles.dashboardLayout}>
         {/* 左侧导航 */}
         <aside className={styles.dashboardSidebar}>
+          <span className={styles.sbCap}>Sections</span>
           {dashboardNav.map((item) => (
-            <div
+            <button
               key={item.key}
+              type="button"
+              aria-pressed={activeDashboard === item.key}
               className={`${styles.navItem}${activeDashboard === item.key ? ` ${styles.active}` : ''}`}
               onClick={() => setActiveDashboard(item.key)}
             >
               {item.icon}
               <span>{item.name}</span>
-            </div>
+            </button>
           ))}
         </aside>
 

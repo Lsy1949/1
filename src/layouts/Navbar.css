@@ -36,6 +36,12 @@
   box-shadow: var(--shadow-medium) !important;
 }
 
+/* 用户下拉展开期间锁定导航栏高度（行高不随滚动收缩），
+   让触发器与浮层在滚动时完全静止，避免浮层跟随滞后 */
+.nav-header.has-user-menu {
+  height: 80px;
+}
+
 .nav-header.is-transparent .logo-text {
   background: white;
   -webkit-background-clip: text;
@@ -53,7 +59,8 @@
 }
 
 .nav-header.is-transparent:has(.nav-center:hover) .menu-item {
-  color: var(--ink-700);
+  /* 原文 --ink-700 是固定色阶，暗色下头部变深后文字不可见，改用语义 token */
+  color: var(--text-regular);
 }
 
 .nav-header.is-transparent .menu-item:hover {
@@ -125,10 +132,12 @@
 }
 
 .nav-container {
-  max-width: 1200px;
+  /* 与全站 .container 同一契约：导航左右缘必须与所有页面版心对齐
+     （原写死 1200px，1920 屏下比正文窄 400px，页头与内容错位） */
+  max-width: var(--container-max);
   height: 100%;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 var(--container-pad);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -427,6 +436,26 @@
   border-color: var(--brand-primary-soft);
 }
 
+/* 打开态：触发器保持高亮，箭头翻转（并保留 hover 的视觉延续） */
+.user-profile.is-open {
+  background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+  border-color: var(--brand-primary-soft);
+}
+
+.user-profile:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+.user-profile.is-open .caret {
+  transform: rotate(180deg);
+  color: var(--brand-primary);
+}
+
+.user-profile.is-open .username {
+  color: var(--brand-primary);
+}
+
 .user-profile .caret {
   font-size: 11px;
   color: var(--ink-500);
@@ -513,16 +542,6 @@
 
 .mobile-drawer .ant-collapse-content > .ant-collapse-content-box {
   padding: 16px 0 !important;
-}
-
-/* 隐藏滚动条但保留功能 (可选) */
-.mobile-menu-content::-webkit-scrollbar {
-  width: 4px;
-}
-
-.mobile-menu-content::-webkit-scrollbar-thumb {
-  background: var(--neutral-100);
-  border-radius: 2px;
 }
 
 .mobile-collapse-title {
@@ -707,14 +726,17 @@
 
 /* ---------- 用户下拉菜单（AntD Dropdown 浮层，替代原全局 el-popper 样式） ---------- */
 .user-dropdown-popper.ant-dropdown {
-  border-radius: 16px !important;
-  border: 1px solid var(--mist-050) !important;
-  box-shadow: 0 12px 40px color-mix(in srgb, var(--brand-primary) 12%, transparent) !important;
+  min-width: 272px;
+  border-radius: 14px !important;
+  border: 1px solid var(--border-light) !important;
+  background: var(--bg-card) !important;
+  box-shadow: 0 16px 40px color-mix(in srgb, #0f172a 12%, transparent) !important;
   padding: 6px !important;
   overflow: hidden;
 }
 
 .user-dropdown-popper .ant-dropdown-menu {
+  min-width: 264px !important;
   border: none !important;
   background: transparent !important;
   padding: 0 !important;
@@ -729,55 +751,70 @@
   padding: 0 !important;
   margin: 0 !important;
   background: transparent !important;
+  height: auto !important;
 }
 
 .user-dropdown-popper .dropdown-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 12px 16px;
-  margin-bottom: 4px;
-  background: linear-gradient(135deg, var(--brand-primary-faint), var(--brand-primary-soft));
-  border-radius: 12px;
-  border-bottom: 1px solid var(--brand-primary-soft);
+  padding: 12px 12px 14px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.user-dropdown-popper .dropdown-header-avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 3px var(--brand-primary-soft);
 }
 
 .user-dropdown-popper .dropdown-header-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
 }
 
 .user-dropdown-popper .dropdown-header-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 15px;
   font-weight: 700;
-  color: var(--ink-900);
   line-height: 1.2;
+  letter-spacing: -0.2px;
+  color: var(--text-heading);
 }
 
-.user-dropdown-popper .dropdown-header-id {
+.user-dropdown-popper .dropdown-header-meta {
   font-size: 12px;
-  color: var(--ink-500);
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
 }
 
 .user-dropdown-popper .ant-dropdown-menu-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 12px;
-  border-radius: 10px;
-  margin: 2px 0;
-  font-size: 14px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  margin: 1px 0;
+  font-size: 13.5px;
   font-weight: 500;
-  color: var(--ink-700);
-  transition: all var(--duration-fast) var(--ease-standard);
+  line-height: 1.4;
+  color: var(--text-regular);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
 }
 
 .user-dropdown-popper .ant-dropdown-menu-item .anticon {
-  font-size: 16px;
-  color: var(--ink-500);
+  font-size: 15px;
+  color: var(--text-faint);
   transition: color var(--duration-fast) var(--ease-standard);
 }
 
@@ -790,23 +827,28 @@
   color: var(--brand-primary);
 }
 
+.user-dropdown-popper .ant-dropdown-menu-item:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: -2px;
+}
+
 /* 登出项（最后一个菜单项，前面是 AntD divider）hover 变危险色 */
 .user-dropdown-popper .ant-dropdown-menu-item:last-child {
   margin-top: 6px;
 }
 
 .user-dropdown-popper .ant-dropdown-menu-item-divider {
-  margin: 0 12px;
-  background: var(--mist-050);
+  margin: 6px 8px;
+  background: var(--border-light);
 }
 
 .user-dropdown-popper .ant-dropdown-menu-item:last-child:hover {
-  color: var(--danger-500) !important;
-  background: var(--danger-50) !important;
+  color: var(--status-danger) !important;
+  background: color-mix(in srgb, var(--status-danger) 10%, transparent) !important;
 }
 
 .user-dropdown-popper .ant-dropdown-menu-item:last-child:hover .anticon {
-  color: var(--danger-500);
+  color: var(--status-danger);
 }
 
 /* ---------- 主题 / 语言下拉（AntD 浮层内的选中态布局） ---------- */

@@ -1,4 +1,6 @@
 .square-detail-page {
+  /* 详情页版心：左阅读栏 1fr + 右侧栏 288px，总宽 1240（比原 750–950 单栏更适配桌面） */
+  --square-detail-shell: 1240px;
   min-height: 100vh;
   background: var(--brand-primary-wash);
   padding-top: 28px;
@@ -9,17 +11,38 @@
   overflow-x: hidden;
 }
 
-/* 加载 / 错误态容器：与详情栏一致的版式留白 */
+/* 页面唯一的版心容器：返回栏 / 双栏 / 加载态共用，保证左缘齐平 */
+.square-detail-shell {
+  max-width: var(--square-detail-shell);
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* 双栏：正文与评论在左，作者侧栏在右（随滚动吸顶） */
+.square-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 288px;
+  gap: 56px;
+  align-items: start;
+}
+
+.square-detail-main {
+  min-width: 0;
+}
+
+/* 加载 / 错误态容器：与详情栏同宽，避免加载完成时列宽跳变 */
 .square-detail-state {
   position: relative;
   z-index: 1;
-  max-width: var(--container-form);
+  max-width: var(--square-detail-shell);
   margin: 0 auto;
   padding: 24px 40px 80px;
   min-height: 50vh;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 32px;
 }
 
 .square-detail-page::before {
@@ -38,4 +61,21 @@
   user-select: none;
   z-index: 0;
   font-family: Georgia, 'Times New Roman', serif;
+}
+
+@media (width <= 1100px) {
+  .square-detail-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+}
+
+@media (width <= 768px) {
+  .square-detail-shell {
+    padding: 0 20px;
+  }
+
+  .square-detail-state {
+    padding: 24px 20px 64px;
+  }
 }

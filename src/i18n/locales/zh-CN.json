@@ -60,6 +60,17 @@
     }
   },
   "common": {
+    "editor": {
+      "bold": "加粗",
+      "italic": "斜体",
+      "underline": "下划线",
+      "strike": "删除线",
+      "unorderedList": "无序列表",
+      "orderedList": "有序列表",
+      "undo": "撤销",
+      "redo": "重做",
+      "ariaLabel": "富文本编辑器"
+    },
     "back": "返回",
     "confirm": "确认",
     "cancel": "取消",
@@ -301,6 +312,32 @@
       "mine": "我的",
       "dashboard": "成长看板"
     },
+    "hero": {
+      "eyebrow": "— Assessment",
+      "title": "认识自己，<em>从这里开始</em>",
+      "desc": "从心理健康、生涯发展到认知与潜能，用有信度的量表建立属于你的自我画像。所有结果仅供自我探索参考。",
+      "primary": "开始测评",
+      "secondary": "查看成长看板",
+      "stats": {
+        "scales": "份量表",
+        "completed": "已完成",
+        "points": "成长积分",
+        "goal": "本月目标"
+      }
+    },
+    "rail": {
+      "scales": "多维度量表目录",
+      "dashboard": "数据与洞察",
+      "mine": "成长档案"
+    },
+    "eyebrow": {
+      "scales": "— Scale Catalog",
+      "dashboard": "— Growth Dashboard",
+      "mine": "— My Profile"
+    },
+    "catalog": {
+      "all": "全部测评"
+    },
     "cover": {
       "scales": {
         "title": "测评<em>广场</em>",
@@ -341,6 +378,21 @@
     "disclaimer": "测评结果仅供个人探索参考，不具备临床医疗诊断效力。",
     "comingSoonTip": "「{{name}}」即将上线，敬请期待",
     "profile": {
+      "status": {
+        "new": "即将启程",
+        "rising": "初露锋芒",
+        "steady": "稳步成长",
+        "deep": "深度探索",
+        "master": "自我大师"
+      },
+      "badgeDefs": {
+        "first": { "name": "初心萌芽", "desc": "完成第一次测评" },
+        "multi": { "name": "多元探索", "desc": "完成2种不同类型测评" },
+        "mental": { "name": "心理关怀", "desc": "完成心理健康类测评" },
+        "career": { "name": "生涯启航", "desc": "完成生涯发展类测评" },
+        "depth": { "name": "深度探索", "desc": "完成3次以上测评" },
+        "master": { "name": "自我大师", "desc": "完成5次以上测评" }
+      },
       "completed": "已完成",
       "growthPoints": "成长积分",
       "assessmentDays": "测评天数",
@@ -358,6 +410,57 @@
       "unlocked": "已解锁"
     },
     "dashboard": {
+      "nav": {
+        "overview": "数据概览",
+        "radar": "身心能量",
+        "trend": "情绪趋势",
+        "distribution": "测评分布",
+        "ai": "AI 洞察",
+        "progress": "进步对比",
+        "recommend": "智能推荐",
+        "history": "历史足迹"
+      },
+      "radarDims": [
+        "情绪调节",
+        "压力耐受",
+        "职业驱动",
+        "思维深度",
+        "社交能量",
+        "自我认知"
+      ],
+      "insight": {
+        "both": {
+          "summary": "您的探索覆盖了心理健康与生涯发展两大核心维度，呈现全面的自我认知图谱。",
+          "strength": "性格倾向与职业兴趣高度契合，具备清晰的自我定位能力。",
+          "risk": "在面临高压力时，情绪调节能力仍有提升空间，可能影响职业效能发挥。",
+          "suggestion": "建议结合情绪管理练习与职业规划，形成个性化的成长方案。"
+        },
+        "psych": {
+          "summary": "您关注心理健康状态，展现了良好的自我关怀意识。",
+          "strength": "能够主动识别情绪信号，这是心理韧性的重要基础。",
+          "risk": "仅关注情绪维度可能忽略职业与认知层面的潜能。",
+          "suggestion": "建议补充生涯发展类测评，全面探索自我潜能。"
+        },
+        "career": {
+          "summary": "您正在积极探索职业方向，展现了前瞻性的规划意识。",
+          "strength": "对职业兴趣与性格有清晰认知，有助于精准定位发展方向。",
+          "risk": "缺乏情绪状态基线数据，可能在压力下难以察觉情绪变化。",
+          "suggestion": "建议补充心理健康类测评，建立完整的自我认知图谱。"
+        },
+        "base": {
+          "summary": "您近期完成了多个维度的测评，展现出较好的自我探索意识。",
+          "strength": "具备良好的自我觉察力，愿意主动关注内心状态。",
+          "risk": "目前数据点较少，建议持续测评以监测状态变化。",
+          "suggestion": "建议保持每两周一次的测评频率，建立个人成长基线。"
+        }
+      },
+      "rec": {
+        "gad7AfterPhq9": "完成焦虑测评，全面了解情绪状态",
+        "phq9AfterGad7": "补充抑郁测评，建立情绪基线",
+        "mbtiAfterRiasec": "结合性格类型，深化职业探索",
+        "riasecAfterMbti": "探索职业兴趣，匹配性格倾向",
+        "exploreNew": "尝试新的测评维度，拓展自我认知"
+      },
       "kpi": {
         "total": "累计测评",
         "points": "成长积分",
@@ -432,7 +535,16 @@
       "saveReport": "保存报告",
       "share": "分享",
       "reportGenerated": "报告已生成并准备下载 (Mock)",
-      "shareCopied": "分享链接已复制到剪贴板 (Mock)"
+      "shareCopied": "分享链接已复制到剪贴板 (Mock)",
+      "difficulty": "作答难度",
+      "measure": "测评维度",
+      "ruler": "作答刻度",
+      "rulerHint": "四档频次，对照你近两周的真实状态",
+      "rulerHintBipolar": "每题给出一对陈述，选择更贴近你的一侧",
+      "lastResult": "上次结果",
+      "viewLast": "查看上次报告",
+      "disclaimer": "本测评不构成医学诊断；若困扰持续，建议预约心理咨询。",
+      "retakeHint": "重新测评会新增一条记录，历史报告仍会保留。"
     },
     "history": {
       "clearConfirm": "确定要清空所有测评记录吗？此操作不可恢复。",
@@ -456,12 +568,32 @@
       "goAssess": "去测评"
     },
     "take": {
+      "exitTitle": "确认退出",
+      "exitConfirm": "测评尚未完成，退出将不会保存当前进度，确定退出吗？",
+      "exitOk": "确定退出",
+      "exitCancel": "继续答题",
       "exit": "退出",
       "prev": "上一题",
       "next": "下一题",
       "submit": "提交报告",
       "analyzing": "正在分析您的回答，生成深度报告...",
-      "pleaseWait": "请稍候"
+      "pleaseWait": "请稍候",
+      "answered": "已答 {{done}} / {{total}}",
+      "unanswered": "还有 {{n}} 题未答 · 去补答",
+      "railTitle": "题目索引",
+      "railLegendDone": "已答",
+      "railLegendTodo": "未答",
+      "hintStart": "先做一次深呼吸，凭第一感觉作答",
+      "hintHalf": "已经过半，保持这个节奏",
+      "hintLast": "最后一题，完成后即可生成你的维度画像",
+      "asideTips": "作答提示",
+      "tipIntuition": "凭第一直觉，不必反复权衡",
+      "tipHonest": "没有对错，真实作答才有参考价值",
+      "tipPrivate": "结果仅用于自我了解，不作诊断依据",
+      "asideKeyboard": "键盘操作",
+      "keySelect": "A–E 选择选项",
+      "keyNav": "← → 切换题目",
+      "keyEnter": "Enter 下一题 / 提交"
     },
     "mbti": {
       "E": "外向",
@@ -485,10 +617,56 @@
   "counseling": {
     "tabs": {
       "booking": "预约咨询",
+      "mine": "我的",
       "counselors": "心理老师",
       "notice": "咨询须知",
       "faq": "常见问题",
       "companion": "AI 伴侣"
+    },
+    "hero": {
+      "eyebrow": "— Counseling",
+      "title": "把心事，<em>放在这里</em>",
+      "desc": "校内免费的一对一心理咨询。专业老师陪你梳理情绪、关系与成长中的困扰，全程保密，按你的节奏开始。",
+      "primary": "立即预约",
+      "secondary": "先和 AI 聊聊",
+      "stats": {
+        "counselors": "位心理老师",
+        "types": "类咨询形式",
+        "free": "校内免费",
+        "confirm": "确认时长"
+      }
+    },
+    "rail": {
+      "booking": "四步完成预约",
+      "mine": "预约与收藏一览",
+      "consultants": "按方向筛选老师",
+      "notice": "流程与规则",
+      "faq": "常见疑问解答",
+      "companion": "随时倾诉"
+    },
+    "week": {
+      "more": "更多日期"
+    },
+    "slots": {
+      "full": "已约满"
+    },
+    "match": {
+      "title": "关注方向",
+      "desc": "选择 1-3 个方向，为你标注匹配度",
+      "score": "匹配度",
+      "best": "首选推荐",
+      "clear": "清除"
+    },
+    "aiShared": {
+      "tipsTitle": "对话建议",
+      "tips": [
+        "不必组织语言，想到哪说到哪",
+        "可以随时暂停或结束对话",
+        "需要专业帮助时，欢迎预约真人老师"
+      ],
+      "hotlineLabel": "心理援助热线",
+      "hotline": "12356",
+      "back": "返回咨询中心"
     },
     "types": {
       "individual": "个体咨询",
@@ -540,6 +718,11 @@
         "title": "预约<em>咨询</em>",
         "desc": "四步完成预约：选择类型 → 挑选老师 → 确定时间 → 填写信息。"
       },
+      "mine": {
+        "eyebrow": "— Mine",
+        "title": "我的<em>咨询</em>",
+        "desc": "集中查看全部预约与收藏的老师，可筛选状态、改约、取消与评价。"
+      },
       "counselors": {
         "eyebrow": "— Counselors",
         "title": "心理<em>老师</em>",
@@ -560,7 +743,7 @@
       "type": "咨询类型",
       "counselor": "心理老师",
       "time": "咨询时间",
-      "info": "个人信息"
+      "info": "预约信息"
     },
     "btn": {
       "confirmBooking": "确认预约",
@@ -585,11 +768,29 @@
       "empty": "未选择"
     },
     "myBookings": "我的预约",
+    "mine": {
+      "stats": {
+        "total": "预约总数",
+        "upcoming": "待进行",
+        "completed": "已完成",
+        "favorites": "收藏老师"
+      },
+      "bookingsDesc": "按状态筛选预约，点开任意一条可查看详情、改约、取消或评价。",
+      "favoritesTitle": "收藏的老师",
+      "favoritesDesc": "在心理老师页收藏后，这里可以直接发起预约。",
+      "browse": "浏览全部老师",
+      "bookNow": "去预约",
+      "newBooking": "新建预约",
+      "emptyFavorites": "还没有收藏老师"
+    },
     "form": {
       "name": "称呼",
       "namePlaceholder": "如何称呼您",
       "contact": "联系方式",
       "contactPlaceholder": "手机号或邮箱",
+      "accountHint": "预约人信息取自登录账号，无需重复填写。",
+      "contactUnbound": "未绑定联系方式",
+      "editAccount": "账号设置",
       "datePlaceholder": "选择咨询日期",
       "description": "问题描述",
       "descPlaceholder": "简单描述您想探讨的话题",
@@ -617,7 +818,9 @@
       "bookingSuccess": "预约提交成功！心理老师将在24小时内确认",
       "cancelConfirm": "确定取消此预约吗？",
       "cancelTitle": "提示",
-      "cancelled": "已取消预约"
+      "cancelled": "已取消预约",
+      "rescheduled": "改约成功，请按新时间参加",
+      "feedbackThanks": "感谢你的评价"
     },
     "counselors": {
       "searchPlaceholder": "搜索姓名 / 专长",
@@ -630,6 +833,8 @@
       "sortByRating": "评分优先",
       "sortByExperience": "经验优先",
       "sortBySessions": "咨询次数",
+      "sortByMatch": "匹配度优先",
+      "genderAll": "全部",
       "count": "位",
       "sessionsSuffix": "次咨询",
       "yearsSuffix": "年经验",
@@ -742,8 +947,50 @@
     },
     "booking": {
       "cancelBtn": "取消",
+      "detail": "详情",
+      "reschedule": "改约",
+      "feedback": "评价",
+      "filterAll": "全部",
+      "viewAll": "全部预约",
       "empty": "暂无预约记录",
-      "emptyHint": "暂无预约，去预约一位老师吧"
+      "emptyHint": "暂无预约，去预约一位老师吧",
+      "emptyFiltered": "该状态下暂无预约"
+    },
+    "detailDrawer": {
+      "title": "预约详情",
+      "stepCreated": "提交预约",
+      "stepPending": "等待老师确认",
+      "stepConfirmed": "预约已确认",
+      "stepCompleted": "咨询已完成",
+      "stepCancelled": "预约已取消",
+      "info": "预约信息",
+      "notes": "问题描述",
+      "feedbackTitle": "我的评价",
+      "feedbackPrompt": "咨询已完成，欢迎留下你的反馈",
+      "noFeedback": "咨询完成后可评价",
+      "noComment": "未填写文字评价",
+      "tip": "如需调整时间，建议在开始前 24 小时改约或取消"
+    },
+    "reschedule": {
+      "title": "改约时间",
+      "desc": "当前预约：{{date}} {{slot}}",
+      "dateLabel": "新日期",
+      "slotLabel": "新时段",
+      "confirm": "确认改约",
+      "missing": "请选择新的日期与时段"
+    },
+    "feedbackModal": {
+      "title": "评价这次咨询",
+      "desc": "你的反馈会帮助心理老师把服务做得更好",
+      "score": "满意度",
+      "comment": "补充说明（选填）",
+      "placeholder": "可以聊聊这次咨询的感受…",
+      "submit": "提交评价"
+    },
+    "favorites": {
+      "only": "只看收藏",
+      "add": "收藏老师",
+      "remove": "取消收藏"
     },
     "empty": {
       "noCounselor": "没有找到匹配的老师",
@@ -914,10 +1161,11 @@
         "hint": "把此刻的心情封存，写给未来的自己",
         "btn": "创建第一个胶囊"
       },
+      "create": "写一封给未来",
       "fab": "新建胶囊"
     },
     "create": {
-      "back": "返回广场",
+      "back": "返回档案",
       "eyebrow": "— New Capsule",
       "title": "新建<em>胶囊</em>",
       "subtitle": "把此刻的心情，封存进时光胶囊",
@@ -931,7 +1179,8 @@
         "public": "公开到广场",
         "content": "胶囊内容",
         "photo": "添加照片",
-        "mood": "此刻心情"
+        "mood": "此刻心情",
+        "delivery": "投递设置"
       },
       "placeholders": {
         "title": "请输入标题",
@@ -965,6 +1214,19 @@
       },
       "submit": "立即封存",
       "submitting": "封存中...",
+      "aside": {
+        "summary": "投递摘要",
+        "daysLeft": "天后开启",
+        "openDate": "开启日期",
+        "method": "投递方式",
+        "recipient": "收件人",
+        "visibility": "可见性",
+        "publicOn": "公开到广场",
+        "publicOff": "仅自己可见",
+        "privacy": "隐私设置",
+        "unspecified": "未填写",
+        "submitHint": "提交后可在「时光胶囊」查看投递进度"
+      },
       "validation": {
         "title": "请输入胶囊标题",
         "date": "请选择开启时间",
@@ -983,7 +1245,7 @@
       }
     },
     "detail": {
-      "back": "返回广场",
+      "back": "返回档案",
       "title": "胶囊<em>详情</em>",
       "created": "创建于 {{date}}",
       "remaining": "还有 {{days}} 天开启",
@@ -1109,6 +1371,17 @@
       },
       "submit": "立即发布",
       "submitting": "发布中...",
+      "aside": {
+        "preview": "实时预览",
+        "live": "LIVE",
+        "now": "刚刚",
+        "me": "我",
+        "previewEmpty": "写下第一句话，右侧会同步预览",
+        "settings": "发布设置",
+        "anonymousHint": "隐去昵称与头像，以匿名同学身份发布",
+        "commentHint": "关闭后其他同学不能评论这条心得",
+        "submitHint": "发布后可在「交流广场」查看与管理"
+      },
       "validation": {
         "content": "请添加内容或图片"
       },
@@ -1123,6 +1396,15 @@
       "title": "动态<em>详情</em>",
       "createdAt": "发布于 {{date}}",
       "anonymous": "匿名同学",
+      "aside": {
+        "stats": "互动数据",
+        "likes": "点赞",
+        "comments": "评论",
+        "published": "发布时间",
+        "topics": "相关话题",
+        "noTopics": "这条动态还没有话题标签",
+        "anon": "TA 选择了匿名发布，请尊重这份坦诚"
+      },
       "like": "点赞",
       "share": "分享",
       "comments": {
@@ -1132,7 +1414,11 @@
         "submit": "发表评论",
         "empty": "还没有评论，来抢沙发吧",
         "reply": "回复",
-        "replyTo": "回复 {{name}}",
+        "replyTo": "回复 @{{name}}：",
+        "replyPlaceholder": "回复 @{{name}}...",
+        "replies": "{{n}} 条回复",
+        "collapseReplies": "收起回复",
+        "like": "赞",
         "repliedTo": "回复 @{{name}}",
         "cancelReply": "取消",
         "submitted": "评论已发布"
@@ -1152,6 +1438,23 @@
       "bioEmpty": "这个人很懒，还没有写自我介绍"
     },
     "card": {
+      "quick": {
+        "settings": "账号设置",
+        "counseling": "心理咨询中心"
+      },
+      "bookings": {
+        "title": "我的预约",
+        "desc": "查看心理咨询的预约状态，可直接改约、取消，或在咨询结束后留下评价。",
+        "goBook": "去预约",
+        "empty": "还没有预约记录",
+        "emptyFiltered": "该状态下暂无预约"
+      },
+      "favorites": {
+        "title": "我的收藏",
+        "desc": "收藏的心理老师，随时查看并一键预约。",
+        "empty": "还没有收藏老师，去心理老师列表点 ♡ 收藏",
+        "browse": "去心理老师"
+      },
       "profile": {
         "title": "基础资料",
         "desc": "维护你的身份信息，方便在预约与咨询中使用。",
@@ -1196,7 +1499,7 @@
         "assessments": "参与测评",
         "counseling": "咨询次数",
         "moments": "发布心得",
-        "favorites": "收藏文章",
+        "favorites": "收藏老师",
         "capsules": "时光胶囊"
       },
       "growth": {
@@ -1246,6 +1549,22 @@
     "eyebrow": "账号设置",
     "title": "安全与<em>偏好</em>",
     "desc": "管理账号安全、通知偏好、隐私设置与个性化偏好，打造属于你的使用体验。",
+    "hero": {
+      "backProfile": "返回个人中心",
+      "accountLabel": "当前账号",
+      "accountHint": "以下设置仅对当前账号生效，保存后立即同步到本设备。",
+      "role": "身份",
+      "status": "账号状态",
+      "statusNormal": "正常"
+    },
+    "rail": {
+      "hint": "共 5 组设置，修改后请保存。",
+      "security": "密码、联系方式与登录设备",
+      "notifications": "选择你愿意接收的提醒",
+      "privacy": "主页可见范围与搜索",
+      "preferences": "语言、主题与默认首页",
+      "data": "导出记录与清理缓存"
+    },
     "card": {
       "security": {
         "title": "账号安全",

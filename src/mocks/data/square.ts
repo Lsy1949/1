@@ -9,6 +9,9 @@ import type {
   SquareMemberDTO,
   SquareTopicDTO,
 } from '@/api/types'
+// mock 图片资源：改用本地静态图，避免 picsum 外链在离线/内网环境加载失败留下空白图框
+import imgNist from '@/assets/images/nist-bg.jpg'
+import imgTsinghua from '@/assets/images/tsinghua-bg.jpg'
 
 /**
  * 广场 mock 数据（模拟 `GET /api/square/info` / 详情 / 点赞 / 发布 / 评论）。
@@ -20,7 +23,8 @@ import type {
  */
 
 const FEED_STORAGE_KEY = 'mock:square-feed'
-const COMMENT_STORAGE_KEY = 'mock:square-comments'
+// v2：评论种子新增楼中楼回复，换 key 让旧缓存自动失效
+const COMMENT_STORAGE_KEY = 'mock:square-comments-v2'
 
 const FEED_SEED: SquareFeedDTO[] = [
   {
@@ -38,16 +42,13 @@ const FEED_SEED: SquareFeedDTO[] = [
   {
     id: 3, type: 'moment', author: '陈默', isAnonymous: false, mood: 'happy',
     content: '坚持冥想第 30 天。从一开始坐不住，到现在能安静地观察呼吸二十分钟。最大的改变不是不焦虑了，而是焦虑来的时候，我不再那么害怕它了。',
-    photos: ['https://picsum.photos/seed/square-meditation/600/400'], likes: 67, liked: false,
+    photos: [imgNist], likes: 67, liked: false,
     commentCount: 15, createdAt: '昨天', topics: ['冥想', '坚持'],
   },
   {
     id: 4, type: 'moment', author: '周琳', isAnonymous: false, mood: 'sad',
     content: '考研出分了，没上岸。哭了一下午，然后去操场跑了五公里。回来洗完澡，看着镜子里红着眼的自己，突然觉得：没关系，这条路走不通，还有别的路。明天开始重新规划。',
-    photos: [
-      'https://picsum.photos/seed/square-run1/500/500',
-      'https://picsum.photos/seed/square-run2/500/500',
-    ],
+    photos: [imgNist, imgTsinghua],
     likes: 134, liked: false, commentCount: 38, createdAt: '昨天',
     topics: ['考研', '低谷'], isHot: true,
   },
@@ -66,11 +67,7 @@ const FEED_SEED: SquareFeedDTO[] = [
   {
     id: 7, type: 'moment', author: '苏小北', isAnonymous: false, mood: 'hopeful',
     content: '读完了《被讨厌的勇气》。原来"课题分离"这四个字，可以解开我这么多年的结。别人的评价是别人的课题，我怎么做是我的课题。瞬间轻松了。',
-    photos: [
-      'https://picsum.photos/seed/square-book1/400/400',
-      'https://picsum.photos/seed/square-book2/400/400',
-      'https://picsum.photos/seed/square-book3/400/400',
-    ],
+    photos: [imgTsinghua, imgNist, imgTsinghua],
     likes: 89, liked: false, commentCount: 21, createdAt: '3天前',
     topics: ['读书', '自我成长'],
   },
@@ -195,6 +192,16 @@ const COMMENT_SEED: SquareCommentDTO[] = [
     id: 3, feedId: 1, author: '苏小北', isAnonymous: false,
     content: '重新规划需要勇气，加油！',
     likes: 4, liked: false, createdAt: '20分钟前',
+  },
+  {
+    id: 4, feedId: 1, parentId: 2, author: '林知远', isAnonymous: false,
+    content: '失利的感受是真的，但它只说明这一次的结果，不说明你这个人。',
+    likes: 6, liked: false, createdAt: '30分钟前',
+  },
+  {
+    id: 5, feedId: 1, parentId: 4, author: '匿名同学', isAnonymous: true,
+    content: '谢谢你这句话，我截图存下来了。',
+    likes: 2, liked: false, createdAt: '12分钟前',
   },
 ]
 

@@ -5,28 +5,12 @@ import {
   InfoCircleFilled,
   SearchOutlined,
 } from '@ant-design/icons'
-import { ConfigProvider, Empty, Tabs } from 'antd'
+import { Empty } from 'antd'
 import { useReveal } from '@/hooks/useReveal'
 import { useTranslation } from 'react-i18next'
 import ScaleIcon from '@/components/ScaleIcon'
 import type { ScaleInfo } from '../types'
 import styles from './ScalePanel.module.css'
-
-/**
- * 分类页签作用域 token：与主 tab 同一套「极简文字」语言；
- * 间距全部保持 antd 默认（对称 padding，横线与文字自然对齐），仅收敛配色与字号。
- */
-const ribbonTabsTheme = {
-  components: {
-    Tabs: {
-      titleFontSize: 15,
-      itemColor: 'var(--text-faint)',
-      itemSelectedColor: 'var(--brand-primary)',
-      inkBarColor: 'var(--brand-primary)',
-      horizontalMargin: '0 0 0 0',
-    },
-  },
-}
 
 interface Props {
   categories: { key: string; name: string; count: number }[]
@@ -56,41 +40,36 @@ export default function ScalePanel({
   const { t } = useTranslation()
   const ribbonRef = useReveal<HTMLDivElement>({ delay: 80 })
 
-  // 分类页签 items：label = 名称；数量作上标徽标绝对定位（不撑宽页签，ink bar 只跟随文字宽度）
-  const categoryItems = categories.map((cat) => ({
-    key: cat.key,
-    label: (
-      <span className={styles.catLabel}>
-        {cat.name}
-        <sup className={styles.catCount}>{cat.count}</sup>
-      </span>
-    ),
-  }))
-
   return (
     <>
-      {/* 分类页签（antd Tabs）+ 极简搜索（tabBarExtraContent） */}
+      {/* 分类筛选（胶囊）+ 极简搜索 */}
       <div ref={ribbonRef} className={styles.scaleRibbon}>
-        <ConfigProvider theme={ribbonTabsTheme}>
-          <Tabs
-            className={styles.ribbonTabs}
-            activeKey={activeCategory}
-            onChange={onActiveCategoryChange}
-            items={categoryItems}
-            tabBarExtraContent={{
-              right: (
-                <div className={styles.ribbonSearch}>
-                  <SearchOutlined className={styles.searchIco} />
-                  <input
-                    value={searchQuery}
-                    placeholder={t('assessment.searchPlaceholder')}
-                    onChange={(e) => onSearchQueryChange(e.target.value)}
-                  />
-                </div>
-              ),
-            }}
+        <div className={styles.catRow} role="group" aria-label={t('assessment.catalog.all')}>
+          {categories.map((cat) => {
+            const active = activeCategory === cat.key
+            return (
+              <button
+                key={cat.key}
+                type="button"
+                aria-pressed={active}
+                className={`${styles.catChip}${active ? ` ${styles.catChipOn}` : ''}`}
+                onClick={() => onActiveCategoryChange(cat.key)}
+              >
+                {cat.name}
+                <span className={styles.catBadge}>{cat.count}</span>
+              </button>
+            )
+          })}
+        </div>
+        <div className={styles.ribbonSearch}>
+          <SearchOutlined className={styles.searchIco} />
+          <input
+            value={searchQuery}
+            placeholder={t('assessment.searchPlaceholder')}
+            aria-label={t('assessment.searchPlaceholder')}
+            onChange={(e) => onSearchQueryChange(e.target.value)}
           />
-        </ConfigProvider>
+        </div>
       </div>
 
       {/* 当前分类小标题 */}
@@ -98,7 +77,7 @@ export default function ScalePanel({
         <div className={styles.rowsHeading}>
           <span className={styles.headingName}>
             {activeCategory === 'all'
-              ? '全部测评'
+              ? t('assessment.catalog.all')
               : categories.find((c) => c.key === activeCategory)?.name}
           </span>
           <span className={styles.headingLine} />
@@ -116,6 +95,7 @@ export default function ScalePanel({
               key={scale.key}
               className={[
                 styles.scaleRow,
+                `cat-${scale.category}`,
                 completedKeys.includes(scale.key) ? styles.isCompleted : '',
                 !scale.available ? styles.isUnavailable : '',
               ].join(' ').trim()}

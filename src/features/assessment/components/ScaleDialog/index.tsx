@@ -23,11 +23,14 @@ interface Props {
   /** 量表详情（介绍弹窗展示描述；缺失时仅显示目录信息） */
   scaleDetail?: ScaleDetail
   result: AssessmentRecord | null
+  /** 该量表最近一次结果（介绍弹窗展示「上次结果」入口） */
+  lastRecord?: AssessmentRecord | null
   /** 原 update:visible → 单向 onClose 回调 */
   onClose: () => void
   onStart: () => void
   onDownload: () => void
   onShare: () => void
+  onViewLast?: () => void
 }
 
 /** 测评弹窗：intro 介绍模式 / result 结果报告模式 */
@@ -37,16 +40,21 @@ export default function ScaleDialog({
   scaleInfo,
   scaleDetail,
   result,
+  lastRecord,
   onClose,
   onStart,
   onDownload,
   onShare,
+  onViewLast,
 }: Props) {
   const { t } = useTranslation()
 
   // 介绍模式数据（详情优先，缺失时回退目录项）
   const currentScale = useMemo(() => scaleDetail ?? null, [scaleDetail])
   const currentScaleInfo = useMemo(() => scaleInfo ?? null, [scaleInfo])
+  const categoryLabel = currentScaleInfo
+    ? t(`assessment.categories.${currentScaleInfo.category}`)
+    : ''
 
   // 分数单位：MBTI 显示「类型」，其余显示「分」
   const scoreUnit = useMemo(
@@ -106,7 +114,8 @@ export default function ScaleDialog({
       open={open}
       onCancel={onClose}
       centered
-      width="var(--dialog-md)"
+      /* 介绍模式内容更密（读数条 + 刻度尺），单独放宽；结果报告沿用 token 宽档 */
+      width={mode === 'intro' ? 780 : 'var(--dialog-md)'}
       footer={null}
       title={null}
       closable
@@ -115,57 +124,130 @@ export default function ScaleDialog({
       // 原 :deep() 隐藏 header / body padding 0 → AntD 5 styles API；v6 content 改名 container
       styles={{ container: { padding: 0, borderRadius: 24, overflow: 'hidden' }, body: { padding: 0 } }}
     >
-      {/* 介绍模式 */}
+      {/* 介绍模式：量表说明书式排版（报头 → 读数条 → 维度 → 作答刻度 → 须知 → 启动） */}
       {mode === 'intro' && currentScale && (
         <div className={styles.introContent}>
-          <div className={styles.introHeader}>
-            {/* cat- 为运行时动态分类类（协议类，保留字面量） */}
-            <div className={`${styles.scaleTypeTag} cat-${currentScaleInfo?.category}`}>
-              {currentScaleInfo ? t(`assessment.categories.${currentScaleInfo.category}`) : ''}
+          {/* 报头 */}
+          <header className={styles.introMasthead}>
+            <div className={styles.mastheadRow}>
+              <span className={styles.mastheadEyebrow}>
+                — Assessment · {categoryLabel}
+              </span>
             </div>
-            <h2>{currentScale.name}</h2>
+            <h2 className={styles.scaleName}>{currentScale.name}</h2>
             <p className={styles.scaleDesc}>{currentScale.description}</p>
-          </div>
+          </header>
 
-          <div className={styles.introDetails}>
-            <div className={styles.detailItem}>
-              <FieldTimeOutlined />
-              <div className={styles.itemText}>
-                <span className={styles.label}>{t('assessment.dialog.estimatedTime')}</span>
-                <span className={styles.val}>{currentScaleInfo?.duration}</span>
-              </div>
+          {/* 读数条：四项关键参数用细线分隔，不做成四张卡片 */}
+          <dl className={styles.specBar}>
+            <div className={styles.specItem}>
+              <dt>
+                <FieldTimeOutlined />
+                {t('assessment.dialog.estimatedTime')}
+              </dt>
+              <dd>{currentScaleInfo?.duration ?? '—'}</dd>
             </div>
-            <div className={styles.detailItem}>
-              <BookOutlined />
-              <div className={styles.itemText}>
-                <span className={styles.label}>{t('assessment.dialog.questionCount')}</span>
-                <span className={styles.val}>{currentScaleInfo?.count} {t('assessment.unit.questions')}</span>
-              </div>
+            <div className={styles.specItem}>
+              <dt>
+                <BookOutlined />
+                {t('assessment.dialog.questionCount')}
+              </dt>
+              <dd>
+                {currentScaleInfo?.count} {t('assessment.unit.questions')}
+              </dd>
             </div>
-            <div className={styles.detailItem}>
-              <StarFilled />
-              <div className={styles.itemText}>
-                <span className={styles.label}>{t('assessment.dialog.reliability')}</span>
-                <span className={styles.val}>{t('assessment.dialog.reliabilityHigh')}</span>
-              </div>
+            <div className={styles.specItem}>
+              <dt>
+                <StarFilled />
+                {t('assessment.dialog.reliability')}
+              </dt>
+              <dd>{t('assessment.dialog.reliabilityHigh')}</dd>
             </div>
-          </div>
+            <div className={styles.specItem}>
+              <dt>
+                <CompassOutlined />
+                {t('assessment.dialog.difficulty')}
+              </dt>
+              <dd>{currentScaleInfo?.difficulty ?? '—'}</dd>
+            </div>
+          </dl>
 
-          <div className={styles.introTips}>
-            <h4><InfoCircleFilled /> {t('assessment.dialog.notice')}</h4>
-            <ul>
+          {/* 上次结果（紧跟读数条，做过的人第一眼就能看到） */}
+          {lastRecord && (
+            <div className={styles.lastResult}>
+              <div className={styles.lastLeft}>
+                <span className={styles.lastLabel}>{t('assessment.dialog.lastResult')}</span>
+                <span className={styles.lastValue}>
+                  {lastRecord.level} · {lastRecord.date}
+                </span>
+              </div>
+              {onViewLast && (
+                <button type="button" className={styles.lastLink} onClick={onViewLast}>
+                  {t('assessment.dialog.viewLast')} →
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* 测评维度 */}
+          {currentScaleInfo?.tags?.length ? (
+            <section className={styles.introSection}>
+              <h4 className={styles.sectionLabel}>{t('assessment.dialog.measure')}</h4>
+              <div className={styles.measureChips}>
+                {currentScaleInfo.tags.map((tag) => (
+                  <span key={tag} className={styles.measureChip}>
+                    {tag}
+                  </span>
+                ))}
+                <span className={styles.measureChipMuted}>
+                  {currentScaleInfo.count} {t('assessment.unit.questions')}
+                </span>
+              </div>
+            </section>
+          ) : null}
+
+          {/* 作答刻度：把选项直接可视化，开始前就能知道会被怎么问 */}
+          {currentScale.options?.length ? (
+            <section className={styles.introSection}>
+              <h4 className={styles.sectionLabel}>{t('assessment.dialog.ruler')}</h4>
+              <ol className={styles.ruler}>
+                {currentScale.options.map((opt, i) => (
+                  <li key={String(opt.value)} className={styles.rulerStep}>
+                    <span className={styles.rulerKey}>{String.fromCharCode(65 + i)}</span>
+                    <span className={styles.rulerTick} />
+                    <span className={styles.rulerLabel}>{opt.label}</span>
+                  </li>
+                ))}
+              </ol>
+              <p className={styles.rulerHint}>
+                {currentScale.optionType === 'mbti'
+                  ? t('assessment.dialog.rulerHintBipolar')
+                  : t('assessment.dialog.rulerHint')}
+              </p>
+            </section>
+          ) : null}
+
+          {/* 须知：编号列表 */}
+          <section className={styles.introTips}>
+            <h4>
+              <InfoCircleFilled /> {t('assessment.dialog.notice')}
+            </h4>
+            <ol>
               <li>{t('assessment.dialog.tip1')}</li>
               <li>{t('assessment.dialog.tip2')}</li>
               <li>{t('assessment.dialog.tip3')}</li>
-            </ul>
-          </div>
+            </ol>
+          </section>
 
-          <div className={styles.introActions}>
+          {/* 启动 */}
+          <footer className={styles.introActions}>
             <button className={styles.startBtn} onClick={onStart}>
               <span>{t('assessment.dialog.start')}</span>
               <ArrowRightOutlined />
             </button>
-          </div>
+            <p className={styles.disclaimer}>{t('assessment.dialog.disclaimer')}</p>
+            {lastRecord && <p className={styles.retakeHint}>{t('assessment.dialog.retakeHint')}</p>}
+          </footer>
         </div>
       )}
 
@@ -243,6 +325,8 @@ export default function ScaleDialog({
               </div>
             )}
           </div>
+
+          <p className={styles.resultNote}>{t('assessment.dialog.disclaimer')}</p>
 
           <div className={styles.resultFooter}>
             <Button onClick={onStart}>{t('assessment.dialog.retake')}</Button>

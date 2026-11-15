@@ -1,8 +1,8 @@
 /* ===== 标题区（CSS Modules：私有类 camelCase） ===== */
 .pageHeader {
-  max-width: var(--container-md);
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 32px 56px 36px;
+  padding: 32px 40px 36px;
   position: relative;
   z-index: 1;
 }

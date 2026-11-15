@@ -75,15 +75,17 @@ export function FaqPanel({ faqs, onBook }: FaqPanelProps) {
     <div ref={layoutRef} className={styles.faqLayout}>
       <aside className={styles.faqSidebar}>
         {FAQ_CATEGORIES.map(cat => (
-          <div
+          <button
             key={cat.key}
+            type="button"
+            aria-pressed={faqActiveCat === cat.key}
             className={`${styles.faqCat}${faqActiveCat === cat.key ? ` ${styles.active}` : ''}`}
             onClick={() => setFaqActiveCat(cat.key)}
           >
             <cat.Icon />
             <span>{t(cat.nameKey)}</span>
             <span className={styles.faqCatCount}>{getFaqCount(cat.key)}</span>
-          </div>
+          </button>
         ))}
       </aside>
       <div className={styles.faqContent}>
@@ -98,7 +100,7 @@ export function FaqPanel({ faqs, onBook }: FaqPanelProps) {
         <Collapse
           accordion
           bordered={false}
-          expandIconPosition="end"
+          expandIconPlacement="end"
           activeKey={faqActive}
           onChange={key => setFaqActive(Array.isArray(key) ? (key[0] ?? '') : key)}
           items={collapseItems}

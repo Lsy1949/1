@@ -7,6 +7,9 @@
 }
 
 .contactWrapper {
+  /* 表单卡单独收窄：宽屏下不留 1600px 的整幅表单，居中收在舒适宽度 */
+  max-width: 1240px;
+  margin-inline: auto;
   background: var(--bg-card);
   border-radius: 24px;
   overflow: hidden;

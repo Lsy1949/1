@@ -18,6 +18,10 @@ export interface UserInfo {
   name: string
   avatar?: string
   roleId: string
+  /** 绑定手机号（预约等表单自动带出，未绑定时缺省） */
+  phone?: string
+  /** 绑定邮箱（无手机号时作为备选联系方式） */
+  email?: string
 }
 
 export interface UserStoreValue {
@@ -108,6 +112,8 @@ async function restoreFromMe(): Promise<void> {
       name: me.name ?? '',
       roleId: (me.roleId as string) ?? '',
       avatar: me.avatar,
+      phone: me.phone,
+      email: me.email,
     })
   } catch {
     /* 401 / 5xx / 网络错：视为未登录（三态下无乐观态可保持），静默 */

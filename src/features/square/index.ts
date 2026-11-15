@@ -12,6 +12,7 @@ export { default as DetailHeader } from './components/DetailHeader'
 export { default as DetailTopBar } from './components/DetailTopBar'
 export { default as FeedList } from './components/FeedList'
 export { default as ListHeader } from './components/ListHeader'
+export { default as PostAside } from './components/PostAside'
 export type {
   CommentItem,
   FeedItem,

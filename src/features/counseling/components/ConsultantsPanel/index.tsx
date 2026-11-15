@@ -1,15 +1,22 @@
 /**
- * 【business】ConsultantsPanel —— 心理老师面板 · 杂志编辑式列表 + 咨询师详情弹窗
+ * 【business】ConsultantsPanel —— 心理老师面板 · 杂志编辑式列表 + 关注方向匹配
  * 数据由页面注入（counselors / specialties），组件内只做筛选与展示。
- * - v-reveal → useReveal；el-select → Select；el-dialog → Modal；el-empty → Empty
- * - 预约行为经 onBook(id) 上抛（父级负责 prefill + 切到预约页签）
+ *
+ * 桌面优先的改造：
+ *  · 「关注方向」多选（≤3）→ 客户端给出匹配度，并默认按匹配度排序，帮同学快速收敛选择；
+ *  · 搜索 + 排序（评分 / 经验 / 咨询量 / 匹配度）常驻工具栏，吸顶不随列表滚走；
+ *  · 行内悬停展开简介、显示「预约」与箭头，详情弹窗保留完整档案。
+ * 预约行为经 onBook(id) 上抛（父级负责 prefill + 切到预约页签）。
  */
 import { useMemo, useState } from 'react'
-import { Button, Empty, Input, Modal, Select } from 'antd'
+import { Button, Empty, Input, Modal, Segmented } from 'antd'
 import {
   ArrowRightOutlined,
   BankOutlined,
+  HeartFilled,
+  HeartOutlined,
   SearchOutlined,
+  StarFilled,
   StarOutlined,
   UserOutlined,
 } from '@ant-design/icons'
@@ -21,6 +28,10 @@ import styles from './ConsultantsPanel.module.css'
 export interface ConsultantsPanelProps {
   counselors: Counselor[]
   specialties: string[]
+  /** 已收藏老师 ID（接口下发，页面注入） */
+  favoriteIds: number[]
+  /** 收藏 / 取消收藏（页面调用接口 mutation） */
+  onToggleFavorite: (id: number) => void
   /** 「预约」点击（行内按钮 / 详情弹窗按钮），父级负责预填并切换页签 */
   onBook: (id: number) => void
 }
@@ -37,44 +48,84 @@ const ACCENT_CLASS: Record<CounselorAccentKey, string> = {
   geekblue: styles.accentGeekblue,
 }
 
-interface ConsFilter {
-  specialty: string
-  gender: string
-  sort: string
-}
+type SortKey = 'match' | 'rating' | 'exp' | 'sessions'
 
-const INITIAL_FILTER: ConsFilter = { specialty: '', gender: '', sort: 'rating' }
+/** 关注方向最多同时选 3 个，避免条件互相排斥到无结果 */
+const MAX_FOCUS = 3
 
-export function ConsultantsPanel({ counselors, specialties, onBook }: ConsultantsPanelProps) {
+export function ConsultantsPanel({
+  counselors,
+  specialties,
+  favoriteIds,
+  onToggleFavorite,
+  onBook,
+}: ConsultantsPanelProps) {
   const { t } = useTranslation()
 
   const ribbonRef = useReveal<HTMLDivElement>({ delay: 80 })
   const rowsRef = useReveal<HTMLDivElement>({ delay: 160 })
 
-  // ============ 咨询师列表筛选 ============
-  const [consultantSearch, setConsultantSearch] = useState('')
-  const [consFilter, setConsFilter] = useState<ConsFilter>(INITIAL_FILTER)
+  const [keyword, setKeyword] = useState('')
+  const [gender, setGender] = useState('')
+  const [focus, setFocus] = useState<string[]>([])
+  const [sort, setSort] = useState<SortKey>('rating')
+  const [onlyFavorites, setOnlyFavorites] = useState(false)
 
-  const filteredConsultants = useMemo(() => {
-    let list = counselors.filter(c => {
-      if (consFilter.specialty && !c.specialties.includes(consFilter.specialty)) return false
-      if (consFilter.gender && c.gender !== consFilter.gender) return false
-      if (consultantSearch) {
-        const q = consultantSearch.toLowerCase()
-        if (
-          !c.name.toLowerCase().includes(q) &&
-          !c.specialties.join(' ').toLowerCase().includes(q) &&
-          !c.intro.toLowerCase().includes(q)
-        )
-          return false
+  function toggleFocus(tag: string) {
+    setFocus((prev) => {
+      const exists = prev.includes(tag)
+      const next = exists ? prev.filter((item) => item !== tag) : [...prev, tag].slice(-MAX_FOCUS)
+      // 首个关注方向落定即切到匹配度排序；清空则回到评分排序
+      if (next.length > 0) setSort('match')
+      else setSort('rating')
+      return next
+    })
+  }
+
+  // ============ 匹配度 + 筛选 + 排序 ============
+  const list = useMemo(() => {
+    const q = keyword.trim().toLowerCase()
+
+    const scored = counselors.map((c) => {
+      const hits = focus.filter((tag) => c.specialties.includes(tag))
+      return { counselor: c, score: focus.length ? hits.length / focus.length : 0 }
+    })
+
+    const filtered = scored.filter(({ counselor: c, score }) => {
+      if (onlyFavorites && !favoriteIds.includes(c.id)) return false
+      if (gender && c.gender !== gender) return false
+      if (focus.length > 0 && score === 0) return false
+      if (q) {
+        const haystack = `${c.name} ${c.title} ${c.specialties.join(' ')} ${c.intro}`.toLowerCase()
+        if (!haystack.includes(q)) return false
       }
       return true
     })
-    if (consFilter.sort === 'rating') list = list.slice().sort((a, b) => b.rating - a.rating)
-    else if (consFilter.sort === 'exp') list = list.slice().sort((a, b) => b.exp - a.exp)
-    else if (consFilter.sort === 'sessions') list = list.slice().sort((a, b) => b.sessions - a.sessions)
-    return list
-  }, [counselors, consFilter, consultantSearch])
+
+    filtered.sort((a, b) => {
+      if (sort === 'match') {
+        if (b.score !== a.score) return b.score - a.score
+        return b.counselor.rating - a.counselor.rating
+      }
+      if (sort === 'exp') return b.counselor.exp - a.counselor.exp
+      if (sort === 'sessions') return b.counselor.sessions - a.counselor.sessions
+      return b.counselor.rating - a.counselor.rating
+    })
+
+    return filtered
+  }, [counselors, focus, gender, keyword, sort, onlyFavorites, favoriteIds])
+
+  const sortOptions = useMemo(
+    () => [
+      ...(focus.length > 0
+        ? [{ value: 'match' as SortKey, label: t('counseling.counselors.sortByMatch') }]
+        : []),
+      { value: 'rating' as SortKey, label: t('counseling.counselors.sortByRating') },
+      { value: 'exp' as SortKey, label: t('counseling.counselors.sortByExperience') },
+      { value: 'sessions' as SortKey, label: t('counseling.counselors.sortBySessions') },
+    ],
+    [focus.length, t]
+  )
 
   // 咨询师详情（visible 与当前对象合一，等价 counselorDetailVisible + currentCounselor）
   const [currentCounselor, setCurrentCounselor] = useState<Counselor | null>(null)
@@ -96,126 +147,187 @@ export function ConsultantsPanel({ counselors, specialties, onBook }: Consultant
 
   return (
     <>
-      {/* 极简搜索 + 筛选 */}
-      <div ref={ribbonRef} className={styles.consRibbon}>
+      {/* ============ 关注方向：多选 → 匹配度 ============ */}
+      <section className={styles.matchPanel}>
+        <div className={styles.matchHead}>
+          <div>
+            <h3 className={styles.matchTitle}>{t('counseling.match.title')}</h3>
+            <p className={styles.matchDesc}>{t('counseling.match.desc')}</p>
+          </div>
+          {focus.length > 0 && (
+            <button type="button" className={styles.matchClear} onClick={() => setFocus([])}>
+              {t('counseling.match.clear')}
+            </button>
+          )}
+        </div>
+        <div className={styles.matchChips}>
+          {specialties.map((tag) => {
+            const active = focus.includes(tag)
+            const disabled = !active && focus.length >= MAX_FOCUS
+            return (
+              <button
+                key={tag}
+                type="button"
+                aria-pressed={active}
+                disabled={disabled}
+                className={`${styles.chip}${active ? ` ${styles.chipOn}` : ''}`}
+                onClick={() => toggleFocus(tag)}
+              >
+                {tag}
+              </button>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* ============ 工具栏：搜索 + 性别 + 排序 ============ */}
+      <div ref={ribbonRef} className={styles.consToolbar}>
         <Input
-          className={styles.ribbonSearch}
-          value={consultantSearch}
+          className={styles.tbSearch}
+          value={keyword}
           prefix={<SearchOutlined className={styles.searchIco} />}
           placeholder={t('counseling.counselors.searchPlaceholderAlt')}
           allowClear
           variant="borderless"
-          onChange={e => setConsultantSearch(e.target.value)}
+          onChange={(e) => setKeyword(e.target.value)}
         />
-        <div className={styles.consFilters}>
-          <Select
-            className={styles.consSelect}
-            value={consFilter.specialty || undefined}
-            placeholder={t('counseling.counselors.specialty')}
-            allowClear
-            options={specialties.map(s => ({ label: s, value: s }))}
-            onChange={(v: string | undefined) => setConsFilter(f => ({ ...f, specialty: v ?? '' }))}
-          />
-          <Select
-            className={styles.consSelect}
-            value={consFilter.gender || undefined}
-            placeholder={t('counseling.counselors.gender')}
-            allowClear
-            options={[
-              { label: t('counseling.counselors.male'), value: 'male' },
-              { label: t('counseling.counselors.female'), value: 'female' },
-            ]}
-            onChange={(v: string | undefined) => setConsFilter(f => ({ ...f, gender: v ?? '' }))}
-          />
-          <Select
-            className={styles.consSelect}
-            value={consFilter.sort}
-            placeholder={t('counseling.counselors.sort')}
-            options={[
-              { label: t('counseling.counselors.sortByRating'), value: 'rating' },
-              { label: t('counseling.counselors.sortByExperience'), value: 'exp' },
-              { label: t('counseling.counselors.sortBySessions'), value: 'sessions' },
-            ]}
-            onChange={(v: string) => setConsFilter(f => ({ ...f, sort: v }))}
-          />
+        <div className={styles.tbFilters}>
+          <span className={styles.tbLabel}>{t('counseling.counselors.gender')}</span>
+          {[
+            { value: '', label: t('counseling.counselors.genderAll') },
+            { value: 'male', label: t('counseling.counselors.male') },
+            { value: 'female', label: t('counseling.counselors.female') },
+          ].map((item) => (
+            <button
+              key={item.value || 'all'}
+              type="button"
+              aria-pressed={gender === item.value}
+              className={`${styles.miniChip}${gender === item.value ? ` ${styles.chipOn}` : ''}`}
+              onClick={() => setGender(item.value)}
+            >
+              {item.label}
+            </button>
+          ))}
+          <span className={styles.tbDivider} aria-hidden="true" />
+          <button
+            type="button"
+            aria-pressed={onlyFavorites}
+            className={`${styles.miniChip}${onlyFavorites ? ` ${styles.chipOn}` : ''}`}
+            onClick={() => setOnlyFavorites((value) => !value)}
+          >
+            <HeartFilled /> {t('counseling.favorites.only')}
+            <span className={styles.favCount}>{favoriteIds.length}</span>
+          </button>
         </div>
+        <Segmented
+          className={styles.tbSort}
+          value={sort}
+          options={sortOptions}
+          onChange={(value) => setSort(value as SortKey)}
+        />
       </div>
 
-      {/* 当前分类小标题 */}
-      {filteredConsultants.length > 0 && (
-        <div className={styles.rowsHeading}>
-          <span className={styles.headingName}>{t('counseling.tabs.counselors')}</span>
-          <span className={styles.headingLine} />
-          <span className={styles.headingCount}>
-            {String(filteredConsultants.length).padStart(2, '0')} {t('counseling.counselors.count')}
-          </span>
-        </div>
-      )}
+      {/* 结果标题 */}
+      <div className={styles.rowsHeading}>
+        <span className={styles.headingName}>{t('counseling.tabs.counselors')}</span>
+        <span className={styles.headingLine} />
+        <span className={styles.headingCount}>
+          {String(list.length).padStart(2, '0')} {t('counseling.counselors.count')}
+        </span>
+      </div>
 
       {/* 心理老师列表：横向编辑式行 */}
       <div ref={rowsRef} className={styles.counselorRows}>
-        {filteredConsultants.map((c, i) => (
-          <div
-            key={c.id}
-            className={styles.counselorRow}
-            onClick={(e) => {
-              // 整行鼠标点击打开详情；按钮内部（rowMain/rowBook）自行处理，不重复触发
-              if ((e.target as HTMLElement).closest('button')) return
-              openCounselorDetail(c)
-            }}
-          >
-            <div className={styles.rowNumber}>
-              <span className={styles.num}>{String(i + 1).padStart(2, '0')}</span>
-            </div>
-            <div className={`${styles.rowAvatar} ${ACCENT_CLASS[c.accentKey]}`}>
-              {c.name[0]}
-            </div>
-            {/* 行主按钮：承接原 rowMain 内容，原生 button 自带键盘与焦点语义（A2 修复）。
-                <button> 内容模型只允许 phrasing content，内部块级一律用 span + CSS display 控制（视觉 1:1） */}
-            <button
-              type="button"
-              className={`${styles.rowMain} btn-reset`}
-              onClick={() => openCounselorDetail(c)}
+        {list.map(({ counselor: c, score }, i) => {
+          const isBest = focus.length > 0 && i === 0 && score > 0
+          return (
+            <div
+              key={c.id}
+              className={styles.counselorRow}
+              data-best={isBest ? 'true' : undefined}
+              onClick={(e) => {
+                // 整行鼠标点击打开详情；按钮内部（rowMain/rowBook）自行处理，不重复触发
+                if ((e.target as HTMLElement).closest('button')) return
+                openCounselorDetail(c)
+              }}
             >
-              <span className={styles.rowTitleWrap}>
-                <span className={styles.rowTitle}>{c.name}</span>
-                <span className={styles.rowTitleSub}>{c.title}</span>
-                <span className={styles.rowFree}>{t('counseling.freeTag')}</span>
-              </span>
-              <span className={styles.rowDesc}>{c.intro}</span>
-              <span className={styles.rowTags}>
-                {c.specialties.map(sp => (
-                  <span key={sp} className={styles.rowTag}>
-                    {sp}
-                  </span>
-                ))}
-              </span>
-            </button>
-            <div className={styles.rowMeta}>
-              <span className={styles.metaRating}>
-                <StarOutlined />
-                {c.rating}
-              </span>
-              <span className={styles.metaSessions}>
-                {c.sessions}
-                {t('counseling.counselors.sessionsSuffix')}
-              </span>
+              <div className={styles.rowNumber}>
+                <span className={styles.num}>{String(i + 1).padStart(2, '0')}</span>
+              </div>
+              <div className={`${styles.rowAvatar} ${ACCENT_CLASS[c.accentKey]}`}>{c.name[0]}</div>
+              {/* 行主按钮：原生 button 自带键盘与焦点语义；
+                  <button> 内容模型只允许 phrasing content，内部一律用 span + CSS display */}
               <button
                 type="button"
-                className={styles.rowBook}
-                onClick={e => {
-                  e.stopPropagation()
-                  onBook(c.id)
-                }}
+                className={`${styles.rowMain} btn-reset`}
+                onClick={() => openCounselorDetail(c)}
               >
-                {t('counseling.btn.book')}
+                <span className={styles.rowTitleWrap}>
+                  <span className={styles.rowTitle}>{c.name}</span>
+                  <span className={styles.rowTitleSub}>{c.title}</span>
+                  <span className={styles.rowFree}>{t('counseling.freeTag')}</span>
+                  {focus.length > 0 && (
+                    <span className={styles.rowMatch}>
+                      {t('counseling.match.score')} {Math.round(score * 100)}%
+                    </span>
+                  )}
+                  {isBest && <span className={styles.rowBest}>{t('counseling.match.best')}</span>}
+                </span>
+                <span className={styles.rowDesc}>{c.intro}</span>
+                <span className={styles.rowTags}>
+                  {c.specialties.map((sp) => (
+                    <span
+                      key={sp}
+                      className={`${styles.rowTag}${focus.includes(sp) ? ` ${styles.rowTagOn}` : ''}`}
+                    >
+                      {sp}
+                    </span>
+                  ))}
+                </span>
               </button>
-              <ArrowRightOutlined className={styles.rowArrow} />
+              <div className={styles.rowMeta}>
+                <button
+                  type="button"
+                  aria-pressed={favoriteIds.includes(c.id)}
+                  aria-label={
+                    favoriteIds.includes(c.id)
+                      ? t('counseling.favorites.remove')
+                      : t('counseling.favorites.add')
+                  }
+                  className={`${styles.favBtn}${favoriteIds.includes(c.id) ? ` ${styles.favOn}` : ''}`}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onToggleFavorite(c.id)
+                  }}
+                >
+                  {favoriteIds.includes(c.id) ? <HeartFilled /> : <HeartOutlined />}
+                </button>
+                <span className={styles.metaRating}>
+                  <StarOutlined />
+                  {c.rating}
+                </span>
+                <span className={styles.metaSessions}>
+                  {c.sessions}
+                  {t('counseling.counselors.sessionsSuffix')}
+                </span>
+                <button
+                  type="button"
+                  className={styles.rowBook}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onBook(c.id)
+                  }}
+                >
+                  {t('counseling.btn.book')}
+                </button>
+                <ArrowRightOutlined className={styles.rowArrow} />
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
-      {filteredConsultants.length === 0 && (
+
+      {list.length === 0 && (
         <div className={styles.emptyTip}>
           <Empty description={t('counseling.counselors.empty')} />
         </div>
@@ -226,6 +338,7 @@ export function ConsultantsPanel({ counselors, specialties, onBook }: Consultant
         open={currentCounselor !== null}
         onCancel={closeCounselorDetail}
         width={640}
+        centered
         className="counselor-dialog"
         title={currentCounselor ? `${currentCounselor.name} · ${currentCounselor.title}` : ''}
         footer={[
@@ -271,7 +384,7 @@ export function ConsultantsPanel({ counselors, specialties, onBook }: Consultant
             <div className={styles.cdSection}>
               <h4>{t('counseling.counselors.dialog.specialties')}</h4>
               <div className={styles.cdSpecs}>
-                {currentCounselor.specialties.map(sp => (
+                {currentCounselor.specialties.map((sp) => (
                   <span key={sp} className={styles.cdSpec}>
                     {sp}
                   </span>
@@ -291,8 +404,8 @@ export function ConsultantsPanel({ counselors, specialties, onBook }: Consultant
               {currentCounselor.reviews.map((r, i) => (
                 <div key={i} className={styles.cdReview}>
                   <div className={styles.rvStars}>
-                    {[1, 2, 3, 4, 5].map(s => (
-                      <StarOutlined key={s} />
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <StarFilled key={s} />
                     ))}
                   </div>
                   <p>{r}</p>

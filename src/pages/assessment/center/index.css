@@ -1,51 +1,581 @@
-/* 测评中心 - 杂志编辑式 */
+/* ============================================================
+   测评中心 · 桌面优先工作台
+   结构：Hero（主张 / 关键数据 / 主行动） + Workspace（索引导航 + 面板）
+   视觉锚点：右下角的「量表刻度弧」——把测评的“刻度感”做成装饰
+   ============================================================ */
+
 .assessment-page {
-  padding-block: 24px 80px;
-  max-width: var(--container-md);
+  /* 局部放宽容器变量，与广场 / 咨询页同一桌面尺度 */
+  --container-max: clamp(1360px, 94vw, 2080px);
+  max-width: var(--container-max);
   margin: 0 auto;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', sans-serif;
-  color: var(--text-primary);
+  padding: 32px 40px 96px;
+  color: var(--text-heading);
+  font-feature-settings: 'tnum' 1;
   position: relative;
 }
 
-/* 加载 / 错误态容器：与页签内容区保持一致的留白 */
+/* ==================== Hero ==================== */
+.as-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 380px);
+  align-items: center;
+  gap: clamp(32px, 4vw, 80px);
+  padding: clamp(20px, 3vw, 48px) 0 clamp(36px, 4vw, 64px);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.as-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.as-eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--brand-primary);
+}
+
+.as-title {
+  margin: 18px 0 0;
+  font-size: clamp(40px, 4.2vw, 72px);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -2px;
+  color: var(--text-heading);
+}
+
+.as-title em {
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -1px;
+  color: var(--brand-primary);
+}
+
+.as-desc {
+  margin: 20px 0 0;
+  max-width: 600px;
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+.as-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.as-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 999px;
+  background: var(--brand-primary);
+  color: var(--text-inverse, #fff);
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--brand-primary) 20%, transparent);
+  transition:
+    transform var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.as-cta .anticon {
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.as-cta:hover {
+  background: var(--brand-primary-dark);
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--brand-primary) 26%, transparent);
+  transform: translateY(-2px);
+}
+
+.as-cta:hover .anticon {
+  transform: translateX(4px);
+}
+
+.as-cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 22px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.as-cta-ghost:hover {
+  border-color: var(--brand-primary-soft);
+  background: var(--brand-primary-faint);
+  color: var(--brand-primary);
+}
+
+.as-cta:focus-visible,
+.as-cta-ghost:focus-visible,
+.as-rail-item:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 3px;
+}
+
+.as-stats {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 44px 0 0;
+  gap: clamp(24px, 3vw, 56px);
+}
+
+.as-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.as-stat + .as-stat {
+  padding-left: clamp(24px, 3vw, 56px);
+  border-left: 1px solid var(--border-light);
+}
+
+.as-stat dt {
+  font-size: clamp(24px, 2.2vw, 34px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+  color: var(--text-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.as-stat dd {
+  margin: 0;
+  font-size: 11.5px;
+  letter-spacing: 1px;
+  color: var(--text-faint);
+}
+
+/* —— 量表刻度弧（纯 CSS 装饰） —— */
+.as-scale-visual {
+  position: relative;
+  justify-self: end;
+  width: min(100%, 380px);
+  aspect-ratio: 1;
+}
+
+.as-arc {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.as-arc.a1 {
+  inset: 6%;
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 16%, transparent);
+  border-bottom-color: transparent;
+  transform: rotate(-24deg);
+}
+
+.as-arc.a2 {
+  inset: 20%;
+  border: 1px dashed color-mix(in srgb, var(--brand-primary) 22%, transparent);
+  border-top-color: transparent;
+  transform: rotate(18deg);
+  animation: as-spin 60s linear infinite;
+}
+
+.as-core {
+  position: absolute;
+  inset: 34%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 36% 30%,
+    color-mix(in srgb, var(--brand-primary) 30%, transparent),
+    color-mix(in srgb, var(--brand-primary) 8%, transparent) 60%,
+    transparent 76%
+  );
+  animation: as-breathe 8s ease-in-out infinite;
+}
+
+/* 五道刻度：沿圆周排布，像量表上的档位 */
+.as-tick {
+  position: absolute;
+  left: 50%;
+  top: 4%;
+  width: 1px;
+  height: 12%;
+  background: color-mix(in srgb, var(--brand-primary) 26%, transparent);
+  transform-origin: 50% 380%;
+}
+
+.as-tick.t1 { transform: translateX(-50%) rotate(-36deg); }
+.as-tick.t2 { transform: translateX(-50%) rotate(-18deg); height: 16%; }
+.as-tick.t3 { transform: translateX(-50%) rotate(0deg); height: 20%; background: color-mix(in srgb, var(--brand-primary) 44%, transparent); }
+.as-tick.t4 { transform: translateX(-50%) rotate(18deg); height: 16%; }
+.as-tick.t5 { transform: translateX(-50%) rotate(36deg); }
+
+@keyframes as-spin {
+  to {
+    transform: rotate(378deg);
+  }
+}
+
+@keyframes as-breathe {
+  0%,
+  100% {
+    transform: scale(0.94);
+    opacity: 0.75;
+  }
+
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+/* ==================== Workspace ==================== */
+.as-workspace {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: clamp(36px, 4vw, 72px);
+  padding-top: clamp(32px, 3.4vw, 56px);
+}
+
+.as-rail {
+  position: sticky;
+  top: calc(var(--navbar-h, 80px) + 28px);
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+}
+
+.as-rail-cap {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-strong);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.as-rail-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 16px 8px 16px 0;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.as-rail-item::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  border-radius: 2px;
+  background: var(--brand-primary);
+  transform: translateY(-50%);
+  transition: height var(--duration-base) var(--ease-standard);
+}
+
+.as-rail-item:hover {
+  transform: translateX(4px);
+}
+
+.as-rail-item:hover::before {
+  height: 42%;
+}
+
+.as-rail-item.is-active::before {
+  height: 100%;
+}
+
+.as-rail-num {
+  padding-top: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.as-rail-text {
+  min-width: 0;
+}
+
+.as-rail-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--text-muted);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.as-rail-label .anticon {
+  font-size: 13px;
+  opacity: 0.5;
+}
+
+.as-rail-desc {
+  display: block;
+  margin-top: 4px;
+  font-size: 11.5px;
+  letter-spacing: 0.2px;
+  color: var(--text-faint);
+}
+
+.as-rail-item:hover .as-rail-label,
+.as-rail-item.is-active .as-rail-label {
+  color: var(--text-heading);
+}
+
+.as-rail-item.is-active .as-rail-num {
+  color: var(--brand-primary);
+}
+
+.as-rail-item.is-active .as-rail-label .anticon {
+  opacity: 1;
+  color: var(--brand-primary);
+}
+
+/* ==================== 面板 ==================== */
+.as-panel {
+  min-width: 0;
+}
+
+.as-panel-body[hidden] {
+  display: none !important;
+}
+
+.as-panel-head {
+  margin-bottom: clamp(26px, 3vw, 40px);
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.as-ph-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.as-ph-eyebrow {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.as-ph-no {
+  padding: 4px 10px;
+  border: 1px solid var(--border-strong);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.as-ph-title {
+  margin: 0;
+  font-size: clamp(28px, 2.8vw, 44px);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -1.2px;
+  color: var(--text-heading);
+}
+
+.as-ph-title em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--brand-primary);
+}
+
+.as-ph-desc {
+  margin: 12px 0 0;
+  max-width: 660px;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+/* 加载 / 错误态容器 */
 .assessment-state {
-  padding: var(--sp-8) 0;
-  min-height: 50vh;
   display: flex;
   flex-direction: column;
   gap: 40px;
+  padding: 36px 0;
+  min-height: 46vh;
 }
 
-/* 标签页 · 极简文字
-   页签外观（字号/颜色/间距/ink-bar/底部外边距）已 token 化为
-   AssessmentCenterView.tsx 嵌套 ConfigProvider 的 Tabs 组件注入；
-   间距全部保持 antd 默认（对称 padding），不做对齐特调。
-   字重/字距与 nav 底线隐藏无对应 token，保留在下方。 */
-.main-tabs {
-  margin-top: 0;
+/* ==================== 响应式（移动端另行制作，这里只保证不破版） ==================== */
+@media (width <= 1280px) {
+  .assessment-page {
+    padding: 28px 32px 80px;
+  }
+
+  .as-workspace {
+    grid-template-columns: 208px minmax(0, 1fr);
+    gap: 40px;
+  }
 }
 
-/* 原 .el-tabs__nav-wrap::after（底部基线）→ antd 的 .ant-tabs-nav::before */
-.main-tabs .ant-tabs-nav::before {
-  display: none;
-}
+@media (width <= 1080px) {
+  .as-hero {
+    grid-template-columns: 1fr;
+  }
 
-.main-tabs .ant-tabs-tab {
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
+  .as-scale-visual {
+    display: none;
+  }
 
-.main-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
-  font-weight: 700;
+  .as-workspace {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .as-rail {
+    position: static;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .as-rail-cap,
+  .as-rail-desc {
+    display: none;
+  }
+
+  .as-rail-item {
+    grid-template-columns: auto auto;
+    flex-shrink: 0;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid var(--border-light);
+    border-radius: 999px;
+  }
+
+  .as-rail-item::before {
+    display: none;
+  }
+
+  .as-rail-item.is-active {
+    border-color: var(--brand-primary-soft);
+    background: var(--brand-primary-faint);
+  }
+
+  .as-rail-item.is-active .as-rail-label {
+    color: var(--brand-primary);
+  }
 }
 
 @media (width <= 768px) {
   .assessment-page {
-    padding-block: 16px 48px;
+    padding: 20px 16px 56px;
   }
 
-  .main-tabs .ant-tabs-tab {
-    font-size: 14px;
+  .as-title {
+    font-size: 34px;
+    letter-spacing: -1px;
   }
+
+  .as-stats {
+    margin-top: 32px;
+    gap: 20px;
+  }
+
+  .as-stat + .as-stat {
+    padding-left: 20px;
+  }
+}
+
+/* ==================== 暗色：仅补装饰与强调色 ==================== */
+html.dark .as-title em,
+html.dark .as-ph-title em {
+  color: var(--brand-primary-bright);
+}
+
+html.dark .as-cta-ghost:hover {
+  color: var(--brand-primary-bright);
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 32%, transparent);
+  background: var(--brand-primary-bright-bg);
+}
+
+html.dark .as-rail-item:hover .as-rail-label,
+html.dark .as-rail-item.is-active .as-rail-label {
+  color: var(--text-heading);
+}
+
+html.dark .as-rail-item.is-active .as-rail-num,
+html.dark .as-rail-item.is-active .as-rail-label .anticon {
+  color: var(--brand-primary-bright);
+}
+
+html.dark .as-arc.a1 {
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 18%, transparent);
+  border-bottom-color: transparent;
+}
+
+html.dark .as-arc.a2 {
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 24%, transparent);
+  border-top-color: transparent;
+}
+
+html.dark .as-tick {
+  background: color-mix(in srgb, var(--brand-primary-bright) 26%, transparent);
+}
+
+html.dark .as-tick.t3 {
+  background: color-mix(in srgb, var(--brand-primary-bright) 52%, transparent);
+}
+
+html.dark .as-core {
+  background: radial-gradient(
+    circle at 36% 30%,
+    color-mix(in srgb, var(--brand-primary-bright) 34%, transparent),
+    color-mix(in srgb, var(--brand-primary-bright) 9%, transparent) 60%,
+    transparent 76%
+  );
 }
