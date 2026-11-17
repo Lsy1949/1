@@ -373,4 +373,67 @@
   .badgesGrid { grid-template-columns: 1fr; }
 }
 
+/* ---------- 积分明细（账本流水） ---------- */
+.ledgerList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border-light);
+}
+
+.ledgerItem {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  align-items: baseline;
+  gap: 14px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 12.5px;
+}
+
+.ledgerSource {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text-regular);
+}
+
+.ledgerDate {
+  font-size: 11.5px;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.ledgerDelta {
+  font-weight: 700;
+  color: var(--brand-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.ledgerBalance {
+  min-width: 44px;
+  text-align: right;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ledgerEmpty {
+  margin: 0;
+  padding: 14px 2px;
+  font-size: 12.5px;
+  color: var(--text-faint);
+}
+
+.ledgerHint {
+  margin: 10px 0 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--text-faint);
+}
+
+:global(html.dark) .ledgerDelta {
+  color: var(--brand-primary-bright);
+}
+
 /* ---------- 暗色模式：颜色已全部由语义变量接管，无需额外覆盖 ---------- */

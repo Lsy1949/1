@@ -32,7 +32,15 @@ export function useAssessmentHistory() {
   })
 }
 
-/** 提交测评：计分在服务端，成功后刷新历史 */
+/** 成长积分账户（余额 / 等级 / 近期流水） */
+export function useAssessmentPoints() {
+  return useQuery({
+    queryKey: ['assessment', 'points'],
+    queryFn: ({ signal }) => assessmentApi.fetchPoints(signal),
+  })
+}
+
+/** 提交测评：计分在服务端，成功后刷新历史与积分 */
 export function useSubmitAssessment() {
   const { t } = useTranslation()
   const { message } = App.useApp()
@@ -40,15 +48,21 @@ export function useSubmitAssessment() {
 
   return useMutation({
     mutationFn: (input: AssessmentSubmitInput) => assessmentApi.submitResult(input),
-    onSuccess: () => {
-      message.success(t('assessment.submitted'))
-      return queryClient.invalidateQueries({ queryKey: ['assessment', 'history'] })
+    onSuccess: (result) => {
+      // 今日计分达上限时不加分，但历史照常记录，需要给出明确反馈
+      if (result?.pointsCapped) {
+        message.warning(t('assessment.points.capped'))
+      } else {
+        message.success(t('assessment.points.earned', { points: result?.pointsEarned ?? 0 }))
+      }
+      void queryClient.invalidateQueries({ queryKey: ['assessment', 'history'] })
+      return queryClient.invalidateQueries({ queryKey: ['assessment', 'points'] })
     },
     onError: (error: Error) => message.error(error.message),
   })
 }
 
-/** 清空历史记录 */
+/** 清空历史记录（不扣减已获得的成长积分） */
 export function useClearAssessmentHistory() {
   const { t } = useTranslation()
   const { message } = App.useApp()

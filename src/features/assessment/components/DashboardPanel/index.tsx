@@ -27,6 +27,7 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/hooks/useTheme'
 import { readCssColor } from '@/utils/cssVar'
 import ScaleIcon from '@/components/ScaleIcon'
+import type { AssessmentPointsDTO } from '@/api/types'
 import { TAG_COLOR } from '../MinePanel'
 import type { AssessmentRecord, ScaleInfo } from '../types'
 import styles from './DashboardPanel.module.css'
@@ -34,6 +35,8 @@ import styles from './DashboardPanel.module.css'
 interface Props {
   history: AssessmentRecord[]
   scales: ScaleInfo[]
+  /** 积分账户（账本口径）；缺省回退到「历史条数 × 10」 */
+  points?: AssessmentPointsDTO
   onView: (record: AssessmentRecord) => void
   onOpenScale: (key: string) => void
 }
@@ -63,7 +66,7 @@ interface DonutDatum {
 }
 
 /** 成长看板面板：侧栏导航 + 7 个内容区，可视化数据全部由 history 派生 */
-export default function DashboardPanel({ history, scales, onView, onOpenScale }: Props) {
+export default function DashboardPanel({ history, scales, points, onView, onOpenScale }: Props) {
   const { t } = useTranslation()
   const { message } = AntApp.useApp() // 替代静态 ElMessage，带主题上下文
   const layoutRef = useReveal<HTMLDivElement>({ delay: 80 })
@@ -96,11 +99,10 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
     }
   }, [isDark, palette])
 
-  const totalCompleted = history.length
-  const growthPoints = history.length * 10
-
-  // 测评天数（不同日期的数量）
-  const assessmentDays = useMemo(() => new Set(history.map((h) => h.date)).size, [history])
+  // 概览指标全部取服务端下发值（前端不做统计）
+  const totalCompleted = points?.completed ?? 0
+  const growthPoints = points?.balance ?? 0
+  const assessmentDays = points?.assessmentDays ?? 0
 
   // --- 侧边栏选中态（原 ref → useState） ---
   const [activeDashboard, setActiveDashboard] = useState('overview')
@@ -150,32 +152,17 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
     return Math.round(sum / scored.length)
   }, [history])
 
-  // 最爱维度
-  const favoriteCategory = useMemo(() => {
-    const catCount: Record<string, number> = {}
-    history.forEach((h) => {
-      const scale = scales.find((s) => s.key === h.scaleKey)
-      if (scale) catCount[scale.category] = (catCount[scale.category] || 0) + 1
-    })
-    const sorted = Object.entries(catCount).sort((a, b) => b[1] - a[1])
-    if (sorted.length === 0) return t('assessment.dashboard.notExplored')
-    return t(`assessment.categories.${sorted[0][0]}` as I18nKey)
-  }, [history, scales, t])
+  // 最爱维度：服务端算好分类标识，前端只取文案
+  const favoriteCategory = points?.favoriteCategoryKey
+    ? t(`assessment.categories.${points.favoriteCategoryKey}` as I18nKey)
+    : t('assessment.dashboard.notExplored')
 
-  // 月度目标
-  const monthlyGoal = useMemo(() => {
-    const target = 4
-    const now = new Date()
-    const monthRecords = history.filter((h) => {
-      const d = new Date(h.date)
-      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
-    })
-    return {
-      current: monthRecords.length,
-      target,
-      percent: Math.min(100, Math.round((monthRecords.length / target) * 100)),
-    }
-  }, [history])
+  // 月度目标：次数与百分比均由服务端给出
+  const monthlyGoal = {
+    current: points?.monthCompleted ?? 0,
+    target: points?.monthlyTarget ?? 4,
+    percent: points?.monthlyPercent ?? 0,
+  }
 
   // --- 身心能量雷达：六维由对应量表「最新一次」结果归一化推导（0-100，越高越好） ---
   const radarUserValues = useMemo(() => {
@@ -732,7 +719,7 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
                 </div>
               ) : (
                 <div className={styles.chartEmptyState}>
-                  <Empty description={t('assessment.dashboard.distEmpty')} imageStyle={{ height: 80 }} />
+                  <Empty description={t('assessment.dashboard.distEmpty')} styles={{ image: { height: 80 } }} />
                 </div>
               )}
             </div>
@@ -831,7 +818,7 @@ export default function DashboardPanel({ history, scales, onView, onOpenScale }:
                 </div>
               ) : (
                 <div className={styles.chartEmptyState}>
-                  <Empty description={t('assessment.dashboard.progressEmpty')} imageStyle={{ height: 80 }} />
+                  <Empty description={t('assessment.dashboard.progressEmpty')} styles={{ image: { height: 80 } }} />
                 </div>
               )}
             </div>

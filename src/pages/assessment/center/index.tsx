@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next'
 import { useReveal } from '@/hooks/useReveal'
 import {
   useAssessmentHistory,
+  useAssessmentPoints,
   useAssessmentScale,
   useAssessmentScales,
   useClearAssessmentHistory,
@@ -131,6 +132,8 @@ export default function AssessmentCenterView() {
     refetch: refetchHistory,
   } = useAssessmentHistory()
   const { data: activeScaleDetail } = useAssessmentScale(activeScaleKey || undefined)
+  // 积分走账本口径（余额 / 等级 / 明细），与历史上限解耦
+  const { data: points } = useAssessmentPoints()
   const clearHistory = useClearAssessmentHistory()
 
   /** 切页签：写回 ?tab=（保留 scale/view 等既有参数） */
@@ -185,20 +188,15 @@ export default function AssessmentCenterView() {
     [history, activeScaleKey],
   )
 
-  // Hero 数据：量表数 / 已完成 / 成长积分 / 本月目标
+  // Hero 数据：量表数取接口条数；其余全部为服务端下发指标（前端不做统计）
   const heroStats = useMemo(() => {
-    const now = new Date()
-    const monthDone = history.filter((h) => {
-      const d = new Date(h.date)
-      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
-    }).length
     return [
       { value: scales.length ? String(scales.length) : '—', label: t('assessment.hero.stats.scales') },
-      { value: String(history.length), label: t('assessment.hero.stats.completed') },
-      { value: String(history.length * 10), label: t('assessment.hero.stats.points') },
-      { value: `${Math.min(100, Math.round((monthDone / 4) * 100))}%`, label: t('assessment.hero.stats.goal') },
+      { value: String(points?.completed ?? 0), label: t('assessment.hero.stats.completed') },
+      { value: String(points?.balance ?? 0), label: t('assessment.hero.stats.points') },
+      { value: `${points?.monthlyPercent ?? 0}%`, label: t('assessment.hero.stats.goal') },
     ]
-  }, [scales.length, history, t])
+  }, [scales.length, points, t])
 
   // --- 逻辑方法 ---
 
@@ -387,6 +385,7 @@ export default function AssessmentCenterView() {
           <DashboardPanel
             history={history}
             scales={scales}
+            points={points}
             onView={viewHistory}
             onOpenScale={openScaleIntro}
           />,
@@ -404,7 +403,7 @@ export default function AssessmentCenterView() {
         {gateHistory(
           <MinePanel
             history={history}
-            scales={scales}
+            points={points}
             onView={viewHistory}
             onRetake={retakeAssessment}
             onClearHistory={clearAllHistory}

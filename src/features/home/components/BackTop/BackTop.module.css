@@ -2,8 +2,9 @@
 
 .backToTopContainer {
   position: fixed;
-  /* 原位置：右下角（上方为 AI 客服按钮 bottom 104） */
-  bottom: 40px;
+  /* 位于 AI 客服按钮（bottom 40）上方：菜单向上展开，
+     两者纵向错开，菜单不再与 AI 按钮重叠 */
+  bottom: 108px;
   right: 40px;
   z-index: 1000;
   display: flex;

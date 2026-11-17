@@ -142,7 +142,7 @@ export default function ScalePanel({
         </div>
       ) : (
         <div className={styles.filterEmpty}>
-          <Empty description={t('assessment.empty')} imageStyle={{ height: 80 }} />
+          <Empty description={t('assessment.empty')} styles={{ image: { height: 80 } }} />
         </div>
       )}
 

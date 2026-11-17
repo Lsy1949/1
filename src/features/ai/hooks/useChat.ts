@@ -31,28 +31,28 @@ export function useChat(persona: AiChatPersona = 'assistant') {
     controllerRef.current = null
   }, [])
 
-  /** 发送一条用户消息并接收流式回复（发送期间忽略新提交） */
-  const send = useCallback(
-    async (content: string): Promise<void> => {
-      const text = content.trim()
+  /**
+   * 发起一轮请求：用 base 作为历史、可选是否补一条用户消息，
+   * send 与 regenerate 共用同一套流式逻辑。
+   */
+  const request = useCallback(
+    async (text: string, base: AiChatEntry[], appendUser: boolean): Promise<void> => {
       if (!text || isSendingRef.current) return
 
       const userId = ++nextIdRef.current
       const replyId = ++nextIdRef.current
-      setMessages(prev => [
-        ...prev,
-        { id: userId, role: 'user', content: text, streaming: false },
-        { id: replyId, role: 'assistant', content: '', streaming: true },
-      ])
+      const replyEntry: AiChatEntry = { id: replyId, role: 'assistant', content: '', streaming: true }
+      const userEntry: AiChatEntry = { id: userId, role: 'user', content: text, streaming: false }
+      setMessages(appendUser ? [...base, userEntry, replyEntry] : [...base, replyEntry])
 
       isSendingRef.current = true
       setIsSending(true)
       const controller = new AbortController()
       controllerRef.current = controller
 
-      // 历史不含空占位回复（闭包 messages 为已提交状态，补上刚追加的用户消息）
+      // 历史不含空占位回复；appendUser 时补上刚追加的用户消息
       const history: AiChatMessage[] = [
-        ...messages.map(({ role, content: c }) => ({ role, content: c })),
+        ...base.map(({ role, content: c }) => ({ role, content: c })),
         { role: 'user', content: text },
       ]
 
@@ -86,8 +86,26 @@ export function useChat(persona: AiChatPersona = 'assistant') {
         controllerRef.current = null
       }
     },
-    [persona, messages]
+    [persona]
   )
+
+  /** 发送一条用户消息并接收流式回复（发送期间忽略新提交） */
+  const send = useCallback(
+    async (content: string): Promise<void> => {
+      const text = content.trim()
+      if (!text || isSendingRef.current) return
+      await request(text, messages, true)
+    },
+    [messages, request]
+  )
+
+  /** 重新生成：丢弃最后一轮 AI 回复，用最后一条用户消息重发 */
+  const regenerate = useCallback(async (): Promise<void> => {
+    if (isSendingRef.current) return
+    const index = messages.map(m => m.role).lastIndexOf('user')
+    if (index < 0) return
+    await request(messages[index].content, messages.slice(0, index), true)
+  }, [messages, request])
 
   /** 清空会话（重新开始） */
   const reset = useCallback((): void => {
@@ -98,5 +116,5 @@ export function useChat(persona: AiChatPersona = 'assistant') {
   // onScopeDispose(abort) → 卸载时中断流式请求
   useEffect(() => abort, [abort])
 
-  return { messages, isSending, send, abort, reset }
+  return { messages, isSending, send, abort, reset, regenerate }
 }

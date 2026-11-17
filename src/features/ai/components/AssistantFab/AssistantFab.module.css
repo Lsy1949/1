@@ -1,11 +1,12 @@
-/* AI 客服悬浮窗（CSS Modules：私有类 camelCase；暗色规则以 :global(html.dark) 前缀迁移；
+/* AI 客服悬浮窗（CSS Modules：私有类 camelCase；暗色规则以 :global(html.dark) 前缀；
    keyframes 由模块自动局部化，不污染全局） */
 
 .assistantFab {
   position: fixed;
   right: 40px;
-  /* 原位置：右下角上方一排，其下为同款圆形回顶按钮（right 40 / bottom 40） */
-  bottom: 104px;
+  /* 右下角底位：其上方是首页「回到顶部」（bottom 108），
+     回顶的快速导航菜单向上展开，不会压到本按钮与悬停名牌 */
+  bottom: 40px;
   z-index: 1100;
   display: flex;
   flex-direction: column;
@@ -13,11 +14,47 @@
   gap: 14px;
 }
 
-/* ============ 悬浮按钮（白底圆形 + 品牌光晕，与回顶按钮统一） ============ */
+/* ============ 悬浮按钮：圆钮 + 悬停名牌 ============ */
+.fabDock {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fabLabel {
+  padding: 6px 11px;
+  border: 1px solid var(--border-light);
+  border-radius: 999px;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 11.5px;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(6px);
+  pointer-events: none;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--text-heading) 8%, transparent);
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+/* 展开面板时不再显示名牌（按钮已是关闭语义） */
+.fabDock:hover .fabLabel,
+.fabDock:focus-within .fabLabel {
+  opacity: 1;
+  transform: none;
+}
+
+.fabDock[data-open='true'] .fabLabel {
+  display: none;
+}
+
 .fabButton {
   position: relative;
   width: 56px;
   height: 56px;
+  flex-shrink: 0;
   border: 1px solid var(--border-light);
   border-radius: 50%;
   background: var(--bg-card);
@@ -38,7 +75,6 @@
 .fabButton:hover {
   transform: translateY(-3px);
   color: var(--brand-primary-dark);
-  /* 光晕外扩表达 hover（白底不变，避免色块跳变） */
   box-shadow:
     0 10px 28px color-mix(in srgb, var(--brand-primary) 30%, transparent),
     0 4px 10px color-mix(in srgb, var(--text-heading) 14%, transparent);
@@ -46,6 +82,11 @@
 
 .fabButton:active {
   transform: translateY(-1px) scale(0.96);
+}
+
+.fabButton:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 3px;
 }
 
 .fabIcon {
@@ -71,103 +112,83 @@
   50% { transform: scale(1.25); opacity: 0.75; }
 }
 
-/* ============ 对话面板（白底卡片 + 顶部渐变饰条 + 品牌光晕弥散投影） ============ */
+/* ============ 对话面板：纸面卡片 + 顶部品牌细线 ============ */
 .fabPanel {
   position: relative;
   width: var(--fab-panel-w);
   max-width: calc(100vw - 48px);
   height: var(--fab-panel-h);
-  max-height: calc(100vh - 160px);
+  max-height: calc(100dvh - 150px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: 20px;
   background: var(--bg-card);
   border: 1px solid var(--border-light);
-  /* 外圈品牌色描边光 + 双层中性弥散：浮起而不生硬 */
+  /* 外圈品牌描边光 + 双层中性弥散：浮起而不生硬 */
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--brand-primary) 10%, transparent),
-    0 6px 20px color-mix(in srgb, var(--text-heading) 8%, transparent),
-    0 24px 64px color-mix(in srgb, var(--text-heading) 16%, transparent);
+    0 0 0 1px color-mix(in srgb, var(--brand-primary) 8%, transparent),
+    0 8px 24px color-mix(in srgb, var(--text-heading) 8%, transparent),
+    0 28px 72px color-mix(in srgb, var(--text-heading) 16%, transparent);
   transform-origin: bottom right;
 }
 
-/* 顶部品牌渐变饰条（刊头式 accent，白卡上唯一的重品牌色块） */
+/* 顶部品牌细线：白卡上唯一的重品牌色块 */
 .fabPanel::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--brand-primary), var(--brand-primary-dark));
+  height: 2px;
+  background: var(--brand-primary);
   z-index: 1;
   pointer-events: none;
 }
 
-/* 刊头：单细线分隔（去双线报头， Avatar 圆形呼应悬浮按钮） */
+/* ============ 头部：极简标题栏（对齐阿里云 AI 助理） ============ */
 .fabPanelHeader {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 16px 14px;
+  gap: 4px;
+  height: 54px;
+  padding: 0 10px 0 16px;
   background: transparent;
   border-bottom: 1px solid var(--border-light);
   flex-shrink: 0;
 }
 
-.headerAvatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 19px;
-  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
-  color: var(--text-inverse, #fff);
-  box-shadow: 0 4px 10px color-mix(in srgb, var(--brand-primary) 30%, transparent);
-}
-
-.headerText {
+.headerTitle {
   flex: 1;
   min-width: 0;
-}
-
-.headerText h3 {
   margin: 0;
-  font-family: Georgia, 'Times New Roman', 'Songti SC', 'Noto Serif SC', SimSun, serif;
-  font-size: 17px;
+  font-size: 14.5px;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  line-height: 1.3;
-  color: var(--brand-primary-deep);
-}
-
-.headerText p {
-  margin: 2px 0 0;
-  font-size: var(--fs-xs);
-  letter-spacing: 0.12em;
-  color: var(--brand-primary);
-  line-height: 1.4;
+  letter-spacing: 0.2px;
+  color: var(--text-heading);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .headerAction {
   width: 30px;
   height: 30px;
+  flex-shrink: 0;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   background: transparent;
-  color: var(--brand-primary-deep);
+  color: var(--text-faint);
   display: grid;
   place-items: center;
-  font-size: 15px;
+  font-size: 14px;
   cursor: pointer;
   transition: background 0.25s ease, color 0.25s ease;
   position: relative;
 }
 
-/* B3：44×44 命中区（透明伪元素扩展，视觉仍为 30×30） */
+/* 44×44 命中区（透明伪元素扩展，视觉仍为 30×30） */
 .headerAction::before {
   content: '';
   position: absolute;
@@ -190,24 +211,24 @@
 
 /* ============ 过渡动画（Vue <Transition name="fab-pop"> 等价） ============ */
 .fabPanel.fabPopEnter {
-  animation: fab-pop-in 0.32s cubic-bezier(0.23, 1, 0.32, 1);
+  animation: fab-pop-in 0.34s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .fabPanel.fabPopLeave {
-  animation: fab-pop-out 0.32s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation: fab-pop-out 0.28s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes fab-pop-in {
   from {
     opacity: 0;
-    transform: translateY(16px) scale(0.92);
+    transform: translateY(18px) scale(0.94);
   }
 }
 
 @keyframes fab-pop-out {
   to {
     opacity: 0;
-    transform: translateY(16px) scale(0.92);
+    transform: translateY(14px) scale(0.96);
   }
 }
 
@@ -222,23 +243,46 @@
   }
 }
 
+/* 尊重系统的「减少动态效果」 */
+@media (prefers-reduced-motion: reduce) {
+  .fabPanel.fabPopEnter,
+  .fabPanel.fabPopLeave,
+  .fabIconEnter,
+  .fabBadge {
+    animation: none;
+  }
+
+  .fabButton,
+  .fabLabel {
+    transition: none;
+  }
+}
+
 /* ============ 暗夜模式（品牌色不变，底色翻转；悬浮窗经传送门挂 body，
    规则不依赖页面作用域，:global(html.dark) 前缀即可命中） ============ */
 :global(html.dark) .fabPanel {
   background: var(--bg-card);
   border-color: var(--border-regular);
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--brand-primary-bright) 18%, transparent),
-    0 24px 64px rgb(0 0 0 / 0.45);
+    0 0 0 1px color-mix(in srgb, var(--brand-primary-bright) 16%, transparent),
+    0 28px 72px rgb(0 0 0 / 0.5);
 }
 
-:global(html.dark) .headerText h3,
-:global(html.dark) .headerText p {
-  color: var(--brand-primary-bright);
+:global(html.dark) .fabPanelHeader {
+  background: transparent;
+  border-bottom-color: var(--border-regular);
+}
+
+:global(html.dark) .fabPanel::before {
+  background: var(--brand-primary-bright);
+}
+
+:global(html.dark) .headerTitle {
+  color: var(--text-primary);
 }
 
 :global(html.dark) .headerAction {
-  color: var(--brand-primary-bright);
+  color: var(--text-secondary);
 }
 
 :global(html.dark) .headerAction:hover:not(:disabled) {
@@ -258,4 +302,10 @@
   box-shadow:
     0 10px 28px color-mix(in srgb, var(--brand-primary) 40%, transparent),
     0 4px 10px rgb(0 0 0 / 0.45);
+}
+
+:global(html.dark) .fabLabel {
+  background: var(--bg-card);
+  border-color: var(--border-regular);
+  color: var(--text-secondary);
 }

@@ -1,0 +1,530 @@
+/* AI 对话工作台：满宽左右分屏（左海报栏 / 右对话画布） */
+
+/*
+ * 配比参考主流对话产品（ChatGPT / Claude / Perplexity）的两栏范式：
+ * 左栏是固定的工具/身份栏，约 260–340px，不随视口等比放大；
+ * 主内容列封顶 720–768px 并居中，富余宽度留给留白而不是拉长行宽。
+ */
+.stage {
+  display: grid;
+  grid-template-columns: clamp(300px, 23%, 340px) minmax(0, 1fr);
+  height: calc(100dvh - var(--navbar-h, 80px));
+  min-height: 560px;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-page);
+}
+
+/* ==================== 左：海报栏 ==================== */
+.poster {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg-soft);
+  border-right: 1px solid var(--border-light);
+}
+
+.posterInner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+  padding: clamp(22px, 1.8vw, 34px) clamp(22px, 1.7vw, 32px) clamp(20px, 1.6vw, 28px);
+  overflow-y: auto;
+}
+
+.back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.back::before {
+  content: '←';
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.back:hover {
+  color: var(--brand-primary);
+}
+
+.back:hover::before {
+  transform: translateX(-3px);
+}
+
+.lockup {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: riseIn 0.55s var(--ease-standard) both;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.eyebrow::before {
+  content: '';
+  width: 22px;
+  height: 1px;
+  background: var(--brand-primary);
+}
+
+.title {
+  margin: 0;
+  /* 左栏固定在 300–340，标题按栏宽收敛，避免挤成两行 */
+  font-size: clamp(28px, 2.2vw, 40px);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -1.4px;
+  color: var(--text-heading);
+}
+
+.title em {
+  font-family: Georgia, 'Times New Roman', 'Songti SC', 'Noto Serif SC', SimSun, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -1px;
+  color: var(--brand-primary);
+}
+
+.desc {
+  margin: 0;
+  max-width: 340px;
+  font-size: 12px;
+  line-height: 1.75;
+  color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+/* 切换到另一人格：一行入口，右侧角色说明 */
+.switch {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 0;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  text-decoration: none;
+  color: inherit;
+  animation: riseIn 0.55s var(--ease-standard) 0.08s both;
+}
+
+.switchArrow {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-faint);
+  transition:
+    transform var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.switch:hover .switchArrow {
+  transform: translateX(4px);
+  color: var(--brand-primary);
+}
+
+.switchText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.switchName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.switchRole {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+/* 海报栏底部：会话 / 工具 / 热线 / 转真人 */
+.posterFoot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.session {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.metaLabel {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.metaNum {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--brand-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+}
+
+.metaNum i {
+  font-family: inherit;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: var(--text-faint);
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.blockLabel {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tips {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.tipItem {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 9px;
+  padding: 7px 0;
+  border-top: 1px solid var(--border-light);
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+.tipNum {
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+  font-style: italic;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.55;
+  color: var(--brand-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 危机热线：全站唯一使用警示色的信息块 */
+.crisis {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.crisisLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--status-danger);
+}
+
+.hotline {
+  font-family: Georgia, 'Times New Roman', 'Songti SC', STSong, serif;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0.5px;
+  color: var(--status-danger);
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.hotline:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.crisisNote {
+  font-size: 10.5px;
+  letter-spacing: 0.2px;
+  color: var(--text-faint);
+}
+
+.convert {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.convertText {
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.convertLink {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  text-decoration: none;
+}
+
+.convertLink::after {
+  content: '→';
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.convertLink:hover::after {
+  transform: translateX(4px);
+}
+
+.privacy {
+  margin: 0;
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--text-faint);
+}
+
+/* ==================== 右：对话画布 ==================== */
+.studio {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-page);
+}
+
+.studioBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px clamp(28px, 3vw, 56px);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  letter-spacing: 0.3px;
+  color: var(--text-muted);
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-success);
+}
+
+.statusDot[data-live='true'] {
+  background: var(--brand-primary);
+  animation: livePulse 1.4s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  50% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+}
+
+.barDivider {
+  width: 1px;
+  height: 12px;
+  background: var(--border-light);
+}
+
+.barName {
+  font-family: Georgia, 'Times New Roman', 'Songti SC', 'Noto Serif SC', SimSun, serif;
+  font-style: italic;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+  color: var(--text-heading);
+}
+
+.newChat:global(.ant-btn) {
+  margin-left: auto;
+  height: 28px;
+  padding-inline: 10px;
+  border-radius: 8px;
+  color: var(--brand-primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.newChat:global(.ant-btn):hover:not(:disabled) {
+  background: var(--brand-primary-faint) !important;
+  color: var(--brand-primary) !important;
+}
+
+.newChat:global(.ant-btn):disabled {
+  color: var(--text-faint);
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 短视口（768 高的笔记本）：海报栏优先保住身份、热线与转真人，对话建议让位 */
+@media (height <= 760px) and (width >= 1025px) {
+  .block {
+    display: none;
+  }
+
+  .switch {
+    padding: 10px 0;
+  }
+}
+
+/* ==================== 响应式（移动端另行制作，这里只保证不破版） ==================== */
+@media (width <= 1024px) {
+  .stage {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 0;
+  }
+
+  .poster {
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .posterInner {
+    height: auto;
+    overflow: visible;
+    gap: 18px;
+  }
+
+  /* 窄屏：工具建议与隐私说明让位，但热线与预约必须保留（安全出口） */
+  .posterFoot {
+    margin-top: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 24px;
+  }
+
+  .block,
+  .privacy {
+    display: none;
+  }
+
+  .session,
+  .crisis,
+  .convert {
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .session {
+    gap: 8px;
+  }
+
+  .metaNum {
+    font-size: 22px;
+  }
+
+  .crisis {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .hotline {
+    font-size: 20px;
+  }
+
+  .crisisNote {
+    display: none;
+  }
+
+  .convert {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  /* 堆叠后让「海报区 + 对话区」尽量落在首屏：输入框不必滚动即可见 */
+  .studio {
+    height: clamp(460px, calc(100dvh - 420px), 720px);
+  }
+}
+
+@media (width <= 768px) {
+  .desc {
+    max-width: none;
+  }
+
+  .studioBar {
+    padding: 12px 18px;
+  }
+}
+
+/* ==================== 暗色：仅补强调色 ==================== */
+:global(html.dark) .title em,
+:global(html.dark) .metaNum,
+:global(html.dark) .tipNum,
+:global(html.dark) .convertLink,
+:global(html.dark) .back:hover,
+:global(html.dark) .newChat:global(.ant-btn) {
+  color: var(--brand-primary-bright);
+}
+
+:global(html.dark) .newChat:global(.ant-btn):hover:not(:disabled) {
+  background: var(--brand-primary-bright-bg) !important;
+  color: var(--brand-primary-bright) !important;
+}

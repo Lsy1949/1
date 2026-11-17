@@ -1,5 +1,6 @@
 import { del, get, post } from '../request'
 import type {
+  AssessmentPointsDTO,
   AssessmentResultDTO,
   AssessmentScaleDTO,
   AssessmentScaleDetailDTO,
@@ -38,4 +39,9 @@ export function fetchHistory(signal?: AbortSignal): Promise<AssessmentResultDTO[
 /** 清空历史记录 */
 export function clearHistory(): Promise<null> {
   return del<null>('assessment/history')
+}
+
+/** 成长积分账户与近期流水 */
+export function fetchPoints(signal?: AbortSignal): Promise<AssessmentPointsDTO> {
+  return get<AssessmentPointsDTO>('assessment/points', { signal })
 }

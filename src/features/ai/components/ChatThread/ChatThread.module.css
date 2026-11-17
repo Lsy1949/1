@@ -1,9 +1,9 @@
-/* AI 对话线程（CSS Modules：私有类 camelCase；variant 形态类 is-fab/is-page 以
-   isFab/isPage 模块类等价映射；暗色规则以 :global(html.dark) 前缀迁移；
-   bubble-text 为无样式语义标记类（D 类），保留全局字面量，不在模块内定义；
-   keyframes 由模块自动局部化，不污染全局） */
+/* AI 对话线程（CSS Modules：私有类 camelCase；variant 形态类 is-fab / is-page
+   以 isFab / isPage 模块类等价映射；暗色规则以 :global(html.dark) 前缀；
+   bubble-text 为无样式语义标记类，保留全局字面量；keyframes 由模块自动局部化） */
 
 .aiThread {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -14,6 +14,8 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  /* 内部滚动不向页面链式传递（否则发送时整页会被带着下滚） */
+  overscroll-behavior: contain;
   padding: 20px 16px;
   display: flex;
   flex-direction: column;
@@ -42,8 +44,21 @@
   font-size: 16px;
 }
 
-.bubble {
+/* 气泡列：让「气泡 + 操作」纵向排布，宽度上限落在包裹层 */
+.bubbleWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
   max-width: var(--chat-bubble-max-fab);
+}
+
+.msgUser .bubbleWrap {
+  align-items: flex-end;
+}
+
+.bubble {
+  max-width: 100%;
   padding: 10px 14px;
   border-radius: 14px;
   font-size: 14px;
@@ -64,6 +79,50 @@
   color: var(--text-inverse, #fff);
   border-top-right-radius: 4px;
   box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 22%, transparent);
+}
+
+/* ============ 消息操作（复制 / 重新生成，仅 page 形态） ============ */
+.msgActions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.msg:hover .msgActions,
+.msg:focus-within .msgActions {
+  opacity: 1;
+}
+
+.actionBtn {
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-faint);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.actionBtn:hover:not(:disabled) {
+  color: var(--brand-primary);
+  background: var(--brand-primary-faint);
+}
+
+.actionBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.actionBtn:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 1px;
 }
 
 /* 流式光标 */
@@ -138,45 +197,102 @@
   color: var(--text-faint);
 }
 
-/* 输入行 */
-.threadInput {
-  display: flex;
-  gap: 8px;
-  padding: 12px 14px;
-  border-top: 1px solid var(--border-strong);
+/* 自定义底栏已移除：悬浮面板的声明直接落在输入区下方 */
+
+/* ============ 回到最新 ============ */
+.jumpLatest {
+  position: absolute;
+  left: 50%;
+  bottom: 104px;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-light);
+  border-radius: 50%;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--text-heading) 10%, transparent);
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
 }
 
-.threadInputField {
+.jumpLatest:hover {
+  color: var(--brand-primary);
+  transform: translateX(-50%) translateY(-2px);
+}
+
+/* ============ 输入区：多行输入 + 底部工具条 ============ */
+.composer {
+  margin: 0 16px 14px;
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  background: var(--bg-card);
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.composer:focus-within {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 10%, transparent);
+}
+
+.composerField:global(.ant-input) {
+  padding: 12px 14px 2px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  resize: none;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-heading);
+}
+
+.composerField:global(.ant-input)::placeholder {
+  color: var(--text-faint);
+}
+
+.composerBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px 8px 14px;
+}
+
+.composerHint {
   flex: 1;
   min-width: 0;
-  height: 38px;
-  padding: 0 12px;
-  border: 1px solid var(--border-strong);
-  border-radius: 10px;
-  background: var(--bg-card);
-  color: var(--text-regular);
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  font-size: 11px;
+  letter-spacing: 0.2px;
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.threadInputField::placeholder { color: var(--text-faint); }
-
-.threadInputField:focus {
-  border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 12%, transparent);
+.composerCount {
+  font-size: 11px;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
 }
 
 .sendBtn {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
   border: none;
-  border-radius: 10px;
+  border-radius: 50%;
   background: var(--brand-primary);
   color: var(--text-inverse, #fff);
   display: grid;
   place-items: center;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
   transition: all 0.25s ease;
 }
@@ -198,52 +314,137 @@
 }
 
 .stopIcon {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   border-radius: 3px;
   background: currentcolor;
 }
 
-/* ============ page 形态：放宽呼吸感 ============ */
+/* ============ page 形态：无卡片画布 · 居中消息列 ============ */
 .isPage .threadMessages {
-  padding: 28px 32px;
-  gap: 20px;
+  padding: 34px clamp(28px, 4vw, 64px) 14px;
+  align-items: center;
+  gap: 24px;
 }
 
-.isPage .bubble {
-  max-width: var(--chat-bubble-max);
-  padding: 12px 16px;
-  font-size: 14.5px;
+/* 宽屏下对话不铺满，收在 760 的阅读列里 */
+.isPage .msg,
+.isPage .quickPrompts,
+.isPage .threadDisclaimer {
+  width: 100%;
+  max-width: 760px;
+}
+
+.isPage .msg {
+  animation: msgIn 0.32s var(--ease-standard) both;
+}
+
+@keyframes msgIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.isPage .bubbleWrap {
+  max-width: min(100%, 660px);
 }
 
 .isPage .aiAvatar {
-  width: 40px;
-  height: 40px;
-  font-size: 18px;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  font-size: 15px;
+  margin-top: 2px;
 }
 
-.isPage .threadInput {
-  max-width: var(--chat-input-max);
-  margin: 0 auto;
-  padding: 14px 24px;
+/* AI：正文直接落在纸面上，不套气泡 */
+.isPage .msgAi .bubble {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  color: var(--text-regular);
+  font-size: 15px;
+  line-height: 1.95;
+  letter-spacing: 0.1px;
 }
 
-.isPage .threadInputField,
-.isPage .sendBtn {
-  height: 44px;
+/* 欢迎语：衬线体，作为画布的「开场白」 */
+.isPage .msgGreeting .bubble {
+  font-family: Georgia, 'Times New Roman', 'Songti SC', 'Noto Serif SC', SimSun, serif;
+  font-size: 17px;
+  line-height: 1.9;
+  color: var(--text-heading);
 }
 
-.isPage .threadInputField {
-  border-radius: 12px;
+/* 用户：品牌淡染块，比实底更适合长段阅读 */
+.isPage .msgUser .bubble {
+  background: var(--brand-primary-faint);
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent);
+  border-radius: 14px 14px 4px 14px;
+  padding: 11px 16px;
+  color: var(--text-heading);
+  font-size: 14.5px;
+  box-shadow: none;
 }
 
-.isPage .sendBtn {
-  border-radius: 12px;
-  font-size: 18px;
+.isPage .quickPrompts {
+  margin: 4px 0 0;
+  padding-left: 40px;
+}
+
+.isPage .quickBtn {
+  padding: 8px 15px;
+  font-size: 12.5px;
+  background: var(--bg-card);
 }
 
 .isPage .threadDisclaimer {
-  padding: 8px 24px;
+  margin: 0 auto;
+  padding: 0 0 8px;
+  font-size: 11.5px;
+}
+
+.isPage .jumpLatest {
+  bottom: 136px;
+}
+
+/* 输入区：居中浮起，与消息列同宽 */
+.isPage .composer {
+  width: calc(100% - clamp(56px, 8vw, 128px));
+  max-width: 760px;
+  margin: 0 auto 22px;
+  border-radius: 20px;
+  background: var(--bg-card);
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--text-heading) 6%, transparent);
+}
+
+/* 聚焦：保留浮起投影的同时叠加品牌光晕（否则会被上面的 box-shadow 覆盖） */
+.isPage .composer:focus-within {
+  box-shadow:
+    0 12px 32px color-mix(in srgb, var(--text-heading) 6%, transparent),
+    0 0 0 3px color-mix(in srgb, var(--brand-primary) 10%, transparent);
+}
+
+.isPage .composerField:global(.ant-input) {
+  padding: 14px 16px 4px;
+  font-size: 14.5px;
+}
+
+.isPage .composerBar {
+  padding: 8px 12px 10px 16px;
+}
+
+.isPage .sendBtn {
+  width: 38px;
+  height: 38px;
+  font-size: 16px;
 }
 
 /* ============ 暗夜模式 ============ */
@@ -252,8 +453,42 @@
   border-color: var(--border-regular);
 }
 
-:global(html.dark) .threadInputField {
+:global(html.dark) .isPage .msgAi .bubble {
+  background: transparent;
+  border: none;
+}
+
+:global(html.dark) .isPage .msgUser .bubble {
+  background: color-mix(in srgb, var(--brand-primary) 22%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 34%, transparent);
+  color: var(--text-primary);
+}
+
+:global(html.dark) .isPage .msgGreeting .bubble {
+  color: var(--text-primary);
+}
+
+:global(html.dark) .actionBtn:hover:not(:disabled) {
+  color: var(--brand-primary-bright);
+  background: var(--brand-primary-bright-bg);
+}
+
+:global(html.dark) .composer {
   background: var(--bg-mute);
+  border-color: var(--border-regular);
+}
+
+:global(html.dark) .composer:focus-within {
+  border-color: var(--brand-primary-bright);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary-bright) 16%, transparent);
+}
+
+:global(html.dark) .composerField:global(.ant-input) {
+  color: var(--text-primary);
+}
+
+:global(html.dark) .jumpLatest {
+  background: var(--bg-card);
   border-color: var(--border-regular);
 }
 
@@ -263,48 +498,103 @@
   color: var(--brand-primary-bright);
 }
 
-/* ============ fab 形态：简约杂志风 · 品牌色（仅悬浮卡片生效） ============ */
+/* ============ fab 形态：对齐阿里云 AI 助理的极简开场 ============ */
 .isFab .threadMessages {
-  padding: 18px;
+  padding: 16px 16px 12px;
   gap: 14px;
 }
 
-.isFab .aiAvatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--brand-primary-faint);
+/* 空态：品牌渐变印记 + 渐变标题 + 2×2 建议卡片 */
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  padding-top: 2px;
+}
+
+.heroMark {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  color: #fff;
+  /* 浅色主题下 bright 与 primary 同值，用 dark 做同色系渐变，避免两端同色 */
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 26%, transparent);
+}
+
+.heroTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.2px;
+  text-wrap: pretty;
+  background: linear-gradient(92deg, var(--text-heading) 12%, var(--brand-primary) 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.heroCards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.heroCard {
+  min-height: 58px;
+  padding: 10px 11px;
   border: 1px solid var(--brand-primary-soft);
-  color: var(--brand-primary);
-  font-size: 15px;
+  border-radius: 12px;
+  background: var(--brand-primary-wash);
+  color: var(--text-heading);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
 }
 
+.heroCard:hover {
+  border-color: var(--brand-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 14%, transparent);
+}
+
+.heroCard:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* 对话态：AI 纯文字、用户浅色块，不带头像（与参考一致） */
 .isFab .bubble {
-  border-radius: 14px;
-  padding: 10px 14px;
+  border-radius: 12px;
+  padding: 0;
   font-size: 13.5px;
+  line-height: 1.75;
 }
 
-/* 欢迎语用衬线字体，呼应刊头 */
-.isFab .msg:first-child .bubble {
-  font-family: Georgia, 'Times New Roman', 'Songti SC', 'Noto Serif SC', SimSun, serif;
-  font-size: 14px;
-}
-
-/* AI 气泡：品牌淡染 + 细描边，左上收角表指向 */
 .isFab .msgAi .bubble {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--text-regular);
+}
+
+.isFab .msgUser .bubble {
   background: var(--brand-primary-wash);
   border: 1px solid var(--brand-primary-soft);
-  border-radius: 14px;
-  border-top-left-radius: 4px;
-}
-
-/* 用户气泡：品牌实底 + 柔和品牌投影（替代硬 offset），右上收角表指向 */
-.isFab .msgUser .bubble {
-  background: var(--brand-primary);
-  color: var(--text-inverse, #fff);
-  border-radius: 14px;
-  border-top-right-radius: 4px;
+  border-radius: 12px 12px 4px 12px;
+  padding: 8px 12px;
+  color: var(--text-heading);
 }
 
 .isFab .streamCaret {
@@ -315,87 +605,92 @@
   background: var(--brand-primary);
 }
 
-/* 快捷提问：胶囊细边签，悬停品牌反白 */
-.isFab .quickPrompts {
-  margin-left: 42px;
-}
-
-.isFab .quickBtn {
-  border: 1px solid var(--brand-primary-soft);
-  border-radius: 999px;
-  background: var(--bg-card);
-  color: var(--brand-primary);
-  padding: 6px 14px;
-  letter-spacing: 0.02em;
-}
-
-.isFab .quickBtn:hover {
-  background: var(--brand-primary);
-  border-color: var(--brand-primary);
-  color: var(--text-inverse, #fff);
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 25%, transparent);
-}
-
-.isFab .threadDisclaimer {
-  border-top: 1px solid var(--brand-primary-soft);
-  margin: 0 18px;
-  padding: 8px 0;
-}
-
-/* 输入行：胶囊输入框 + 圆形品牌色发送键（呼应悬浮按钮的圆形语言） */
-.isFab .threadInput {
-  padding: 12px 16px;
-  background: var(--bg-card);
-  border-top: 1px solid var(--border-light);
-}
-
-.isFab .threadInputField {
-  height: 38px;
-  padding: 0 16px;
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
+/* 输入区：大输入盒 + 内嵌右下角发送键（阿里云 AI 助理同款） */
+.isFab .composer {
+  position: relative;
+  margin: 0 16px;
+  border-radius: 14px;
   background: var(--bg-mute);
 }
 
-.isFab .threadInputField:focus {
+.isFab .composer:focus-within {
+  background: var(--bg-card);
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 10%, transparent);
+}
+
+.isFab .composerField:global(.ant-input) {
+  /* 高度由 autoSize(minRows: 2) 决定，这里只留出右下角发送键的空间 */
+  padding: 12px 56px 18px 14px;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.isFab .composerBar {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 0;
+}
+
+/* 悬浮面板不显示辅助说明与字数（少即是多） */
+.isFab .composerHint,
+.isFab .composerCount {
+  display: none;
 }
 
 .isFab .sendBtn {
-  border-radius: 50%;
-  background: var(--brand-primary);
-  box-shadow: 0 4px 10px color-mix(in srgb, var(--brand-primary) 28%, transparent);
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  font-size: 14px;
+  box-shadow: none;
 }
 
 .isFab .sendBtn:not(:disabled):hover {
   background: var(--brand-primary-dark);
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-primary) 38%, transparent);
 }
 
 .isFab .sendBtn.isStop {
   border: 1.5px solid var(--brand-primary);
   color: var(--brand-primary);
   background: transparent;
-  box-shadow: none;
+}
+
+/* 免责声明：输入区下方居中一行 */
+.isFab .threadDisclaimer {
+  margin: 8px 16px 12px;
+  padding: 0;
+  text-align: center;
+  font-size: 10.5px;
+  line-height: 1.5;
 }
 
 /* fab 形态暗夜模式（品牌色不变，底色翻转；层次统一走语义变量） */
-:global(html.dark) .isFab .aiAvatar {
-  background: color-mix(in srgb, var(--brand-primary) 22%, transparent);
-  border-color: color-mix(in srgb, var(--brand-primary) 45%, transparent);
-  color: var(--brand-primary-bright);
+:global(html.dark) .heroMark {
+  background: linear-gradient(135deg, var(--brand-primary-bright), var(--brand-primary));
 }
 
-:global(html.dark) .isFab .msg:first-child .bubble,
+:global(html.dark) .heroTitle {
+  background-image: linear-gradient(92deg, var(--text-primary) 12%, var(--brand-primary-bright) 92%);
+}
+
+:global(html.dark) .heroCard {
+  background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 28%, transparent);
+  color: var(--text-primary);
+}
+
 :global(html.dark) .isFab .msgAi .bubble {
-  background: color-mix(in srgb, var(--brand-primary) 14%, transparent);
-  border-color: color-mix(in srgb, var(--brand-primary-bright) 40%, transparent);
+  background: transparent;
+  border: none;
   color: var(--text-primary);
 }
 
 :global(html.dark) .isFab .msgUser .bubble {
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-primary) 35%, transparent);
+  background: color-mix(in srgb, var(--brand-primary) 18%, transparent);
+  border-color: color-mix(in srgb, var(--brand-primary-bright) 30%, transparent);
+  color: var(--text-primary);
 }
 
 :global(html.dark) .isFab .streamCaret,
@@ -403,29 +698,20 @@
   background: var(--brand-primary-bright);
 }
 
-:global(html.dark) .isFab .quickBtn {
-  border-color: color-mix(in srgb, var(--brand-primary-bright) 55%, transparent);
-  color: var(--brand-primary-bright);
-}
-
-:global(html.dark) .isFab .threadDisclaimer {
-  border-top-color: var(--border-regular);
-}
-
-:global(html.dark) .isFab .threadInput {
-  background: var(--bg-card);
-  border-top-color: var(--border-regular);
-}
-
-:global(html.dark) .isFab .threadInputField {
+:global(html.dark) .isFab .composer {
   background: var(--bg-mute);
   border-color: var(--border-regular);
-  color: var(--text-primary);
 }
 
-:global(html.dark) .isFab .threadInputField:focus {
+:global(html.dark) .isFab .composer:focus-within {
+  /* 深色下输入盒不能变成与面板同色，否则聚焦无反馈：保留浅一档底色，靠品牌描边 + 光晕表达 */
+  background: var(--bg-mute);
   border-color: var(--brand-primary-bright);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 20%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary-bright) 18%, transparent);
+}
+
+:global(html.dark) .isFab .composerField:global(.ant-input) {
+  color: var(--text-primary);
 }
 
 :global(html.dark) .isFab .sendBtn.isStop {

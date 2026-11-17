@@ -363,6 +363,20 @@
       "social": "人際關係"
     },
     "submitted": "測評已完成！",
+    "points": {
+      "earned": "測評完成，獲得 +{{points}} 成長積分",
+      "capped": "測評完成，今日計分已達上限，本次不計分（紀錄仍已保存）",
+      "balance": "目前積分",
+      "totalEarned": "累計獲得",
+      "monthEarned": "本月獲得",
+      "weekEarned": "本週獲得",
+      "ledgerTitle": "積分明細",
+      "ledgerEmpty": "還沒有積分紀錄，完成一次測評即可獲得",
+      "ruleComplete": "完成「{{name}}」測評",
+      "ruleMigrate": "歷史測評遷移",
+      "capHint": "每日最多計分 {{limit}} 次，超出的測評仍會保存紀錄，只是不再加分。",
+      "keepsOnClear": "清空歷史不會扣除已獲得的成長積分。"
+    },
     "unit": {
       "items": "項",
       "questions": "題",
@@ -547,7 +561,7 @@
       "retakeHint": "重新測評會新增一條記錄，歷史報告仍會保留。"
     },
     "history": {
-      "clearConfirm": "確定要清空所有測評記錄嗎？此操作不可恢復。",
+      "clearConfirm": "確定要清空所有測評記錄嗎？此操作不可恢復。已獲得的成長積分不會受影響。",
       "clearTitle": "提示",
       "clearOk": "確定清空",
       "cleared": "測評記錄已清空",
@@ -666,7 +680,25 @@
       ],
       "hotlineLabel": "心理援助熱線",
       "hotline": "12356",
-      "back": "返回諮詢中心"
+      "back": "返回諮詢中心",
+      "personaLabel": "對話人格",
+      "personaCounselor": "AI 諮商師",
+      "personaCompanion": "AI 伴侶",
+      "personaRoleCounselor": "專業心理支持",
+      "personaRoleCompanion": "日常傾聽陪伴",
+      "online": "線上",
+      "thinking": "正在回應…",
+      "session": "本次對話",
+      "turnsUnit": "輪",
+      "newChat": "新對話",
+      "privacy": "對話不寫入歷史，重新整理即清空",
+      "copy": "複製",
+      "copied": "已複製",
+      "regenerate": "重新生成",
+      "scrollToLatest": "回到最新",
+      "inputHint": "Enter 傳送 · Shift + Enter 換行",
+      "toolsTitle": "陪伴工具",
+      "hotlineNote": "24 小時 · 免費 · 匿名"
     },
     "types": {
       "individual": "個別諮詢",

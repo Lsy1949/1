@@ -363,6 +363,20 @@
       "social": "Relationships"
     },
     "submitted": "Assessment completed!",
+    "points": {
+      "earned": "Completed — you earned +{{points}} growth points",
+      "capped": "Completed — today's scoring limit is reached, so no points were added (your record is saved)",
+      "balance": "Current points",
+      "totalEarned": "Total earned",
+      "monthEarned": "Earned this month",
+      "weekEarned": "Earned this week",
+      "ledgerTitle": "Points history",
+      "ledgerEmpty": "No points yet — complete an assessment to earn your first points",
+      "ruleComplete": "Completed \"{{name}}\"",
+      "ruleMigrate": "Migrated from past records",
+      "capHint": "Up to {{limit}} assessments earn points per day; extra assessments are still saved, just without points.",
+      "keepsOnClear": "Clearing history does not remove points you have already earned."
+    },
     "unit": {
       "items": "items",
       "questions": "Q",
@@ -666,7 +680,25 @@
       ],
       "hotlineLabel": "Crisis hotline",
       "hotline": "12356",
-      "back": "Back to Counseling"
+      "back": "Back to Counseling",
+      "personaLabel": "Persona",
+      "personaCounselor": "AI counselor",
+      "personaCompanion": "AI companion",
+      "personaRoleCounselor": "Professional support",
+      "personaRoleCompanion": "Everyday listening",
+      "online": "Online",
+      "thinking": "Responding…",
+      "session": "This session",
+      "turnsUnit": "turns",
+      "newChat": "New chat",
+      "privacy": "Conversations are not saved — refreshing clears them",
+      "copy": "Copy",
+      "copied": "Copied",
+      "regenerate": "Regenerate",
+      "scrollToLatest": "Back to latest",
+      "inputHint": "Enter to send · Shift + Enter for a new line",
+      "toolsTitle": "Companion tools",
+      "hotlineNote": "24/7 · Free · Anonymous"
     },
     "types": {
       "individual": "Individual",

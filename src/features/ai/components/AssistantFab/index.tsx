@@ -6,7 +6,7 @@
  */
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { CloseOutlined, CustomerServiceOutlined, MessageOutlined, UndoOutlined } from '@ant-design/icons'
+import { CloseOutlined, MessageOutlined, UndoOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import ChatThread from '../ChatThread'
 import { useChat } from '../../hooks/useChat'
@@ -55,23 +55,24 @@ export function AssistantFab() {
           aria-label={t('home.aiAssistant.title')}
         >
           <header className={styles.fabPanelHeader}>
-            <div className={styles.headerAvatar}>
-              <CustomerServiceOutlined />
-            </div>
-            <div className={styles.headerText}>
-              <h3>{t('home.aiAssistant.title')}</h3>
-              <p>{t('home.aiAssistant.subtitle')}</p>
-            </div>
+            <h3 className={styles.headerTitle}>{t('home.aiAssistant.title')}</h3>
             <button
               type="button"
               className={styles.headerAction}
               title={t('home.aiAssistant.restart')}
+              aria-label={t('home.aiAssistant.restart')}
               disabled={isSending}
               onClick={reset}
             >
               <UndoOutlined />
             </button>
-            <button type="button" className={styles.headerAction} title={t('common.close')} onClick={close}>
+            <button
+              type="button"
+              className={styles.headerAction}
+              title={t('common.close')}
+              aria-label={t('common.close')}
+              onClick={close}
+            >
               <CloseOutlined />
             </button>
           </header>
@@ -81,6 +82,7 @@ export function AssistantFab() {
             loading={isSending}
             variant="fab"
             greeting={t('home.aiAssistant.greeting')}
+            heroTitle={t('home.aiAssistant.subtitle')}
             placeholder={t('home.aiAssistant.placeholder')}
             sendLabel={t('home.aiAssistant.send')}
             stopLabel={t('home.aiAssistant.stop')}
@@ -92,13 +94,26 @@ export function AssistantFab() {
         </section>
       )}
 
-      <button type="button" className={styles.fabButton} aria-label={t('home.aiAssistant.fab')} onClick={toggle}>
-        {/* mode="out-in" 简化为 key 切换 + 入场动画（图标 0.18s 快速过渡，视觉等价） */}
-        <span key={open ? 'close' : 'chat'} className={`${styles.fabIcon} ${styles.fabIconEnter}`}>
-          {open ? <CloseOutlined /> : <MessageOutlined />}
+      <div className={styles.fabDock} data-open={open}>
+        {/* 桌面端悬停提示：图标按钮旁浮出名称，避免只有图标时语义不明 */}
+        <span className={styles.fabLabel} aria-hidden="true">
+          {t('home.aiAssistant.title')}
         </span>
-        {!open && <span className={styles.fabBadge} />}
-      </button>
+        <button
+          type="button"
+          className={styles.fabButton}
+          aria-label={t('home.aiAssistant.fab')}
+          aria-expanded={open}
+          aria-haspopup="dialog"
+          onClick={toggle}
+        >
+          {/* mode="out-in" 简化为 key 切换 + 入场动画（图标 0.18s 快速过渡，视觉等价） */}
+          <span key={open ? 'close' : 'chat'} className={`${styles.fabIcon} ${styles.fabIconEnter}`}>
+            {open ? <CloseOutlined /> : <MessageOutlined />}
+          </span>
+          {!open && <span className={styles.fabBadge} />}
+        </button>
+      </div>
     </div>,
     document.body
   )

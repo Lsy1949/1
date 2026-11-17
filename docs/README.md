@@ -7,6 +7,7 @@
 | [api-contract.md](./api-contract.md) | 接口契约（由 mock 反向导出）：认证、租户、内容、业务模块、SignalR、部署变量 | 后端、联调 |
 | [design-language.md](./design-language.md) | UI/交互规范：动效、无障碍、颜色/阴影/圆角/间距、偏差清单 | 前端、设计 |
 | [migration-guide.md](./migration-guide.md) | Vue 3 / Element Plus → React 18 / Ant Design 迁移对照与等价性权衡 | 迁移评审 |
+| [assessment-points.md](./assessment-points.md) | **成长积分体系**：账本模型、获取规则、等级阈值、防刷与上限、清空口径、展示位与落地状态 | 产品、测试、前端、后端 |
 | [handover.md](./handover.md) | 待办与注意事项 | 接手人 |
 
 ## 维护约定
