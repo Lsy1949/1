@@ -139,6 +139,8 @@ export interface AssessmentPointsDTO {
   dailyLimit: number
   /** 已完成测评次数 */
   completed: number
+  /** 已覆盖的量表分类数 */
+  categoriesCovered: number
   /** 测评天数（服务端按自然日去重） */
   assessmentDays: number
   /** 加入日期（首次测评自然日；无记录时为服务端默认值） */

@@ -479,6 +479,7 @@
         "total": "累計測評",
         "points": "成長積分",
         "avg": "平均得分",
+        "categories": "覆蓋分類",
         "days": "活躍天數"
       },
       "monthlyGoal": "本月成長目標",
@@ -1460,32 +1461,26 @@
   "profile": {
     "eyebrow": "個人中心",
     "title": "我的<em>檔案</em>",
-    "desc": "在這裡管理你的個人資訊、心理檔案與活動記錄，每一份成長都被妥善收藏。",
+    "desc": "維護你的身份資訊與心理檔案。預約與收藏在諮詢中心「我的」，測評與成長記錄在測評中心「我的」。",
     "hero": {
       "editProfile": "編輯資料",
-      "viewStats": "查看統計",
+      "viewGrowth": "成長看板",
       "studentId": "學號",
       "school": "學校",
       "joinDate": "加入時間",
       "bioEmpty": "這個人很懶，還沒有寫自我介紹"
     },
+    "scopeHint": "這裡是你的長期檔案；預約與收藏請在諮詢中心「我的」管理，測評記錄、積分與勳章在測評中心「我的」查看。",
     "card": {
       "quick": {
         "settings": "帳號設定",
-        "counseling": "心理諮詢中心"
+        "assess": "成長檔案"
       },
       "bookings": {
-        "title": "我的預約",
-        "desc": "查看心理諮詢的預約狀態，可直接改約、取消，或在諮詢結束後留下評價。",
-        "goBook": "去預約",
-        "empty": "還沒有預約記錄",
-        "emptyFiltered": "該狀態下暫無預約"
+        "title": "我的預約"
       },
       "favorites": {
-        "title": "我的收藏",
-        "desc": "收藏的心理老師，隨時查看並一鍵預約。",
-        "empty": "還沒有收藏老師，去心理老師列表點 ♡ 收藏",
-        "browse": "去心理老師"
+        "title": "我的收藏"
       },
       "profile": {
         "title": "基礎資料",
@@ -1524,78 +1519,30 @@
         "sleepGood": "良好",
         "save": "儲存檔案",
         "saveSuccess": "心理檔案已更新"
-      },
-      "stats": {
-        "title": "活動統計",
-        "desc": "你在平台上的成長足跡一覽。",
-        "assessments": "參與測評",
-        "counseling": "諮詢次數",
-        "moments": "發佈心得",
-        "favorites": "收藏老師",
-        "capsules": "時光膠囊"
-      },
-      "growth": {
-        "title": "成長足跡",
-        "desc": "最近的活動記錄，見證每一步成長。",
-        "items": {
-          "assessment": "完成了測評",
-          "counseling": "完成了一次諮詢",
-          "capsule": "建立了時光膠囊",
-          "article": "收藏了文章",
-          "square": "發布了心得",
-          "comment": "發表了評論",
-          "like": "點讚了內容",
-          "login": "首次登入平台",
-          "milestone": "達成成長里程碑"
-        },
-        "viewAll": "查看全部",
-        "summary": "成長概覽",
-        "totalActivities": "累計活動",
-        "activeDays": "活躍天數",
-        "streak": "連續打卡",
-        "badges": "獲得徽章",
-        "badgeFirst": "初心者",
-        "badgeFirstDesc": "完成首次測評",
-        "badgeExplorer": "探索者",
-        "badgeExplorerDesc": "體驗全部模組",
-        "badgePersistent": "堅持者",
-        "badgePersistentDesc": "連續活躍7天",
-        "badgeCollector": "收藏家",
-        "badgeCollectorDesc": "收藏10篇文章",
-        "year2024": "2024年",
-        "year2025": "2025年",
-        "noMore": "沒有更多了"
-      },
-      "danger": {
-        "title": "危險操作",
-        "desc": "註銷帳號將永久刪除你的所有資料，此操作不可恢復。",
-        "deleteBtn": "註銷帳號",
-        "confirmTitle": "確認註銷帳號",
-        "confirmMsg": "此操作將永久刪除你的帳號及所有相關資料，且無法恢復。是否繼續？",
-        "confirmBtn": "確認註銷",
-        "deleted": "帳號已註銷，即將返回首頁"
       }
     }
   },
   "settings": {
     "eyebrow": "帳號設定",
     "title": "安全與<em>偏好</em>",
-    "desc": "管理帳號安全、通知偏好、隱私設定與個性化偏好，打造屬於你的使用體驗。",
+    "desc": "管理帳號安全、通知、隱私、偏好與資料，並可在此註銷帳號；個人資料請到個人中心維護。",
     "hero": {
       "backProfile": "返回個人中心",
       "accountLabel": "目前帳號",
       "accountHint": "以下設定僅對目前帳號生效，儲存後立即同步到此裝置。",
-      "role": "身分",
+      "account": "登入帳號",
+      "unbound": "未綁定",
       "status": "帳號狀態",
       "statusNormal": "正常"
     },
     "rail": {
-      "hint": "共 5 組設定，修改後請儲存。",
+      "hint": "共 6 組設定，修改後請儲存。",
       "security": "密碼、聯絡方式與登入裝置",
       "notifications": "選擇你願意接收的提醒",
       "privacy": "主頁可見範圍與搜尋",
       "preferences": "語言、主題與預設首頁",
-      "data": "匯出紀錄與清理快取"
+      "data": "匯出紀錄與清理快取",
+      "danger": "註銷帳號與資料刪除"
     },
     "card": {
       "security": {
@@ -1729,6 +1676,15 @@
         "clearCacheDesc": "選擇要清除的快取類別，操作不可恢復",
         "startDate": "開始日期",
         "endDate": "結束日期"
+      },
+      "danger": {
+        "title": "註銷帳號",
+        "desc": "註銷將永久刪除你的帳號、個人資料、預約與測評等全部資料，此操作不可恢復。",
+        "deleteBtn": "註銷帳號",
+        "confirmTitle": "確認註銷帳號",
+        "confirmMsg": "此操作將永久刪除你的帳號及所有相關資料，且無法恢復。是否繼續？",
+        "confirmBtn": "確認註銷",
+        "deleted": "帳號已註銷，即將返回首頁"
       }
     }
   },

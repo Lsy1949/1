@@ -479,6 +479,7 @@
         "total": "累计测评",
         "points": "成长积分",
         "avg": "平均得分",
+        "categories": "覆盖分类",
         "days": "活跃天数"
       },
       "monthlyGoal": "本月成长目标",
@@ -1460,32 +1461,26 @@
   "profile": {
     "eyebrow": "个人中心",
     "title": "我的<em>档案</em>",
-    "desc": "在这里管理你的个人信息、心理档案与活动记录，每一份成长都被妥善收藏。",
+    "desc": "维护你的身份信息与心理档案。预约与收藏在咨询中心「我的」，测评与成长记录在测评中心「我的」。",
     "hero": {
       "editProfile": "编辑资料",
-      "viewStats": "查看统计",
+      "viewGrowth": "成长看板",
       "studentId": "学号",
       "school": "学校",
       "joinDate": "加入时间",
       "bioEmpty": "这个人很懒，还没有写自我介绍"
     },
+    "scopeHint": "这里是你的长期档案；预约与收藏请在咨询中心「我的」管理，测评记录、积分与勋章在测评中心「我的」查看。",
     "card": {
       "quick": {
         "settings": "账号设置",
-        "counseling": "心理咨询中心"
+        "assess": "成长档案"
       },
       "bookings": {
-        "title": "我的预约",
-        "desc": "查看心理咨询的预约状态，可直接改约、取消，或在咨询结束后留下评价。",
-        "goBook": "去预约",
-        "empty": "还没有预约记录",
-        "emptyFiltered": "该状态下暂无预约"
+        "title": "我的预约"
       },
       "favorites": {
-        "title": "我的收藏",
-        "desc": "收藏的心理老师，随时查看并一键预约。",
-        "empty": "还没有收藏老师，去心理老师列表点 ♡ 收藏",
-        "browse": "去心理老师"
+        "title": "我的收藏"
       },
       "profile": {
         "title": "基础资料",
@@ -1524,78 +1519,30 @@
         "sleepGood": "良好",
         "save": "保存档案",
         "saveSuccess": "心理档案已更新"
-      },
-      "stats": {
-        "title": "活动统计",
-        "desc": "你在平台上的成长足迹一览。",
-        "assessments": "参与测评",
-        "counseling": "咨询次数",
-        "moments": "发布心得",
-        "favorites": "收藏老师",
-        "capsules": "时光胶囊"
-      },
-      "growth": {
-        "title": "成长足迹",
-        "desc": "最近的活动记录，见证每一步成长。",
-        "items": {
-          "assessment": "完成了测评",
-          "counseling": "完成了一次咨询",
-          "capsule": "创建了时光胶囊",
-          "article": "收藏了文章",
-          "square": "发布了心得",
-          "comment": "发表了评论",
-          "like": "点赞了内容",
-          "login": "首次登录平台",
-          "milestone": "达成成长里程碑"
-        },
-        "viewAll": "查看全部",
-        "summary": "成长概览",
-        "totalActivities": "累计活动",
-        "activeDays": "活跃天数",
-        "streak": "连续打卡",
-        "badges": "获得徽章",
-        "badgeFirst": "初心者",
-        "badgeFirstDesc": "完成首次测评",
-        "badgeExplorer": "探索者",
-        "badgeExplorerDesc": "体验全部模块",
-        "badgePersistent": "坚持者",
-        "badgePersistentDesc": "连续活跃7天",
-        "badgeCollector": "收藏家",
-        "badgeCollectorDesc": "收藏10篇文章",
-        "year2024": "2024年",
-        "year2025": "2025年",
-        "noMore": "没有更多了"
-      },
-      "danger": {
-        "title": "危险操作",
-        "desc": "注销账号将永久删除你的所有数据，此操作不可恢复。",
-        "deleteBtn": "注销账号",
-        "confirmTitle": "确认注销账号",
-        "confirmMsg": "此操作将永久删除你的账号及所有相关数据，且无法恢复。是否继续？",
-        "confirmBtn": "确认注销",
-        "deleted": "账号已注销，即将返回首页"
       }
     }
   },
   "settings": {
     "eyebrow": "账号设置",
     "title": "安全与<em>偏好</em>",
-    "desc": "管理账号安全、通知偏好、隐私设置与个性化偏好，打造属于你的使用体验。",
+    "desc": "管理账号安全、通知、隐私、偏好与数据，并可在此注销账号；个人资料请到个人中心维护。",
     "hero": {
       "backProfile": "返回个人中心",
       "accountLabel": "当前账号",
       "accountHint": "以下设置仅对当前账号生效，保存后立即同步到本设备。",
-      "role": "身份",
+      "account": "登录账号",
+      "unbound": "未绑定",
       "status": "账号状态",
       "statusNormal": "正常"
     },
     "rail": {
-      "hint": "共 5 组设置，修改后请保存。",
+      "hint": "共 6 组设置，修改后请保存。",
       "security": "密码、联系方式与登录设备",
       "notifications": "选择你愿意接收的提醒",
       "privacy": "主页可见范围与搜索",
       "preferences": "语言、主题与默认首页",
-      "data": "导出记录与清理缓存"
+      "data": "导出记录与清理缓存",
+      "danger": "注销账号与数据删除"
     },
     "card": {
       "security": {
@@ -1729,6 +1676,15 @@
         "clearCacheDesc": "选择要清除的缓存类别，操作不可恢复",
         "startDate": "开始日期",
         "endDate": "结束日期"
+      },
+      "danger": {
+        "title": "注销账号",
+        "desc": "注销将永久删除你的账号、个人资料、预约与测评等全部数据，此操作不可恢复。",
+        "deleteBtn": "注销账号",
+        "confirmTitle": "确认注销账号",
+        "confirmMsg": "此操作将永久删除你的账号及所有相关数据，且无法恢复。是否继续？",
+        "confirmBtn": "确认注销",
+        "deleted": "账号已注销，即将返回首页"
       }
     }
   },

@@ -1,0 +1,55 @@
+/* 06 · 注销账号：账号生命周期专属区块（CSS Modules：私有类 camelCase） */
+
+/* ============ 区块通用（区块头由 SectionHead 组件承担） ============ */
+.editorialSection {
+  padding: 44px 0 56px;
+  border-top: 1px solid var(--border-light);
+  scroll-margin-top: 96px;
+}
+
+.dangerSection {
+  border-top-color: color-mix(in srgb, var(--status-danger) 22%, transparent);
+}
+
+.dangerAction {
+  display: flex;
+  align-items: center;
+  padding: 22px 24px;
+  border: 1px solid color-mix(in srgb, var(--status-danger) 22%, transparent);
+  background: color-mix(in srgb, var(--status-danger) 4%, transparent);
+}
+
+.dangerBtn {
+  border-radius: 0;
+  font-weight: 600;
+  padding: 10px 24px;
+}
+
+/* antd danger 默认实心 → 与设置页一致的描边式危险按钮 */
+.dangerBtn:global(.ant-btn-dangerous) {
+  background: transparent;
+  border-color: var(--status-danger);
+  color: var(--status-danger);
+  box-shadow: none;
+}
+
+.dangerBtn:global(.ant-btn-dangerous):hover:not(:disabled),
+.dangerBtn:global(.ant-btn-dangerous):focus-visible {
+  background: var(--status-danger);
+  border-color: var(--status-danger);
+  color: var(--text-inverse, #fff);
+}
+
+@media (width <= 768px) {
+  .editorialSection {
+    padding: 32px 0 40px;
+  }
+
+  .dangerAction {
+    padding: 18px;
+  }
+
+  .dangerAction :global(.ant-btn) {
+    width: 100%;
+  }
+}

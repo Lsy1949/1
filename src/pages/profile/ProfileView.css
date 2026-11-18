@@ -8,7 +8,7 @@
   color: var(--text-heading);
 }
 
-/* ============ 快捷入口 · 我的（预约 / 收藏 / 设置） ============ */
+/* ============ 快捷入口 · 只做跨中心跳转（预约 / 收藏 / 成长档案 / 设置） ============ */
 .profile-quick-actions {
   display: flex;
   flex-wrap: wrap;
@@ -68,6 +68,18 @@
 
 .profile-quick-spacer {
   flex: 1;
+}
+
+/* 页脚职责说明：告诉用户其余「我的」内容在哪个中心 */
+.profile-scope-hint {
+  margin: 8px 0 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-light);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--text-faint);
+  max-width: var(--measure-desc);
+  text-wrap: pretty;
 }
 
 @media (width <= 768px) {

@@ -1,18 +1,17 @@
 import { useMemo, useRef, useState, useEffect, type ReactNode } from 'react'
-import { App as AntApp, Button, Empty, Select, Table, Tag, Tooltip } from 'antd'
-import type { TableProps } from 'antd'
+import { Empty, Tooltip } from 'antd'
 import { Line, Pie, Radar, type Chart } from '@ant-design/plots'
 import dayjs from 'dayjs'
 import type { I18nKey } from '@/i18n/dataHelper'
 import {
   AimOutlined,
+  AppstoreOutlined,
   ArrowDownOutlined,
   ArrowRightOutlined,
   ArrowUpOutlined,
   BarChartOutlined,
   CalendarOutlined,
   CheckOutlined,
-  DownloadOutlined,
   LineChartOutlined,
   PieChartOutlined,
   QuestionCircleFilled,
@@ -20,7 +19,6 @@ import {
   RobotOutlined,
   StarOutlined,
   TrophyOutlined,
-  UnorderedListOutlined,
 } from '@ant-design/icons'
 import { useReveal } from '@/hooks/useReveal'
 import { useTranslation } from 'react-i18next'
@@ -28,20 +26,18 @@ import { useTheme } from '@/hooks/useTheme'
 import { readCssColor } from '@/utils/cssVar'
 import ScaleIcon from '@/components/ScaleIcon'
 import type { AssessmentPointsDTO } from '@/api/types'
-import { TAG_COLOR } from '../MinePanel'
 import type { AssessmentRecord, ScaleInfo } from '../types'
 import styles from './DashboardPanel.module.css'
 
 interface Props {
   history: AssessmentRecord[]
   scales: ScaleInfo[]
-  /** 积分账户（账本口径）；缺省回退到「历史条数 × 10」 */
+  /** 账户指标（次数 / 平均分 / 活跃天数 / 覆盖分类等由服务端计算） */
   points?: AssessmentPointsDTO
-  onView: (record: AssessmentRecord) => void
   onOpenScale: (key: string) => void
 }
 
-// --- 成长看板侧边栏导航（名称走 i18n；图标以 ReactNode 形态存放） ---
+// --- 成长看板侧边栏导航：只保留分析类分区，记录台账归「我的」 ---
 const DASHBOARD_NAV: { key: string; icon: ReactNode }[] = [
   { key: 'overview', icon: <LineChartOutlined /> },
   { key: 'radar', icon: <AimOutlined /> },
@@ -50,7 +46,6 @@ const DASHBOARD_NAV: { key: string; icon: ReactNode }[] = [
   { key: 'ai', icon: <RobotOutlined /> },
   { key: 'progress', icon: <TrophyOutlined /> },
   { key: 'recommend', icon: <StarOutlined /> },
-  { key: 'history', icon: <UnorderedListOutlined /> },
 ]
 
 /** 雷达图长表行 / 环形图行（@ant-design/plots 均为长表数据形态） */
@@ -65,10 +60,9 @@ interface DonutDatum {
   value: number
 }
 
-/** 成长看板面板：侧栏导航 + 7 个内容区，可视化数据全部由 history 派生 */
-export default function DashboardPanel({ history, scales, points, onView, onOpenScale }: Props) {
+/** 成长看板面板：侧栏导航 + 分析分区，只做趋势与洞察，记录台账在「我的」 */
+export default function DashboardPanel({ history, scales, points, onOpenScale }: Props) {
   const { t } = useTranslation()
-  const { message } = AntApp.useApp() // 替代静态 ElMessage，带主题上下文
   const layoutRef = useReveal<HTMLDivElement>({ delay: 80 })
   // 订阅真实主题源（useTheme 同步翻 html.dark 后才 emit，重渲染时 token 必为新值）；
   // mode / palette 任一变化都重建图表配色（themeSignature 缓存随之失效）
@@ -101,7 +95,7 @@ export default function DashboardPanel({ history, scales, points, onView, onOpen
 
   // 概览指标全部取服务端下发值（前端不做统计）
   const totalCompleted = points?.completed ?? 0
-  const growthPoints = points?.balance ?? 0
+  const categoriesCovered = points?.categoriesCovered ?? 0
   const assessmentDays = points?.assessmentDays ?? 0
 
   // --- 侧边栏选中态（原 ref → useState） ---
@@ -341,75 +335,6 @@ export default function DashboardPanel({ history, scales, points, onView, onOpen
       .map((rec) => ({ ...rec, scale: scales.find((s) => s.key === rec.key) }))
   }, [history, scales, t])
 
-  // --- 历史足迹 ---
-  const [historyFilter, setHistoryFilter] = useState('all')
-  const historyFilterOptions = useMemo(() => {
-    const opts = [{ key: 'all', label: t('assessment.history.allScales') }]
-    const doneKeys = [...new Set(history.map((h) => h.scaleKey))]
-    doneKeys.forEach((k) => {
-      const scale = scales.find((s) => s.key === k)
-      if (scale) opts.push({ key: k, label: scale.name })
-    })
-    return opts
-  }, [history, scales, t])
-
-  const filteredHistory = useMemo(
-    () => (historyFilter === 'all' ? history : history.filter((h) => h.scaleKey === historyFilter)),
-    [history, historyFilter]
-  )
-
-  // el-table 列配置 → antd Table columns（作用域插槽 → render 函数）
-  const historyColumns: TableProps<AssessmentRecord>['columns'] = [
-    { title: t('assessment.dashboard.col.date'), dataIndex: 'date', width: 120 },
-    { title: t('assessment.dashboard.col.scale'), dataIndex: 'scaleName' },
-    { title: t('assessment.dashboard.col.score'), dataIndex: 'score', width: 80 },
-    {
-      title: t('assessment.dashboard.col.conclusion'),
-      dataIndex: 'level',
-      width: 120,
-      render: (_, record) => (
-        <Tag color={TAG_COLOR[record.levelTag]}>{record.level}</Tag>
-      ),
-    },
-    {
-      title: t('assessment.dashboard.col.action'),
-      key: 'action',
-      width: 80,
-      render: (_, record) => (
-        <Button type="link" size="small" onClick={() => onView(record)}>
-          {t('assessment.dashboard.detail')}
-        </Button>
-      ),
-    },
-  ]
-
-  // 导出 CSV
-  function exportHistory() {
-    if (history.length === 0) {
-      message.warning(t('assessment.history.noExport'))
-      return
-    }
-    const headers = [
-      t('assessment.history.csvHeaders.date'),
-      t('assessment.history.csvHeaders.scale'),
-      t('assessment.history.csvHeaders.score'),
-      t('assessment.history.csvHeaders.level'),
-      t('assessment.history.csvHeaders.title'),
-    ]
-    const rows = history.map((h) => [h.date, h.scaleName, h.score, h.level, h.title])
-    const csv = [headers, ...rows]
-      .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(','))
-      .join('\n')
-    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `assessment_history_${dayjs().format('YYYYMMDD')}.csv`
-    link.click()
-    URL.revokeObjectURL(url)
-    message.success(t('assessment.history.exported'))
-  }
-
   // v-show → 保持挂载、以 display 切换（与 Vue v-show 行为一致，图表状态不丢失）
   const show = (key: string): React.CSSProperties | undefined =>
     activeDashboard === key ? undefined : { display: 'none' }
@@ -447,10 +372,10 @@ export default function DashboardPanel({ history, scales, points, onView, onOpen
                 </div>
               </div>
               <div className={styles.kpiCard}>
-                <div className={styles.kpiIcon}><TrophyOutlined /></div>
+                <div className={styles.kpiIcon}><AppstoreOutlined /></div>
                 <div className={styles.kpiInfo}>
-                  <span className={styles.kpiValue}>{growthPoints}</span>
-                  <span className={styles.kpiLabel}>{t('assessment.dashboard.kpi.points')}</span>
+                  <span className={styles.kpiValue}>{categoriesCovered}</span>
+                  <span className={styles.kpiLabel}>{t('assessment.dashboard.kpi.categories')}</span>
                 </div>
               </div>
               <div className={styles.kpiCard}>
@@ -848,43 +773,6 @@ export default function DashboardPanel({ history, scales, points, onView, onOpen
                     <ArrowRightOutlined className={styles.recArrow} />
                   </div>
                 ))}
-              </div>
-            </div>
-          </div>
-
-          {/* 历史足迹 */}
-          <div className={styles.contentSection} style={show('history')}>
-            <div className={`${styles.panel} ${styles.dashboardCard}`}>
-              <div className={styles.cardHeader}>
-                <h3><UnorderedListOutlined /> {t('assessment.dashboard.history')}</h3>
-                <div className={styles.historyActions}>
-                  {/* el-select v-model → antd Select 受控 value + onChange */}
-                  <Select
-                    size="small"
-                    className={styles.historyFilter}
-                    value={historyFilter}
-                    onChange={setHistoryFilter}
-                    placeholder={t('assessment.dashboard.filterScale')}
-                    options={historyFilterOptions.map((opt) => ({ value: opt.key, label: opt.label }))}
-                  />
-                  <Button type="link" icon={<DownloadOutlined />} onClick={exportHistory}>
-                    {t('assessment.dashboard.exportCsv')}
-                  </Button>
-                </div>
-              </div>
-              <div className={styles.historyTableWrapper}>
-                {/* el-table stripe/max-height → antd Table rowClassName 斑马纹 + scroll.y */}
-                <Table
-                  columns={historyColumns}
-                  dataSource={filteredHistory}
-                  rowKey={(record) => String(record.id)}
-                  pagination={false}
-                  scroll={{ y: 500 }}
-                  rowClassName={(_, index) => (index % 2 === 1 ? 'striped-row' : '')}
-                />
-                {history.length === 0 && (
-                  <div className={styles.historyEmpty}>{t('assessment.dashboard.noHistory')}</div>
-                )}
               </div>
             </div>
           </div>

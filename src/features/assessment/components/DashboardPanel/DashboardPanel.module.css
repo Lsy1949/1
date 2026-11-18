@@ -297,48 +297,6 @@
   align-self: center;
 }
 
-/* 历史表格 */
-.historyTableWrapper {
-  margin-top: 4px;
-}
-
-/* el-table 的 CSS 变量覆写 → .ant-table 类名覆写
-   （表头背景/文字色已 token 化为页面 ConfigProvider 的 Table headerBg/headerColor；
-     表格圆角/透明底与表头字重字号无对应 token，保留此处） */
-.historyTableWrapper :global(.ant-table) {
-  border-radius: 12px;
-  overflow: hidden;
-  background: transparent;
-}
-
-.historyTableWrapper :global(.ant-table-thead > tr > th) {
-  font-weight: 700;
-  font-size: 13px;
-}
-
-.historyTableWrapper :global(.ant-table-tbody > tr > td) {
-  border-color: var(--border-light);
-}
-
-/* el-table stripe → rowClassName 斑马纹（striped-row 为协议类，保留字面量） */
-.historyTableWrapper :global(.ant-table-tbody > tr.striped-row > td) {
-  background: var(--bg-soft);
-}
-
-.historyTableWrapper :global(.ant-table .ant-tag) {
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 2px 8px;
-  font-size: var(--fs-xs);
-}
-
-.historyEmpty {
-  text-align: center;
-  color: var(--text-faint);
-  font-size: 13px;
-  padding: 32px 0;
-}
-
 /* 图表容器（@ant-design/plots 组件挂载点）：铺满父级既有高度类（radarLarge / trendLarge / donutChartWrap） */
 .chartBox {
   width: 100%;
@@ -911,19 +869,6 @@
   transform: translateX(4px);
 }
 
-/* 历史足迹增强 */
-.historyActions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* el-select 覆写 → .ant-select 类名覆写
-   （选择器圆角/底色/描边/hover 已 token 化为页面 ConfigProvider 的 Select 组件注入） */
-.historyFilter {
-  width: 160px;
-}
-
 /* 侧边栏导航布局 · 目录式 */
 .dashboardLayout {
   display: flex;
@@ -1216,7 +1161,6 @@
   .goalProgressWrap { width: 100%; min-width: 0; }
   .trendControls { flex-direction: column; align-items: flex-start; gap: 8px; }
   .comparisonItem { flex-wrap: wrap; }
-  .historyActions { flex-direction: column; align-items: flex-end; }
   .radarLarge { height: 320px; }
   .trendLarge { height: 260px; }
   .donutLarge { min-height: 300px; }

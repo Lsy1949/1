@@ -479,6 +479,7 @@
         "total": "Total Assessments",
         "points": "Growth Points",
         "avg": "Average Score",
+        "categories": "Categories Covered",
         "days": "Active Days"
       },
       "monthlyGoal": "Monthly Growth Goal",
@@ -1460,32 +1461,26 @@
   "profile": {
     "eyebrow": "Profile",
     "title": "My <em>Archive</em>",
-    "desc": "Manage your personal info, psychological profile and activity records here. Every growth is well kept.",
+    "desc": "Maintain your identity info and psychological profile. Bookings and saved counselors live in the counseling center, assessment growth in the assessment center.",
     "hero": {
       "editProfile": "Edit Profile",
-      "viewStats": "View Stats",
+      "viewGrowth": "Growth Board",
       "studentId": "Student ID",
       "school": "School",
       "joinDate": "Joined",
       "bioEmpty": "This person is lazy and has not written a bio yet"
     },
+    "scopeHint": "This is your long-term archive. Manage bookings and saved counselors in the counseling center; view assessment records, points and badges in the assessment center.",
     "card": {
       "quick": {
         "settings": "Account settings",
-        "counseling": "Counseling center"
+        "assess": "Growth archive"
       },
       "bookings": {
-        "title": "My bookings",
-        "desc": "Track counseling bookings — reschedule, cancel, or rate a finished session right here.",
-        "goBook": "Book a session",
-        "empty": "No bookings yet",
-        "emptyFiltered": "No bookings in this status"
+        "title": "My bookings"
       },
       "favorites": {
-        "title": "Saved counselors",
-        "desc": "Counselors you saved — review anytime and book in one tap.",
-        "empty": "No saved counselors yet — tap ♡ in the counselor list",
-        "browse": "Browse counselors"
+        "title": "Saved counselors"
       },
       "profile": {
         "title": "Basic Info",
@@ -1524,78 +1519,30 @@
         "sleepGood": "Good",
         "save": "Save Profile",
         "saveSuccess": "Psychological profile updated"
-      },
-      "stats": {
-        "title": "Activity Stats",
-        "desc": "Your growth footprint on the platform.",
-        "assessments": "Assessments",
-        "counseling": "Counseling Sessions",
-        "moments": "Posts",
-        "favorites": "Saved counselors",
-        "capsules": "Time Capsules"
-      },
-      "growth": {
-        "title": "Growth Journey",
-        "desc": "Recent activity records, witnessing every step of growth.",
-        "items": {
-          "assessment": "Completed an assessment",
-          "counseling": "Completed a counseling session",
-          "capsule": "Created a time capsule",
-          "article": "Favorited an article",
-          "square": "Published a moment",
-          "comment": "Posted a comment",
-          "like": "Liked content",
-          "login": "First platform login",
-          "milestone": "Reached a growth milestone"
-        },
-        "viewAll": "View All",
-        "summary": "Growth Overview",
-        "totalActivities": "Total Activities",
-        "activeDays": "Active Days",
-        "streak": "Day Streak",
-        "badges": "Badges Earned",
-        "badgeFirst": "Beginner",
-        "badgeFirstDesc": "Completed first assessment",
-        "badgeExplorer": "Explorer",
-        "badgeExplorerDesc": "Experienced all modules",
-        "badgePersistent": "Persistent",
-        "badgePersistentDesc": "Active for 7 consecutive days",
-        "badgeCollector": "Collector",
-        "badgeCollectorDesc": "Saved 10 articles",
-        "year2024": "2024",
-        "year2025": "2025",
-        "noMore": "No more activities"
-      },
-      "danger": {
-        "title": "Danger Zone",
-        "desc": "Account deletion will permanently erase all your data. This action cannot be undone.",
-        "deleteBtn": "Delete Account",
-        "confirmTitle": "Confirm Account Deletion",
-        "confirmMsg": "This will permanently delete your account and all related data. This cannot be undone. Continue?",
-        "confirmBtn": "Confirm Delete",
-        "deleted": "Account deleted, returning to home"
       }
     }
   },
   "settings": {
     "eyebrow": "Settings",
     "title": "Security & <em>Preferences</em>",
-    "desc": "Manage account security, notifications, privacy and personalization for your own experience.",
+    "desc": "Manage account security, notifications, privacy, preferences and data, or delete your account here; edit personal info in your profile.",
     "hero": {
       "backProfile": "Back to profile",
       "accountLabel": "Current account",
       "accountHint": "These settings apply to this account only and take effect on this device once saved.",
-      "role": "Role",
+      "account": "Sign-in account",
+      "unbound": "Not linked",
       "status": "Status",
       "statusNormal": "Active"
     },
     "rail": {
-      "hint": "5 groups of settings — save each after editing.",
+      "hint": "6 groups of settings — save each after editing.",
       "security": "Password, contacts and devices",
       "notifications": "Choose the alerts you receive",
       "privacy": "Profile visibility and search",
       "preferences": "Language, theme and start page",
-      "data": "Export records and clear cache"
+      "data": "Export records and clear cache",
+      "danger": "Delete account and data"
     },
     "card": {
       "security": {
@@ -1729,6 +1676,15 @@
         "clearCacheDesc": "Choose cache types to clear. This cannot be undone.",
         "startDate": "Start Date",
         "endDate": "End Date"
+      },
+      "danger": {
+        "title": "Delete Account",
+        "desc": "Deleting your account permanently erases your profile, bookings, assessments and all related data. This cannot be undone.",
+        "deleteBtn": "Delete Account",
+        "confirmTitle": "Confirm Account Deletion",
+        "confirmMsg": "This will permanently delete your account and all related data. This cannot be undone. Continue?",
+        "confirmBtn": "Confirm Delete",
+        "deleted": "Account deleted, returning to home"
       }
     }
   },

@@ -12,10 +12,10 @@ export interface HeroProps {
   studentId: string
   bio: string
   onEditProfile: () => void
-  onViewStats: () => void
+  onViewGrowth: () => void
 }
 
-export function Hero({ name, role, school, studentId, bio, onEditProfile, onViewStats }: HeroProps) {
+export function Hero({ name, role, school, studentId, bio, onEditProfile, onViewGrowth }: HeroProps) {
   const { t } = useTranslation()
 
   const issueNo = useMemo(() => String(new Date().getMonth() + 1).padStart(2, '0'), [])
@@ -59,9 +59,9 @@ export function Hero({ name, role, school, studentId, bio, onEditProfile, onView
               <EditOutlined />
               {t('profile.hero.editProfile')}
             </button>
-            <button className={`${styles.ctaBtn} ${styles.ghost}`} onClick={onViewStats}>
+            <button className={`${styles.ctaBtn} ${styles.ghost}`} onClick={onViewGrowth}>
               <BarChartOutlined />
-              {t('profile.hero.viewStats')}
+              {t('profile.hero.viewGrowth')}
             </button>
           </div>
         </div>

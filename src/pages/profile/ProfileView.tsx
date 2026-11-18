@@ -1,41 +1,21 @@
 // 个人中心视图（登录守卫由布局层 ProtectedRoute 统一承担，本视图不再自行判断）
-// 「我的」工作台：资料 / 心理档案 / 活动统计 / 我的预约 / 我的收藏 / 成长足迹 / 账号安全
-import { useCallback, useMemo, useState } from 'react'
-import { App as AntApp, ConfigProvider } from 'antd'
+// 职责边界：个人中心只负责「我是谁」——身份名片 / 基础资料 / 心理档案。
+// 预约与收藏归咨询中心「我的」，测评与成长记录归测评中心「我的」，此处只给入口，不重复列表。
+import { useState } from 'react'
+import { ConfigProvider } from 'antd'
 import {
   CalendarOutlined,
-  ExclamationCircleFilled,
   HeartOutlined,
-  MessageOutlined,
   SettingOutlined,
+  TrophyOutlined,
 } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/stores/useUserStore'
-import { logout } from '@/features/auth'
-import { counselingApi } from '@/api'
 import { RESPONSIVE_TOKEN } from '@/styles/theme'
-import {
-  BasicSection,
-  BookingsSection,
-  DangerSection,
-  FavoritesSection,
-  GrowthSection,
-  Hero,
-  PsychSection,
-  StatsSection,
-} from '@/features/profile'
+import { BasicSection, Hero, PsychSection } from '@/features/profile'
 import type { ProfileFormData, PsychFormData } from '@/features/profile'
-import {
-  useCounselorDirectory,
-  useProfileBookings,
-  useProfileCancelBooking,
-  useProfileFavorites,
-  useProfileFeedback,
-  useProfileRescheduleBooking,
-  useProfileSaveFavorites,
-} from './profileQuery'
+import { useProfileBookings, useProfileFavorites } from './profileQuery'
 import './ProfileView.css'
 
 interface UserExtra {
@@ -69,50 +49,13 @@ const profileThemeComponents = {
 export default function ProfileView() {
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const { message, modal } = AntApp.useApp() // 替代 ElMessage / ElMessageBox
   const userStore = useUserStore()
 
   const info = (userStore.profile || {}) as UserExtra
 
-  // ===== 我的预约 / 收藏（与咨询中心共享缓存键） =====
-  const queryClient = useQueryClient()
-  const {
-    data: bookings = [],
-    isPending: bookingsPending,
-    isError: bookingsError,
-    refetch: refetchBookings,
-  } = useProfileBookings()
-  const { data: counselingInfo } = useCounselorDirectory()
-  const cancelBooking = useProfileCancelBooking()
-  const rescheduleBooking = useProfileRescheduleBooking()
-  const submitFeedback = useProfileFeedback()
-
-  const counselors = counselingInfo?.counselors ?? []
-  // 收藏的老师 id（后端接口，与咨询中心共享缓存键）
+  // 仅取条数用于入口角标；预约/收藏的详情与操作统一在咨询中心「我的」
+  const { data: bookings = [] } = useProfileBookings()
   const { data: favoriteIds = [] } = useProfileFavorites()
-  const saveFavorites = useProfileSaveFavorites()
-
-  /** 收藏 / 取消收藏（整份替换保存） */
-  function toggleFavorite(id: number) {
-    const next = favoriteIds.includes(id)
-      ? favoriteIds.filter((item) => item !== id)
-      : [...favoriteIds, id]
-    saveFavorites.mutate(next)
-  }
-
-  /** 改约弹窗查占用时段（按「老师 + 日期」缓存） */
-  const fetchTakenSlots = useCallback(
-    (counselorId: number, date: string) =>
-      queryClient.fetchQuery({
-        queryKey: ['counseling', 'availability', counselorId, date],
-        queryFn: ({ signal }) =>
-          counselingApi
-            .fetchSlotAvailability(counselorId, date, signal)
-            .then((res) => res.takenSlots),
-        staleTime: 30_000,
-      }),
-    [queryClient],
-  )
 
   // Vue 版 reactive 初始化语义等价：仅在挂载时取 store 快照一次
   const [profileForm, setProfileForm] = useState<ProfileFormData>({
@@ -132,35 +75,14 @@ export default function ProfileView() {
     sleepQuality: info.sleepQuality || 'fair'
   })
 
-  const roleLabel = useMemo(() => {
-    const r = userStore.role || info.roleId || 'student'
-    if (r === 'teacher') return t('profile.card.profile.roleTeacher')
-    if (r === 'admin') return t('profile.card.profile.roleAdmin')
-    return t('profile.card.profile.roleStudent')
-  }, [userStore.role, info.roleId, t])
+  const roleLabel = userStore.role === 'teacher'
+    ? t('profile.card.profile.roleTeacher')
+    : userStore.role === 'admin'
+      ? t('profile.card.profile.roleAdmin')
+      : t('profile.card.profile.roleStudent')
 
   function scrollToSection(id: string) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
-  function handleViewAll() {
-    navigate('/square')
-  }
-
-  // ElMessageBox.confirm → modal.confirm；登出广播与页面跳转：logout() 后本页兜底跳首页
-  function handleDelete() {
-    modal.confirm({
-      title: t('profile.card.danger.confirmTitle'),
-      content: t('profile.card.danger.confirmMsg'),
-      okText: t('profile.card.danger.confirmBtn'),
-      cancelText: t('common.cancel'),
-      icon: <ExclamationCircleFilled />,
-      onOk() {
-        logout()
-        message.success(t('profile.card.danger.deleted'))
-        navigate('/')
-      }
-    })
   }
 
   return (
@@ -174,15 +96,15 @@ export default function ProfileView() {
         studentId={profileForm.studentId}
         bio={psychForm.bio}
         onEditProfile={() => scrollToSection('sec-profile')}
-        onViewStats={() => scrollToSection('sec-stats')}
+        onViewGrowth={() => navigate('/assessment?tab=dashboard')}
       />
 
-      {/* ===== 快捷入口：预约 / 收藏 / 设置 ===== */}
+      {/* ===== 快捷入口：只做跳转，内容归属各中心「我的」 ===== */}
       <div className="profile-quick-actions">
         <button
           type="button"
           className="profile-quick-action"
-          onClick={() => scrollToSection('sec-bookings')}
+          onClick={() => navigate('/counseling?tab=mine')}
         >
           <CalendarOutlined />
           {t('profile.card.bookings.title')}
@@ -191,19 +113,24 @@ export default function ProfileView() {
         <button
           type="button"
           className="profile-quick-action"
-          onClick={() => scrollToSection('sec-favorites')}
+          onClick={() => navigate('/counseling?tab=mine')}
         >
           <HeartOutlined />
           {t('profile.card.favorites.title')}
+          {favoriteIds.length > 0 && <span className="profile-quick-count">{favoriteIds.length}</span>}
         </button>
+        <button
+          type="button"
+          className="profile-quick-action"
+          onClick={() => navigate('/assessment?tab=mine')}
+        >
+          <TrophyOutlined />
+          {t('profile.card.quick.assess')}
+        </button>
+        <span className="profile-quick-spacer" />
         <button type="button" className="profile-quick-action" onClick={() => navigate('/settings')}>
           <SettingOutlined />
           {t('profile.card.quick.settings')}
-        </button>
-        <span className="profile-quick-spacer" />
-        <button type="button" className="profile-quick-action" onClick={() => navigate('/counseling')}>
-          <MessageOutlined />
-          {t('profile.card.quick.counseling')}
         </button>
       </div>
 
@@ -213,45 +140,7 @@ export default function ProfileView() {
       {/* ===== 02 心理档案 ===== */}
       <PsychSection form={psychForm} onFormChange={setPsychForm} />
 
-      {/* ===== 03 活动统计 ===== */}
-      <StatsSection
-        id="sec-stats"
-        values={{
-          counseling: bookings.length,
-          favorites: favoriteIds.length,
-        }}
-      />
-
-      {/* ===== 04 我的预约 ===== */}
-      <BookingsSection
-        id="sec-bookings"
-        bookings={bookings}
-        loading={bookingsPending}
-        error={bookingsError}
-        onRetry={() => void refetchBookings()}
-        onGoBook={() => navigate('/counseling')}
-        fetchTakenSlots={fetchTakenSlots}
-        onCancel={cancelBooking.mutate}
-        onReschedule={rescheduleBooking.mutate}
-        onFeedback={submitFeedback.mutate}
-        mutationPending={rescheduleBooking.isPending || submitFeedback.isPending}
-      />
-
-      {/* ===== 05 我的收藏 ===== */}
-      <FavoritesSection
-        id="sec-favorites"
-        counselors={counselors}
-        onBrowse={() => navigate('/counseling?tab=consultants')}
-        onBook={(id) => navigate(`/counseling?counselor=${id}`)}
-        favoriteIds={favoriteIds}
-        onToggleFavorite={toggleFavorite}
-      />
-
-      {/* ===== 06 成长足迹 ===== */}
-      <GrowthSection onViewAll={handleViewAll} />
-
-      {/* ===== 危险操作（独立危险区，不参与 01–06 编号） ===== */}
-      <DangerSection onConfirmDelete={handleDelete} />
+      <p className="profile-scope-hint">{t('profile.scopeHint')}</p>
       </div>
     </ConfigProvider>
   )

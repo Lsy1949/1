@@ -15,10 +15,3 @@ export interface PsychFormData {
   stressLevel: string
   sleepQuality: string
 }
-
-export interface GrowthItem {
-  type: string
-  kind: string
-  text: string
-  date: string
-}

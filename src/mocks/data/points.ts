@@ -252,6 +252,7 @@ export function getAssessmentPoints(
     todayCount,
     dailyLimit: DAILY_COUNT_LIMIT,
     completed,
+    categoriesCovered: categories.size,
     assessmentDays: dayKeys.size,
     joinDate,
     growthStatusKey,

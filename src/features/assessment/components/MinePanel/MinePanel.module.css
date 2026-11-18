@@ -154,6 +154,10 @@
   gap: 16px;
   position: relative;
   padding-left: 8px;
+  padding-right: 4px;
+  /* 全部记录在固定高度内滚动，避免长列表把页面拉得过长 */
+  max-height: 560px;
+  overflow-y: auto;
 }
 
 .timelineItem {
@@ -371,6 +375,17 @@
 
 @media (width <= 768px) {
   .badgesGrid { grid-template-columns: 1fr; }
+}
+
+/* ---------- 历史台账：筛选 / 导出 ---------- */
+.historyActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.historyFilter {
+  width: 132px;
 }
 
 /* ---------- 积分明细（账本流水） ---------- */

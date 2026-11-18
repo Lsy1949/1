@@ -386,7 +386,6 @@ export default function AssessmentCenterView() {
             history={history}
             scales={scales}
             points={points}
-            onView={viewHistory}
             onOpenScale={openScaleIntro}
           />,
         )}

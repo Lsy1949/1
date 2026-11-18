@@ -1,11 +1,14 @@
-import { Button, Empty, Tag } from 'antd'
+import { useMemo, useState } from 'react'
+import { App as AntApp, Button, Empty, Select, Tag } from 'antd'
 import {
   CalendarOutlined,
   ClockCircleOutlined,
+  DownloadOutlined,
   SendOutlined,
   TrophyOutlined,
   WalletOutlined,
 } from '@ant-design/icons'
+import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import type { AssessmentPointsDTO } from '@/api/types'
 import type { AssessmentRecord } from '../types'
@@ -74,6 +77,48 @@ export default function MinePanel({
   }))
   const ledger = points?.ledger ?? []
   const sortedHistory = history // 服务端已按时间倒序
+
+  // 记录台账属「我的」：支持按量表筛选与导出（纯交互/格式化，不涉及业务规则）
+  const { message } = AntApp.useApp()
+  const [historyFilter, setHistoryFilter] = useState('all')
+  const filterOptions = useMemo(() => {
+    const seen = new Map<string, string>()
+    history.forEach((record) => {
+      if (!seen.has(record.scaleKey)) seen.set(record.scaleKey, record.scaleName)
+    })
+    return [
+      { value: 'all', label: t('assessment.history.allScales') },
+      ...[...seen].map(([value, label]) => ({ value, label })),
+    ]
+  }, [history, t])
+  const shownHistory =
+    historyFilter === 'all' ? sortedHistory : sortedHistory.filter((r) => r.scaleKey === historyFilter)
+
+  function exportHistory() {
+    if (history.length === 0) {
+      message.warning(t('assessment.history.noExport'))
+      return
+    }
+    const headers = [
+      t('assessment.history.csvHeaders.date'),
+      t('assessment.history.csvHeaders.scale'),
+      t('assessment.history.csvHeaders.score'),
+      t('assessment.history.csvHeaders.level'),
+      t('assessment.history.csvHeaders.title'),
+    ]
+    const rows = history.map((h) => [h.date, h.scaleName, h.score, h.level, h.title])
+    const csv = [headers, ...rows]
+      .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(','))
+      .join('\n')
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `assessment_history_${dayjs().format('YYYYMMDD')}.csv`
+    link.click()
+    URL.revokeObjectURL(url)
+    message.success(t('assessment.history.exported'))
+  }
 
   return (
     <div className={styles.mineWrapper}>
@@ -145,19 +190,31 @@ export default function MinePanel({
         </p>
       </div>
 
-      {/* 历史测评时间轴（置底 + 最近 10 条） */}
+      {/* 历史测评台账（全部记录，可筛选 / 导出 / 清空） */}
       <div>
         <div className={styles.sectionHeader}>
           <h3><ClockCircleOutlined /> {t('assessment.profile.historyTitle')}</h3>
           {history.length > 0 && (
-            <Button type="link" onClick={onClearHistory}>
-              {t('assessment.profile.clearHistory')}
-            </Button>
+            <div className={styles.historyActions}>
+              <Select
+                size="small"
+                className={styles.historyFilter}
+                value={historyFilter}
+                onChange={setHistoryFilter}
+                options={filterOptions}
+              />
+              <Button type="link" icon={<DownloadOutlined />} onClick={exportHistory}>
+                {t('assessment.dashboard.exportCsv')}
+              </Button>
+              <Button type="link" onClick={onClearHistory}>
+                {t('assessment.profile.clearHistory')}
+              </Button>
+            </div>
           )}
         </div>
         {history.length > 0 ? (
-          <div className={styles.timeline}>
-            {sortedHistory.slice(0, 10).map((record, idx) => (
+          <div className={`${styles.timeline} custom-scroll`}>
+            {shownHistory.map((record, idx) => (
               <div key={idx} className={styles.timelineItem}>
                 {/* dot- 为运行时动态等级类（协议类，保留字面量） */}
                 <div className={`${styles.timelineDot} dot-${record.levelTag}`} />

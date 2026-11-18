@@ -1,24 +1,29 @@
 /**
  * 账号设置视图（登录守卫由布局层 ProtectedRoute 统一承担）
+ * 职责边界：这里只管「账号怎么用」——安全 / 通知 / 隐私 / 偏好 / 数据 / 注销；
+ * 个人资料与心理档案归个人中心，预约与收藏归咨询中心「我的」，测评成长归测评中心「我的」。
  * 桌面优先布局，与咨询中心 / 测评中心同一套编辑式语言：
  *   Hero（标题主张 + 账号名片）
- *   └─ Workspace：左侧索引导航（吸顶） + 右侧分组面板（01–05）
- * 右侧五个区块常驻堆叠，由 IntersectionObserver 反推当前锚点高亮左侧导航。
+ *   └─ Workspace：左侧索引导航（吸顶） + 右侧分组面板（01–06）
+ * 右侧六个区块常驻堆叠，由 IntersectionObserver 反推当前锚点高亮左侧导航。
  */
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { ConfigProvider } from 'antd'
+import { App as AntApp, ConfigProvider } from 'antd'
 import {
   ArrowLeftOutlined,
   BellOutlined,
+  ExclamationCircleOutlined,
   EyeInvisibleOutlined,
   FolderOpenOutlined,
   LockOutlined,
   SettingOutlined,
 } from '@ant-design/icons'
 import InitialAvatar from '@/components/InitialAvatar'
+import { logout } from '@/features/auth'
 import {
+  DangerSection,
   DataSection,
   NotificationsSection,
   PreferencesSection,
@@ -64,7 +69,7 @@ const settingsThemeComponents = {
 }
 
 /** 左侧索引导航项：编号 / 页签名 / 一句说明（编号与右侧区块头一一对应） */
-type SectionKey = 'security' | 'notifications' | 'privacy' | 'preferences' | 'data'
+type SectionKey = 'security' | 'notifications' | 'privacy' | 'preferences' | 'data' | 'danger'
 
 interface RailItem {
   key: SectionKey
@@ -79,6 +84,7 @@ const RAIL_ITEMS: RailItem[] = [
   { key: 'privacy', id: 'sec-privacy', no: '03', Icon: EyeInvisibleOutlined },
   { key: 'preferences', id: 'sec-preferences', no: '04', Icon: SettingOutlined },
   { key: 'data', id: 'sec-data', no: '05', Icon: FolderOpenOutlined },
+  { key: 'danger', id: 'sec-danger', no: '06', Icon: ExclamationCircleOutlined },
 ]
 
 export default function SettingsView() {
@@ -86,16 +92,28 @@ export default function SettingsView() {
   const navigate = useNavigate()
   const userStore = useUserStore()
   const heroRef = useReveal<HTMLElement>()
+  const { message, modal } = AntApp.useApp()
 
   const info = userStore.profile
   const displayName = info?.name || ''
+  // 账号名片只展示「账号」维度：身份/资料已在个人中心，避免重复
+  const accountLabel = info?.phone || info?.email || info?.id || t('settings.hero.unbound')
 
-  const roleLabel = useMemo(() => {
-    const r = userStore.role || info?.roleId || 'student'
-    if (r === 'teacher') return t('profile.card.profile.roleTeacher')
-    if (r === 'admin') return t('profile.card.profile.roleAdmin')
-    return t('profile.card.profile.roleStudent')
-  }, [userStore.role, info?.roleId, t])
+  /** 注销账号：账号生命周期操作归属本页 */
+  function handleDelete() {
+    modal.confirm({
+      title: t('settings.card.danger.confirmTitle'),
+      content: t('settings.card.danger.confirmMsg'),
+      okText: t('settings.card.danger.confirmBtn'),
+      cancelText: t('common.cancel'),
+      icon: <ExclamationCircleOutlined />,
+      onOk() {
+        logout()
+        message.success(t('settings.card.danger.deleted'))
+        navigate('/')
+      },
+    })
+  }
 
   /* ===== 索引导航 / 滚动反查 ===== */
   const [activeSection, setActiveSection] = useState(RAIL_ITEMS[0].id)
@@ -163,8 +181,8 @@ export default function SettingsView() {
             <p className="st-account-hint">{t('settings.hero.accountHint')}</p>
             <dl className="st-account-meta">
               <div className="st-account-meta-item">
-                <dt>{t('settings.hero.role')}</dt>
-                <dd>{roleLabel}</dd>
+                <dt>{t('settings.hero.account')}</dt>
+                <dd>{accountLabel}</dd>
               </div>
               <div className="st-account-meta-item">
                 <dt>{t('settings.hero.status')}</dt>
@@ -211,6 +229,7 @@ export default function SettingsView() {
             <PrivacySection />
             <PreferencesSection />
             <DataSection />
+            <DangerSection onConfirmDelete={handleDelete} />
           </main>
         </div>
       </div>
